@@ -1,10 +1,22 @@
 <?php
+/**
+ * Fluid - Router.php
+ *
+ * Routes urls to closures
+ *
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
+ * @license     MIT
+ * @author      Robin de Graaf (hello@devvoh.com)
+ */
+
 namespace Devvoh\Fluid;
 
 class Router {
 
     protected $url = '/';
     protected $routes = null;
+    protected $currentClosure = null;
+    protected $currentParams = null;
 
     public function __construct() {
         if (isset($_GET['url'])) {
@@ -34,14 +46,24 @@ class Router {
         }
         return $this;
     }
-
+    
     public function match() {
+        if ($this->matchRoute()) {
+            $closure = $this->currentClosure;
+            $closure($this->currentParams);
+        } else {
+            echo '404: ' . $this->url;
+        }
+    }
+
+    public function matchRoute() {
         $closure = null;
         $params = null;
 
         // Check if this is a literal match, and if so, that's our match
         if (isset($this->routes[$this->method][$this->url])) {
-            $closure = $this->routes[$this->method][$this->url]();
+            $this->currentClosure = $this->routes[$this->method][$this->url];
+            return true;
         } else {
             // It must be a dynamic route, right?
             foreach ($this->routes[$this->method] as $pattern => $route) {
@@ -63,18 +85,37 @@ class Router {
                     }
                 }
 
+                // Check if we've got a match
                 if ($routeParts === $urlParts) {
-                    $closure = $this->routes[$this->method][$pattern];
-                    break;
+                    $this->currentClosure = $this->routes[$this->method][$pattern];
+                    return $this->checkParams($params);
                 }
             }
         }
-        if (is_callable($closure)) {
-            $closure($params);
-            return true;
-        }
-        echo '404';
         return false;
+    }
+    
+    public function checkParams($params) {
+        $this->currentParams = null;
+        foreach ($params as $pattern => $value) {
+            list($type, $name) = explode(':', $pattern);
+            switch ($type) {
+                case 'i':
+                    if (!ctype_digit($value) && mb_strpos($name, '@') !== false) {
+                        return false;
+                    }
+                    break;
+                case 'a':
+                    if (!ctype_alpha($value) && mb_strpos($name, '@') !== false) {
+                        return false;
+                    }
+                    break;
+            }
+            $name = str_replace('@', '', $name);
+            $this->currentParams[$name] = $value;
+        }
+        return true;
+        
     }
 
 }
