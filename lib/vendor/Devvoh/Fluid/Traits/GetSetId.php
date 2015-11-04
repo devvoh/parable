@@ -1,0 +1,25 @@
+<?php
+/**
+ * @package     Fluid
+ * @subpackage  Traits/GetSetId
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
+ * @license     MIT
+ * @author      Robin de Graaf (hello@devvoh.com)
+ */
+
+namespace Devvoh\Fluid\Traits;
+
+trait GetSetId {
+
+    protected $id = null;
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
+    }
+
+}
