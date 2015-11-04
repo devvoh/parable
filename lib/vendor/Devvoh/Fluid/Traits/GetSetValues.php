@@ -79,6 +79,8 @@ trait GetSetValues {
                 return $_GET;
             case 'Session':
                 return $_SESSION;
+            case 'Param':
+                return $this->params;
         }
         return $this;
     }
@@ -100,6 +102,9 @@ trait GetSetValues {
                 break;
             case 'Session':
                 $_SESSION = $values;
+                break;
+            case 'Param':
+                $this->params = $values;
                 break;
         }
         return $this;

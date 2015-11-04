@@ -49,6 +49,11 @@ class App {
     /**
      * @var null
      */
+    static $param = null;
+
+    /**
+     * @var null
+     */
     static $post = null;
 
     /**
@@ -249,6 +254,18 @@ class App {
             self::$session = new \Devvoh\Fluid\App\Session();
         }
         return self::$session;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Param instance
+     *
+     * @return Param
+     */
+    public static function getParam() {
+        if (!self::$param) {
+            self::$param = new \Devvoh\Fluid\App\Param();
+        }
+        return self::$param;
     }
 
     /**

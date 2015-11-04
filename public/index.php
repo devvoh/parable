@@ -23,14 +23,13 @@ App::start();
 /**
  * Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
  */
-$route = App::getRouter()->route();
-
-var_dump(App::getPost()->getNameSpace());
+$route = App::getRouter()->match();
 
 if ($route) {
     if (!App::getRouter()->execute($route)) {
         // thar be error?
+        echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
     }
 } else {
-    // no route, 404
+        echo 'Route not found.';
 }
