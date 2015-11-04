@@ -11,7 +11,6 @@ namespace Devvoh\Fluid\App;
 
 class Param {
     use \Devvoh\Fluid\Traits\GetClassName;
-    use \Devvoh\Fluid\Traits\GetSetId;
     use \Devvoh\Fluid\Traits\GetSetValues;
     
     protected $params = array();

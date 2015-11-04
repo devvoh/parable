@@ -11,6 +11,5 @@ namespace Devvoh\Fluid\App;
 
 class Get {
     use \Devvoh\Fluid\Traits\GetClassName;
-    use \Devvoh\Fluid\Traits\GetSetId;
     use \Devvoh\Fluid\Traits\GetSetValues;
 }
