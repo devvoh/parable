@@ -13,11 +13,23 @@ trait GetSetId {
 
     protected $id = null;
 
+    /**
+     * Returns the id
+     *
+     * @return null
+     */
     public function getId() {
         return $this->id;
     }
 
-    public function setId($id) {
+    /**
+     * Sets the id
+     *
+     * @param $id
+     *
+     * @return $this
+     */
+    public function setId($id = null) {
         $this->id = $id;
         return $this;
     }

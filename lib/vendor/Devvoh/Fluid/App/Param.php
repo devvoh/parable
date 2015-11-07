@@ -9,9 +9,11 @@
 
 namespace Devvoh\Fluid\App;
 
+use Devvoh\Fluid\App as App;
+
 class Param {
     use \Devvoh\Fluid\Traits\GetClassName;
     use \Devvoh\Fluid\Traits\GetSetValues;
-    
+
     protected $params = array();
 }

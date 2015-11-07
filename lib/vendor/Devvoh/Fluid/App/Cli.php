@@ -9,6 +9,8 @@
 
 namespace Devvoh\Fluid\App;
 
+use Devvoh\Fluid\App as App;
+
 class Cli {
 
 }

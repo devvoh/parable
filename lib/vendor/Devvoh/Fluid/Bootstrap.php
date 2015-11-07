@@ -33,3 +33,11 @@ spl_autoload_register(function ($class) {
         throw new Exception('Unable to autoload ' . $class);
     }
 });
+
+/**
+ * Start output buffering with gzip compression if possible
+ */
+if(!ob_start("ob_gzhandler")) {
+    // No ob_gzhandler so regular
+    ob_start();
+}

@@ -9,6 +9,8 @@
 
 namespace Devvoh\Fluid\App;
 
+use Devvoh\Fluid\App as App;
+
 class Session {
     use \Devvoh\Fluid\Traits\GetClassName;
     use \Devvoh\Fluid\Traits\GetSetValues;

@@ -31,5 +31,10 @@ if ($route) {
         echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
     }
 } else {
-        echo 'Route not found.';
+    echo 'Route not found.';
 }
+
+/**
+ * Send the response
+ */
+App::getResponse()->sendResponse();

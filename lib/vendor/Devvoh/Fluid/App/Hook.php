@@ -9,12 +9,11 @@
 
 namespace Devvoh\Fluid\App;
 
+use Devvoh\Fluid\App as App;
+
 class Hook {
 
-    /**
-     * @var array
-     */
-    static $hooks = array();
+    protected $hooks = array();
 
     /**
      * Add hook referencing $closure to $event, returns false if $closure isn't a function
@@ -22,17 +21,17 @@ class Hook {
      * @param null|string   $event
      * @param null|callable $closure
      *
-     * @return bool
+     * @return bool|Hook
      */
-    public static function add($event = null, $closure = null) {
+    public function add($event = null, $closure = null) {
         // Check if all data is given and correct
         if (!$event || !$closure || !is_callable($closure)) {
             return false;
         }
 
         // All good, add the event & closure to hooks
-        self::$hooks[$event][] = $closure;
-        return true;
+        $this->hooks[$event][] = $closure;
+        return $this;
     }
 
     /**
@@ -41,22 +40,24 @@ class Hook {
      * @param null $event
      * @param null $payload
      *
-     * @return bool
+     * @return bool|Hook
      */
-    public static function trigger($event = null, &$payload = null) {
+    public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct
         if (!$event) {
             return false;
         }
 
         // Check if the event exists and has closures to call
-        if (!isset(self::$hooks[$event]) || count(self::$hooks[$event]) == 0) {
+        if (!isset($this->hooks[$event]) || count($this->hooks[$event]) == 0) {
             return false;
         }
 
         // All good, let's call those closures
-        foreach (self::$hooks[$event] as $closure) {
+        foreach ($this->hooks[$event] as $closure) {
             $closure($payload);
         }
+
+        return $this;
     }
 }

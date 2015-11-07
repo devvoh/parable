@@ -13,15 +13,8 @@ use Devvoh\Fluid\App as App;
 
 class Router {
 
-    /**
-     * @var null
-     */
-    protected $currentPath = null;
-
-    /**
-     * @var null
-     */
-    public $routes = null;
+    protected $currentPath  = null;
+    protected $routes       = null;
 
     /**
      * Route the path given or simply the current path being looked at
@@ -43,9 +36,9 @@ class Router {
         // Try simple routing first
         foreach ($this->routes as $module => $routes) {
             foreach ($routes as $data) {
-                // Reset local $params array so we don't keep old param attempts 
+                // Reset local $params array so we don't keep old param attempts
                 $params = array();
-                
+
                 // Check if the request method matches the allowed methods
                 if (!in_array($_SERVER['REQUEST_METHOD'], explode('|', $data['method']))) {
                     // Skip this route, since the request method is invalid
@@ -61,14 +54,14 @@ class Router {
                 } elseif (strpos($data['path'], ':') !== false) {
                     // It's not a direct match but it does have params, so let's separate those now
                     $pathParts = explode('/', ltrim($data['path'], '/'));
-                    
+
                     // Run through the parts to see which one is actually a param
                     foreach ($pathParts as $key => $part) {
                         // Check if the current part is a param
                         if (strpos($part, ':') !== false) {
                             // Separate the param into type & name
                             list($type, $name) = explode(':', $part);
-                            
+
                             // And store it for later
                             $params[$key] = array(
                                 'type' => $type,
@@ -79,21 +72,21 @@ class Router {
                             $params[$key] = $part;
                         }
                     }
-                    
+
                     // Break up the current path in equal parts to the path parts
                     $currentPathParts = explode('/', trim($this->currentPath, '/'));
-                    
+
                     // If the amount of parts is not the same, it can't be the same path
                     if (count($pathParts) !== count($currentPathParts)) {
                         continue;
                     }
-                    
+
                     // Now loop through the params and match with values
                     foreach ($params as $key => $param) {
                         // $param is not an array if it's not a param
                         if (is_array($param)) {
                             $value = $currentPathParts[$key];
-                            
+
                             // Now check for typecasting
                             switch ($param['type']) {
                                 case 'i':
@@ -117,7 +110,7 @@ class Router {
                                     // All good, break the switch
                                     break;
                             }
-                            
+
                             // Since it's a valid parameter, so let's add it to Param
                             App::getParam()->setValue($param['name'], $value);
                         } else {
@@ -128,7 +121,7 @@ class Router {
                             }
                         }
                     }
-                    
+
                     // If we get here, the route is a match and all the params have been added to App::getParam()
                     return $data + array(
                         'module' => $module
@@ -173,17 +166,17 @@ class Router {
             $route['closure']();
             return true;
         }
-        
+
         // If not a closure, we're going to need to load a controllerFile at least
         $controllerFile = App::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'controller' . DS . $route['controller'] . '.php';
         // A view file is optional, but we may want to include it if it exists
         $viewFile = App::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
-        
+
         // Check if the controllerfile exists
         if (!file_exists($controllerFile)) {
             return false;
         }
-        
+
         // Since the file exists, let's require it
         require_once($controllerFile);
 
@@ -196,10 +189,10 @@ class Router {
         if (!method_exists($controller, $action)) {
             return false;
         }
-        
+
         // It does, so call it
         $controller->$action();
-        
+
         // Include a view file if we have one
         if (file_exists($viewFile)) {
             require_once($viewFile);

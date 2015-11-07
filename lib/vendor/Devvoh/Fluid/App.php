@@ -11,75 +11,21 @@ namespace Devvoh\Fluid;
 
 class App {
 
-    /**
-     * @var null
-     */
-    static $baseDir = null;
-
-    /**
-     * @var null
-     */
-    static $publicUrl = null;
-
-    /**
-     * @var null
-     */
-    static $debug = null;
-
-    /**
-     * @var null
-     */
-    static $cli = null;
-
-    /**
-     * @var null
-     */
-    static $config = null;
-
-    /**
-     * @var null
-     */
-    static $hook = null;
-
-    /**
-     * @var null
-     */
-    static $log = null;
-
-    /**
-     * @var null
-     */
-    static $param = null;
-
-    /**
-     * @var null
-     */
-    static $post = null;
-
-    /**
-     * @var null
-     */
-    static $get = null;
-
-    /**
-     * @var null
-     */
-    static $messages = null;
-
-    /**
-     * @var null
-     */
-    static $session = null;
-
-    /**
-     * @var null
-     */
-    static $router = null;
-
-    /**
-     * @var null
-     */
-    static $routes = array();
+    static protected $baseDir   = null;
+    static protected $publicUrl = null;
+    static protected $debug     = null;
+    static protected $cli       = null;
+    static protected $config    = null;
+    static protected $hook      = null;
+    static protected $log       = null;
+    static protected $param     = null;
+    static protected $post      = null;
+    static protected $get       = null;
+    static protected $messages  = null;
+    static protected $session   = null;
+    static protected $response  = null;
+    static protected $router    = null;
+    static protected $database  = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -303,6 +249,30 @@ class App {
             self::$router->collectRoutes();
         }
         return self::$router;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Database instance
+     *
+     * @return Database
+     */
+    public static function getDatabase() {
+        if (!self::$database) {
+            self::$database = new \Devvoh\Fluid\App\Database();
+        }
+        return self::$database;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Response instance
+     *
+     * @return Response
+     */
+    public static function getResponse() {
+        if (!self::$response) {
+            self::$response = new \Devvoh\Fluid\App\Response();
+        }
+        return self::$response;
     }
 
 }
