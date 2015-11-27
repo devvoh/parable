@@ -12,7 +12,6 @@ use \Devvoh\Fluid\App as App;
 class home extends \Devvoh\Fluid\Controller {
 
     public function index() {
-        echo $this->getClassName();
     }
 
     public function test() {

@@ -20,7 +20,7 @@ class Hooks {
      * @param null|string   $event
      * @param null|callable $closure
      *
-     * @return bool|Hook
+     * @return bool|$this
      */
     public function add($event = null, $closure = null) {
         // Check if all data is given and correct
@@ -41,7 +41,7 @@ class Hooks {
      * @param null $event
      * @param null $payload
      *
-     * @return bool|\Devvoh\Hooks\Hooks
+     * @return bool|$this
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct

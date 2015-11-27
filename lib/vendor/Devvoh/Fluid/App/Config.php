@@ -12,8 +12,20 @@ namespace Devvoh\Fluid\App;
 
 use \Devvoh\Fluid\App as App;
 
-class Config {
+class Config extends \Devvoh\Components\GetSet {
     use \Devvoh\Components\Traits\GetClassName;
+
+    protected $config = array();
+
+    /**
+     * Set the resource to config
+     *
+     * @return $this
+     */
+    public function __construct() {
+        $this->setResource('config');
+        return $this;
+    }
 
     /**
      * Shim to allow App to proceed without config code existing
@@ -21,6 +33,7 @@ class Config {
      * @return $this
      */
     public function load() {
+        // LOAD LOGIC HERE
         return $this;
     }
 

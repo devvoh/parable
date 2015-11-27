@@ -24,16 +24,16 @@ App::enableDebug();
 /**
  * Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
  */
-$route = App::getRouter()->match();
-
-if ($route) {
-    if (!App::executeRoute($route)) {
+if (App::matchRoute()) {
+    if (!App::executeRoute()) {
         // thar be error?
         echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
     }
 } else {
     echo 'Route not found.';
 }
+
+//App::getConfig();
 
 /**
  * Send the response

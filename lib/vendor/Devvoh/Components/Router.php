@@ -91,6 +91,7 @@ class Router {
                                     !ctype_digit($value)
                                     || $value != (int)$value
                                 ) {
+                                    // Not good, go to the next route (continue from switch/foreach/foreach)
                                     continue(3);
                                 }
                                 // All good, break the switch
@@ -101,6 +102,7 @@ class Router {
                                     !ctype_alpha($value)
                                     || $value != (int)$value
                                 ) {
+                                    // Not good, go to the next route (continue from switch/foreach/foreach)
                                     continue(3);
                                 }
                                 // All good, break the switch

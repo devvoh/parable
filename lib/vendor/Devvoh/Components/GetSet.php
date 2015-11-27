@@ -52,7 +52,6 @@ class GetSet
             $this->useLocalResource = true;
             $this->localResource[$this->getResource()] = array();
         }
-
         return $this;
     }
 
@@ -76,11 +75,11 @@ class GetSet
      *
      * @param $key
      *
-     * @return null
+     * @return null|false
      */
     public function get($key) {
         if (!$this->getResource()) {
-            return null;
+            return false;
         }
 
         // If local resource, set it as reference
@@ -103,11 +102,11 @@ class GetSet
      * @param $key
      * @param $value
      *
-     * @return $this
+     * @return $this|false
      */
     public function set($key, $value) {
         if (!$this->getResource()) {
-            return null;
+            return false;
         }
 
         // If local resource, set it as reference
@@ -128,26 +127,31 @@ class GetSet
      */
     public function setAll($values) {
         if ($this->useLocalResource) {
-            $reference = $this->localResource[$this->getResource()];
+            $this->localResource[$this->getResource()] = $values;
         } else {
-            $reference = $GLOBALS['_' . $this->getResource()];
+            $GLOBALS['_' . $this->getResource()] = $values;
         }
-        $reference = $values;
         return $this;
     }
 
     /**
      * Start the session
+     *
+     * @return $this
      */
     public function startSession() {
         session_start();
+        return $this;
     }
 
     /**
      * Destroy the session
+     *
+     * @return $this
      */
     public function destroySession() {
         session_destroy();
+        return $this;
     }
 
 }

@@ -11,21 +11,22 @@ namespace Devvoh\Fluid;
 
 class App {
 
-    static protected $baseDir   = null;
-    static protected $publicUrl = null;
-    static protected $debug     = null;
-    static protected $cli       = null;
-    static protected $config    = null;
-    static protected $hook      = null;
-    static protected $log       = null;
-    static protected $param     = null;
-    static protected $post      = null;
-    static protected $get       = null;
-    static protected $messages  = null;
-    static protected $session   = null;
-    static protected $response  = null;
-    static protected $router    = null;
-    static protected $database  = null;
+    static protected $baseDir       = null;
+    static protected $publicUrl     = null;
+    static protected $debug         = null;
+    static protected $cli           = null;
+    static protected $config        = null;
+    static protected $hook          = null;
+    static protected $log           = null;
+    static protected $param         = null;
+    static protected $post          = null;
+    static protected $get           = null;
+    static protected $messages      = null;
+    static protected $session       = null;
+    static protected $response      = null;
+    static protected $router        = null;
+    static protected $database      = null;
+    static protected $route         = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -209,7 +210,7 @@ class App {
      */
     public static function getParam() {
         if (!self::$param) {
-            self::$param = (new \Devvoh\Components\GetSet())->setResource('param');;
+            self::$param = (new \Devvoh\Components\GetSet())->setResource('param');
         }
         return self::$param;
     }
@@ -221,7 +222,7 @@ class App {
      */
     public static function getPost() {
         if (!self::$post) {
-            self::$post = (new \Devvoh\Components\GetSet())->setResource('post');;
+            self::$post = (new \Devvoh\Components\GetSet())->setResource('post');
         }
         return self::$post;
     }
@@ -233,7 +234,7 @@ class App {
      */
     public static function getGet() {
         if (!self::$get) {
-            self::$get = (new \Devvoh\Components\GetSet())->setResource('get');;
+            self::$get = (new \Devvoh\Components\GetSet())->setResource('get');
         }
         return self::$get;
     }
@@ -276,6 +277,34 @@ class App {
     }
 
     /**
+     * Match the route using the router and store the result in self::$route
+     *
+     * @return null|array
+     */
+    public static function matchRoute() {
+        self::setRoute(self::getRouter()->match());
+        return self::getRoute();
+    }
+
+    /**
+     * Set the route
+     *
+     * @param $route
+     */
+    public static function setRoute($route) {
+        self::$route = $route;
+    }
+
+    /**
+     * Returns the route
+     *
+     * @return null|arrary
+     */
+    public static function getRoute() {
+        return self::$route;
+    }
+
+    /**
      * Collect routes and include the files, which will add their routes to the router automatically
      */
     public static function collectRoutes() {
@@ -295,7 +324,11 @@ class App {
      *
      * @return bool
      */
-    public static function executeRoute($route) {
+    public static function executeRoute($route = null) {
+        if (!$route) {
+            $route = self::getRoute();
+        }
+
         // Check for params
         if (isset($route['params'])) {
             foreach ($route['params'] as $param) {

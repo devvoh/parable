@@ -290,11 +290,12 @@ class Query {
         }
 
         // and now implode it into a nice string, if possible
-        if (count($query) > 0) {
-            return implode(' ', $query);
+        if (count($query) == 0) {
+            return null;
         }
 
-        return '';
+        // Since we got here, we've got a query to output
+        return implode(' ', $query);
     }
 
 }

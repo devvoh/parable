@@ -14,8 +14,34 @@ use \Devvoh\Fluid\App as App;
 class View {
     use \Devvoh\Components\Traits\GetClassName;
 
+    /**
+     * Loads and shows the template file
+     *
+     * @param $file
+     *
+     * @return $this
+     */
     public function loadTemplate($file) {
+        if (!file_exists($file)) {
+            return null;
+        }
         include_once($file);
+        return $this;
+    }
+
+    public function partial($file) {
+        // Build proper path
+        $dir = 'app' . DS . 'modules' . DS . App::getRoute()['module'] . DS . 'view' . DS . $file;
+        $path = App::getDir($dir);
+
+        // Set return value to null as default
+        $return = null;
+        if (file_exists($path)) {
+            ob_start();
+            require($path);
+            $return = ob_get_clean();
+        }
+        return $return;
     }
 
     /**

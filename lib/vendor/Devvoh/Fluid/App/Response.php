@@ -22,7 +22,7 @@ class Response {
     );
     protected $charset = 'utf-8';
     protected $contentType = 'html';
-    protected $content = 'null';
+    protected $content = null;
 
     /**
      * Set the response header configured on Response class

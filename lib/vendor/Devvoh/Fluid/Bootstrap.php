@@ -27,10 +27,10 @@ spl_autoload_register(function ($class) {
     if ($class === 'App') {
         $path = '../lib/vendor/Devvoh/Fluid/App.php';
         require_once($path);
-        return true;
+        return;
     }
 
-    // Otherwise, do it the proper way
+    // Otherwise, do it the proper way by turning the class into a file path
     $path = str_replace('\\', DS, $class);
     $path = '../lib/vendor/' . trim($path, DS) . '.php';
     $path = str_replace('_', DS, $path);
@@ -47,6 +47,6 @@ spl_autoload_register(function ($class) {
  * Start output buffering with gzip compression if possible
  */
 if(!ob_start("ob_gzhandler")) {
-    // No ob_gzhandler so regular
+    // No ob_gzhandler so regular ob_start
     ob_start();
 }
