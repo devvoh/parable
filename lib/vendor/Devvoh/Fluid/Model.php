@@ -9,6 +9,9 @@
 
 namespace Devvoh\Fluid;
 
-class Model {
+use \Devvoh\Fluid\App as App;
 
+class Model {
+    use \Devvoh\Components\Traits\GetClassName;
+    use \Devvoh\Components\Traits\GetSetId;
 }

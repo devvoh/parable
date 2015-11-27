@@ -8,22 +8,22 @@
  */
 
 use \Devvoh\Fluid\App as App;
-use \Devvoh\Fluid\Controller as Controller;
 
-class home extends Controller {
+class home extends \Devvoh\Fluid\Controller {
 
     public function index() {
+        echo $this->getClassName();
     }
 
     public function test() {
         echo 'test@home';
     }
-    
+
     public function viewUser() {
         echo 'View user: ' . App::getParam()->getValue('id');
         var_dump(App::getParam()->getValues());
     }
-    
+
     public function viewUserProfile() {
         echo 'Profile of user: ' . App::getParam()->getValue('name');
         var_dump(App::getParam()->getValues());

@@ -22,9 +22,15 @@ $routes[] = array(
 $routes[] = array(
     'method' => 'GET|POST',
     'path' => '/user/a:name',
+    'view' => 'closure/index',
     'closure' => function() {
-        echo 'Closure controller for user: ' . App::getParam()->getValue('name');
+        $user = \Devvoh\Fluid\App::getParam()->get('name');
+        \Devvoh\Fluid\App::getParam()->set('hello', 'Hello, '.$user.'!');
     },
 );
 
-App::getRouter()->addRoutes('base', $routes);
+// Add module to all routes
+foreach ($routes as &$route) {
+    $route['module'] = 'base';
+}
+App::getRouter()->addRoutes($routes);

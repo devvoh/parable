@@ -42,7 +42,7 @@ class App {
         self::getConfig()->load();
 
         // Start the session
-        self::getSession()->start();
+        self::getSession()->startSession();
     }
 
     /**
@@ -137,7 +137,7 @@ class App {
      */
     public static function getCli() {
         if (!self::$cli) {
-            self::$cli = new \Devvoh\Fluid\Cli();
+            self::$cli = new \Devvoh\Components\Cli();
         }
         return self::$cli;
     }
@@ -161,7 +161,7 @@ class App {
      */
     public static function getHook() {
         if (!self::$hook) {
-            self::$hook = new \Devvoh\Fluid\App\Hook();
+            self::$hook = new \Devvoh\Components\Hooks();
         }
         return self::$hook;
     }
@@ -197,7 +197,7 @@ class App {
      */
     public static function getSession() {
         if (!self::$session) {
-            self::$session = new \Devvoh\Fluid\App\Session();
+            self::$session = (new \Devvoh\Components\GetSet())->setResource('session');
         }
         return self::$session;
     }
@@ -209,7 +209,7 @@ class App {
      */
     public static function getParam() {
         if (!self::$param) {
-            self::$param = new \Devvoh\Fluid\App\Param();
+            self::$param = (new \Devvoh\Components\GetSet())->setResource('param');;
         }
         return self::$param;
     }
@@ -221,7 +221,7 @@ class App {
      */
     public static function getPost() {
         if (!self::$post) {
-            self::$post = new \Devvoh\Fluid\App\Post();
+            self::$post = (new \Devvoh\Components\GetSet())->setResource('post');;
         }
         return self::$post;
     }
@@ -233,7 +233,7 @@ class App {
      */
     public static function getGet() {
         if (!self::$get) {
-            self::$get = new \Devvoh\Fluid\App\Get();
+            self::$get = (new \Devvoh\Components\GetSet())->setResource('get');;
         }
         return self::$get;
     }
@@ -245,8 +245,8 @@ class App {
      */
     public static function getRouter() {
         if (!self::$router) {
-            self::$router = new \Devvoh\Fluid\App\Router();
-            self::$router->collectRoutes();
+            self::$router = new \Devvoh\Components\Router();
+            self::collectRoutes();
         }
         return self::$router;
     }
@@ -273,6 +273,79 @@ class App {
             self::$response = new \Devvoh\Fluid\App\Response();
         }
         return self::$response;
+    }
+
+    /**
+     * Collect routes and include the files, which will add their routes to the router automatically
+     */
+    public static function collectRoutes() {
+        $dir = self::getDir('app/modules') . DS . '*';
+        foreach (glob($dir) as $filename) {
+            $routerFilename = $filename . DS . 'routes' . DS . 'routes.php';
+            if (file_exists($routerFilename)) {
+                require_once($routerFilename);
+            }
+        }
+    }
+
+    /**
+     * Executes a route
+     *
+     * @param $route
+     *
+     * @return bool
+     */
+    public static function executeRoute($route) {
+        // Check for params
+        if (isset($route['params'])) {
+            foreach ($route['params'] as $param) {
+                if (isset($param['name']) && isset($param['value'])) {
+                    self::getParam()->set($param['name'], $param['value']);
+                }
+            }
+        }
+        // Check for a closure
+        if (isset($route['closure'])) {
+            $closure = $route['closure'];
+            // Check if we can call it
+            if (is_callable($closure)) {
+                // Call it
+                $closure();
+            } else {
+                // Not callable, so false
+                return false;
+            }
+
+            // Check for view param
+            if (isset($route['view'])) {
+                $viewFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['view'] . '.phtml';
+            }
+        } else {
+            // Not a closure, build a controller/action combination
+            $controllerFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'controller' . DS . $route['controller'] . '.php';
+            $viewFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
+            if (file_exists($controllerFile)) {
+                require_once($controllerFile);
+                // Get all the data
+                $controllerName = $route['controller'];
+                $action         = $route['action'];
+                $controller     = new $controllerName();
+                // And call the action if it exists
+                if (method_exists($controller, $action)) {
+                    $controller->$action();
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        if (isset($viewFile) && file_exists($viewFile)) {
+            $view = new \Devvoh\Fluid\View();
+            $view->loadTemplate($viewFile);
+        }
+        return true;
     }
 
 }

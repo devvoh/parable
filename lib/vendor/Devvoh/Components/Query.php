@@ -1,15 +1,14 @@
 <?php
 /**
- * @package     Fluid
+ * @package     Devvoh
+ * @subpackage  Components
  * @subpackage  Query
- * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  * @license     MIT
- * @author      Robin de Graaf (hello@devvoh.com)
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid;
-
-use Devvoh\Fluid\App as App;
+namespace Devvoh\Components;
 
 class Query {
 
@@ -20,7 +19,7 @@ class Query {
     protected $orderBy      = array();
     protected $groupBy      = array();
     protected $limit        = null;
-
+    protected $pdoInstance  = null;
     protected $select       = '*';
     protected $action       = 'select';
 
@@ -32,7 +31,6 @@ class Query {
      */
     public function setTableName($tableName) {
         $this->tableName = $tableName;
-
         return $this;
     }
 
@@ -46,6 +44,28 @@ class Query {
     }
 
     /**
+     * Set the pdoInstance to work on if it's a PDO instance
+     *
+     * @param string $pdoInstance
+     * @return Query
+     */
+    public function setPdoInstance($pdoInstance) {
+        if ($pdoInstance instanceof PDO) {
+            $this->pdoInstance = $pdoInstance;
+        }
+        return $this;
+    }
+
+    /**
+     * Get the currently set pdoInstance
+     *
+     * @return string
+     */
+    public function getPdoInstance() {
+        return $this->pdoInstance;
+    }
+
+    /**
      * Set the tableKey to work with (for delete & update
      * )
      * @param string $key
@@ -53,7 +73,6 @@ class Query {
      */
     public function setTableKey($key) {
         $this->tableKey = $key;
-
         return $this;
     }
 
@@ -68,7 +87,6 @@ class Query {
         if (in_array($action, array('select', 'insert', 'delete', 'update'))) {
             $this->action = $action;
         }
-
         return $this;
     }
 
@@ -80,7 +98,6 @@ class Query {
      */
     public function select($select) {
         $this->select = $select;
-
         return $this;
     }
 
@@ -94,7 +111,6 @@ class Query {
      */
     public function where($condition, $value = null) {
         $this->where[] = array('condition' => $condition, 'value' => $value);
-
         return $this;
     }
 
@@ -108,7 +124,6 @@ class Query {
      */
     public function addValue($key, $value) {
         $this->values[] = array('key' => $key, 'value' => $value);
-
         return $this;
     }
 
@@ -122,7 +137,6 @@ class Query {
      */
     public function orderBy($key, $direction = 'DESC') {
         $this->orderBy[] = array('key' => $key, 'direction' => $direction);
-
         return $this;
     }
 
@@ -135,7 +149,6 @@ class Query {
      */
     public function groupBy($key) {
         $this->groupBy[] = $key;
-
         return $this;
     }
 
@@ -149,7 +162,6 @@ class Query {
      */
     public function limit($limit, $offset = null) {
         $this->limit = array('limit' => $limit, 'offset' => $offset);
-
         return $this;
     }
 
@@ -159,8 +171,8 @@ class Query {
      * @return string
      */
     public function __toString() {
-        // If there's no valid DB instance, we can't quote so no query for you
-        if (!App::getDatabase()->getInstance()) {
+        // If there's no valid PDO instance, we can't quote so no query for you
+        if (!$this->pdoInstance) {
             return false;
         }
 
@@ -178,7 +190,7 @@ class Query {
                 $wheres = array();
                 foreach ($this->where as $where) {
                     if ($where['value'] !== null) {
-                        $wheres[] = str_replace('?', App::getDatabase()->quote($where['value']), $where['condition']);
+                        $wheres[] = str_replace('?', $this->pdoInstance->quote($where['value']), $where['condition']);
                     } else {
                         $wheres[] = $where['condition'];
                     }
@@ -223,7 +235,7 @@ class Query {
                 $wheres = array();
                 foreach ($this->where as $where) {
                     if ($where['value'] !== null) {
-                        $wheres[] = str_replace('?', App::getDatabase()->quote($where['value']), $where['condition']);
+                        $wheres[] = str_replace('?', $this->pdoInstance->quote($where['value']), $where['condition']);
                     } else {
                         $wheres[] = $where['condition'];
                     }
@@ -244,14 +256,14 @@ class Query {
                 foreach ($this->values as $value) {
                     // skip id, since we'll use that as a where condition
                     if ($value['key'] !== $this->tableKey) {
-                        $values[] = "'" . $value['key'] . "'=" . App::getDatabase()->quote($value['value']);
+                        $values[] = "'" . $value['key'] . "'=" . $this->pdoInstance->quote($value['value']);
                     } else {
                         $tableKey = $value['key'];
                         $tableKeyValue = $value['value'];
                     }
                 }
                 $query[] = "SET " . implode(',', $values);
-                $query[] = "WHERE " . $tableKey . " = " . App::getDatabase()->quote($tableKeyValue);
+                $query[] = "WHERE " . $tableKey . " = " . $this->pdoInstance->quote($tableKeyValue);
             } else {
                 $query = [];
             }
@@ -265,7 +277,7 @@ class Query {
             if (count($this->values) > 0) {
                 foreach ($this->values as $value) {
                     $keys[] = "'" . $value['key'] . "'";
-                    $values[] = App::getDatabase()->quote($value['value']);
+                    $values[] = $this->pdoInstance->quote($value['value']);
                 }
 
                 $query[] = "(" . implode(',', $keys) . ")";

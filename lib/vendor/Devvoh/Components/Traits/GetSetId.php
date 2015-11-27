@@ -1,16 +1,21 @@
 <?php
 /**
- * @package     Fluid
- * @subpackage  Traits/GetSetId
- * @copyright   2015 Robin de Graaf, devvoh webdevelopment
+ * @package     Devvoh
+ * @subpackage  Components
+ * @subpackage  Traits
+ * @subpackage  GetSetId
  * @license     MIT
- * @author      Robin de Graaf (hello@devvoh.com)
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid\Traits;
+namespace Devvoh\Components\Traits;
 
 trait GetSetId {
 
+    /**
+     * @var null
+     */
     protected $id = null;
 
     /**

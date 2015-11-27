@@ -1,17 +1,16 @@
 <?php
 /**
- * @package     Fluid
- * @subpackage  Hook
- * @copyright   2015 Robin de Graaf, devvoh webdevelopment
+ * @package     Devvoh
+ * @subpackage  Components
+ * @subpackage  GetSet
  * @license     MIT
- * @author      Robin de Graaf (hello@devvoh.com)
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid\App;
+namespace Devvoh\Components;
 
-use Devvoh\Fluid\App as App;
-
-class Hook {
+class Hooks {
 
     protected $hooks = array();
 
@@ -31,6 +30,8 @@ class Hook {
 
         // All good, add the event & closure to hooks
         $this->hooks[$event][] = $closure;
+
+        // And return ourselves
         return $this;
     }
 
@@ -40,7 +41,7 @@ class Hook {
      * @param null $event
      * @param null $payload
      *
-     * @return bool|Hook
+     * @return bool|\Devvoh\Hooks\Hooks
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct
@@ -58,6 +59,7 @@ class Hook {
             $closure($payload);
         }
 
+        // And return ourselves
         return $this;
     }
 }

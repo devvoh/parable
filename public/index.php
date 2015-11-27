@@ -19,6 +19,7 @@ use Devvoh\Fluid\App as App;
  * Start the App. This will set debug and load the config
  */
 App::start();
+App::enableDebug();
 
 /**
  * Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
@@ -26,7 +27,7 @@ App::start();
 $route = App::getRouter()->match();
 
 if ($route) {
-    if (!App::getRouter()->execute($route)) {
+    if (!App::executeRoute($route)) {
         // thar be error?
         echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
     }

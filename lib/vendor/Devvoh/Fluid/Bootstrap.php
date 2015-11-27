@@ -22,15 +22,24 @@ ini_set('log_errors', '1');
  * Register autoloader
  */
 spl_autoload_register(function ($class) {
-    $path = str_replace('\\', DS, $class);
+    // If $class is literally App, we get it directly. We do this so view files can just use App instead of the full
+    // namespaced name.
+    if ($class === 'App') {
+        $path = '../lib/vendor/Devvoh/Fluid/App.php';
+        require_once($path);
+        return true;
+    }
 
+    // Otherwise, do it the proper way
+    $path = str_replace('\\', DS, $class);
     $path = '../lib/vendor/' . trim($path, DS) . '.php';
+    $path = str_replace('_', DS, $path);
     $path = str_replace('/', DS, $path);
 
     if (file_exists($path)) {
         require_once($path);
     } else {
-        throw new Exception('Unable to autoload ' . $class);
+        throw new Exception('Unable to autoload ' . $class . ' (' . $path . ')');
     }
 });
 
