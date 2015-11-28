@@ -13,14 +13,7 @@ namespace Devvoh\Components\Traits;
 
 trait GetClassName {
 
-    /**
-     * @var null|string
-     */
     protected $className = null;
-
-    /**
-     * @var null|string
-     */
     protected $nameSpace = null;
 
     /**

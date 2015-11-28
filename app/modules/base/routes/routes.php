@@ -1,27 +1,27 @@
 <?php
 use \Devvoh\Fluid\App as App;
 
-$routes[] = array(
+$routes['index'] = array(
     'method' => 'GET',
     'path' => '/',
     'controller' => 'home',
     'action' => 'index',
 );
-$routes[] = array(
+$routes['test'] = array(
     'method' => 'GET',
     'path' => '/test',
     'controller' => 'home',
     'action' => 'test',
 );
-$routes[] = array(
+$routes['user-view-id'] = array(
     'method' => 'GET',
-    'path' => '/user/i:id',
+    'path' => '/user/:id',
     'controller' => 'home',
     'action' => 'viewUser',
 );
-$routes[] = array(
+$routes['user-view-name'] = array(
     'method' => 'GET|POST',
-    'path' => '/user/a:name',
+    'path' => '/user/:name',
     'view' => 'closure/index',
     'closure' => function() {
         $user = \Devvoh\Fluid\App::getParam()->get('name');

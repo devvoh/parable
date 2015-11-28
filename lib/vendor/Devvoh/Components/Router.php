@@ -10,7 +10,10 @@
 
 namespace Devvoh\Components;
 
+use OOUI\Exception;
+
 class Router {
+    use \Devvoh\Components\Traits\GetClassName;
 
     protected $currentPath  = null;
     protected $routes       = null;
@@ -55,13 +58,9 @@ class Router {
                 foreach ($pathParts as $key => $part) {
                     // Check if the current part is a param
                     if (strpos($part, ':') !== false) {
-                        // Separate the param into type & name
-                        list($type, $name) = explode(':', $part);
-
                         // And store it for later
                         $params[$key] = array(
-                            'type' => $type,
-                            'name' => $name,
+                            'name' => str_replace(':', '', $part),
                         );
                     } else {
                         // Not a param, so just put in the part
@@ -78,38 +77,13 @@ class Router {
                 }
 
                 // Now loop through the params and match with values
-                foreach ($params as $key => &$param) {
+                foreach ($params as $key => $param) {
                     // $param is not an array if it's not a param
                     if (is_array($param)) {
                         $value = $currentPathParts[$key];
 
-                        // Now check for typecasting
-                        switch ($param['type']) {
-                            case 'i':
-                                // Check if it's an invalid type for integer
-                                if (
-                                    !ctype_digit($value)
-                                    || $value != (int)$value
-                                ) {
-                                    // Not good, go to the next route (continue from switch/foreach/foreach)
-                                    continue(3);
-                                }
-                                // All good, break the switch
-                                break;
-                            case 'a':
-                                // Check if it's an invalid type for alpha
-                                if (
-                                    !ctype_alpha($value)
-                                    || $value != (int)$value
-                                ) {
-                                    // Not good, go to the next route (continue from switch/foreach/foreach)
-                                    continue(3);
-                                }
-                                // All good, break the switch
-                                break;
-                        }
                         // Add value to the reference
-                        $param['value'] = $value;
+                        $params[$key]['value'] = $value;
                     } else {
                         // Not a parameter, so all we need is a matching part with the currentPathParts
                         if ($param !== $currentPathParts[$key]) {
@@ -128,6 +102,39 @@ class Router {
         return false;
     }
 
+    public function getRouteByName($name) {
+        foreach ($this->routes as $routeName => $data) {
+            if ($name === $routeName) {
+                return $data;
+            }
+        }
+        return null;
+    }
+
+    public function buildRoute($routeName, $params = array()) {
+        // Get the route first, and if not found, return null
+        $route = $this->getRouteByName($routeName);
+        if (!$route) {
+            return null;
+        }
+
+        // Get the path so we can mess with it if need be
+        $path = $route['path'];
+
+        // Check if we need to replace any params
+        if (strpos($path, ':') !== false) {
+            // Get the path and attempt to replace all param keys with its values
+            foreach ($params as $key => $value) {
+                $path = str_replace(':' . $key, $value, $path);
+            }
+        }
+        return $path;
+    }
+
+    public function getRoutes() {
+        return $this->routes;
+    }
+
     /**
      * Add an array of routes to the router
      *
@@ -139,8 +146,8 @@ class Router {
         if (!$routes) {
             return false;
         }
-        foreach ($routes as $route) {
-            $this->addRoute($route);
+        foreach ($routes as $name => $route) {
+            $this->addRoute($name, $route);
         }
         return $this;
     }
@@ -148,12 +155,17 @@ class Router {
     /**
      * Add a single route to the router
      *
+     * @param $name
      * @param $route
      *
      * @return $this
+     * @throws Exception
      */
-    public function addRoute($route) {
-        $this->routes[$route['path']] = $route;
+    public function addRoute($name, $route) {
+        if (isset($this->routes[$name])) {
+            throw new Exception('Route already added with name: ' . $name . ' in a different module. Please use unique names.');
+        }
+        $this->routes[$name] = $route;
         return $this;
     }
 

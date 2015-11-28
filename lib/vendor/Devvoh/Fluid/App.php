@@ -13,7 +13,7 @@ class App {
 
     static protected $baseDir       = null;
     static protected $publicUrl     = null;
-    static protected $debug         = null;
+    static protected $debugEnabled  = null;
     static protected $cli           = null;
     static protected $config        = null;
     static protected $hook          = null;
@@ -27,6 +27,7 @@ class App {
     static protected $router        = null;
     static protected $database      = null;
     static protected $route         = null;
+    static protected $debug         = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -119,7 +120,7 @@ class App {
      * Enables debug mode, which will display errors. Errors are always logged (see Bootstrap.php)
      */
     public static function enableDebug() {
-        self::$debug = true;
+        self::$debugEnabled = true;
         ini_set('display_errors', '1');
     }
 
@@ -127,8 +128,17 @@ class App {
      * Disables debug mode, which will hide errors. Errors are always logged (see Bootstrap.php)
      */
     public static function disableDebug() {
-        self::$debug = false;
+        self::$debugEnabled = false;
         ini_set('display_errors', '0');
+    }
+
+    /**
+     * Returns whether debug is enabled or not
+     *
+     * @return bool
+     */
+    public static function isDebugEnabled() {
+        return (bool)self::$debugEnabled;
     }
 
     /**
@@ -259,7 +269,7 @@ class App {
      */
     public static function getDatabase() {
         if (!self::$database) {
-            self::$database = new \Devvoh\Fluid\App\Database();
+            self::$database = new \Devvoh\Components\Database();
         }
         return self::$database;
     }
@@ -274,6 +284,18 @@ class App {
             self::$response = new \Devvoh\Fluid\App\Response();
         }
         return self::$response;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Debug instance
+     *
+     * @return Debug
+     */
+    public static function getDebug() {
+        if (!self::$debug) {
+            self::$debug = new \Devvoh\Components\Debug();
+        }
+        return self::$debug;
     }
 
     /**

@@ -13,9 +13,6 @@ namespace Devvoh\Components\Traits;
 
 trait GetSetId {
 
-    /**
-     * @var null
-     */
     protected $id = null;
 
     /**

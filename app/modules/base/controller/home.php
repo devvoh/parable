@@ -19,13 +19,13 @@ class home extends \Devvoh\Fluid\Controller {
     }
 
     public function viewUser() {
-        echo 'View user: ' . App::getParam()->getValue('id');
-        var_dump(App::getParam()->getValues());
+        echo 'View user: ' . App::getParam()->get('id');
+        var_dump(App::getParam()->getAll());
     }
 
     public function viewUserProfile() {
-        echo 'Profile of user: ' . App::getParam()->getValue('name');
-        var_dump(App::getParam()->getValues());
+        echo 'Profile of user: ' . App::getParam()->get('name');
+        var_dump(App::getParam()->getAll());
     }
 
 }

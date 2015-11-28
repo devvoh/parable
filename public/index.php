@@ -11,7 +11,7 @@
  * Include Bootstrap.php to enable all functionality.
  */
 require_once('../lib/vendor/Devvoh/Fluid/Bootstrap.php');
-use Devvoh\Fluid\App as App;
+use \Devvoh\Fluid\App as App;
 
 /**
  * App is the main entry point for all functionality, offering mostly static functions.
@@ -33,7 +33,7 @@ if (App::matchRoute()) {
     echo 'Route not found.';
 }
 
-//App::getConfig();
+App::getDebug()->dd(App::getUrl(App::getRouter()->buildRoute('user-view-id', ['id' => 2])));
 
 /**
  * Send the response

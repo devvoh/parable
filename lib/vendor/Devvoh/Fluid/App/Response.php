@@ -119,4 +119,8 @@ class Response {
         return $this;
     }
 
+    public function redirect($url) {
+        header('location: ' . $url);
+    }
+
 }

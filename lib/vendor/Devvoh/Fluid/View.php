@@ -29,6 +29,13 @@ class View {
         return $this;
     }
 
+    /**
+     * Loads a partial into an output buffer and returns the parsed result
+     *
+     * @param $file
+     *
+     * @return null|string
+     */
     public function partial($file) {
         // Build proper path
         $dir = 'app' . DS . 'modules' . DS . App::getRoute()['module'] . DS . 'view' . DS . $file;
