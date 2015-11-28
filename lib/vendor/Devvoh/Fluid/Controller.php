@@ -9,6 +9,8 @@
 
 namespace Devvoh\Fluid;
 
-class Controller {
+use \Devvoh\Fluid\App as App;
 
+class Controller {
+    use \Devvoh\Components\Traits\GetClassName;
 }

@@ -11,7 +11,7 @@
  * Include Bootstrap.php to enable all functionality.
  */
 require_once('../lib/vendor/Devvoh/Fluid/Bootstrap.php');
-use Devvoh\Fluid\App as App;
+use \Devvoh\Fluid\App as App;
 
 /**
  * App is the main entry point for all functionality, offering mostly static functions.
@@ -19,18 +19,23 @@ use Devvoh\Fluid\App as App;
  * Start the App. This will set debug and load the config
  */
 App::start();
+App::enableDebug();
 
 /**
  * Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
  */
-$route = App::getRouter()->route();
-
-var_dump(App::getPost()->getNameSpace());
-
-if ($route) {
-    if (!App::getRouter()->execute($route)) {
+if (App::matchRoute()) {
+    if (!App::executeRoute()) {
         // thar be error?
+        echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
     }
 } else {
-    // no route, 404
+    echo 'Route not found.';
 }
+
+App::getDebug()->dd(App::getUrl(App::getRouter()->buildRoute('user-view-id', ['id' => 2])));
+
+/**
+ * Send the response
+ */
+App::getResponse()->sendResponse();

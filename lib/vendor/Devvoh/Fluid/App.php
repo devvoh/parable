@@ -11,70 +11,23 @@ namespace Devvoh\Fluid;
 
 class App {
 
-    /**
-     * @var null
-     */
-    static $baseDir = null;
-
-    /**
-     * @var null
-     */
-    static $publicUrl = null;
-
-    /**
-     * @var null
-     */
-    static $debug = null;
-
-    /**
-     * @var null
-     */
-    static $cli = null;
-
-    /**
-     * @var null
-     */
-    static $config = null;
-
-    /**
-     * @var null
-     */
-    static $hook = null;
-
-    /**
-     * @var null
-     */
-    static $log = null;
-
-    /**
-     * @var null
-     */
-    static $post = null;
-
-    /**
-     * @var null
-     */
-    static $get = null;
-
-    /**
-     * @var null
-     */
-    static $messages = null;
-
-    /**
-     * @var null
-     */
-    static $session = null;
-
-    /**
-     * @var null
-     */
-    static $router = null;
-
-    /**
-     * @var null
-     */
-    static $routes = array();
+    static protected $baseDir       = null;
+    static protected $publicUrl     = null;
+    static protected $debugEnabled  = null;
+    static protected $cli           = null;
+    static protected $config        = null;
+    static protected $hook          = null;
+    static protected $log           = null;
+    static protected $param         = null;
+    static protected $post          = null;
+    static protected $get           = null;
+    static protected $messages      = null;
+    static protected $session       = null;
+    static protected $response      = null;
+    static protected $router        = null;
+    static protected $database      = null;
+    static protected $route         = null;
+    static protected $debug         = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -91,7 +44,7 @@ class App {
         self::getConfig()->load();
 
         // Start the session
-        self::getSession()->start();
+        self::getSession()->startSession();
     }
 
     /**
@@ -167,7 +120,7 @@ class App {
      * Enables debug mode, which will display errors. Errors are always logged (see Bootstrap.php)
      */
     public static function enableDebug() {
-        self::$debug = true;
+        self::$debugEnabled = true;
         ini_set('display_errors', '1');
     }
 
@@ -175,8 +128,17 @@ class App {
      * Disables debug mode, which will hide errors. Errors are always logged (see Bootstrap.php)
      */
     public static function disableDebug() {
-        self::$debug = false;
+        self::$debugEnabled = false;
         ini_set('display_errors', '0');
+    }
+
+    /**
+     * Returns whether debug is enabled or not
+     *
+     * @return bool
+     */
+    public static function isDebugEnabled() {
+        return (bool)self::$debugEnabled;
     }
 
     /**
@@ -186,7 +148,7 @@ class App {
      */
     public static function getCli() {
         if (!self::$cli) {
-            self::$cli = new \Devvoh\Fluid\Cli();
+            self::$cli = new \Devvoh\Components\Cli();
         }
         return self::$cli;
     }
@@ -210,7 +172,7 @@ class App {
      */
     public static function getHook() {
         if (!self::$hook) {
-            self::$hook = new \Devvoh\Fluid\App\Hook();
+            self::$hook = new \Devvoh\Components\Hooks();
         }
         return self::$hook;
     }
@@ -246,9 +208,21 @@ class App {
      */
     public static function getSession() {
         if (!self::$session) {
-            self::$session = new \Devvoh\Fluid\App\Session();
+            self::$session = (new \Devvoh\Components\GetSet())->setResource('session');
         }
         return self::$session;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Param instance
+     *
+     * @return Param
+     */
+    public static function getParam() {
+        if (!self::$param) {
+            self::$param = (new \Devvoh\Components\GetSet())->setResource('param');
+        }
+        return self::$param;
     }
 
     /**
@@ -258,7 +232,7 @@ class App {
      */
     public static function getPost() {
         if (!self::$post) {
-            self::$post = new \Devvoh\Fluid\App\Post();
+            self::$post = (new \Devvoh\Components\GetSet())->setResource('post');
         }
         return self::$post;
     }
@@ -270,7 +244,7 @@ class App {
      */
     public static function getGet() {
         if (!self::$get) {
-            self::$get = new \Devvoh\Fluid\App\Get();
+            self::$get = (new \Devvoh\Components\GetSet())->setResource('get');
         }
         return self::$get;
     }
@@ -282,10 +256,151 @@ class App {
      */
     public static function getRouter() {
         if (!self::$router) {
-            self::$router = new \Devvoh\Fluid\App\Router();
-            self::$router->collectRoutes();
+            self::$router = new \Devvoh\Components\Router();
+            self::collectRoutes();
         }
         return self::$router;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Database instance
+     *
+     * @return Database
+     */
+    public static function getDatabase() {
+        if (!self::$database) {
+            self::$database = new \Devvoh\Components\Database();
+        }
+        return self::$database;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Response instance
+     *
+     * @return Response
+     */
+    public static function getResponse() {
+        if (!self::$response) {
+            self::$response = new \Devvoh\Fluid\App\Response();
+        }
+        return self::$response;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Debug instance
+     *
+     * @return Debug
+     */
+    public static function getDebug() {
+        if (!self::$debug) {
+            self::$debug = new \Devvoh\Components\Debug();
+        }
+        return self::$debug;
+    }
+
+    /**
+     * Match the route using the router and store the result in self::$route
+     *
+     * @return null|array
+     */
+    public static function matchRoute() {
+        self::setRoute(self::getRouter()->match());
+        return self::getRoute();
+    }
+
+    /**
+     * Set the route
+     *
+     * @param $route
+     */
+    public static function setRoute($route) {
+        self::$route = $route;
+    }
+
+    /**
+     * Returns the route
+     *
+     * @return null|arrary
+     */
+    public static function getRoute() {
+        return self::$route;
+    }
+
+    /**
+     * Collect routes and include the files, which will add their routes to the router automatically
+     */
+    public static function collectRoutes() {
+        $dir = self::getDir('app/modules') . DS . '*';
+        foreach (glob($dir) as $filename) {
+            $routerFilename = $filename . DS . 'routes' . DS . 'routes.php';
+            if (file_exists($routerFilename)) {
+                require_once($routerFilename);
+            }
+        }
+    }
+
+    /**
+     * Executes a route
+     *
+     * @param $route
+     *
+     * @return bool
+     */
+    public static function executeRoute($route = null) {
+        if (!$route) {
+            $route = self::getRoute();
+        }
+
+        // Check for params
+        if (isset($route['params'])) {
+            foreach ($route['params'] as $param) {
+                if (isset($param['name']) && isset($param['value'])) {
+                    self::getParam()->set($param['name'], $param['value']);
+                }
+            }
+        }
+        // Check for a closure
+        if (isset($route['closure'])) {
+            $closure = $route['closure'];
+            // Check if we can call it
+            if (is_callable($closure)) {
+                // Call it
+                $closure();
+            } else {
+                // Not callable, so false
+                return false;
+            }
+
+            // Check for view param
+            if (isset($route['view'])) {
+                $viewFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['view'] . '.phtml';
+            }
+        } else {
+            // Not a closure, build a controller/action combination
+            $controllerFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'controller' . DS . $route['controller'] . '.php';
+            $viewFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
+            if (file_exists($controllerFile)) {
+                require_once($controllerFile);
+                // Get all the data
+                $controllerName = $route['controller'];
+                $action         = $route['action'];
+                $controller     = new $controllerName();
+                // And call the action if it exists
+                if (method_exists($controller, $action)) {
+                    $controller->$action();
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        if (isset($viewFile) && file_exists($viewFile)) {
+            $view = new \Devvoh\Fluid\View();
+            $view->loadTemplate($viewFile);
+        }
+        return true;
     }
 
 }

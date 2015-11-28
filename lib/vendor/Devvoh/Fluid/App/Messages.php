@@ -1,6 +1,7 @@
 <?php
 /**
  * @package     Fluid
+ * @subpackage  App
  * @subpackage  Messages
  * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  * @license     MIT
@@ -9,6 +10,8 @@
 
 namespace Devvoh\Fluid\App;
 
-class Messages {
+use \Devvoh\Fluid\App as App;
 
+class Messages {
+    use \Devvoh\Components\Traits\GetClassName;
 }

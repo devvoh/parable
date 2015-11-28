@@ -9,6 +9,8 @@
 
 namespace Devvoh\Fluid;
 
-class Repository {
+use \Devvoh\Fluid\App as App;
 
+class Repository {
+    use \Devvoh\Components\Traits\GetClassName;
 }
