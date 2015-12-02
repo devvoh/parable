@@ -10,8 +10,6 @@
 
 namespace Devvoh\Components;
 
-use OOUI\Exception;
-
 class Router {
     use \Devvoh\Components\Traits\GetClassName;
 
