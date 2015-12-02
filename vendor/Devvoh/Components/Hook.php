@@ -2,7 +2,7 @@
 /**
  * @package     Devvoh
  * @subpackage  Components
- * @subpackage  GetSet
+ * @subpackage  Hook
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015 Robin de Graaf, devvoh webdevelopment
@@ -10,7 +10,8 @@
 
 namespace Devvoh\Components;
 
-class Hooks {
+class Hook {
+    use \Devvoh\Components\Traits\GetClassName;
 
     protected $hooks = array();
 
@@ -20,9 +21,9 @@ class Hooks {
      * @param null|string   $event
      * @param null|callable $closure
      *
-     * @return bool|$this
+     * @return \Devvoh\Components\Hook|false
      */
-    public function add($event = null, $closure = null) {
+    public function into($event = null, $closure = null) {
         // Check if all data is given and correct
         if (!$event || !$closure || !is_callable($closure)) {
             return false;
@@ -41,7 +42,7 @@ class Hooks {
      * @param null $event
      * @param null $payload
      *
-     * @return bool|$this
+     * @return \Devvoh\Components\Hook|false
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct

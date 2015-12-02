@@ -102,6 +102,13 @@ class Router {
         return false;
     }
 
+    /**
+     * Returns a route by name
+     *
+     * @param $name
+     *
+     * @return null|array
+     */
     public function getRouteByName($name) {
         foreach ($this->routes as $routeName => $data) {
             if ($name === $routeName) {
@@ -111,6 +118,14 @@ class Router {
         return null;
     }
 
+    /**
+     * Builds a path by routeName and params
+     *
+     * @param       $routeName
+     * @param array $params
+     *
+     * @return string|null
+     */
     public function buildRoute($routeName, $params = array()) {
         // Get the route first, and if not found, return null
         $route = $this->getRouteByName($routeName);
@@ -131,6 +146,11 @@ class Router {
         return $path;
     }
 
+    /**
+     * Return the routes
+     *
+     * @return null|array
+     */
     public function getRoutes() {
         return $this->routes;
     }
@@ -140,7 +160,7 @@ class Router {
      *
      * @param null $routes
      *
-     * @return $this|bool
+     * @return \Devvoh\Components\Router|false
      */
     public function addRoutes($routes = null) {
         if (!$routes) {
@@ -158,7 +178,7 @@ class Router {
      * @param $name
      * @param $route
      *
-     * @return $this
+     * @return \Devvoh\Components\Router
      * @throws Exception
      */
     public function addRoute($name, $route) {

@@ -22,7 +22,7 @@ class Cli {
      *
      * @param $message
      *
-     * @return $this
+     * @return \Devvoh\Components\Cli
      */
     public function write($message) {
         echo $message . PHP_EOL;
@@ -34,7 +34,7 @@ class Cli {
      *
      * @param $message
      *
-     * @return $this
+     * @return \Devvoh\Components\Cli
      */
     public function dump($message) {
         print_r($message);
@@ -47,7 +47,7 @@ class Cli {
      *
      * @param $message
      *
-     * @return $this
+     * @return \Devvoh\Components\Cli
      */
     public function addLine($message) {
         $this->lines[] = $message;
@@ -57,7 +57,7 @@ class Cli {
     /**
      * Output all lines from $this->lines
      *
-     * @return $this
+     * @return \Devvoh\Components\Cli
      */
     public function writeLines() {
         $output = implode($this->lines, PHP_EOL);
@@ -66,9 +66,9 @@ class Cli {
     }
 
     /**
-     * Ooutput a new line
+     * Output a new line
      *
-     * @return $this
+     * @return \Devvoh\Components\Cli
      */
     public function nl() {
         echo PHP_EOL;
@@ -80,7 +80,7 @@ class Cli {
      *
      * @param $params
      *
-     * @return $this
+     * @return \Devvoh\Components\Cli
      */
     public function parseParameters($params) {
         // Check for parameters given
@@ -113,7 +113,7 @@ class Cli {
      *
      * @param $key
      *
-     * @return bool|mixed
+     * @return mixed|false
      */
     public function getParameter($key) {
         if (isset($this->parameters[$key])) {
@@ -156,7 +156,7 @@ class Cli {
      *
      * @param $message
      *
-     * @return $this
+     * @return \Devvoh\Components\Cli
      */
     public function progress($message) {
         // If lastProgressLength isn't 0, this isn't the first progress call
@@ -183,7 +183,7 @@ class Cli {
     /**
      * Resets the progress last length so progress will not try to go back to the start of the line on next call
      *
-     * @return $this
+     * @return \Devvoh\Components\Cli
      */
     public function resetProgress() {
         $this->lastProgressLength = 0;

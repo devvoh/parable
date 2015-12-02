@@ -1,33 +1,35 @@
 <?php
 /**
- * @package     Fluid
+ * @package     Devvoh
+ * @subpackage  Fluid
  * @subpackage  App
- * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  * @license     MIT
- * @author      Robin de Graaf (hello@devvoh.com)
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
 namespace Devvoh\Fluid;
 
 class App {
 
-    static protected $baseDir       = null;
-    static protected $publicUrl     = null;
-    static protected $debugEnabled  = null;
-    static protected $cli           = null;
-    static protected $config        = null;
-    static protected $hook          = null;
-    static protected $log           = null;
-    static protected $param         = null;
-    static protected $post          = null;
-    static protected $get           = null;
-    static protected $messages      = null;
-    static protected $session       = null;
-    static protected $response      = null;
-    static protected $router        = null;
-    static protected $database      = null;
-    static protected $route         = null;
-    static protected $debug         = null;
+    static protected $baseDir           = null;
+    static protected $publicUrl         = null;
+    static protected $debugEnabled      = null;
+    static protected $cli               = null;
+    static protected $config            = null;
+    static protected $hook              = null;
+    static protected $log               = null;
+    static protected $param             = null;
+    static protected $post              = null;
+    static protected $get               = null;
+    static protected $session           = null;
+    static protected $sessionMessage    = null;
+    static protected $response          = null;
+    static protected $router            = null;
+    static protected $database          = null;
+    static protected $route             = null;
+    static protected $debug             = null;
+    static protected $view              = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -42,6 +44,10 @@ class App {
 
         // And load the App config
         self::getConfig()->load();
+
+        // Set the appropriate log directory & default file name
+        self::getLog()->setPath(self::getBaseDir() . 'var' . DS . 'log');
+        self::getLog()->setDefaultLogFile('fluid.log');
 
         // Start the session
         self::getSession()->startSession();
@@ -144,7 +150,7 @@ class App {
     /**
      * Returns (and possibly instantiates) the Cli instance
      *
-     * @return Cli
+     * @return \Devvoh\Components\Cli
      */
     public static function getCli() {
         if (!self::$cli) {
@@ -156,7 +162,7 @@ class App {
     /**
      * Returns (and possibly instantiates) the Config instance
      *
-     * @return Config
+     * @return \Devvoh\Fluid\App\Config
      */
     public static function getConfig() {
         if (!self::$config) {
@@ -168,11 +174,11 @@ class App {
     /**
      * Returns (and possibly instantiates) the Hook instance
      *
-     * @return Hook
+     * @return \Devvoh\Components\Hook
      */
     public static function getHook() {
         if (!self::$hook) {
-            self::$hook = new \Devvoh\Components\Hooks();
+            self::$hook = new \Devvoh\Components\Hook();
         }
         return self::$hook;
     }
@@ -180,31 +186,19 @@ class App {
     /**
      * Returns (and possibly instantiates) the Log instance
      *
-     * @return Messages
+     * @return \Devvoh\Components\Log
      */
     public static function getLog() {
         if (!self::$log) {
-            self::$log = new \Devvoh\Fluid\App\Log();
+            self::$log = new \Devvoh\Components\Log();
         }
         return self::$log;
     }
 
     /**
-     * Returns (and possibly instantiates) the Messages instance
+     * Returns (and possibly instantiates) the GetSet instance with context session
      *
-     * @return Messages
-     */
-    public static function getMessages() {
-        if (!self::$messages) {
-            self::$messages = new \Devvoh\Fluid\App\Messages();
-        }
-        return self::$messages;
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Session instance
-     *
-     * @return Session
+     * @return \Devvoh\Components\GetSet
      */
     public static function getSession() {
         if (!self::$session) {
@@ -214,9 +208,9 @@ class App {
     }
 
     /**
-     * Returns (and possibly instantiates) the Param instance
+     * Returns (and possibly instantiates) the GetSet instance with context param
      *
-     * @return Param
+     * @return \Devvoh\Components\GetSet
      */
     public static function getParam() {
         if (!self::$param) {
@@ -226,9 +220,9 @@ class App {
     }
 
     /**
-     * Returns (and possibly instantiates) the Post instance
+     * Returns (and possibly instantiates) the GetSet instance with context post
      *
-     * @return Post
+     * @return \Devvoh\Components\GetSet
      */
     public static function getPost() {
         if (!self::$post) {
@@ -238,9 +232,9 @@ class App {
     }
 
     /**
-     * Returns (and possibly instantiates) the Get instance
+     * Returns (and possibly instantiates) the GetSet instance with context get
      *
-     * @return Get
+     * @return \Devvoh\Components\GetSet
      */
     public static function getGet() {
         if (!self::$get) {
@@ -250,9 +244,21 @@ class App {
     }
 
     /**
+     * Returns (and possibly instantiates) the GetSet instance with context sessionMessage
+     *
+     * @return \Devvoh\Components\SessionMessage
+     */
+    public static function getSessionMessage() {
+        if (!self::$sessionMessage) {
+            self::$sessionMessage = new \Devvoh\Components\SessionMessage();
+        }
+        return self::$sessionMessage;
+    }
+
+    /**
      * Returns (and possibly instantiates) the Router instance
      *
-     * @return Router
+     * @return \Devvoh\Components\Router
      */
     public static function getRouter() {
         if (!self::$router) {
@@ -265,7 +271,7 @@ class App {
     /**
      * Returns (and possibly instantiates) the Database instance
      *
-     * @return Database
+     * @return \Devvoh\Components\Database
      */
     public static function getDatabase() {
         if (!self::$database) {
@@ -277,7 +283,7 @@ class App {
     /**
      * Returns (and possibly instantiates) the Response instance
      *
-     * @return Response
+     * @return \Devvoh\Fluid\App\Response
      */
     public static function getResponse() {
         if (!self::$response) {
@@ -289,13 +295,25 @@ class App {
     /**
      * Returns (and possibly instantiates) the Debug instance
      *
-     * @return Debug
+     * @return \Devvoh\Components\Debug
      */
     public static function getDebug() {
         if (!self::$debug) {
             self::$debug = new \Devvoh\Components\Debug();
         }
         return self::$debug;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the View instance
+     *
+     * @return \Devvoh\Fluid\App\View
+     */
+    public static function getView() {
+        if (!self::$view) {
+            self::$view = new \Devvoh\Fluid\App\View();
+        }
+        return self::$view;
     }
 
     /**
@@ -320,7 +338,7 @@ class App {
     /**
      * Returns the route
      *
-     * @return null|arrary
+     * @return null|array
      */
     public static function getRoute() {
         return self::$route;
@@ -373,12 +391,12 @@ class App {
 
             // Check for view param
             if (isset($route['view'])) {
-                $viewFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['view'] . '.phtml';
+                $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['view'] . '.phtml';
             }
         } else {
             // Not a closure, build a controller/action combination
             $controllerFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'controller' . DS . $route['controller'] . '.php';
-            $viewFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
+            $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
             if (file_exists($controllerFile)) {
                 require_once($controllerFile);
                 // Get all the data
@@ -396,9 +414,9 @@ class App {
             }
         }
 
-        if (isset($viewFile) && file_exists($viewFile)) {
-            $view = new \Devvoh\Fluid\View();
-            $view->loadTemplate($viewFile);
+        // If valid $viewTemplate is set, load it into the view
+        if (isset($viewTemplate) && file_exists($viewTemplate)) {
+            self::getView()->loadTemplate($viewTemplate);
         }
         return true;
     }

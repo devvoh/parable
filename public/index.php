@@ -10,8 +10,8 @@
 /**
  * Include Bootstrap.php to enable all functionality.
  */
-require_once('../lib/vendor/Devvoh/Fluid/Bootstrap.php');
-use \Devvoh\Fluid\App as App;
+require_once('../vendor/Devvoh/Fluid/Bootstrap.php');
+use \Devvoh\Fluid\App;
 
 /**
  * App is the main entry point for all functionality, offering mostly static functions.
@@ -30,12 +30,7 @@ if (App::matchRoute()) {
         echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
     }
 } else {
-    echo 'Route not found.';
+    echo App::getView()->partial('error/404.phtml');
 }
 
-App::getDebug()->dd(App::getUrl(App::getRouter()->buildRoute('user-view-id', ['id' => 2])));
-
-/**
- * Send the response
- */
 App::getResponse()->sendResponse();

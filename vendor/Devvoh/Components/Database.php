@@ -1,11 +1,11 @@
 <?php
 /**
- * @package     Fluid
- * @subpackage  App
+ * @package     Devvoh
+ * @subpackage  Components
  * @subpackage  Database
- * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  * @license     MIT
- * @author      Robin de Graaf (hello@devvoh.com)
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
 namespace Devvoh\Components;
@@ -34,7 +34,7 @@ class Database {
      *
      * @param $type
      *
-     * @return $this
+     * @return \Devvoh\Components\Database
      */
     public function setType($type) {
         $this->type = $type;
@@ -55,7 +55,7 @@ class Database {
      *
      * @param $location
      *
-     * @return $this
+     * @return \Devvoh\Components\Database
      */
     public function setLocation($location) {
         $this->location = $location;
@@ -65,7 +65,7 @@ class Database {
     /**
      * Return the username
      *
-     * @return null
+     * @return string|null
      */
     public function getUsername() {
         return $this->username;
@@ -76,7 +76,7 @@ class Database {
      *
      * @param $username
      *
-     * @return $this
+     * @return \Devvoh\Components\Database
      */
     public function setUsername($username) {
         $this->username = $username;
@@ -86,7 +86,7 @@ class Database {
     /**
      * Return the password
      *
-     * @return null
+     * @return string|null
      */
     public function getPassword() {
         return $this->password;
@@ -97,7 +97,7 @@ class Database {
      *
      * @param $password
      *
-     * @return $this
+     * @return \Devvoh\Components\Database
      */
     public function setPassword($password) {
         $this->password = $password;
@@ -118,7 +118,7 @@ class Database {
      *
      * @param $database
      *
-     * @return $this
+     * @return \Devvoh\Components\Database
      */
     public function setDatabase($database) {
         $this->database = $database;
@@ -128,7 +128,7 @@ class Database {
     /**
      * Return instance, if any
      *
-     * @return PDO|null
+     * @return \PDO|null
      */
     public function getInstance() {
         if (!$this->getInstance() && $this->getType() && $this->getLocation()) {
@@ -153,7 +153,7 @@ class Database {
      *
      * @param $instance
      *
-     * @return $this
+     * @return \Devvoh\Components\Database
      */
     public function setInstance($instance) {
         $this->instance = $instance;
@@ -165,7 +165,7 @@ class Database {
      *
      * @param $string
      *
-     * @return bool|string
+     * @return string|false
      */
     public function quote($string) {
         if (!$this->getInstance()) {
