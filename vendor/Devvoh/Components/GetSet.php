@@ -10,8 +10,9 @@
 
 namespace Devvoh\Components;
 
-class GetSet
-{
+class GetSet {
+    use \Devvoh\Components\Traits\GetClassName;
+
     protected $resource = null;
     protected $localResource = array();
     protected $useLocalResource = false;
@@ -40,7 +41,7 @@ class GetSet
      *
      * @param $type
      *
-     * @return $this
+     * @return \Devvoh\Components\GetSet
      */
     public function setResource($type) {
         $this->resource = $type;
@@ -58,7 +59,7 @@ class GetSet
     /**
      * Get all from resource if resource set
      *
-     * @return mixed
+     * @return array|null
      */
     public function getAll() {
         if (!$this->getResource()) {
@@ -75,11 +76,11 @@ class GetSet
      *
      * @param $key
      *
-     * @return null|false
+     * @return mixed|null
      */
     public function get($key) {
         if (!$this->getResource()) {
-            return false;
+            return null;
         }
 
         // If local resource, set it as reference
@@ -102,7 +103,7 @@ class GetSet
      * @param $key
      * @param $value
      *
-     * @return $this|false
+     * @return \Devvoh\Components\GetSet|false
      */
     public function set($key, $value) {
         if (!$this->getResource()) {
@@ -123,7 +124,7 @@ class GetSet
      *
      * @param $values
      *
-     * @return $this
+     * @return \Devvoh\Components\GetSet
      */
     public function setAll($values) {
         if ($this->useLocalResource) {
@@ -137,7 +138,7 @@ class GetSet
     /**
      * Start the session
      *
-     * @return $this
+     * @return \Devvoh\Components\GetSet
      */
     public function startSession() {
         session_start();
@@ -147,7 +148,7 @@ class GetSet
     /**
      * Destroy the session
      *
-     * @return $this
+     * @return \Devvoh\Components\GetSet
      */
     public function destroySession() {
         session_destroy();

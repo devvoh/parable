@@ -11,6 +11,7 @@
 namespace Devvoh\Components;
 
 class Query {
+    use \Devvoh\Components\Traits\GetClassName;
 
     protected $tableName    = null;
     protected $tableKey     = null;
@@ -27,7 +28,7 @@ class Query {
      * Set the tableName to work on
      *
      * @param string $tableName
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function setTableName($tableName) {
         $this->tableName = $tableName;
@@ -47,7 +48,7 @@ class Query {
      * Set the pdoInstance to work on if it's a PDO instance
      *
      * @param string $pdoInstance
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function setPdoInstance($pdoInstance) {
         if ($pdoInstance instanceof PDO) {
@@ -59,7 +60,7 @@ class Query {
     /**
      * Get the currently set pdoInstance
      *
-     * @return string
+     * @return \PDO
      */
     public function getPdoInstance() {
         return $this->pdoInstance;
@@ -69,7 +70,7 @@ class Query {
      * Set the tableKey to work with (for delete & update
      * )
      * @param string $key
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function setTableKey($key) {
         $this->tableKey = $key;
@@ -81,7 +82,7 @@ class Query {
      *
      * @param string $action (select, insert, delete, update)
      *
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function setAction($action) {
         if (in_array($action, array('select', 'insert', 'delete', 'update'))) {
@@ -94,7 +95,7 @@ class Query {
      * In case of a select, what we're going to select (default *)
      *
      * @param string $select
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function select($select) {
         $this->select = $select;
@@ -107,7 +108,7 @@ class Query {
      * @param string $condition
      * @param mixed $value
      *
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function where($condition, $value = null) {
         $this->where[] = array('condition' => $condition, 'value' => $value);
@@ -120,7 +121,7 @@ class Query {
      * @param string $key
      * @param mixed $value
      *
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function addValue($key, $value) {
         $this->values[] = array('key' => $key, 'value' => $value);
@@ -133,7 +134,7 @@ class Query {
      * @param string $key
      * @param string $direction (default DESC)
      *
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function orderBy($key, $direction = 'DESC') {
         $this->orderBy[] = array('key' => $key, 'direction' => $direction);
@@ -145,7 +146,7 @@ class Query {
      *
      * @param string $key
      *
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function groupBy($key) {
         $this->groupBy[] = $key;
@@ -158,7 +159,7 @@ class Query {
      * @param int $limit
      * @param int $offset
      *
-     * @return Query
+     * @return \Devvoh\Components\Query
      */
     public function limit($limit, $offset = null) {
         $this->limit = array('limit' => $limit, 'offset' => $offset);

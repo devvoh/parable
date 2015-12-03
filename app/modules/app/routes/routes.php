@@ -31,6 +31,6 @@ $routes['user-view-name'] = array(
 
 // Add module to all routes
 foreach ($routes as &$route) {
-    $route['module'] = 'base';
+    $route['module'] = 'app';
 }
 App::getRouter()->addRoutes($routes);

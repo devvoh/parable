@@ -1,10 +1,11 @@
 <?php
 /**
- * @package     Fluid
+ * @package     Devvoh
+ * @subpackage  Fluid
  * @subpackage  Bootstrap
- * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  * @license     MIT
- * @author      Robin de Graaf (hello@devvoh.com)
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
 /**
@@ -25,14 +26,14 @@ spl_autoload_register(function ($class) {
     // If $class is literally App, we get it directly. We do this so view files can just use App instead of the full
     // namespaced name.
     if ($class === 'App') {
-        $path = '../lib/vendor/Devvoh/Fluid/App.php';
+        $path = '../vendor/Devvoh/Fluid/App.php';
         require_once($path);
         return;
     }
 
     // Otherwise, do it the proper way by turning the class into a file path
     $path = str_replace('\\', DS, $class);
-    $path = '../lib/vendor/' . trim($path, DS) . '.php';
+    $path = '../vendor/' . trim($path, DS) . '.php';
     $path = str_replace('_', DS, $path);
     $path = str_replace('/', DS, $path);
 

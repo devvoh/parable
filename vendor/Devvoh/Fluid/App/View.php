@@ -1,15 +1,17 @@
 <?php
 /**
- * @package     Fluid
+ * @package     Devvoh
+ * @subpackage  Fluid
+ * @subpackage  App
  * @subpackage  View
- * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  * @license     MIT
- * @author      Robin de Graaf (hello@devvoh.com)
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid;
+namespace Devvoh\Fluid\App;
 
-use \Devvoh\Fluid\App as App;
+use \Devvoh\Fluid\App;
 
 class View {
     use \Devvoh\Components\Traits\GetClassName;
@@ -36,16 +38,19 @@ class View {
      *
      * @return null|string
      */
-    public function partial($file) {
+    public function partial($file, $module = 'base') {
+        if (App::getRoute()) {
+            $module = App::getRoute()['module'];
+        }
         // Build proper path
-        $dir = 'app' . DS . 'modules' . DS . App::getRoute()['module'] . DS . 'view' . DS . $file;
-        $path = App::getDir($dir);
+        $dir = 'app' . DS . 'modules' . DS . $module . DS . 'view' . DS . $file;
+        $dir = App::getDir($dir);
 
         // Set return value to null as default
         $return = null;
-        if (file_exists($path)) {
+        if (file_exists($dir)) {
             ob_start();
-            require($path);
+            require($dir);
             $return = ob_get_clean();
         }
         return $return;
@@ -61,7 +66,7 @@ class View {
      *
      * Instead of:
      *    \Devvoh\Fluid\App::getGet()->getValues();
-     *    use \Devvoh\Fluid\App as App; & App::getGet()->getValues();
+     *    use \Devvoh\Fluid\App; App::getGet()->getValues();
      *
      * @param $method
      * @param $args

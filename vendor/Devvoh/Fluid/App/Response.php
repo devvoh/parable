@@ -1,16 +1,17 @@
 <?php
 /**
- * @package     Fluid
+ * @package     Devvoh
+ * @subpackage  Fluid
  * @subpackage  App
  * @subpackage  Response
- * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  * @license     MIT
- * @author      Robin de Graaf (hello@devvoh.com)
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
 namespace Devvoh\Fluid\App;
 
-use \Devvoh\Fluid\App as App;
+use \Devvoh\Fluid\App;
 
 class Response {
     use \Devvoh\Components\Traits\GetClassName;
@@ -20,17 +21,21 @@ class Response {
         'html' => 'text/html',
         'xml' => 'text/xml',
     );
-    protected $charset = 'utf-8';
-    protected $contentType = 'html';
-    protected $content = null;
+    protected $charset      = 'utf-8';
+    protected $contentType  = 'html';
+    protected $content      = null;
+    protected $onlyContent  = false;
 
     /**
      * Set the response header configured on Response class
      *
-     * @return $this
+     * @return Response
      */
-    public function sendResponse() {
+    public function sendResponse($onlyContent = false) {
         header('Content-Type: ' . $this->getContentType() . '; charset=' . $this->getCharset());
+        if ($this->useOnlyContent()) {
+            ob_end_clean();
+        }
         if ($this->content) {
             echo $this->content;
         }
@@ -119,8 +124,42 @@ class Response {
         return $this;
     }
 
+    /**
+     * Redirect to $url
+     */
     public function redirect($url) {
         header('location: ' . $url);
+        exit;
+    }
+
+    /**
+     * Redirect to route
+     */
+    public function redirectRoute($routeName, $params) {
+        $url = App::getRouter()->buildRoute($routeName, $params);
+        if ($url) {
+            $this->redirect(App::getUrl($url));
+        }
+    }
+
+    public function setJson($data = null, $onlyContent = false) {
+        if ($data) {
+            if (is_array($data)) {
+                $data = json_encode($data, JSON_PRETTY_PRINT);
+            }
+            $this->setContent($data);
+        }
+        // And set the correct content-type
+        $this->setContentType('json');
+        $this->setOnlyContent($onlyContent);
+    }
+
+    public function setOnlyContent($active) {
+        $this->onlyContent = (bool)$active;
+    }
+
+    public function useOnlyContent() {
+        return $this->onlyContent;
     }
 
 }
