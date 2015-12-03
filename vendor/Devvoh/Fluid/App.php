@@ -30,6 +30,7 @@ class App {
     static protected $route             = null;
     static protected $debug             = null;
     static protected $view              = null;
+    static protected $rights            = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -314,6 +315,18 @@ class App {
             self::$view = new \Devvoh\Fluid\App\View();
         }
         return self::$view;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Rights instance
+     *
+     * @return \Devvoh\Components\Rights
+     */
+    public static function getRights() {
+        if (!self::$rights) {
+            self::$rights = new \Devvoh\Components\Rights();
+        }
+        return self::$rights;
     }
 
     /**
