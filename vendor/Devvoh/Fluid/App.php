@@ -46,6 +46,13 @@ class App {
         // And load the App config
         self::getConfig()->load();
 
+        // And deal with the configured values
+        if (self::getConfig()->get('debug_enabled')) {
+            self::enableDebug();
+        } else {
+            self::disableDebug();
+        }
+
         // Set the appropriate log directory & default file name
         self::getLog()->setPath(self::getBaseDir() . 'var' . DS . 'log');
         self::getLog()->setDefaultLogFile('fluid.log');

@@ -19,7 +19,13 @@ use \Devvoh\Fluid\App;
  * Start the App. This will set debug and load the config
  */
 App::start();
-App::enableDebug();
+
+/**
+ * If debug is enabled, start the timer
+ */
+if (App::isDebugEnabled()) {
+    App::getDebug()->startTimer();
+}
 
 /**
  * Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
@@ -34,3 +40,10 @@ if (App::matchRoute()) {
 }
 
 App::getResponse()->sendResponse();
+
+/**
+ * If debug is enabled, end the timer
+ */
+if (App::isDebugEnabled()) {
+    App::getDebug()->endTimer();
+}
