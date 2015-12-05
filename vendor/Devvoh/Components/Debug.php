@@ -13,6 +13,9 @@ namespace Devvoh\Components;
 class Debug {
     use \Devvoh\Components\Traits\GetClassName;
 
+    protected static $timerStart = 0;
+    protected static $timerEnd = 0;
+
     /**
      * Pretty var_dump $data
      *
@@ -53,6 +56,18 @@ class Debug {
     public static function pd($data) {
         self::p($data);
         die();
+    }
+
+    public static function startTimer() {
+        self::$timerStart = microtime(true);
+    }
+
+    public static function endTimer() {
+        self::$timerEnd = microtime(true);
+    }
+
+    public static function getTimerDiff() {
+        return number_format(self::$timerEnd - self::$timerStart, 4);
     }
 
 }

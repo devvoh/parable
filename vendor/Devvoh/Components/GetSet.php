@@ -66,7 +66,7 @@ class GetSet {
             return null;
         }
         if ($this->useLocalResource) {
-            return $this->localResource;
+            return $this->localResource[$this->getResource()];
         }
         return $GLOBALS['_' . $this->getResource()];
     }

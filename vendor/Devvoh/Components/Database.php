@@ -131,17 +131,18 @@ class Database {
      * @return \PDO|null
      */
     public function getInstance() {
-        if (!$this->getInstance() && $this->getType() && $this->getLocation()) {
+        if (!$this->instance && $this->getType() && $this->getLocation()) {
             switch ($this->getType()) {
+                case 'sqlite':
                 case 'sqlite3':
-                    $instance = new PDO('sqlite:' . $this->getLocation());
+                    $instance = new \PDO('sqlite:' . $this->getLocation());
                     $this->setInstance($instance);
                     break;
                 case 'mysql':
                     if (!$this->getUsername() || !$this->getPassword() || !$this->getDatabase()) {
                         return false;
                     }
-                    $instance = new PDO('mysql:host=' . $this->getLocation() . ';dbname=' . $this->getDatabase(), $this->getUsername(), $this->getPassword());
+                    $instance = new \PDO('mysql:host=' . $this->getLocation() . ';dbname=' . $this->getDatabase(), $this->getUsername(), $this->getPassword());
                     $this->setInstance($instance);
             }
         }

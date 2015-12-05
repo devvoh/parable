@@ -16,8 +16,6 @@ use \Devvoh\Fluid\App;
 class Config extends \Devvoh\Components\GetSet {
     use \Devvoh\Components\Traits\GetClassName;
 
-    protected $config = array();
-
     /**
      * Set the resource to config
      *
@@ -31,11 +29,23 @@ class Config extends \Devvoh\Components\GetSet {
     /**
      * Shim to allow App to proceed without config code existing
      *
+     * @throws Exception
      * @return Config
      */
     public function load() {
-        // LOAD LOGIC HERE
-        return $this;
+        $configFile = App::getDir('app/config/config.ini');
+        $customFile = App::getDir('app/config/custom.ini');
+
+        if (file_exists($configFile)) {
+            $configData = parse_ini_file($configFile, true);
+        } else {
+            throw new Exception('config.ini not found');
+        }
+        if (file_exists($customFile)) {
+            $configData = parse_ini_file($customFile) + $configData;
+        }
+        $this->setAll($configData);
+        return;
     }
 
 }

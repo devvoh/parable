@@ -86,7 +86,7 @@ class Router {
                         // Not a parameter, so all we need is a matching part with the currentPathParts
                         if ($param !== $currentPathParts[$key]) {
                             // Not the same, so skip it
-                            continue;
+                            continue 2;
                         }
                     }
                 }
