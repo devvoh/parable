@@ -58,14 +58,29 @@ class Debug {
         die();
     }
 
+    /**
+     * Start the execution timer
+     */
     public static function startTimer() {
+        self::$timerEnd = 0;
         self::$timerStart = microtime(true);
     }
 
+    /**
+     * Ends the execution timer and returns the timer difference
+     *
+     * @return string
+     */
     public static function endTimer() {
         self::$timerEnd = microtime(true);
+        return self::getTimerDiff();
     }
 
+    /**
+     * Returns the difference between the end and the start in seconds
+     *
+     * @return string
+     */
     public static function getTimerDiff() {
         return number_format(self::$timerEnd - self::$timerStart, 4);
     }

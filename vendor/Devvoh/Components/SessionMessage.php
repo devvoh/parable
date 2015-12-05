@@ -13,8 +13,8 @@ namespace Devvoh\Components;
 class SessionMessage {
     use \Devvoh\Components\Traits\GetClassName;
 
-    protected $messages = array();
     protected $session  = null;
+    protected $messages = [];
 
     /**
      * Initialize the session object and store all current messages on ourself
@@ -52,7 +52,7 @@ class SessionMessage {
             return $this->messages[$type];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -78,7 +78,7 @@ class SessionMessage {
      */
     public function add($message = null, $type = 'notice') {
         if (!isset($this->messages[$type]) || !is_array($this->messages[$type])) {
-            $this->messages[$type] = array();
+            $this->messages[$type] = [];
         }
         if ($message) {
             $this->messages[$type][] = $message;
@@ -96,7 +96,7 @@ class SessionMessage {
      */
     public function clear($type = null) {
         if (!$type) {
-            $this->messages = array();
+            $this->messages = [];
         } elseif (isset($this->messages[$type])) {
             unset($this->messages[$type]);
         }
@@ -117,13 +117,11 @@ class SessionMessage {
             return count($this->get($type));
         }
 
-        $temp = array();
+        $count = 0;
         foreach ($this->get() as $type => $messages) {
-            foreach ($messages as $message) {
-                $temp[] = $message;
-            }
+            $count += count($messages);
         }
-        return count($temp);
+        return $count;
     }
 
     /**

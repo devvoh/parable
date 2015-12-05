@@ -14,9 +14,9 @@ class GetSet {
     use \Devvoh\Components\Traits\GetClassName;
 
     protected $resource = null;
-    protected $localResource = array();
+    protected $localResource = [];
     protected $useLocalResource = false;
-    protected $globals = array('get', 'post', 'session', 'cookie');
+    protected $globals = ['get', 'post', 'session', 'cookie'];
 
     /**
      * Return globals
@@ -51,7 +51,7 @@ class GetSet {
             $this->resource = strtoupper($type);
         } else {
             $this->useLocalResource = true;
-            $this->localResource[$this->getResource()] = array();
+            $this->localResource[$this->getResource()] = [];
         }
         return $this;
     }

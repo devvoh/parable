@@ -13,7 +13,7 @@ namespace Devvoh\Components;
 class Rights {
     use \Devvoh\Components\Traits\GetClassName;
 
-    protected $rights = array();
+    protected $rights = [];
 
     /**
      * Set up the default rights. Custom rights can be added at any point
@@ -87,7 +87,7 @@ class Rights {
      * @return string
      */
     public function combine($rights) {
-        $return = array();
+        $return = [];
         foreach ($rights as $right) {
             for ($i = 0; $i < strlen($right); $i++) {
                 if ($right[$i] == '1') {

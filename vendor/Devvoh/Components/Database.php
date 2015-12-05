@@ -175,4 +175,37 @@ class Database {
         return $this->getInstance()->quote($string);
     }
 
+    /**
+     * Passes $query on to the PDO instance if it's successfully initialized. If not, returns false. If so, returns
+     * PDO result object.
+     *
+     * @param $query
+     * @return bool|\PDOStatement
+     */
+    public function query($query) {
+        if (!$this->getInstance()) {
+            return false;
+        }
+        return $this->getInstance()->query($query, \PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Use an array to pass multiple config values at the same time
+     *
+     * @param array $config
+     * @return $this
+     * @throws \Exception
+     */
+    public function setConfig($config = []) {
+        foreach ($config as $type => $value) {
+            $method = 'set' . ucfirst($type);
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            } else {
+                throw new \Exception('Tried to call non-existing method ' . $method . ' on ' . $this->getClassName());
+            }
+        }
+        return $this;
+    }
+
 }
