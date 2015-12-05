@@ -46,11 +46,23 @@ class App {
         // And load the App config
         self::getConfig()->load();
 
-        // And deal with the configured values
+        // Set debug enabled/disabled based on config
         if (self::getConfig()->get('debug_enabled')) {
             self::enableDebug();
         } else {
             self::disableDebug();
+        }
+
+        // Set and enable database based on config
+        if (self::getConfig()->get('storage_type') && self::getConfig()->get('storage_location')) {
+            $config = [
+                'type'     => self::getDir(self::getConfig()->get('storage_type')),
+                'location' => self::getDir(self::getConfig()->get('storage_location')),
+                'username' => self::getDir(self::getConfig()->get('storage_username')),
+                'password' => self::getDir(self::getConfig()->get('storage_password')),
+                'database' => self::getDir(self::getConfig()->get('storage_database')),
+            ];
+            self::getDatabase()->setConfig($config);
         }
 
         // Set the appropriate log directory & default file name

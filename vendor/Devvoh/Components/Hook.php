@@ -13,7 +13,7 @@ namespace Devvoh\Components;
 class Hook {
     use \Devvoh\Components\Traits\GetClassName;
 
-    protected $hooks = array();
+    protected $hooks = [];
 
     /**
      * Add hook referencing $closure to $event, returns false if $closure isn't a function

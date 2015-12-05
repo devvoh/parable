@@ -36,7 +36,7 @@ class Router {
         // Try simple routing first
         foreach ($this->routes as $data) {
             // Reset local $params array so we don't keep old param attempts
-            $params = array();
+            $params = [];
 
             // Check if the request method matches the allowed methods
             if (!in_array($_SERVER['REQUEST_METHOD'], explode('|', $data['method']))) {
@@ -57,9 +57,9 @@ class Router {
                     // Check if the current part is a param
                     if (strpos($part, ':') !== false) {
                         // And store it for later
-                        $params[$key] = array(
+                        $params[$key] = [
                             'name' => str_replace(':', '', $part),
-                        );
+                        ];
                     } else {
                         // Not a param, so just put in the part
                         $params[$key] = $part;
@@ -92,9 +92,9 @@ class Router {
                 }
 
                 // If we get here, the route is a match and all the params have been added to App::getParam()
-                return $data + array(
+                return $data + [
                     'params' => $params,
-                );
+                ];
             }
         }
         return false;
@@ -124,7 +124,7 @@ class Router {
      *
      * @return string|null
      */
-    public function buildRoute($routeName, $params = array()) {
+    public function buildRoute($routeName, $params = []) {
         // Get the route first, and if not found, return null
         $route = $this->getRouteByName($routeName);
         if (!$route) {

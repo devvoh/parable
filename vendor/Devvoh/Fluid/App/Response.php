@@ -16,11 +16,11 @@ use \Devvoh\Fluid\App;
 class Response {
     use \Devvoh\Components\Traits\GetClassName;
 
-    protected $contentTypes = array(
+    protected $contentTypes = [
         'json' => 'application/json',
         'html' => 'text/html',
         'xml' => 'text/xml',
-    );
+    ];
     protected $charset      = 'utf-8';
     protected $contentType  = 'html';
     protected $content      = null;
@@ -29,7 +29,7 @@ class Response {
     /**
      * Set the response header configured on Response class
      *
-     * @return Response
+     * @return \Devvoh\Fluid\App\Response
      */
     public function sendResponse($onlyContent = false) {
         header('Content-Type: ' . $this->getContentType() . '; charset=' . $this->getCharset());
@@ -58,7 +58,7 @@ class Response {
      *
      * @param $charset
      *
-     * @return $this
+     * @return \Devvoh\Fluid\App\Response
      */
     public function setCharset($charset) {
         $this->charset = $charset;
@@ -70,7 +70,7 @@ class Response {
      *
      * @param $type
      *
-     * @return $this
+     * @return \Devvoh\Fluid\App\Response
      */
     public function setContentType($type) {
         if (array_key_exists($type, $this->contentTypes)) {
@@ -93,7 +93,7 @@ class Response {
      *
      * @param $content
      *
-     * @return $this
+     * @return \Devvoh\Fluid\App\Response
      */
     public function setContent($content) {
         $this->content = $content;
@@ -105,7 +105,7 @@ class Response {
      *
      * @param $content
      *
-     * @return $this
+     * @return \Devvoh\Fluid\App\Response
      */
     public function prependContent($content) {
         $this->content = $content . $this->content;
@@ -117,7 +117,7 @@ class Response {
      *
      * @param $content
      *
-     * @return $this
+     * @return \Devvoh\Fluid\App\Response
      */
     public function appendContent($content) {
         $this->content = $this->content . $content;
@@ -142,6 +142,17 @@ class Response {
         }
     }
 
+    /**
+     * Set json and the correct content type. If onlyContent is true, the output buffer will be cleared and only
+     * the content in \Devvoh\Fluid\App\Response->content is used for output.
+     *
+     * If $data is an array, it's json_encoded. If not, we're going to assume it's json.
+     *
+     * @param null $data
+     * @param bool|false $onlyContent
+     *
+     * @return \Devvoh\Fluid\App\Response
+     */
     public function setJson($data = null, $onlyContent = false) {
         if ($data) {
             if (is_array($data)) {
@@ -152,12 +163,25 @@ class Response {
         // And set the correct content-type
         $this->setContentType('json');
         $this->setOnlyContent($onlyContent);
+        return $this;
     }
 
+    /**
+     * Sets only content to (bool)$active
+     *
+     * @param $active
+     * @return $this
+     */
     public function setOnlyContent($active) {
         $this->onlyContent = (bool)$active;
+        return $this;
     }
 
+    /**
+     * Returns whether or not only content should be used or also whatever's already in the output buffer
+     *
+     * @return bool
+     */
     public function useOnlyContent() {
         return $this->onlyContent;
     }

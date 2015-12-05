@@ -39,11 +39,7 @@ if (App::matchRoute()) {
     echo App::getView()->partial('error/404.phtml');
 }
 
-App::getResponse()->sendResponse();
-
 /**
- * If debug is enabled, end the timer
+ * Last thing we do is ask our Response to send it all as configured
  */
-if (App::isDebugEnabled()) {
-    App::getDebug()->endTimer();
-}
+App::getResponse()->sendResponse();

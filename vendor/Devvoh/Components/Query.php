@@ -15,12 +15,12 @@ class Query {
 
     protected $tableName    = null;
     protected $tableKey     = null;
-    protected $where        = array();
-    protected $values       = array();
-    protected $orderBy      = array();
-    protected $groupBy      = array();
     protected $limit        = null;
     protected $pdoInstance  = null;
+    protected $where        = [];
+    protected $values       = [];
+    protected $orderBy      = [];
+    protected $groupBy      = [];
     protected $select       = '*';
     protected $action       = 'select';
 
@@ -47,11 +47,11 @@ class Query {
     /**
      * Set the pdoInstance to work on if it's a PDO instance
      *
-     * @param string $pdoInstance
+     * @param \PDO $pdoInstance
      * @return \Devvoh\Components\Query
      */
     public function setPdoInstance($pdoInstance) {
-        if ($pdoInstance instanceof PDO) {
+        if ($pdoInstance instanceof \PDO) {
             $this->pdoInstance = $pdoInstance;
         }
         return $this;
@@ -85,7 +85,7 @@ class Query {
      * @return \Devvoh\Components\Query
      */
     public function setAction($action) {
-        if (in_array($action, array('select', 'insert', 'delete', 'update'))) {
+        if (in_array($action, ['select', 'insert', 'delete', 'update'])) {
             $this->action = $action;
         }
         return $this;
@@ -111,7 +111,7 @@ class Query {
      * @return \Devvoh\Components\Query
      */
     public function where($condition, $value = null) {
-        $this->where[] = array('condition' => $condition, 'value' => $value);
+        $this->where[] = ['condition' => $condition, 'value' => $value];
         return $this;
     }
 
@@ -124,7 +124,7 @@ class Query {
      * @return \Devvoh\Components\Query
      */
     public function addValue($key, $value) {
-        $this->values[] = array('key' => $key, 'value' => $value);
+        $this->values[] = ['key' => $key, 'value' => $value];
         return $this;
     }
 
@@ -137,7 +137,7 @@ class Query {
      * @return \Devvoh\Components\Query
      */
     public function orderBy($key, $direction = 'DESC') {
-        $this->orderBy[] = array('key' => $key, 'direction' => $direction);
+        $this->orderBy[] = ['key' => $key, 'direction' => $direction];
         return $this;
     }
 
@@ -162,7 +162,7 @@ class Query {
      * @return \Devvoh\Components\Query
      */
     public function limit($limit, $offset = null) {
-        $this->limit = array('limit' => $limit, 'offset' => $offset);
+        $this->limit = ['limit' => $limit, 'offset' => $offset];
         return $this;
     }
 
@@ -173,11 +173,11 @@ class Query {
      */
     public function __toString() {
         // If there's no valid PDO instance, we can't quote so no query for you
-        if (!$this->pdoInstance) {
-            return false;
+        if (!$this->getPdoInstance()) {
+            throw new Exception('No PDO instance set on query.');
         }
 
-        $query = array();
+        $query = [];
 
         if ($this->action === 'select') {
 
@@ -188,7 +188,7 @@ class Query {
 
             // now get the where clauses
             if (count($this->where) > 0) {
-                $wheres = array();
+                $wheres = [];
                 foreach ($this->where as $where) {
                     if ($where['value'] !== null) {
                         $wheres[] = str_replace('?', $this->pdoInstance->quote($where['value']), $where['condition']);
@@ -201,7 +201,7 @@ class Query {
 
             // now get the order(s)
             if (count($this->orderBy) > 0) {
-                $orders = array();
+                $orders = [];
                 foreach ($this->orderBy as $orderBy) {
                     $orders[] = $orderBy['key'] . ' ' . $orderBy['direction'];
                 }
@@ -210,7 +210,7 @@ class Query {
 
             // now get the group(s)
             if (count($this->groupBy) > 0) {
-                $groups = array();
+                $groups = [];
                 foreach ($this->groupBy as $groupBy) {
                     $groups[] = $groupBy;
                 }
@@ -233,7 +233,7 @@ class Query {
 
             // now get the where clauses
             if (count($this->where) > 0) {
-                $wheres = array();
+                $wheres = [];
                 foreach ($this->where as $where) {
                     if ($where['value'] !== null) {
                         $wheres[] = str_replace('?', $this->pdoInstance->quote($where['value']), $where['condition']);
@@ -253,7 +253,7 @@ class Query {
 
             // now get the values
             if (count($this->values) > 0) {
-                $values = array();
+                $values = [];
                 foreach ($this->values as $value) {
                     // skip id, since we'll use that as a where condition
                     if ($value['key'] !== $this->tableKey) {
@@ -292,7 +292,7 @@ class Query {
 
         // and now implode it into a nice string, if possible
         if (count($query) == 0) {
-            return null;
+            return '';
         }
 
         // Since we got here, we've got a query to output

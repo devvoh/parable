@@ -19,7 +19,7 @@ class Config extends \Devvoh\Components\GetSet {
     /**
      * Set the resource to config
      *
-     * @return Config
+     * @return \Devvoh\Fluid\App\Config
      */
     public function __construct() {
         $this->setResource('config');
@@ -30,7 +30,7 @@ class Config extends \Devvoh\Components\GetSet {
      * Shim to allow App to proceed without config code existing
      *
      * @throws Exception
-     * @return Config
+     * @return \Devvoh\Fluid\App\Config
      */
     public function load() {
         $configFile = App::getDir('app/config/config.ini');

@@ -13,9 +13,9 @@ namespace Devvoh\Components;
 class Cli {
     use \Devvoh\Components\Traits\GetClassName;
 
-    protected $parameters           = array();
+    protected $parameters           = [];
     protected $lastProgressLength   = 0;
-    protected $lines                = array();
+    protected $lines                = [];
 
     /**
      * Write a line ending in a line break
@@ -138,9 +138,9 @@ class Cli {
         // turn into lowercase and check specifically for yes and no, call ourselves again if neither
         $value = strtolower(trim($line));
 
-        if (in_array($value, array('y', 'yes'))) {
+        if (in_array($value, ['y', 'yes'])) {
             return true;
-        } elseif (in_array($value, array('n', 'no'))) {
+        } elseif (in_array($value, ['n', 'no'])) {
             return false;
         } elseif (empty($value)) {
             // but if it's empty, assume default
