@@ -32,7 +32,6 @@ if (App::isDebugEnabled()) {
  */
 if (App::matchRoute()) {
     if (!App::executeRoute()) {
-        // thar be error?
         echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
     }
 } else {

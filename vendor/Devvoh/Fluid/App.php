@@ -31,6 +31,7 @@ class App {
     static protected $debug             = null;
     static protected $view              = null;
     static protected $rights            = null;
+    static protected $date              = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -346,6 +347,15 @@ class App {
             self::$rights = new \Devvoh\Components\Rights();
         }
         return self::$rights;
+    }
+
+    /**
+     * Returns a newly instantiated Date instance
+     *
+     * @return \Devvoh\Components\Date
+     */
+    public static function getDate() {
+        return new \Devvoh\Components\Date();
     }
 
     /**
