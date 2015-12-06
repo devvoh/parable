@@ -32,6 +32,7 @@ class App {
     static protected $view              = null;
     static protected $rights            = null;
     static protected $date              = null;
+    static protected $curl              = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -365,6 +366,18 @@ class App {
             self::$date = new \Devvoh\Components\Date();
         }
         return self::$date;
+    }
+
+    /**
+     * Returns a newly instantiated Curl instance
+     *
+     * @return \Devvoh\Components\Curl
+     */
+    public static function getCurl() {
+        if (!self::$curl) {
+            self::$curl = new \Devvoh\Components\Curl();
+        }
+        return self::$curl;
     }
 
     /**
