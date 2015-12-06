@@ -15,10 +15,21 @@ class Date {
 
     protected $timezone = null;
 
+    /**
+     * Return the currently set timezone
+     *
+     * @return string|null
+     */
     public function getTimezone() {
         return $this->timezone;
     }
 
+    /**
+     * Set the timezone in string or DateTimeZone format
+     *
+     * @param $timezone
+     * @return \Devvoh\Components\Date
+     */
     public function setTimezone($timezone) {
         if (!$timezone instanceof \DateTimeZone) {
             $timezone = new \DateTimeZone($timezone);
@@ -27,7 +38,13 @@ class Date {
         return $this;
     }
 
-    public function getDateTimeTZ($date) {
+    /**
+     * Get the timezone-corrected date, either now or based on provided date string or DateTime instance
+     *
+     * @param null $date
+     * @return \DateTime|null
+     */
+    public function getDateTime($date = null) {
         if (!$date instanceof \DateTime) {
             $date = new \DateTime($date);
         }
@@ -35,10 +52,22 @@ class Date {
         return $date;
     }
 
-    public function getDateTimeFormatTZ($date, $format = 'd-m-Y H:i:s') {
-        return $this->getDateTimeTZ($date)->format($format);
+    /**
+     * Return the timezone-corrected date in formatted string value
+     *
+     * @param null $date
+     * @param string $format
+     * @return string
+     */
+    public function format($date = null, $format = 'd-m-Y H:i:s') {
+        return $this->getDateTime($date)->format($format);
     }
 
+    /**
+     * Get a list of all predefined PHP-timezones in select/option array format
+     *
+     * @return array
+     */
     public function getTimeZones() {
         $zones = \DateTimeZone::listIdentifiers();
         $timezones = array();

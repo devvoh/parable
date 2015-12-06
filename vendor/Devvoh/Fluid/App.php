@@ -66,6 +66,12 @@ class App {
             self::getDatabase()->setConfig($config);
         }
 
+        // Set timezone if given, otherwise default to Europe/London
+        self::getDate()->setTimezone('Europe/London');
+        if (self::getConfig()->get('default_timezone')) {
+            self::getDate()->setTimezone(self::getConfig()->get('default_timezone'));
+        }
+
         // Set the appropriate log directory & default file name
         self::getLog()->setPath(self::getBaseDir() . 'var' . DS . 'log');
         self::getLog()->setDefaultLogFile('fluid.log');
@@ -355,7 +361,10 @@ class App {
      * @return \Devvoh\Components\Date
      */
     public static function getDate() {
-        return new \Devvoh\Components\Date();
+        if (!self::$date) {
+            self::$date = new \Devvoh\Components\Date();
+        }
+        return self::$date;
     }
 
     /**
