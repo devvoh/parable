@@ -31,6 +31,7 @@ class App {
     static protected $debug             = null;
     static protected $view              = null;
     static protected $rights            = null;
+    static protected $date              = null;
 
     /**
      * Starts the App class and does some initial setup
@@ -63,6 +64,12 @@ class App {
                 'database' => self::getDir(self::getConfig()->get('storage_database')),
             ];
             self::getDatabase()->setConfig($config);
+        }
+
+        // Set timezone if given, otherwise default to Europe/London
+        self::getDate()->setTimezone('Europe/London');
+        if (self::getConfig()->get('default_timezone')) {
+            self::getDate()->setTimezone(self::getConfig()->get('default_timezone'));
         }
 
         // Set the appropriate log directory & default file name
@@ -346,6 +353,18 @@ class App {
             self::$rights = new \Devvoh\Components\Rights();
         }
         return self::$rights;
+    }
+
+    /**
+     * Returns a newly instantiated Date instance
+     *
+     * @return \Devvoh\Components\Date
+     */
+    public static function getDate() {
+        if (!self::$date) {
+            self::$date = new \Devvoh\Components\Date();
+        }
+        return self::$date;
     }
 
     /**
