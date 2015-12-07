@@ -21,7 +21,7 @@ $routes['user-view-id'] = array(
 );
 $routes['user-view-name'] = array(
     'method' => 'GET|POST',
-    'path' => '/user/:name',
+    'path' => '/user-name/:name',
     'view' => 'closure/index',
     'closure' => function() {
         $user = \Devvoh\Fluid\App::getParam()->get('name');
