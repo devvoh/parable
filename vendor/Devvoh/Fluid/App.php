@@ -58,11 +58,11 @@ class App {
         // Set and enable database based on config
         if (self::getConfig()->get('storage_type') && self::getConfig()->get('storage_location')) {
             $config = [
-                'type'     => self::getDir(self::getConfig()->get('storage_type')),
+                'type'     => self::getConfig()->get('storage_type'),
                 'location' => self::getDir(self::getConfig()->get('storage_location')),
-                'username' => self::getDir(self::getConfig()->get('storage_username')),
-                'password' => self::getDir(self::getConfig()->get('storage_password')),
-                'database' => self::getDir(self::getConfig()->get('storage_database')),
+                'username' => self::getConfig()->get('storage_username'),
+                'password' => self::getConfig()->get('storage_password'),
+                'database' => self::getConfig()->get('storage_database'),
             ];
             self::getDatabase()->setConfig($config);
         }
@@ -311,11 +311,11 @@ class App {
     /**
      * Returns (and possibly instantiates) the Response instance
      *
-     * @return \Devvoh\Fluid\App\Response
+     * @return \Devvoh\Components\Response
      */
     public static function getResponse() {
         if (!self::$response) {
-            self::$response = new \Devvoh\Fluid\App\Response();
+            self::$response = new \Devvoh\Components\Response();
         }
         return self::$response;
     }
@@ -357,7 +357,7 @@ class App {
     }
 
     /**
-     * Returns a newly instantiated Date instance
+     * Returns (and possibly instantiates) the Date instance
      *
      * @return \Devvoh\Components\Date
      */
@@ -369,7 +369,7 @@ class App {
     }
 
     /**
-     * Returns a newly instantiated Curl instance
+     * Returns (and possibly instantiates) the Curl instance
      *
      * @return \Devvoh\Components\Curl
      */
@@ -378,6 +378,19 @@ class App {
             self::$curl = new \Devvoh\Components\Curl();
         }
         return self::$curl;
+    }
+
+    /**
+     * Returns a new query object, with the PDO instance set if possible
+     *
+     * @return \Devvoh\Components\Query
+     */
+    public static function getQuery() {
+        $query = new \Devvoh\Components\Query();
+        if (self::getDatabase()) {
+            $query->setPdoInstance(self::getDatabase()->getInstance());
+        }
+        return $query;
     }
 
     /**
@@ -483,6 +496,35 @@ class App {
             self::getView()->loadTemplate($viewTemplate);
         }
         return true;
+    }
+
+    /**
+     * Redirect to $url
+     *
+     * @return false
+     */
+    public static function redirect($url = null) {
+        if (!$url) {
+            return false;
+        }
+        header('location: ' . $url);
+        exit;
+    }
+
+    /**
+     * Redirect to route
+     *
+     * @return false
+     */
+    public static function redirectRoute($routeName = null, $params = null) {
+        if (!$routeName) {
+            return false;
+        }
+        if ($params && !is_array($params)) {
+            $params = [$params];
+        }
+        $url = self::getRouter()->buildRoute($routeName, $params);
+        return self::redirect(self::getUrl($url));
     }
 
 }

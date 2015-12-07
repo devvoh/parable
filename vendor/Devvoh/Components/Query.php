@@ -174,7 +174,7 @@ class Query {
     public function __toString() {
         // If there's no valid PDO instance, we can't quote so no query for you
         if (!$this->getPdoInstance()) {
-            throw new Exception('No PDO instance set on query.');
+            return '';
         }
 
         $query = [];

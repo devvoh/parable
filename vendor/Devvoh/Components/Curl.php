@@ -13,7 +13,7 @@ namespace Devvoh\Components;
 class Curl {
     use \Devvoh\Components\Traits\GetClassName;
 
-    protected $userAgent = 'devvoh/curl';
+    protected $userAgent = 'devvoh/components/curl';
 
     /**
      * Return the user agent
@@ -41,9 +41,13 @@ class Curl {
      *
      * @param string $url
      *
-     * @return mixed
+     * @return string|false
      */
-    public function getContent($url) {
+    public function getContent($url = null) {
+        if (!$url) {
+            return false;
+        }
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, $this->getUserAgent());
@@ -59,9 +63,12 @@ class Curl {
      * @param string $path
      * @param string $filename
      *
-     * @return bool
+     * @return string|false
      */
-    public function download($url, $path, $filename) {
+    public function download($url = null, $path = null, $filename = null) {
+        if (!$url || !$path || !$filename) {
+            return false;
+        }
         if (!is_dir($path) || !is_writable($path)) {
             return false;
         }
@@ -76,7 +83,7 @@ class Curl {
         curl_close($ch);
 
         fclose($fp);
-        return true;
+        return $filename;
     }
 
 }
