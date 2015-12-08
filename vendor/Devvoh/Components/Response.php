@@ -1,17 +1,14 @@
 <?php
 /**
  * @package     Devvoh
- * @subpackage  Fluid
- * @subpackage  App
+ * @subpackage  Components
  * @subpackage  Response
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015 Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid\App;
-
-use \Devvoh\Fluid\App;
+namespace Devvoh\Components;
 
 class Response {
     use \Devvoh\Components\Traits\GetClassName;
@@ -29,7 +26,7 @@ class Response {
     /**
      * Set the response header configured on Response class
      *
-     * @return \Devvoh\Fluid\App\Response
+     * @return \Devvoh\Components\Response
      */
     public function sendResponse($onlyContent = false) {
         header('Content-Type: ' . $this->getContentType() . '; charset=' . $this->getCharset());
@@ -58,7 +55,7 @@ class Response {
      *
      * @param $charset
      *
-     * @return \Devvoh\Fluid\App\Response
+     * @return \Devvoh\Components\Response
      */
     public function setCharset($charset) {
         $this->charset = $charset;
@@ -70,7 +67,7 @@ class Response {
      *
      * @param $type
      *
-     * @return \Devvoh\Fluid\App\Response
+     * @return \Devvoh\Components\Response
      */
     public function setContentType($type) {
         if (array_key_exists($type, $this->contentTypes)) {
@@ -93,7 +90,7 @@ class Response {
      *
      * @param $content
      *
-     * @return \Devvoh\Fluid\App\Response
+     * @return \Devvoh\Components\Response
      */
     public function setContent($content) {
         $this->content = $content;
@@ -105,7 +102,7 @@ class Response {
      *
      * @param $content
      *
-     * @return \Devvoh\Fluid\App\Response
+     * @return \Devvoh\Components\Response
      */
     public function prependContent($content) {
         $this->content = $content . $this->content;
@@ -117,7 +114,7 @@ class Response {
      *
      * @param $content
      *
-     * @return \Devvoh\Fluid\App\Response
+     * @return \Devvoh\Components\Response
      */
     public function appendContent($content) {
         $this->content = $this->content . $content;
@@ -125,33 +122,15 @@ class Response {
     }
 
     /**
-     * Redirect to $url
-     */
-    public function redirect($url) {
-        header('location: ' . $url);
-        exit;
-    }
-
-    /**
-     * Redirect to route
-     */
-    public function redirectRoute($routeName, $params) {
-        $url = App::getRouter()->buildRoute($routeName, $params);
-        if ($url) {
-            $this->redirect(App::getUrl($url));
-        }
-    }
-
-    /**
      * Set json and the correct content type. If onlyContent is true, the output buffer will be cleared and only
-     * the content in \Devvoh\Fluid\App\Response->content is used for output.
+     * the content in \Devvoh\Components\Response->content is used for output.
      *
      * If $data is an array, it's json_encoded. If not, we're going to assume it's json.
      *
      * @param null $data
      * @param bool|false $onlyContent
      *
-     * @return \Devvoh\Fluid\App\Response
+     * @return \Devvoh\Components\Response
      */
     public function setJson($data = null, $onlyContent = false) {
         if ($data) {
@@ -170,7 +149,7 @@ class Response {
      * Sets only content to (bool)$active
      *
      * @param $active
-     * @return $this
+     * @return \Devvoh\Components\Response
      */
     public function setOnlyContent($active) {
         $this->onlyContent = (bool)$active;
