@@ -446,6 +446,9 @@ class App {
             $route = self::getRoute();
         }
 
+        // Start a new level of output buffering to put whatever we're going to output into the Response
+        ob_start();
+
         // Check for params
         if (isset($route['params'])) {
             foreach ($route['params'] as $param) {
@@ -495,6 +498,11 @@ class App {
         if (isset($viewTemplate) && file_exists($viewTemplate)) {
             self::getView()->loadTemplate($viewTemplate);
         }
+
+        // And get the output buffer and add it to the Response
+        $return = ob_get_clean();
+        App::getResponse()->appendContent($return);
+
         return true;
     }
 

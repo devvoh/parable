@@ -27,10 +27,7 @@ class View {
         if (!file_exists($file)) {
             return null;
         }
-        ob_start();
         require($file);
-        $return = ob_get_clean();
-        App::getResponse()->appendContent($return);
         return $this;
     }
 
