@@ -20,17 +20,20 @@ error_reporting(E_ALL);
 ini_set('log_errors', '1');
 
 /**
- * Register autoloader
+ * Register Fluid App autoloader
  */
 spl_autoload_register(function ($class) {
-    // If $class is literally App, we get it directly. We do this so view files can just use App instead of the full
-    // namespaced name.
     if ($class === 'App') {
         $path = '../vendor/Devvoh/Fluid/App.php';
         require_once($path);
-        return;
+        return true;
     }
-
+    return false;
+});
+/**
+ * Register PSR-4 autoloader
+ */
+spl_autoload_register(function ($class) {
     // Otherwise, do it the proper way by turning the class into a file path
     $path = str_replace('\\', DS, $class);
     $path = '../vendor/' . trim($path, DS) . '.php';
@@ -39,9 +42,28 @@ spl_autoload_register(function ($class) {
 
     if (file_exists($path)) {
         require_once($path);
-    } else {
-        throw new Exception('Unable to autoload ' . $class . ' (' . $path . ')');
+        return true;
     }
+    return false;
+});
+/**
+ * Register Fluid entity/repository autoloader
+ */
+spl_autoload_register(function ($class) {
+    if (strpos($class, '_entity') !== false || strpos($class, '_repository') !== false) {
+        $classParts = explode('_', $class);
+        $modelName = $classParts[0];
+        $modelType = $classParts[1];
+        foreach (\Devvoh\Fluid\App::getModules() as $module) {
+            $path = $module['path'] . DS . 'model' . DS . $modelName . DS . $modelType . '.php';
+            echo $path . '<hr />';
+            if (is_file($path)) {
+                require_once($path);
+                return true;
+            }
+        }
+    }
+    return false;
 });
 
 /**
