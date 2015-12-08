@@ -33,6 +33,7 @@ class App {
     static protected $rights            = null;
     static protected $date              = null;
     static protected $curl              = null;
+    static protected $modules           = array();
 
     /**
      * Starts the App class and does some initial setup
@@ -44,6 +45,9 @@ class App {
         } else {
             self::disableDebug();
         }
+
+        // Find out what modules we have
+        self::loadModules();
 
         // And load the App config
         self::getConfig()->load();
@@ -79,6 +83,28 @@ class App {
 
         // Start the session
         self::getSession()->startSession();
+    }
+
+    /**
+     * Load the modules and store their names in self::$modules
+     */
+    public static function loadModules() {
+        $dir = self::getDir('app/modules') . DS . '*';
+        foreach (glob($dir) as $filename) {
+            self::$modules[end(explode(DS, $filename))] = [
+                'name' => end(explode(DS, $filename)),
+                'path' => $filename,
+            ];
+        }
+    }
+
+    /**
+     * Return the loaded modules
+     *
+     * @return array
+     */
+    public static function getModules() {
+        return self::$modules;
     }
 
     /**
@@ -385,7 +411,7 @@ class App {
      *
      * @return \Devvoh\Components\Query
      */
-    public static function getQuery() {
+    public static function createQuery() {
         $query = new \Devvoh\Components\Query();
         if (self::getDatabase()) {
             $query->setPdoInstance(self::getDatabase()->getInstance());
@@ -425,9 +451,8 @@ class App {
      * Collect routes and include the files, which will add their routes to the router automatically
      */
     public static function collectRoutes() {
-        $dir = self::getDir('app/modules') . DS . '*';
-        foreach (glob($dir) as $filename) {
-            $routerFilename = $filename . DS . 'routes' . DS . 'routes.php';
+        foreach (self::getModules() as $module) {
+            $routerFilename = $module['path'] . DS . 'routes' . DS . 'routes.php';
             if (file_exists($routerFilename)) {
                 require_once($routerFilename);
             }
