@@ -1,25 +1,25 @@
 <?php
 use \Devvoh\Fluid\App as App;
 
-$routes['index'] = array(
+$routes['index'] = [
     'method' => 'GET',
     'path' => '/',
     'controller' => 'home',
     'action' => 'index',
-);
-$routes['test'] = array(
+];
+$routes['test'] = [
     'method' => 'GET',
     'path' => '/test',
     'controller' => 'home',
     'action' => 'test',
-);
-$routes['user-view-id'] = array(
+];
+$routes['user-view-id'] = [
     'method' => 'GET',
     'path' => '/user/:id',
     'controller' => 'home',
     'action' => 'viewUser',
-);
-$routes['user-view-name'] = array(
+];
+$routes['user-view-name'] = [
     'method' => 'GET|POST',
     'path' => '/user-name/:name',
     'view' => 'closure/index',
@@ -27,7 +27,7 @@ $routes['user-view-name'] = array(
         $user = \Devvoh\Fluid\App::getParam()->get('name');
         \Devvoh\Fluid\App::getParam()->set('hello', 'Hello, '.$user.'!');
     },
-);
+];
 
 // Add module to all routes
 foreach ($routes as &$route) {

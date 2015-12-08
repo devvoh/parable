@@ -70,7 +70,7 @@ class Date {
      */
     public function getTimeZones() {
         $zones = \DateTimeZone::listIdentifiers();
-        $timezones = array();
+        $timezones = [];
         foreach ($zones as $zone) {
             $timezone = new \DateTimeZone($zone);
             $gmt = ($timezone->getOffset(new \DateTime()) / 3600);
