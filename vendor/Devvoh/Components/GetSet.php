@@ -13,10 +13,10 @@ namespace Devvoh\Components;
 class GetSet {
     use \Devvoh\Components\Traits\GetClassName;
 
-    protected $resource = null;
-    protected $localResource = [];
+    protected $resource         = null;
     protected $useLocalResource = false;
-    protected $globals = ['get', 'post', 'session', 'cookie'];
+    protected $localResource    = [];
+    protected $globals          = ['get', 'post', 'session', 'cookie'];
 
     /**
      * Return globals

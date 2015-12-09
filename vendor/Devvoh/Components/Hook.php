@@ -57,7 +57,9 @@ class Hook {
 
         // All good, let's call those closures
         foreach ($this->hooks[$event] as $closure) {
-            $closure($payload);
+            if (is_callable($closure)) {
+                $closure($payload);
+            }
         }
 
         // And return ourselves
