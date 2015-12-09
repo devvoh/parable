@@ -14,16 +14,27 @@ class Debug {
     use \Devvoh\Components\Traits\GetClassName;
 
     protected static $timerStart = 0;
-    protected static $timerEnd = 0;
+    protected static $timerEnd   = 0;
 
     /**
      * Pretty var_dump $data
      *
      * @param $data
      */
-    public static function d($data) {
+    public static function d($data = null) {
         echo '<pre>';
         var_dump($data);
+        echo '</pre>';
+    }
+
+    /**
+     * Pretty print_r $data
+     *
+     * @param $data
+     */
+    public static function p($data = null) {
+        echo '<pre>';
+        print_r($data);
         echo '</pre>';
     }
 
@@ -35,17 +46,6 @@ class Debug {
     public static function dd($data) {
         self::d($data);
         die();
-    }
-
-    /**
-     * Pretty print_r $data
-     *
-     * @param $data
-     */
-    public static function p($data) {
-        echo '<pre>';
-        print_r($data);
-        echo '</pre>';
     }
 
     /**
