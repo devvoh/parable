@@ -1,0 +1,10 @@
+<?php
+use \Devvoh\Fluid\App;
+if (App::getParam()->get('message')) {
+    echo App::getParam()->get('message');
+} else {
+    ?>
+    No message from dock closure provided.
+    <?php
+}
+?>

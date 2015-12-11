@@ -38,9 +38,6 @@ if (App::matchRoute()) {
     echo App::getView()->partial('error/404.phtml');
 }
 
-//$test = new test_repository();
-//$test = new test_model();
-
 /**
  * Last thing we do is ask our Response to send it all as configured
  */

@@ -1,5 +1,10 @@
-<!--index@home through a view file?-->
-<!---->
-<!--<br /><br />-->
-<!---->
+Partial:<br />
 <?=$this->partial('home/test.phtml');?>
+
+<br /><br />
+
+Docks:<br />
+
+<div style="background: darkred;color:#fff;padding:5px;">
+    <?php $this->getDock()->trigger('test_dock'); ?>
+</div>
