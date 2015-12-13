@@ -72,6 +72,8 @@ class Dock {
                     $return = ob_get_clean();
                     echo $return;
                 }
+            } else {
+                return false;
             }
         }
 
