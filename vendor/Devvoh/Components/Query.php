@@ -23,6 +23,7 @@ class Query {
     protected $groupBy      = [];
     protected $select       = '*';
     protected $action       = 'select';
+    protected $joins        = [];
 
     /**
      * Set the tableName to work on
@@ -116,6 +117,20 @@ class Query {
     }
 
     /**
+     * Adds a join clause
+     *
+     * @param string $table
+     * @param string $condition
+     * @param mixed $value
+     *
+     * @return \Devvoh\Components\Query
+     */
+    public function join($table, $condition, $value = null) {
+        $this->joins[] = ['table' => $table, 'condition' => $condition, 'value' => $value];
+        return $this;
+    }
+
+    /**
      * Adds a value to update/insert queries
      *
      * @param string $key
@@ -185,6 +200,20 @@ class Query {
             $query[] = "SELECT " . $this->select;
             // table
             $query[] = "FROM " . $this->tableName;
+
+            // Add the left joins
+            if (count($this->joins) > 0) {
+                $joins = [];
+                foreach ($this->joins as $join) {
+                    $joins[] = "JOIN " . $join['table'];
+                    if ($join['value'] !== null) {
+                        $joins[] = "ON " . str_replace('?', $this->pdoInstance->quote($join['value']), $join['condition']);
+                    } else {
+                        $joins[] = "ON " . $join['condition'];
+                    }
+                }
+                $query[] = implode(' ', $joins);
+            }
 
             // now get the where clauses
             if (count($this->where) > 0) {

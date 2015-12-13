@@ -12,6 +12,7 @@ namespace Devvoh\Fluid;
 
 class App {
 
+    static protected $version           = null;
     static protected $baseDir           = null;
     static protected $publicUrl         = null;
     static protected $debugEnabled      = null;
@@ -438,6 +439,18 @@ class App {
             self::$curl = new \Devvoh\Components\Curl();
         }
         return self::$curl;
+    }
+
+    /**
+     * Gets and returns the version stored in ./version
+     *
+     * @return string
+     */
+    public static function getVersion() {
+        if (!self::$version) {
+            self::$version = file_get_contents(self::getBaseDir() . DS . 'version');
+        }
+        return self::$version;
     }
 
     /**
