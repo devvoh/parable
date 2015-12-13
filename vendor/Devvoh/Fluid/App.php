@@ -18,6 +18,7 @@ class App {
     static protected $cli               = null;
     static protected $config            = null;
     static protected $hook              = null;
+    static protected $dock              = null;
     static protected $log               = null;
     static protected $param             = null;
     static protected $post              = null;
@@ -33,6 +34,7 @@ class App {
     static protected $rights            = null;
     static protected $date              = null;
     static protected $curl              = null;
+    static protected $currentModule     = null;
     static protected $modules           = array();
 
     /**
@@ -162,6 +164,26 @@ class App {
     }
 
     /**
+     * Returns the view directory for either the given module or the current one
+     *
+     * @param string    $subPath
+     * @param null      $module
+     *
+     * @return string|null
+     */
+    public static function getViewDir($subPath = null, $module = null) {
+        if (!$module) {
+            $module = self::$currentModule;
+        }
+
+        $dir = 'app' . DS . 'modules' . DS . $module . DS . 'view';
+        if ($subPath) {
+            $dir = $dir . DS . trim($subPath) . '.phtml';
+        }
+        return self::getDir($dir);
+    }
+
+    /**
      * Returns an url based on the public url
      *
      * @param null|string $path
@@ -235,6 +257,18 @@ class App {
             self::$hook = new \Devvoh\Components\Hook();
         }
         return self::$hook;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Dock instance
+     *
+     * @return \Devvoh\Components\Dock
+     */
+    public static function getDock() {
+        if (!self::$dock) {
+            self::$dock = new \Devvoh\Components\Dock();
+        }
+        return self::$dock;
     }
 
     /**
@@ -474,6 +508,8 @@ class App {
         // Start a new level of output buffering to put whatever we're going to output into the Response
         ob_start();
 
+        // Store the current module
+        self::$currentModule = $route['module'];
         // Check for params
         if (isset($route['params'])) {
             foreach ($route['params'] as $param) {
