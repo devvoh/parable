@@ -454,7 +454,7 @@ class App {
     }
 
     /**
-     * Returns a new query object, with the PDO instance set if possible
+     * Returns a new Query object, with the PDO instance set if possible
      *
      * @return \Devvoh\Components\Query
      */
@@ -464,6 +464,19 @@ class App {
             $query->setPdoInstance(self::getDatabase()->getInstance());
         }
         return $query;
+    }
+
+    /**
+     * Returns a new Repository object
+     *
+     * @return \Devvoh\Components\Repository
+     */
+    public static function createRepository($entityName = null) {
+        $entityName = $entityName . '_model';
+        $repository = new \Devvoh\Fluid\Repository();
+        $entity = new $entityName();
+        $repository->setEntity($entity);
+        return $repository;
     }
 
     /**
