@@ -47,16 +47,15 @@ spl_autoload_register(function ($class) {
     return false;
 });
 /**
- * Register Fluid entity/repository autoloader
+ * Register Fluid entity autoloader
  */
 spl_autoload_register(function ($class) {
-    if (strpos($class, '_entity') !== false || strpos($class, '_repository') !== false) {
+    if (strpos($class, '_model') !== false) {
         $classParts = explode('_', $class);
         $modelName = $classParts[0];
         $modelType = $classParts[1];
         foreach (\Devvoh\Fluid\App::getModules() as $module) {
-            $path = $module['path'] . DS . 'model' . DS . $modelName . DS . $modelType . '.php';
-            echo $path . '<hr />';
+            $path = $module['path'] . DS . 'model' . DS . $modelName . '.php';
             if (is_file($path)) {
                 require_once($path);
                 return true;

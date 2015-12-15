@@ -13,6 +13,14 @@ namespace Devvoh\Components\Traits;
 
 trait MagicGetSet {
 
+    /**
+     * __call accepts two types of call: getProperty and setProperty. Will only get/set if the property exists
+     * on the class implementing MagicGetSet.
+     * 
+     * @param string $method
+     * @param mixed $args
+     * @return mixed
+     */
     public function __call($method, $args)
     {
         $methodCalled = strtolower(substr($method, 0, 3));
@@ -20,7 +28,7 @@ trait MagicGetSet {
 
         if ($methodCalled === 'set') {
             if (property_exists($this, $property)) {
-                $this->$property = $args;
+                $this->$property = $args[0];
             }
             return $this;
         } elseif ($methodCalled === 'get') {
