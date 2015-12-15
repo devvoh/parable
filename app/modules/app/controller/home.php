@@ -12,6 +12,9 @@ use \Devvoh\Fluid\App as App;
 class home extends \Devvoh\Fluid\Controller {
 
     public function index() {
+        $repo = new test_repository();
+        $repo->getAll();
+        die();
     }
 
 }

@@ -15,4 +15,16 @@ use \Devvoh\Fluid\App;
 class Entity {
     use \Devvoh\Components\Traits\GetClassName;
     use \Devvoh\Components\Traits\GetSetId;
+
+    public function __call($method, $args) {
+        var_dump($method, $args);
+    }
+
+    public function save() {
+        var_dump('save entity');
+    }
+
+    public function delete() {
+        var_dump('delete entity');
+    }
 }
