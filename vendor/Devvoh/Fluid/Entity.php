@@ -16,8 +16,7 @@ class Entity {
     use \Devvoh\Components\Traits\GetClassName;
     use \Devvoh\Components\Traits\MagicGetSet;
 
-    protected $useMapper = false;
-    protected $mapper = [];
+    protected $mapper = null;
     
     /**
      * Generate a query set to use the current Entity's table name & key
@@ -38,9 +37,6 @@ class Entity {
      */
     public function save() {
         $array = $this->toArray();
-        if ($this->getUseMapper()) {
-            $array = $this->toMappedArray($array);
-        }
 
         $query = $this->createQuery();
     
@@ -64,15 +60,19 @@ class Entity {
     /**
      * Generates an array of the current entity, without the protected values
      * 
-     * @return []
+     * @return array
      */
     public function toArray() {
         $array = (array)$this;
-        // remove protected values & null values, let the database sort those out
+        // Remove protected values & null values, let the database sort those out
         foreach ($array as $key => $value) {
             if (strpos($key, '*') || $value === null) {
                 unset($array[$key]);
             }
+        }
+        // If there's a mapper set, also map the array around
+        if ($this->getMapper()) {
+            $array = $this->toMappedArray($array);
         }
         return $array;
     }
@@ -81,9 +81,7 @@ class Entity {
      * Attempts to use stored mapper array to map fields from the current entity's properties to what is set in the
      * array.
      * 
-     * @todo TEST AND FINISH
-     * 
-     * @return []
+     * @return array
      */
     public function toMappedArray($array) {
         $mappedArray = [];
@@ -108,7 +106,8 @@ class Entity {
     /**
      * Populates the current entity with the data provided
      * 
-     * @param [] $data
+     * @param array $data
+     *
      * @return \Devvoh\Fluid\Entity
      */
     public function populate($data = []) {
@@ -118,6 +117,10 @@ class Entity {
             }
         }
         return $this;
+    }
+
+    public function getMapper() {
+        return $this->mapper;
     }
     
 }

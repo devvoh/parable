@@ -26,19 +26,19 @@ use \Devvoh\Fluid\App as App;
 
 class users_model extends \Devvoh\Fluid\Entity {
 
-    protected $tableName = 'users';
-    protected $tableKey = 'id';
-    
+    protected $tableName    = 'test';
+    protected $tableKey     = 'id';
+
     public $id;
     public $email;
     public $firstname;
     public $lastname;
     
     protected $validator = [
-        'id' => 'int',
-        'email' => 'email:unique',
+        'id'        => 'int',
+        'email'     => 'email:unique',
         'firstname' => '',
-        'lastname' => '',
+        'lastname'  => '',
     ];
 
 }

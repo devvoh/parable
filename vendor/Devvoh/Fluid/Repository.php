@@ -33,7 +33,7 @@ class Repository {
     /**
      * Returns all rows for this entity type
      * 
-     * @return []
+     * @return array
      */
     public function getAll() {
         $query = $this->createQuery();

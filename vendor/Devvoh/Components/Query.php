@@ -117,7 +117,7 @@ class Query {
     }
 
     /**
-     * Adds a join clause
+     * Adds a simple join clause
      *
      * @param string $table
      * @param string $condition
