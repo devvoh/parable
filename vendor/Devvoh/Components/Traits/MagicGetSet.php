@@ -37,6 +37,8 @@ trait MagicGetSet {
             }
             return null;
         }
+
+        return $this;
     }
 
 }
