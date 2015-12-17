@@ -12,8 +12,8 @@ projects.
 
 ## Requirements
 
-PHP 5.4+
-Sense of adventure
+- PHP 5.4+
+- Sense of adventure
 
 ## Documentation & More
 
