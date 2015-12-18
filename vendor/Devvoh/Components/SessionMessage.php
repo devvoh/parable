@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class SessionMessage {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $session  = null;
     protected $messages = [];
@@ -27,7 +26,7 @@ class SessionMessage {
     /**
      * Initialize the session object
      *
-     * @return \Devvoh\Components\SessionMessage
+     * @return $this
      */
     protected function initSession() {
         if (!$this->session) {
@@ -40,7 +39,6 @@ class SessionMessage {
      * Get all messages or all messages of $type
      *
      * @param null $type
-     *
      * @return array
      */
     public function get($type = null) {
@@ -59,7 +57,6 @@ class SessionMessage {
      * Get all messages or all messages of $type and then clear those messages
      *
      * @param null $type
-     *
      * @return array
      */
     public function getClear($type = null) {
@@ -73,8 +70,7 @@ class SessionMessage {
      *
      * @param null   $message
      * @param string $type
-     *
-     * @return \Devvoh\Components\SessionMessage
+     * @return $this
      */
     public function add($message = null, $type = 'notice') {
         if (!isset($this->messages[$type]) || !is_array($this->messages[$type])) {
@@ -91,8 +87,7 @@ class SessionMessage {
      * Clear all messages or all messages of $type
      *
      * @param null $type
-     *
-     * @return \Devvoh\Components\SessionMessage
+     * @return $this
      */
     public function clear($type = null) {
         if (!$type) {
@@ -109,7 +104,6 @@ class SessionMessage {
      * Count all messages or all messages of $type
      *
      * @param null $type
-     *
      * @return int
      */
     public function count($type = null) {
@@ -127,7 +121,7 @@ class SessionMessage {
     /**
      * Write messages stored on ourself to the session
      *
-     * @return \Devvoh\Components\SessionMessage
+     * @return $this
      */
     protected function writeToSession() {
         $this->initSession();

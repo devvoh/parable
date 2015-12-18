@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class GetSet {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $resource         = null;
     protected $useLocalResource = false;
@@ -40,8 +39,7 @@ class GetSet {
      * Sets the resource type, which can be either a PHP superglobal (GET/POST/SESSION, etc) or a custom one.
      *
      * @param $type
-     *
-     * @return \Devvoh\Components\GetSet
+     * @return $this
      */
     public function setResource($type) {
         $this->resource = $type;
@@ -75,7 +73,6 @@ class GetSet {
      * Get specific value by key if resource set
      *
      * @param $key
-     *
      * @return mixed|null
      */
     public function get($key) {
@@ -102,8 +99,7 @@ class GetSet {
      *
      * @param $key
      * @param $value
-     *
-     * @return \Devvoh\Components\GetSet|false
+     * @return $this|false
      */
     public function set($key, $value) {
         if (!$this->getResource()) {
@@ -123,8 +119,7 @@ class GetSet {
      * Set entire array onto the resource
      *
      * @param $values
-     *
-     * @return \Devvoh\Components\GetSet
+     * @return $this
      */
     public function setAll($values) {
         if ($this->useLocalResource) {
@@ -138,7 +133,7 @@ class GetSet {
     /**
      * Start the session
      *
-     * @return \Devvoh\Components\GetSet
+     * @return $this
      */
     public function startSession() {
         session_start();
@@ -148,7 +143,7 @@ class GetSet {
     /**
      * Destroy the session
      *
-     * @return \Devvoh\Components\GetSet
+     * @return $this
      */
     public function destroySession() {
         session_destroy();

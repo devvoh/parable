@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Cli {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $parameters           = [];
     protected $lastProgressLength   = 0;
@@ -21,7 +20,6 @@ class Cli {
      * Write a line ending in a line break
      *
      * @param $message
-     *
      * @return \Devvoh\Components\Cli
      */
     public function write($message) {
@@ -33,8 +31,7 @@ class Cli {
      * print_r the $message ending in a line break
      *
      * @param $message
-     *
-     * @return \Devvoh\Components\Cli
+     * @return $this
      */
     public function dump($message) {
         print_r($message);
@@ -46,8 +43,7 @@ class Cli {
      * Add a line to $this->lines array
      *
      * @param $message
-     *
-     * @return \Devvoh\Components\Cli
+     * @return $this
      */
     public function addLine($message) {
         $this->lines[] = $message;
@@ -57,7 +53,7 @@ class Cli {
     /**
      * Output all lines from $this->lines
      *
-     * @return \Devvoh\Components\Cli
+     * @return $this
      */
     public function writeLines() {
         $output = implode($this->lines, PHP_EOL);
@@ -68,7 +64,7 @@ class Cli {
     /**
      * Output a new line
      *
-     * @return \Devvoh\Components\Cli
+     * @return $this
      */
     public function nl() {
         echo PHP_EOL;
@@ -79,8 +75,7 @@ class Cli {
      * Parse $params into array of parameters and values
      *
      * @param $params
-     *
-     * @return \Devvoh\Components\Cli
+     * @return $this
      */
     public function parseParameters($params) {
         // Check for parameters given
@@ -112,7 +107,6 @@ class Cli {
      * Get one specific parameter by key or false
      *
      * @param $key
-     *
      * @return mixed|false
      */
     public function getParameter($key) {
@@ -127,7 +121,6 @@ class Cli {
      *
      * @param      $question
      * @param bool $default
-     *
      * @return bool
      */
     public function yesNo($question, $default = true) {
@@ -155,26 +148,19 @@ class Cli {
      * Show or update progress message, which will replace itself if called again
      *
      * @param $message
-     *
-     * @return \Devvoh\Components\Cli
+     * @return $this
      */
     public function progress($message) {
-        // If lastProgressLength isn't 0, this isn't the first progress call
+        // If lastProgressLength is over 0, this isn't the first progress call
         if ($this->lastProgressLength > 0) {
+            // Output 70 spaces and then go back 70 characters, clearing the line
+            echo str_repeat(' ', 70) . "\e[70D";
             // Go back [x] characters with the following weird string
             echo "\e[" . $this->lastProgressLength . "D";
         }
-        // We need to make sure we pad if new string is shorter
-        $previousAmount = $this->lastProgressLength;
 
         // Set lastProgressLength to new message length
         $this->lastProgressLength = strlen($message);
-
-        // And if previousAmount is more than the new amount, pad so we clear all characters
-        $newAmount = $this->lastProgressLength;
-        if ($previousAmount > $newAmount) {
-            $message = str_pad($message, $previousAmount, ' ', STR_PAD_RIGHT);
-        }
 
         echo $message;
         return $this;
@@ -183,7 +169,7 @@ class Cli {
     /**
      * Resets the progress last length so progress will not try to go back to the start of the line on next call
      *
-     * @return \Devvoh\Components\Cli
+     * @return $this
      */
     public function resetProgress() {
         $this->lastProgressLength = 0;

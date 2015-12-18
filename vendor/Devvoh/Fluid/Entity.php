@@ -13,11 +13,11 @@ namespace Devvoh\Fluid;
 use \Devvoh\Fluid\App;
 
 class Entity {
-    use \Devvoh\Components\Traits\GetClassName;
-    use \Devvoh\Components\Traits\MagicGetSet;
 
-    protected $mapper = null;
-    
+    protected $tableName    = null;
+    protected $tableKey     = null;
+    protected $mapper       = null;
+
     /**
      * Generate a query set to use the current Entity's table name & key
      * 
@@ -108,7 +108,7 @@ class Entity {
      * 
      * @param array $data
      *
-     * @return \Devvoh\Fluid\Entity
+     * @return $this;
      */
     public function populate($data = []) {
         foreach ($data as $property => $value) {
@@ -119,6 +119,62 @@ class Entity {
         return $this;
     }
 
+    /**
+     * Set the tableName
+     *
+     * @param $tableName
+     * @return $this
+     */
+    public function setTableName($tableName) {
+        $this->tableName = $tableName;
+        return $this;
+    }
+
+    /**
+     * Return the tableName
+     *
+     * @return string|null
+     */
+    public function getTableName() {
+        return $this->tableName;
+    }
+
+    /**
+     * Set the tableKey
+     *
+     * @param $tableKey
+     * @return $this
+     */
+    public function setTableKey($tableKey) {
+        $this->tableKey = $tableKey;
+        return $this;
+    }
+
+    /**
+     * Return the tableKey
+     *
+     * @return string|null
+     */
+    public function getTableKey() {
+        return $this->tableKey;
+    }
+
+    /**
+     * Set the mapper
+     *
+     * @param $mapper
+     * @return $this;
+     */
+    public function setMapper($mapper) {
+        $this->mapper = $mapper;
+        return $this;
+    }
+
+    /**
+     * Return the mapper
+     *
+     * @return array|null
+     */
     public function getMapper() {
         return $this->mapper;
     }

@@ -13,8 +13,6 @@ namespace Devvoh\Fluid;
 use \Devvoh\Fluid\App;
 
 class Repository {
-    use \Devvoh\Components\Traits\GetClassName;
-    use \Devvoh\Components\Traits\MagicGetSet;
 
     protected $entity = null;
 
@@ -57,6 +55,7 @@ class Repository {
      * @return null|\Devvoh\Fluid\Entity
      */
     public function getById($id) {
+        /** @var \Devvoh\Fluid\Entity $query */
         $query = $this->createQuery();
         $query->where($this->getEntity()->getTableKey() . ' = ?', $id);
         $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
@@ -77,5 +76,25 @@ class Repository {
      */
     public function createEntity() {
         return clone $this->getEntity();
+    }
+
+    /**
+     * Set an entity on the repository. Its values don't matter, it'll just be used for configuration purposes.
+     *
+     * @param \Devvoh\Fluid\Entity $entity
+     * @return $this
+     */
+    public function setEntity($entity) {
+        $this->entity = $entity;
+        return $this;
+    }
+
+    /**
+     * Return entity
+     *
+     * @return \Devvoh\Fluid\Entity|null
+     */
+    public function getEntity() {
+        return $this->entity;
     }
 }

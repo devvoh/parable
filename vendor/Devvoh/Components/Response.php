@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Response {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $contentTypes = [
         'json' => 'application/json',
@@ -26,7 +25,7 @@ class Response {
     /**
      * Set the response header configured on Response class
      *
-     * @return \Devvoh\Components\Response
+     * @return $this
      */
     public function sendResponse($onlyContent = false) {
         header('Content-Type: ' . $this->getContentType() . '; charset=' . $this->getCharset());
@@ -54,8 +53,7 @@ class Response {
      * @TODO Add validation of character set
      *
      * @param $charset
-     *
-     * @return \Devvoh\Components\Response
+     * @return $this
      */
     public function setCharset($charset) {
         $this->charset = $charset;
@@ -66,8 +64,7 @@ class Response {
      * Set the content type
      *
      * @param $type
-     *
-     * @return \Devvoh\Components\Response
+     * @return $this
      */
     public function setContentType($type) {
         if (array_key_exists($type, $this->contentTypes)) {
@@ -89,8 +86,7 @@ class Response {
      * Set content from 0.
      *
      * @param $content
-     *
-     * @return \Devvoh\Components\Response
+     * @return $this
      */
     public function setContent($content) {
         $this->content = $content;
@@ -101,8 +97,7 @@ class Response {
      * Prepend data to content
      *
      * @param $content
-     *
-     * @return \Devvoh\Components\Response
+     * @return $this
      */
     public function prependContent($content) {
         $this->content = $content . $this->content;
@@ -113,8 +108,7 @@ class Response {
      * Append data to content
      *
      * @param $content
-     *
-     * @return \Devvoh\Components\Response
+     * @return $this
      */
     public function appendContent($content) {
         $this->content = $this->content . $content;
@@ -129,8 +123,7 @@ class Response {
      *
      * @param null $data
      * @param bool|false $onlyContent
-     *
-     * @return \Devvoh\Components\Response
+     * @return $this
      */
     public function setJson($data = null, $onlyContent = false) {
         if ($data) {
@@ -149,7 +142,7 @@ class Response {
      * Sets only content to (bool)$active
      *
      * @param $active
-     * @return \Devvoh\Components\Response
+     * @return $this
      */
     public function setOnlyContent($active) {
         $this->onlyContent = (bool)$active;
