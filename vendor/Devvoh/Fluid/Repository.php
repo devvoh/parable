@@ -55,7 +55,6 @@ class Repository {
      * @return null|\Devvoh\Fluid\Entity
      */
     public function getById($id) {
-        /** @var \Devvoh\Fluid\Entity $query */
         $query = $this->createQuery();
         $query->where($this->getEntity()->getTableKey() . ' = ?', $id);
         $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
@@ -67,6 +66,42 @@ class Repository {
         }
         
         return $entity;
+    }
+
+    /**
+     * Returns all rows matching all conditions passed
+     *
+     * @param $conditionsArray
+     * @return array
+     */
+    public function getByConditions($conditionsArray) {
+        $query = $this->createQuery();
+        foreach ($conditionsArray as $condition => $value) {
+            $query->where($condition, $value);
+        }
+        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+
+        $entities = [];
+        if ($result) {
+            foreach ($result as $row) {
+                $entity = clone $this->getEntity();
+                $entity->populate($row);
+                $entities[] = $entity;
+            }
+        }
+        return $entities;
+    }
+
+    /**
+     * Returns all rows matching specific condition given
+     *
+     * @param $condition
+     * @param $value
+     * @return array
+     */
+    public function getByCondition($condition, $value) {
+        $conditionsArray = [$condition => $value];
+        return $this->getByConditions($conditionsArray);
     }
     
     /**

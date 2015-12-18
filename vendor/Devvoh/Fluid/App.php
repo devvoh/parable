@@ -42,13 +42,6 @@ class App {
      * Starts the App class and does some initial setup
      */
     public static function start() {
-        // If debug = 1, enableDebug, otherwise, disable
-        if (isset($_GET['debug']) && $_GET['debug'] == 1) {
-            self::enableDebug();
-        } else {
-            self::disableDebug();
-        }
-
         // Find out what modules we have
         self::loadModules();
 
@@ -82,7 +75,6 @@ class App {
 
         // Set the appropriate log directory & default file name
         self::getLog()->setPath(self::getBaseDir() . 'var' . DS . 'log');
-        self::getLog()->setDefaultLogFile('fluid.log');
 
         // Start the session
         self::getSession()->startSession();
@@ -94,8 +86,10 @@ class App {
     public static function loadModules() {
         $dir = self::getDir('app/modules') . DS . '*';
         foreach (glob($dir) as $filename) {
-            self::$modules[end(explode(DS, $filename))] = [
-                'name' => end(explode(DS, $filename)),
+            $filenameArray = explode(DS, $filename);
+            $moduleName = end($filenameArray);
+            self::$modules[$moduleName] = [
+                'name' => $moduleName,
                 'path' => $filename,
             ];
         }

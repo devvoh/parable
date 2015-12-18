@@ -12,8 +12,8 @@ namespace Devvoh\Components;
 
 class Log {
 
-    protected $path             = './';
-    protected $defaultLogFile   = 'app.log';
+    protected $path             = 'var/log';
+    protected $defaultLogFile   = 'fluid.log';
     protected $mode             = 0777;
 
     /**
