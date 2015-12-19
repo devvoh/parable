@@ -40,6 +40,8 @@ class Entity {
 
         $query = $this->createQuery();
 
+        $now = (new \DateTime())->format('Y-m-d H:i:s');
+
         if ($this->id) {
             $query->setAction('update');
             $query->addValue($this->getTableKey(), $this->id);
@@ -50,7 +52,8 @@ class Entity {
 
             // Since it's an update, add updated_at if the model implements it
             if (property_exists($this, 'updated_at')) {
-                $query->addValue('updated_at', (new \DateTime())->format('Y-m-d H:i:s'));
+                $query->addValue('updated_at', $now);
+                $this->updated_at = $now;
             }
         } else {
             $query->setAction('insert');
@@ -61,7 +64,8 @@ class Entity {
 
             // Since it's an insert, add created_at if the model implements it
             if (property_exists($this, 'created_at')) {
-                $query->addValue('created_at', (new \DateTime())->format('Y-m-d H:i:s'));
+                $query->addValue('created_at', $now);
+                $this->created_at = $now;
             }
         }
         return App::getDatabase()->query($query);
