@@ -20,7 +20,7 @@ class Entity {
 
     /**
      * Generate a query set to use the current Entity's table name & key
-     * 
+     *
      * @return \Devvoh\Components\Query
      */
     public function createQuery() {
@@ -29,47 +29,47 @@ class Entity {
         $query->setTableKey($this->getTableKey());
         return $query;
     }
-    
+
     /**
      * Saves the entity, either inserting (no id) or updating (id)
-     * 
+     *
      * @return mixed
      */
     public function save() {
         $array = $this->toArray();
 
         $query = $this->createQuery();
-    
+
         if ($this->id) {
             $query->setAction('update');
             $query->addValue($this->getTableKey(), $this->id);
-    
+
             foreach ($array as $key => $value) {
                 $query->addValue($key, $value);
             }
 
             // Since it's an update, add updated_at if the model implements it
-            if (isset($array['updated_at'])) {
-                $query->addValue('updated_at', (new DateTime())->format('Y-m-d H:i:s'));
+            if (property_exists($this, 'updated_at')) {
+                $query->addValue('updated_at', (new \DateTime())->format('Y-m-d H:i:s'));
             }
         } else {
             $query->setAction('insert');
-    
+
             foreach ($array as $key => $value) {
                 $query->addValue($key, $value);
             }
 
             // Since it's an insert, add created_at if the model implements it
-            if (isset($array['created_at'])) {
-                $query->addValue('created_at', (new DateTime())->format('Y-m-d H:i:s'));
+            if (property_exists($this, 'created_at')) {
+                $query->addValue('created_at', (new \DateTime())->format('Y-m-d H:i:s'));
             }
         }
         return App::getDatabase()->query($query);
     }
-    
+
     /**
      * Generates an array of the current entity, without the protected values
-     * 
+     *
      * @return array
      */
     public function toArray() {
@@ -86,11 +86,11 @@ class Entity {
         }
         return $array;
     }
-    
+
     /**
      * Attempts to use stored mapper array to map fields from the current entity's properties to what is set in the
      * array.
-     * 
+     *
      * @return array
      */
     public function toMappedArray($array) {
@@ -103,7 +103,7 @@ class Entity {
 
     /**
      * Deletes the current entity from the database
-     * 
+     *
      * @return mixed
      */
     public function delete() {
@@ -112,10 +112,10 @@ class Entity {
         $query->where($this->getTableKey() . ' = ?', $this->id);
         return App::getDatabase()->query($query);
     }
-    
+
     /**
      * Populates the current entity with the data provided
-     * 
+     *
      * @param array $data
      *
      * @return $this;
@@ -188,5 +188,5 @@ class Entity {
     public function getMapper() {
         return $this->mapper;
     }
-    
+
 }
