@@ -40,7 +40,7 @@ class Entity {
 
         $query = $this->createQuery();
     
-        if ($this->getId()) {
+        if ($this->id) {
             $query->setAction('update');
             $query->addValue($this->getTableKey(), $this->id);
     
@@ -109,7 +109,7 @@ class Entity {
     public function delete() {
         $query = $this->createQuery();
         $query->setAction('delete');
-        $query->where($this->getTableKey() . ' = ?', $this->getId());
+        $query->where($this->getTableKey() . ' = ?', $this->id);
         return App::getDatabase()->query($query);
     }
     
