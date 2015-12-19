@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Database {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $type     = null;
     protected $location = null;
@@ -33,8 +32,7 @@ class Database {
      * Set the type
      *
      * @param $type
-     *
-     * @return \Devvoh\Components\Database
+     * @return $this
      */
     public function setType($type) {
         $this->type = $type;
@@ -54,8 +52,7 @@ class Database {
      * Set the location
      *
      * @param $location
-     *
-     * @return \Devvoh\Components\Database
+     * @return $this
      */
     public function setLocation($location) {
         $this->location = $location;
@@ -75,8 +72,7 @@ class Database {
      * Set the username
      *
      * @param $username
-     *
-     * @return \Devvoh\Components\Database
+     * @return $this
      */
     public function setUsername($username) {
         $this->username = $username;
@@ -96,8 +92,7 @@ class Database {
      * Set the password
      *
      * @param $password
-     *
-     * @return \Devvoh\Components\Database
+     * @return $this
      */
     public function setPassword($password) {
         $this->password = $password;
@@ -117,8 +112,7 @@ class Database {
      * Set the database
      *
      * @param $database
-     *
-     * @return \Devvoh\Components\Database
+     * @return $this
      */
     public function setDatabase($database) {
         $this->database = $database;
@@ -153,8 +147,7 @@ class Database {
      * Sets the instance
      *
      * @param $instance
-     *
-     * @return \Devvoh\Components\Database
+     * @return $this
      */
     public function setInstance($instance) {
         $this->instance = $instance;
@@ -165,7 +158,6 @@ class Database {
      * If an instance is available, quote/escape the message through PDO's quote function
      *
      * @param $string
-     *
      * @return string|false
      */
     public function quote($string) {

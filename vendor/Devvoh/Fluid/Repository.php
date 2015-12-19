@@ -13,8 +13,6 @@ namespace Devvoh\Fluid;
 use \Devvoh\Fluid\App;
 
 class Repository {
-    use \Devvoh\Components\Traits\GetClassName;
-    use \Devvoh\Components\Traits\MagicGetSet;
 
     protected $entity = null;
 
@@ -69,6 +67,42 @@ class Repository {
         
         return $entity;
     }
+
+    /**
+     * Returns all rows matching all conditions passed
+     *
+     * @param $conditionsArray
+     * @return array
+     */
+    public function getByConditions($conditionsArray) {
+        $query = $this->createQuery();
+        foreach ($conditionsArray as $condition => $value) {
+            $query->where($condition, $value);
+        }
+        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+
+        $entities = [];
+        if ($result) {
+            foreach ($result as $row) {
+                $entity = clone $this->getEntity();
+                $entity->populate($row);
+                $entities[] = $entity;
+            }
+        }
+        return $entities;
+    }
+
+    /**
+     * Returns all rows matching specific condition given
+     *
+     * @param $condition
+     * @param $value
+     * @return array
+     */
+    public function getByCondition($condition, $value) {
+        $conditionsArray = [$condition => $value];
+        return $this->getByConditions($conditionsArray);
+    }
     
     /**
      * Returns a fresh clone of the stored Entity
@@ -77,5 +111,25 @@ class Repository {
      */
     public function createEntity() {
         return clone $this->getEntity();
+    }
+
+    /**
+     * Set an entity on the repository. Its values don't matter, it'll just be used for configuration purposes.
+     *
+     * @param \Devvoh\Fluid\Entity $entity
+     * @return $this
+     */
+    public function setEntity($entity) {
+        $this->entity = $entity;
+        return $this;
+    }
+
+    /**
+     * Return entity
+     *
+     * @return \Devvoh\Fluid\Entity|null
+     */
+    public function getEntity() {
+        return $this->entity;
     }
 }

@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Router {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $currentPath  = null;
     protected $routes       = null;
@@ -20,7 +19,6 @@ class Router {
      * Route the path given or simply the current path being looked at
      *
      * @param null|string $path
-     *
      * @return null|array|bool
      */
     public function match($path = null) {
@@ -104,7 +102,6 @@ class Router {
      * Returns a route by name
      *
      * @param $name
-     *
      * @return null|array
      */
     public function getRouteByName($name) {
@@ -121,7 +118,6 @@ class Router {
      *
      * @param       $routeName
      * @param array $params
-     *
      * @return string|null
      */
     public function buildRoute($routeName, $params = []) {
@@ -157,8 +153,7 @@ class Router {
      * Add an array of routes to the router
      *
      * @param null $routes
-     *
-     * @return \Devvoh\Components\Router|false
+     * @return $this|false
      */
     public function addRoutes($routes = null) {
         if (!$routes) {
@@ -175,8 +170,7 @@ class Router {
      *
      * @param $name
      * @param $route
-     *
-     * @return \Devvoh\Components\Router
+     * @return $this
      * @throws Exception
      */
     public function addRoute($name, $route) {

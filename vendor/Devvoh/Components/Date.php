@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Date {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $timezone = null;
 
@@ -28,7 +27,7 @@ class Date {
      * Set the timezone in string or DateTimeZone format
      *
      * @param $timezone
-     * @return \Devvoh\Components\Date
+     * @return $this
      */
     public function setTimezone($timezone) {
         if (!$timezone instanceof \DateTimeZone) {

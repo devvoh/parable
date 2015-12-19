@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Dock {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $docks = [];
 
@@ -21,8 +20,7 @@ class Dock {
      * @param null|string   $event
      * @param null|callable $closure
      * @param null          $viewFile
-     *
-     * @return \Devvoh\Components\Dock|false
+     * @return $this|false
      */
     public function into($event = null, $closure = null, $viewFile = null) {
         // Check if all data is given and correct
@@ -45,8 +43,7 @@ class Dock {
      *
      * @param null $event
      * @param null $payload
-     *
-     * @return \Devvoh\Components\Dock|false
+     * @return $this|false
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct

@@ -14,13 +14,11 @@ namespace Devvoh\Fluid\App;
 use \Devvoh\Fluid\App;
 
 class View {
-    use \Devvoh\Components\Traits\GetClassName;
 
     /**
      * Loads and shows the template file
      *
      * @param $file
-     *
      * @return $this
      */
     public function loadTemplate($file) {
@@ -35,7 +33,6 @@ class View {
      * Loads a partial into an output buffer and returns the parsed result
      *
      * @param $file
-     *
      * @return null|string
      */
     public function partial($file, $module = 'base') {
@@ -70,7 +67,6 @@ class View {
      *
      * @param $method
      * @param $args
-     *
      * @return bool
      */
     public function __call($method, $args) {

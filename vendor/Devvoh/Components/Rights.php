@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Rights {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $rights = [];
 
@@ -29,7 +28,6 @@ class Rights {
      * Add a right to the list. The correct value is calculated automatically.
      *
      * @param $name
-     *
      * @return $this
      */
     public function addRight($name) {
@@ -45,7 +43,6 @@ class Rights {
 
     /**
      * Return all rights
-     *
      * @return array
      */
     public function getRights() {
@@ -56,7 +53,6 @@ class Rights {
      * Get a specific right by name
      *
      * @param $name
-     *
      * @return int|false
      */
     public function getRight($name) {
@@ -71,7 +67,6 @@ class Rights {
      *
      * @param $provided
      * @param $name
-     *
      * @return bool
      */
     public function check($provided, $name) {
@@ -83,7 +78,6 @@ class Rights {
      * Combine all right values in $rights into a keep-high combined result
      *
      * @param $rights
-     *
      * @return string
      */
     public function combine($rights) {

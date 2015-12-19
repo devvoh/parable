@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Hook {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected $hooks = [];
 
@@ -20,8 +19,7 @@ class Hook {
      *
      * @param null|string   $event
      * @param null|callable $closure
-     *
-     * @return \Devvoh\Components\Hook|false
+     * @return $this|false
      */
     public function into($event = null, $closure = null) {
         // Check if all data is given and correct
@@ -41,8 +39,7 @@ class Hook {
      *
      * @param null $event
      * @param null $payload
-     *
-     * @return \Devvoh\Components\Hook|false
+     * @return $this|false
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct

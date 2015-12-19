@@ -11,7 +11,6 @@
 namespace Devvoh\Components;
 
 class Debug {
-    use \Devvoh\Components\Traits\GetClassName;
 
     protected static $timerStart = 0;
     protected static $timerEnd   = 0;
