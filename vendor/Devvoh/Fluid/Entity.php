@@ -47,11 +47,21 @@ class Entity {
             foreach ($array as $key => $value) {
                 $query->addValue($key, $value);
             }
+
+            // Since it's an update, add updated_at if the model implements it
+            if (isset($array['updated_at'])) {
+                $query->addValue('updated_at', (new DateTime())->format('Y-m-d H:i:s'));
+            }
         } else {
             $query->setAction('insert');
     
             foreach ($array as $key => $value) {
                 $query->addValue($key, $value);
+            }
+
+            // Since it's an insert, add created_at if the model implements it
+            if (isset($array['created_at'])) {
+                $query->addValue('created_at', (new DateTime())->format('Y-m-d H:i:s'));
             }
         }
         return App::getDatabase()->query($query);
