@@ -76,6 +76,14 @@ class App {
         // Set the appropriate log directory & default file name
         self::getLog()->setPath(self::getBaseDir() . 'var' . DS . 'log');
 
+        // And see if there's additional rights levels we should add
+        if (self::getConfig()->get('rights_add')) {
+            $toAdd = explode(',', self::getConfig()->get('rights_add'));
+            foreach ($toAdd as $right) {
+                self::getRights()->addRight(trim($right));
+            }
+        }
+
         // Start the session
         self::getSession()->startSession();
     }
