@@ -68,7 +68,11 @@ class Entity {
                 $this->created_at = $now;
             }
         }
-        return App::getDatabase()->query($query);
+        $result = App::getDatabase()->query($query);
+        if ($result) {
+            $this->id = $query->getPdoInstance()->lastInsertId();
+        }
+        return $result;
     }
 
     /**
