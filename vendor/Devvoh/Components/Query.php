@@ -191,7 +191,7 @@ class Query {
             // set select & what needs to be selected
             $query[] = "SELECT " . $this->select;
             // table
-            $query[] = "FROM " . $this->tableName;
+            $query[] = "FROM " . $this->pdoInstance->quote($this->tableName);
 
             // Add the left joins
             if (count($this->joins) > 0) {
@@ -250,7 +250,7 @@ class Query {
         } elseif ($this->action === 'delete') {
 
             // set delete to the proper table
-            $query[] = "DELETE FROM " . $this->tableName;
+            $query[] = "DELETE FROM " . $this->pdoInstance->quote($this->tableName);
 
             // now get the where clauses
             if (count($this->where) > 0) {
@@ -270,7 +270,7 @@ class Query {
         } elseif ($this->action === 'update') {
 
             // set update to the proper table
-            $query[] = "UPDATE " . $this->tableName;
+            $query[] = "UPDATE " . $this->pdoInstance->quote($this->tableName);
 
             // now get the values
             if (count($this->values) > 0) {
@@ -293,7 +293,7 @@ class Query {
         } elseif ($this->action === 'insert') {
 
             // set insert to the proper table
-            $query[] = "INSERT INTO " . $this->tableName;
+            $query[] = "INSERT INTO " . $this->pdoInstance->quote($this->tableName);
 
             // now get the values
             if (count($this->values) > 0) {

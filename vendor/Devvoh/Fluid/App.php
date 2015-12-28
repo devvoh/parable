@@ -35,6 +35,7 @@ class App {
     static protected $rights            = null;
     static protected $date              = null;
     static protected $curl              = null;
+    static protected $validate          = null;
     static protected $currentModule     = null;
     static protected $modules           = array();
 
@@ -75,6 +76,14 @@ class App {
 
         // Set the appropriate log directory & default file name
         self::getLog()->setPath(self::getBaseDir() . 'var' . DS . 'log');
+
+        // And see if there's additional rights levels we should add
+        if (self::getConfig()->get('rights_add')) {
+            $toAdd = explode(',', self::getConfig()->get('rights_add'));
+            foreach ($toAdd as $right) {
+                self::getRights()->addRight(trim($right));
+            }
+        }
 
         // Start the session
         self::getSession()->startSession();
@@ -433,6 +442,18 @@ class App {
             self::$curl = new \Devvoh\Components\Curl();
         }
         return self::$curl;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Validate instance
+     *
+     * @return \Devvoh\Components\Validate
+     */
+    public static function getValidate() {
+        if (!self::$validate) {
+            self::$validate = new \Devvoh\Components\Validate();
+        }
+        return self::$validate;
     }
 
     /**

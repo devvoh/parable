@@ -51,9 +51,15 @@ spl_autoload_register(function ($class) {
  */
 spl_autoload_register(function ($class) {
     if (strpos($class, '_model') !== false) {
+        // Remove _model from the end in the most concrete way possible (str_replace might remove too many,
+        // and rtrim sometimes removed too much as well).
         $classParts = explode('_', $class);
-        $modelName = $classParts[0];
-        $modelType = $classParts[1];
+        $lastPart = count($classParts) - 1;
+        if ($classParts[$lastPart] == 'model') {
+            unset($classParts[$lastPart]);
+        }
+        $modelName = implode('_', $classParts);
+
         foreach (\Devvoh\Fluid\App::getModules() as $module) {
             $path = $module['path'] . DS . 'model' . DS . $modelName . '.php';
             if (is_file($path)) {
