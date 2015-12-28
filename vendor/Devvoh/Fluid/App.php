@@ -35,6 +35,7 @@ class App {
     static protected $rights            = null;
     static protected $date              = null;
     static protected $curl              = null;
+    static protected $validate          = null;
     static protected $currentModule     = null;
     static protected $modules           = array();
 
@@ -441,6 +442,18 @@ class App {
             self::$curl = new \Devvoh\Components\Curl();
         }
         return self::$curl;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Validate instance
+     *
+     * @return \Devvoh\Components\Validate
+     */
+    public static function getValidate() {
+        if (!self::$validate) {
+            self::$validate = new \Devvoh\Components\Validate();
+        }
+        return self::$validate;
     }
 
     /**

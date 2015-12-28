@@ -17,6 +17,7 @@ class Entity {
     protected $tableName    = null;
     protected $tableKey     = null;
     protected $mapper       = null;
+    protected $validator    = [];
 
     /**
      * Generate a query set to use the current Entity's table name & key
@@ -195,6 +196,32 @@ class Entity {
      */
     public function getMapper() {
         return $this->mapper;
+    }
+
+    /**
+     * Set the validator array
+     *
+     * @param $validator
+     * @return $this
+     */
+    public function setValidator($validator) {
+        $this->validator = $validator;
+        return $this;
+    }
+
+    /**
+     * Return the validator array
+     *
+     * @return array
+     */
+    public function getValidator() {
+        return $this->validator;
+    }
+
+    public function validate($returnBool = true) {
+        $data = $this->toArray();
+        $validator = $this->getValidator();
+        return App::getValidate()->run($data, $validator, $returnBool);
     }
 
 }
