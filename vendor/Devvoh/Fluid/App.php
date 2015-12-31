@@ -37,7 +37,8 @@ class App {
     static protected $curl              = null;
     static protected $validate          = null;
     static protected $currentModule     = null;
-    static protected $modules           = array();
+    static protected $modules           = [];
+    static protected $modelTypes        = ['model', 'controller'];
 
     /**
      * Starts the App class and does some initial setup
@@ -84,6 +85,13 @@ class App {
                 self::getRights()->addRight(trim($right));
             }
         }
+        // If there's model_types_add configured, we're going to add these so we can autoload them too
+        if (self::getConfig()->get('model_types_add')) {
+            $toAdd = explode(',', self::getConfig()->get('model_types_add'));
+            foreach ($toAdd as $type) {
+                self::addModelType(trim($type));
+            }
+        }
 
         // Start the session
         self::getSession()->startSession();
@@ -111,6 +119,24 @@ class App {
      */
     public static function getModules() {
         return self::$modules;
+    }
+
+    /**
+     * Return array of model types for the autoloader
+     *
+     * @return mixed
+     */
+    public static function getModelTypes() {
+        return self::$modelTypes;
+    }
+
+    /**
+     * Add a model type to the autoloader list
+     *
+     * @param $type
+     */
+    public static function addModelType($type) {
+        self::$modelTypes[] = $type;
     }
 
     /**

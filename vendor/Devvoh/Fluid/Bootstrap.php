@@ -50,18 +50,25 @@ spl_autoload_register(function ($class) {
  * Register Fluid entity autoloader
  */
 spl_autoload_register(function ($class) {
-    if (strpos($class, '_model') !== false) {
-        // Remove _model from the end in the most concrete way possible (str_replace might remove too many,
-        // and rtrim sometimes removed too much as well).
-        $classParts = explode('_', $class);
-        $lastPart = count($classParts) - 1;
-        if ($classParts[$lastPart] == 'model') {
-            unset($classParts[$lastPart]);
+    $modelTypes = \Devvoh\Fluid\App::getModelTypes();
+    $modelName = null;
+    foreach ($modelTypes as $modelType) {
+        if (strpos($class, '_'.$modelType) !== false) {
+            // Remove modelType from the end in the most concrete way possible (str_replace might remove too much,
+            // and rtrim sometimes removes too much as well).
+            $classParts = explode('_', $class);
+            $lastPart = count($classParts) - 1;
+            $lastPartName = $classParts[$lastPart];
+            if ($lastPartName == $modelType) {
+                unset($classParts[$lastPart]);
+            }
+            $modelName = implode('_', $classParts);
         }
-        $modelName = implode('_', $classParts);
+    }
 
+    if ($modelName) {
         foreach (\Devvoh\Fluid\App::getModules() as $module) {
-            $path = $module['path'] . DS . 'model' . DS . $modelName . '.php';
+            $path = $module['path'] . DS . $lastPartName . DS . $modelName . '.php';
             if (is_file($path)) {
                 require_once($path);
                 return true;
