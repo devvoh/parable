@@ -14,7 +14,8 @@ use \Devvoh\Fluid\App;
 
 class Repository {
 
-    protected $entity = null;
+    protected $entity       = null;
+    protected $onlyCount    = false;
 
     /**
      * Generate a query set to use the current Entity's table name & key
@@ -25,6 +26,9 @@ class Repository {
         $query = App::createQuery();
         $query->setTableName($this->getEntity()->getTableName());
         $query->setTableKey($this->getEntity()->getTableKey());
+        if ($this->getOnlyCount()) {
+            $query->select('count(*)');
+        }
         return $query;
     }
 
@@ -39,11 +43,7 @@ class Repository {
         
         $entities = [];
         if ($result) {
-            foreach ($result as $row) {
-                $entity = clone $this->getEntity();
-                $entity->populate($row);
-                $entities[] = $entity;
-            }
+            $entities = $this->handleResult($result);
         }
         return $entities;
     }
@@ -61,8 +61,8 @@ class Repository {
         
         $entity = null;
         if ($result) {
-            $entity = clone $this->getEntity();
-            $entity->populate(end($result));
+            $entities = $this->handleResult($result);
+            $entity = $entities[0];
         }
         
         return $entity;
@@ -83,11 +83,7 @@ class Repository {
 
         $entities = [];
         if ($result) {
-            foreach ($result as $row) {
-                $entity = clone $this->getEntity();
-                $entity->populate($row);
-                $entities[] = $entity;
-            }
+            $entities = $this->handleResult($result);
         }
         return $entities;
     }
@@ -102,6 +98,28 @@ class Repository {
     public function getByCondition($condition, $value) {
         $conditionsArray = [$condition => $value];
         return $this->getByConditions($conditionsArray);
+    }
+
+    public function handleResult($result) {
+        /**
+         * If we're only counting, return the count result as integer
+         */
+        if ($this->getOnlyCount()) {
+            foreach ($result[0] as $row) {
+                return (int)$row;
+            }
+        }
+
+        /**
+         * Not a count, so create entities for every row in the result
+         */
+        $entities = [];
+        foreach ($result as $row) {
+            $entity = clone $this->getEntity();
+            $entity->populate($row);
+            $entities[] = $entity;
+        }
+        return $entities;
     }
     
     /**
@@ -131,5 +149,25 @@ class Repository {
      */
     public function getEntity() {
         return $this->entity;
+    }
+
+    /**
+     * Set onlyCount to true or false
+     *
+     * @param $value
+     * @return $this
+     */
+    public function setOnlyCount($value) {
+        $this->onlyCount = (bool)$value;
+        return $this;
+    }
+
+    /**
+     * Return the onlyCount value
+     *
+     * @return bool
+     */
+    public function getOnlyCount() {
+        return $this->onlyCount;
     }
 }
