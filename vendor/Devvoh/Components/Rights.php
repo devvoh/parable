@@ -77,6 +77,8 @@ class Rights {
     /**
      * Combine all right values in $rights into a keep-high combined result
      *
+     * Takes an array of binary string values ([00011], [10011], ...])
+     *
      * @param $rights
      * @return string
      */
