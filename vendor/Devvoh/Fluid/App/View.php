@@ -70,6 +70,9 @@ class View {
      * @return bool
      */
     public function __call($method, $args) {
+        if (count($args) == 1) {
+            $args = $args[0];
+        }
         if (method_exists('\Devvoh\Fluid\App', $method)) {
             return App::$method($args);
         }

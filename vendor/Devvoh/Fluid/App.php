@@ -643,6 +643,9 @@ class App {
         if (!$url) {
             return false;
         }
+        if (strpos($url, 'http://') === false) {
+            $url = self::getUrl($url);
+        }
         header('location: ' . $url);
         exit;
     }
