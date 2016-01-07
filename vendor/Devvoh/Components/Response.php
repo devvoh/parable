@@ -13,9 +13,10 @@ namespace Devvoh\Components;
 class Response {
 
     protected $contentTypes = [
-        'json' => 'application/json',
-        'html' => 'text/html',
-        'xml' => 'text/xml',
+        'json'  => 'application/json',
+        'html'  => 'text/html',
+        'xml'   => 'text/xml',
+        'js'    => 'application/javascript',
     ];
     protected $charset      = 'utf-8';
     protected $contentType  = 'html';
@@ -61,13 +62,16 @@ class Response {
     }
 
     /**
-     * Set the content type
+     * Set the content type, based on either the short-hand (array key) or the full string (value/in_array)
      *
      * @param $type
      * @return $this
      */
     public function setContentType($type) {
-        if (array_key_exists($type, $this->contentTypes)) {
+        if (
+            array_key_exists($type, $this->contentTypes)
+            || in_array($type, $this->contentTypes)
+        ) {
             $this->contentType = $type;
         }
         return $this;
