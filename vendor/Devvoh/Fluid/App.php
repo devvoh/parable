@@ -53,6 +53,7 @@ class App {
         // Set debug enabled/disabled based on config
         if (self::getConfig()->get('debug_enabled')) {
             self::enableDebug();
+            self::getDebug()->startTimer();
         } else {
             self::disableDebug();
         }
