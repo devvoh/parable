@@ -38,7 +38,6 @@ class App {
     static protected $validate          = null;
     static protected $currentModule     = null;
     static protected $modules           = [];
-    static protected $modelTypes        = ['model', 'controller'];
 
     /**
      * Starts the App class and does some initial setup
@@ -86,13 +85,6 @@ class App {
                 self::getRights()->addRight(trim($right));
             }
         }
-        // If there's model_types_add configured, we're going to add these so we can autoload them too
-        if (self::getConfig()->get('model_types_add')) {
-            $toAdd = explode(',', self::getConfig()->get('model_types_add'));
-            foreach ($toAdd as $type) {
-                self::addModelType(trim($type));
-            }
-        }
 
         // Start the session
         self::getSession()->startSession();
@@ -120,24 +112,6 @@ class App {
      */
     public static function getModules() {
         return self::$modules;
-    }
-
-    /**
-     * Return array of model types for the autoloader
-     *
-     * @return mixed
-     */
-    public static function getModelTypes() {
-        return self::$modelTypes;
-    }
-
-    /**
-     * Add a model type to the autoloader list
-     *
-     * @param $type
-     */
-    public static function addModelType($type) {
-        self::$modelTypes[] = $type;
     }
 
     /**
@@ -514,8 +488,11 @@ class App {
      * @return \Devvoh\Components\Repository
      */
     public static function createRepository($entityName = null) {
-        $entityName = $entityName . '_model';
         $repository = new \Devvoh\Fluid\Repository();
+
+        // Build the proper entity name
+        $entityName = '\\' . self::$currentModule . '\\Model\\' . $entityName;
+
         $entity = new $entityName();
         $repository->setEntity($entity);
         return $repository;
@@ -554,7 +531,7 @@ class App {
      */
     public static function collectRoutes() {
         foreach (self::getModules() as $module) {
-            $routerFilename = $module['path'] . DS . 'routes' . DS . 'routes.php';
+            $routerFilename = $module['path'] . DS . 'Routes.php';
             if (file_exists($routerFilename)) {
                 require_once($routerFilename);
             }
@@ -600,18 +577,19 @@ class App {
 
             // Check for view param
             if (isset($route['view'])) {
-                $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['view'] . '.phtml';
+                $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['view'] . '.phtml';
             }
         } else {
             // Not a closure, build a controller/action combination
-            $controllerFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'controller' . DS . $route['controller'] . '.php';
-            $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'view' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
+            $classNameFull = '\\' . $route['module'] . '\\' . 'Controller' . '\\' . $route['controller'];
+            $controllerFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'Controller' . DS . $route['controller'] . '.php';
+            $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
             if (file_exists($controllerFile)) {
                 require_once($controllerFile);
                 // Get all the data
                 $controllerName = $route['controller'];
                 $action         = $route['action'];
-                $controller     = new $controllerName();
+                $controller     = new $classNameFull();
                 // And call the action if it exists
                 if (method_exists($controller, $action)) {
                     $controller->$action();

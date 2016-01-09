@@ -28,7 +28,7 @@ if (App::matchRoute()) {
         echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
     }
 } else {
-    echo App::getView()->partial('error/404.phtml');
+    echo App::getView()->partial('Error/404.phtml');
 }
 
 /**

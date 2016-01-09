@@ -22,11 +22,13 @@
  *    pseudo-code. Will be tested and implemented properly later.
  */
 
+namespace App\Model;
+
 use \Devvoh\Fluid\App as App;
 
-class users_model extends \Devvoh\Fluid\Entity {
+class Users extends \Devvoh\Fluid\Entity {
 
-    protected $tableName    = 'test';
+    protected $tableName    = 'users';
     protected $tableKey     = 'id';
 
     public $id;
