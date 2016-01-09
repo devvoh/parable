@@ -7,9 +7,11 @@
  * @author      Robin de Graaf (hello@devvoh.com)
  */
 
+namespace App\Controller;
+
 use \Devvoh\Fluid\App as App;
 
-class home extends \Devvoh\Fluid\Controller {
+class Home extends \Devvoh\Fluid\Controller {
 
     public function index() {
     }

@@ -18,6 +18,7 @@ define(DS, DIRECTORY_SEPARATOR);
  */
 error_reporting(E_ALL);
 ini_set('log_errors', '1');
+ini_set('display_errors', '1');
 
 /**
  * Register Fluid App autoloader
@@ -34,45 +35,18 @@ spl_autoload_register(function ($class) {
  * Register PSR-4 autoloader
  */
 spl_autoload_register(function ($class) {
+    $subPaths = ['vendor', 'app/modules'];
+
     // Otherwise, do it the proper way by turning the class into a file path
     $path = str_replace('\\', DS, $class);
-    $path = '../vendor/' . trim($path, DS) . '.php';
-    $path = str_replace('_', DS, $path);
+    $path = '../##replace##/' . trim($path, DS) . '.php';
     $path = str_replace('/', DS, $path);
 
-    if (file_exists($path)) {
-        require_once($path);
-        return true;
-    }
-    return false;
-});
-/**
- * Register Fluid entity autoloader
- */
-spl_autoload_register(function ($class) {
-    $modelTypes = \Devvoh\Fluid\App::getModelTypes();
-    $modelName = null;
-    foreach ($modelTypes as $modelType) {
-        if (strpos($class, '_'.$modelType) !== false) {
-            // Remove modelType from the end in the most concrete way possible (str_replace might remove too much,
-            // and rtrim sometimes removes too much as well).
-            $classParts = explode('_', $class);
-            $lastPart = count($classParts) - 1;
-            $lastPartName = $classParts[$lastPart];
-            if ($lastPartName == $modelType) {
-                unset($classParts[$lastPart]);
-            }
-            $modelName = implode('_', $classParts);
-        }
-    }
-
-    if ($modelName) {
-        foreach (\Devvoh\Fluid\App::getModules() as $module) {
-            $path = $module['path'] . DS . $lastPartName . DS . $modelName . '.php';
-            if (is_file($path)) {
-                require_once($path);
-                return true;
-            }
+    foreach ($subPaths as $subPath) {
+        $actualPath = str_replace('##replace##', $subPath, $path);
+        if (file_exists($actualPath)) {
+            require_once($actualPath);
+            return true;
         }
     }
     return false;

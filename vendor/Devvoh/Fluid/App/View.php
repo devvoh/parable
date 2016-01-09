@@ -35,12 +35,12 @@ class View {
      * @param $file
      * @return null|string
      */
-    public function partial($file, $module = 'base') {
+    public function partial($file, $module = 'Base') {
         if (App::getRoute()) {
             $module = App::getRoute()['module'];
         }
         // Build proper path
-        $dir = 'app' . DS . 'modules' . DS . $module . DS . 'view' . DS . $file;
+        $dir = 'app' . DS . 'modules' . DS . $module . DS . 'View' . DS . $file;
         $dir = App::getDir($dir);
 
         // Set return value to null as default
