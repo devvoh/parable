@@ -62,7 +62,6 @@ as singleton instances.
 - Keep following PSR-2 'almost', because ha-ha I like single-line accolades and I don't care what you say.
 - Fluid itself (without components) is ~30k now. I don't want to set a hard maximum since it'll get as big as it needs to be but I'll be damned if
   it ever gets over 200k. I can't imagine it ever needing to be that big.
-- Fix autoloaders. It's super-messy right now.
 
 And most of all, I'm just going to keep whittling away at this as time goes on.
 
