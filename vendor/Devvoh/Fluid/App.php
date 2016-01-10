@@ -584,6 +584,12 @@ class App {
             $classNameFull = '\\' . $route['module'] . '\\' . 'Controller' . '\\' . $route['controller'];
             $controllerFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'Controller' . DS . $route['controller'] . '.php';
             $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
+
+            // Just in case our controllerFile or viewTemplate variables contains any backslashes, replace them with regular ones
+            $controllerFile = str_replace('\\', '/', $controllerFile);
+            $viewTemplate = str_replace('\\', '/', $viewTemplate);
+
+            // And check whether the file exists before trying to instantiate it.
             if (file_exists($controllerFile)) {
                 require_once($controllerFile);
                 // Get all the data
