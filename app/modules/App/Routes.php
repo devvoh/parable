@@ -15,6 +15,12 @@ $routes['index'] = [
     'controller' => 'Home',
     'action' => 'index',
 ];
+$routes['test'] = [
+    'method' => 'GET',
+    'path' => '/test',
+    'controller' => 'Home\Test',
+    'action' => 'index',
+];
 
 // Add module to all routes
 foreach ($routes as &$route) {
