@@ -585,8 +585,9 @@ class App {
             $controllerFile = self::getBaseDir() . 'app/modules' . str_replace('\\', DS, $classNameFull) . '.php';
             $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
 
-            // Just in case our controllerFile variable contains any backslashes, replace them with regular ones
+            // Just in case our controllerFile or viewTemplate variables contains any backslashes, replace them with regular ones
             $controllerFile = str_replace('\\', '/', $controllerFile);
+            $viewTemplate = str_replace('\\', '/', $viewTemplate);
 
             // And check whether the file exists before trying to instantiate it.
             if (file_exists($controllerFile)) {
