@@ -582,7 +582,7 @@ class App {
         } else {
             // Not a closure, build a controller/action combination
             $classNameFull = '\\' . $route['module'] . '\\' . 'Controller' . '\\' . $route['controller'];
-            $controllerFile = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'Controller' . DS . $route['controller'] . '.php';
+            $controllerFile = self::getBaseDir() . 'app/modules' . str_replace('\\', DS, $classNameFull) . '.php';
             $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
 
             // Just in case our controllerFile or viewTemplate variables contains any backslashes, replace them with regular ones
@@ -591,18 +591,18 @@ class App {
 
             // And check whether the file exists before trying to instantiate it.
             if (file_exists($controllerFile)) {
-                require_once($controllerFile);
                 // Get all the data
-                $controllerName = $route['controller'];
                 $action         = $route['action'];
                 $controller     = new $classNameFull();
                 // And call the action if it exists
                 if (method_exists($controller, $action)) {
                     $controller->$action();
                 } else {
+                    // Invalid action
                     return false;
                 }
             } else {
+                // Invalid controller
                 return false;
             }
         }
@@ -612,7 +612,7 @@ class App {
             self::getView()->loadTemplate($viewTemplate);
         }
 
-        // And get the output buffer and add it to the Response
+        // And get the output buffer contents and add it to the Response
         $return = ob_get_clean();
         App::getResponse()->appendContent($return);
 
