@@ -12,13 +12,23 @@ namespace Devvoh\Components;
 
 class Router {
 
+    /**
+     * @var null|string
+     */
     protected $currentPath  = null;
+
+    /**
+     * @var null|array
+     */
     protected $routes       = null;
 
     /**
      * Route the path given or simply the current path being looked at
      *
+     * @todo Split parameter interpretation into separate method
+     *
      * @param null|string $path
+     *
      * @return null|array|bool
      */
     public function match($path = null) {
@@ -102,6 +112,7 @@ class Router {
      * Returns a route by name
      *
      * @param $name
+     *
      * @return null|array
      */
     public function getRouteByName($name) {
@@ -118,6 +129,7 @@ class Router {
      *
      * @param       $routeName
      * @param array $params
+     *
      * @return string|null
      */
     public function buildRoute($routeName, $params = []) {
@@ -153,6 +165,7 @@ class Router {
      * Add an array of routes to the router
      *
      * @param null $routes
+     *
      * @return $this|false
      */
     public function addRoutes($routes = null) {
@@ -170,12 +183,13 @@ class Router {
      *
      * @param $name
      * @param $route
+     *
      * @return $this
-     * @throws Exception
+     * @throws \Exception
      */
     public function addRoute($name, $route) {
         if (isset($this->routes[$name])) {
-            throw new Exception('Route already added with name: ' . $name . ' in a different module. Please use unique names.');
+            throw new \Exception('Route already added with name: ' . $name . ' in a different module. Please use unique names.');
         }
         $this->routes[$name] = $route;
         return $this;

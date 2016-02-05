@@ -12,6 +12,9 @@ namespace Devvoh\Components;
 
 class Curl {
 
+    /**
+     * @var string
+     */
     protected $userAgent = 'devvoh/components/curl';
 
     /**
@@ -27,6 +30,7 @@ class Curl {
      * Sets the user agent
      *
      * @param $userAgent
+     *
      * @return $this
      */
     public function setUserAgent($userAgent) {
@@ -38,6 +42,7 @@ class Curl {
      * Returns the result from loading url
      *
      * @param string $url
+     *
      * @return string|false
      */
     public function getContent($url = null) {
@@ -59,6 +64,7 @@ class Curl {
      * @param string $url
      * @param string $path
      * @param string $filename
+     *
      * @return string|false
      */
     public function download($url = null, $path = null, $filename = null) {

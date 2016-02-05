@@ -12,6 +12,9 @@ namespace Devvoh\Components;
 
 class Date {
 
+    /**
+     * @var null|\DateTimeZone
+     */
     protected $timezone = null;
 
     /**
@@ -26,7 +29,8 @@ class Date {
     /**
      * Set the timezone in string or DateTimeZone format
      *
-     * @param $timezone
+     * @param \DateTimeZone $timezone
+     *
      * @return $this
      */
     public function setTimezone($timezone) {
@@ -41,6 +45,7 @@ class Date {
      * Get the timezone-corrected date, either now or based on provided date string or DateTime instance
      *
      * @param null $date
+     *
      * @return \DateTime|null
      */
     public function getDateTime($date = null) {
@@ -56,6 +61,7 @@ class Date {
      *
      * @param null $date
      * @param string $format
+     *
      * @return string
      */
     public function format($date = null, $format = 'd-m-Y H:i:s') {

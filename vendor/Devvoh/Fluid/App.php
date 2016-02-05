@@ -12,31 +12,134 @@ namespace Devvoh\Fluid;
 
 class App {
 
+    /**
+     * @var null|string
+     */
     static protected $version           = null;
+
+    /**
+     * @var null|string
+     */
     static protected $baseDir           = null;
+
+    /**
+     * @var null|string
+     */
     static protected $publicUrl         = null;
-    static protected $debugEnabled      = null;
+
+    /**
+     * @var bool
+     */
+    static protected $debugEnabled      = false;
+
+    /**
+     * @var null|\Devvoh\Components\Cli
+     */
     static protected $cli               = null;
+
+    /**
+     * @var null|\Devvoh\Fluid\App\Config
+     */
     static protected $config            = null;
+
+    /**
+     * @var null|\Devvoh\Components\Hook
+     */
     static protected $hook              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Dock
+     */
     static protected $dock              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Log
+     */
     static protected $log               = null;
+
+    /**
+     * @var null|\Devvoh\Components\GetSet
+     */
     static protected $param             = null;
+
+    /**
+     * @var null|\Devvoh\Components\GetSet
+     */
     static protected $post              = null;
+
+    /**
+     * @var null|\Devvoh\Components\GetSet
+     */
     static protected $get               = null;
+
+    /**
+     * @var null|\Devvoh\Components\GetSet
+     */
     static protected $session           = null;
+
+    /**
+     * @var null|\Devvoh\Components\SessionMessage
+     */
     static protected $sessionMessage    = null;
+
+    /**
+     * @var null|\Devvoh\Components\Response
+     */
     static protected $response          = null;
+
+    /**
+     * @var null|\Devvoh\Components\Router
+     */
     static protected $router            = null;
+
+    /**
+     * @var null|\Devvoh\Components\Database
+     */
     static protected $database          = null;
+
+    /**
+     * @var null|array
+     */
     static protected $route             = null;
+
+    /**
+     * @var null|\Devvoh\Components\Debug
+     */
     static protected $debug             = null;
+
+    /**
+     * @var null|\Devvoh\Fluid\App\View
+     */
     static protected $view              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Rights
+     */
     static protected $rights            = null;
+
+    /**
+     * @var null|\Devvoh\Components\Date
+     */
     static protected $date              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Curl
+     */
     static protected $curl              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Validate
+     */
     static protected $validate          = null;
+
+    /**
+     * @var null|string
+     */
     static protected $currentModule     = null;
+
+    /**
+     * @var array
+     */
     static protected $modules           = [];
 
     /**
@@ -485,7 +588,9 @@ class App {
     /**
      * Returns a new Repository object
      *
-     * @return \Devvoh\Components\Repository
+     * @param null $entityName
+     *
+     * @return \Devvoh\Fluid\Repository
      */
     public static function createRepository($entityName = null) {
         $repository = new \Devvoh\Fluid\Repository();
@@ -622,6 +727,8 @@ class App {
     /**
      * Redirect to $url
      *
+     * @param null $url
+     *
      * @return false
      */
     public static function redirect($url = null) {
@@ -638,7 +745,10 @@ class App {
     /**
      * Redirect to route
      *
-     * @return false
+     * @param null $routeName
+     * @param null $params
+     *
+     * @return bool|false
      */
     public static function redirectRoute($routeName = null, $params = null) {
         if (!$routeName) {

@@ -26,6 +26,7 @@ class Config extends \Devvoh\Components\GetSet {
      * Shim to allow App to proceed without config code existing
      *
      * @throws \Exception
+     *
      * @return $this
      */
     public function load() {

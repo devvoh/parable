@@ -12,6 +12,9 @@ namespace Devvoh\Components;
 
 class Dock {
 
+    /**
+     * @var array
+     */
     protected $docks = [];
 
     /**
@@ -20,6 +23,7 @@ class Dock {
      * @param null|string   $event
      * @param null|callable $closure
      * @param null          $viewFile
+     *
      * @return $this|false
      */
     public function into($event = null, $closure = null, $viewFile = null) {
@@ -43,6 +47,7 @@ class Dock {
      *
      * @param null $event
      * @param null $payload
+     *
      * @return $this|false
      */
     public function trigger($event = null, &$payload = null) {

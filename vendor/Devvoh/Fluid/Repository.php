@@ -14,7 +14,14 @@ use \Devvoh\Fluid\App;
 
 class Repository {
 
+    /**
+     * @var null|\Devvoh\Fluid\Entity
+     */
     protected $entity       = null;
+
+    /**
+     * @var bool
+     */
     protected $onlyCount    = false;
 
     /**
@@ -34,13 +41,13 @@ class Repository {
 
     /**
      * Returns all rows for this entity type
-     * 
+     *
      * @return array
      */
     public function getAll() {
         $query = $this->createQuery();
         $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
-        
+
         $entities = [];
         if ($result) {
             $entities = $this->handleResult($result);
@@ -50,21 +57,22 @@ class Repository {
 
     /**
      * Returns a single entity
-     * 
+     *
      * @param int $id
+     *
      * @return null|\Devvoh\Fluid\Entity
      */
     public function getById($id) {
         $query = $this->createQuery();
         $query->where($this->getEntity()->getTableKey() . ' = ?', $id);
         $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
-        
+
         $entity = null;
         if ($result) {
             $entities = $this->handleResult($result);
             $entity = $entities[0];
         }
-        
+
         return $entity;
     }
 
@@ -72,6 +80,7 @@ class Repository {
      * Returns all rows matching all conditions passed
      *
      * @param $conditionsArray
+     *
      * @return array
      */
     public function getByConditions($conditionsArray) {
@@ -93,6 +102,7 @@ class Repository {
      *
      * @param $condition
      * @param $value
+     *
      * @return array
      */
     public function getByCondition($condition, $value) {
@@ -100,6 +110,13 @@ class Repository {
         return $this->getByConditions($conditionsArray);
     }
 
+    /**
+     * Handle the result of one of the get functions
+     *
+     * @param $result
+     *
+     * @return array|int
+     */
     public function handleResult($result) {
         /**
          * If we're only counting, return the count result as integer
@@ -121,10 +138,10 @@ class Repository {
         }
         return $entities;
     }
-    
+
     /**
      * Returns a fresh clone of the stored Entity
-     * 
+     *
      * @return \Devvoh\Fluid\Entity
      */
     public function createEntity() {
@@ -135,6 +152,7 @@ class Repository {
      * Set an entity on the repository. Its values don't matter, it'll just be used for configuration purposes.
      *
      * @param \Devvoh\Fluid\Entity $entity
+     *
      * @return $this
      */
     public function setEntity($entity) {
@@ -155,6 +173,7 @@ class Repository {
      * Set onlyCount to true or false
      *
      * @param $value
+     *
      * @return $this
      */
     public function setOnlyCount($value) {

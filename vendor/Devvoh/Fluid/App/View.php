@@ -19,6 +19,7 @@ class View {
      * Loads and shows the template file
      *
      * @param $file
+     *
      * @return $this
      */
     public function loadTemplate($file) {
@@ -32,7 +33,9 @@ class View {
     /**
      * Loads a partial into an output buffer and returns the parsed result
      *
-     * @param $file
+     * @param        $file
+     * @param string $module
+     *
      * @return null|string
      */
     public function partial($file, $module = 'Base') {
@@ -67,6 +70,7 @@ class View {
      *
      * @param $method
      * @param $args
+     *
      * @return bool
      */
     public function __call($method, $args) {

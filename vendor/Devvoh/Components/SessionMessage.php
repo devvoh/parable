@@ -12,7 +12,14 @@ namespace Devvoh\Components;
 
 class SessionMessage {
 
+    /**
+     * @var \Devvoh\Components\GetSet
+     */
     protected $session  = null;
+
+    /**
+     * @var array
+     */
     protected $messages = [];
 
     /**
@@ -39,6 +46,7 @@ class SessionMessage {
      * Get all messages or all messages of $type
      *
      * @param null $type
+     *
      * @return array
      */
     public function get($type = null) {
@@ -57,6 +65,7 @@ class SessionMessage {
      * Get all messages or all messages of $type and then clear those messages
      *
      * @param null $type
+     *
      * @return array
      */
     public function getClear($type = null) {
@@ -70,6 +79,7 @@ class SessionMessage {
      *
      * @param null   $message
      * @param string $type
+     *
      * @return $this
      */
     public function add($message = null, $type = 'notice') {
@@ -87,6 +97,7 @@ class SessionMessage {
      * Clear all messages or all messages of $type
      *
      * @param null $type
+     *
      * @return $this
      */
     public function clear($type = null) {
@@ -104,6 +115,7 @@ class SessionMessage {
      * Count all messages or all messages of $type
      *
      * @param null $type
+     *
      * @return int
      */
     public function count($type = null) {

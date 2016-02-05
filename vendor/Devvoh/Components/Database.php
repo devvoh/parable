@@ -12,11 +12,34 @@ namespace Devvoh\Components;
 
 class Database {
 
+    /**
+     * @var null|string
+     */
     protected $type     = null;
+
+    /**
+     * @var null|string
+     */
     protected $location = null;
+
+    /**
+     * @var null|string
+     */
     protected $username = null;
+
+    /**
+     * @var null|string
+     */
     protected $password = null;
+
+    /**
+     * @var null|string
+     */
     protected $database = null;
+
+    /**
+     * @var null|\PDO
+     */
     protected $instance = null;
 
     /**
@@ -32,6 +55,7 @@ class Database {
      * Set the type
      *
      * @param $type
+     *
      * @return $this
      */
     public function setType($type) {
@@ -52,6 +76,7 @@ class Database {
      * Set the location
      *
      * @param $location
+     *
      * @return $this
      */
     public function setLocation($location) {
@@ -72,6 +97,7 @@ class Database {
      * Set the username
      *
      * @param $username
+     *
      * @return $this
      */
     public function setUsername($username) {
@@ -92,6 +118,7 @@ class Database {
      * Set the password
      *
      * @param $password
+     *
      * @return $this
      */
     public function setPassword($password) {
@@ -112,6 +139,7 @@ class Database {
      * Set the database
      *
      * @param $database
+     *
      * @return $this
      */
     public function setDatabase($database) {
@@ -147,6 +175,7 @@ class Database {
      * Sets the instance
      *
      * @param $instance
+     *
      * @return $this
      */
     public function setInstance($instance) {
@@ -158,6 +187,7 @@ class Database {
      * If an instance is available, quote/escape the message through PDO's quote function
      *
      * @param $string
+     *
      * @return string|false
      */
     public function quote($string) {
@@ -172,6 +202,7 @@ class Database {
      * PDO result object.
      *
      * @param $query
+     *
      * @return bool|\PDOStatement
      */
     public function query($query) {
@@ -185,6 +216,7 @@ class Database {
      * Use an array to pass multiple config values at the same time
      *
      * @param array $config
+     *
      * @return $this
      * @throws \Exception
      */
@@ -194,7 +226,7 @@ class Database {
             if (method_exists($this, $method)) {
                 $this->$method($value);
             } else {
-                throw new \Exception('Tried to call non-existing method ' . $method . ' on ' . $this->getClassName());
+                throw new \Exception('Tried to call non-existing method ' . $method . ' on ' . get_class($this));
             }
         }
         return $this;

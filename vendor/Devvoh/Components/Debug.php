@@ -12,7 +12,14 @@ namespace Devvoh\Components;
 
 class Debug {
 
+    /**
+     * @var int
+     */
     protected static $timerStart = 0;
+
+    /**
+     * @var int
+     */
     protected static $timerEnd   = 0;
 
     /**

@@ -12,8 +12,19 @@ namespace Devvoh\Components;
 
 class Log {
 
+    /**
+     * @var string
+     */
     protected $path             = 'var/log';
+
+    /**
+     * @var string
+     */
     protected $defaultLogFile   = 'fluid.log';
+
+    /**
+     * @var int
+     */
     protected $mode             = 0777;
 
     /**
@@ -97,9 +108,11 @@ class Log {
      *
      * @param      $message
      * @param null $logFile
+     * @param bool $showTimezone
      * @param bool $forceWrite
-     * @throws \Exception
+     *
      * @return $this
+     * @throws \Exception
      */
     public function write($message, $logFile = null, $showTimezone = false, $forceWrite = false) {
         if (!$logFile) {

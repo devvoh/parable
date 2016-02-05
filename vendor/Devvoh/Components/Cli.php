@@ -12,8 +12,19 @@ namespace Devvoh\Components;
 
 class Cli {
 
+    /**
+     * @var array
+     */
     protected $parameters           = [];
+
+    /**
+     * @var int
+     */
     protected $lastProgressLength   = 0;
+
+    /**
+     * @var array
+     */
     protected $lines                = [];
 
     /**
@@ -75,6 +86,7 @@ class Cli {
      * Parse $params into array of parameters and values
      *
      * @param $params
+     *
      * @return $this
      */
     public function parseParameters($params) {
@@ -107,6 +119,7 @@ class Cli {
      * Get one specific parameter by key or false
      *
      * @param $key
+     *
      * @return mixed|false
      */
     public function getParameter($key) {
@@ -121,6 +134,7 @@ class Cli {
      *
      * @param      $question
      * @param bool $default
+     *
      * @return bool
      */
     public function yesNo($question, $default = true) {
@@ -148,6 +162,7 @@ class Cli {
      * Show or update progress message, which will replace itself if called again
      *
      * @param $message
+     *
      * @return $this
      */
     public function progress($message) {

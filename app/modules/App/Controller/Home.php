@@ -14,6 +14,7 @@ use \Devvoh\Fluid\App as App;
 class Home extends \Devvoh\Fluid\Controller {
 
     public function index() {
+        /** Doesn't need anything if there's just a view */
     }
 
 }
