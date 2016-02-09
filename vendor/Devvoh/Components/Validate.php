@@ -83,6 +83,8 @@ class Validate {
             // And loop through the remaining types
             foreach ($types as $type) {
                 // Some validation types require a parameter, which uses =
+                $param = null;
+
                 if (strpos($type, '=') !== false) {
                     $parts = explode('=', $type);
                     $type = $parts[0];

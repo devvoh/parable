@@ -328,6 +328,10 @@ class Query {
 
             // now get the values
             if (count($this->values) > 0) {
+                // Set the table values to defaults
+                $tableKey = 'id';
+                $tableKeyValue = null;
+
                 $values = [];
                 foreach ($this->values as $value) {
                     // skip id, since we'll use that as a where condition
@@ -351,6 +355,9 @@ class Query {
 
             // now get the values
             if (count($this->values) > 0) {
+
+                $keys = [];
+                $values = [];
                 foreach ($this->values as $value) {
                     $keys[] = "'" . $value['key'] . "'";
                     $values[] = $this->pdoInstance->quote($value['value']);

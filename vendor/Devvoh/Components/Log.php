@@ -28,7 +28,7 @@ class Log {
     protected $mode             = 0777;
 
     /**
-     * Sets the mode (0ctal)
+     * Sets the mode (octal)
      *
      * @param $mode
      * @return $this
@@ -109,12 +109,11 @@ class Log {
      * @param      $message
      * @param null $logFile
      * @param bool $showTimezone
-     * @param bool $forceWrite
      *
      * @return $this
      * @throws \Exception
      */
-    public function write($message, $logFile = null, $showTimezone = false, $forceWrite = false) {
+    public function write($message, $logFile = null, $showTimezone = false) {
         if (!$logFile) {
             $logFile = $this->getDefaultLogFile();
         }

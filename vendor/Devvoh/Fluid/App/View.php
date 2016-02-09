@@ -61,7 +61,7 @@ class View {
     }
 
     /**
-     * Allow view files to try to call static methods on App, to prevent use in phtmls or awkward
+     * Allow view files to try to call static methods on App, to prevent use in phtml files or awkward
      * \Devvoh\Fluid\App calls
      *
      * Possible uses:

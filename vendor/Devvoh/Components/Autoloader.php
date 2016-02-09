@@ -2,7 +2,7 @@
 /**
  * @package     Devvoh
  * @subpackage  Components
- * @subpackage  Autoload
+ * @subpackage  Autoloader
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
@@ -10,7 +10,7 @@
 
 namespace Devvoh\Components;
 
-class Autoload {
+class Autoloader {
 
     /**
      * @var array
@@ -53,7 +53,7 @@ class Autoload {
      *
      * @param $class
      *
-     * @return bool|void
+     * @return bool
      */
     public function load($class) {
         $path = str_replace('\\', DS, $class);
@@ -67,7 +67,7 @@ class Autoload {
                 return true;
             }
         }
-        return;
+        return false;
     }
 
 }

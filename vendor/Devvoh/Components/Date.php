@@ -20,7 +20,7 @@ class Date {
     /**
      * Return the currently set timezone
      *
-     * @return string|null
+     * @return \DateTimeZone|null
      */
     public function getTimezone() {
         return $this->timezone;
@@ -29,7 +29,7 @@ class Date {
     /**
      * Set the timezone in string or DateTimeZone format
      *
-     * @param \DateTimeZone $timezone
+     * @param \DateTimeZone|string $timezone
      *
      * @return $this
      */

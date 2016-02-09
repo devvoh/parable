@@ -23,10 +23,10 @@ ini_set('display_errors', '1');
 /**
  * Register PSR-4 compatible autoloader
  */
-$autoloadPath = __DIR__ . DS . '..' . DS . 'Components' . DS . 'Autoload.php';
+$autoloadPath = __DIR__ . DS . '..' . DS . 'Components' . DS . 'Autoloader.php';
 require_once($autoloadPath);
 
-$autoloader = new \Devvoh\Components\Autoload();
+$autoloader = new \Devvoh\Components\Autoloader();
 $autoloader->addLocation('vendor');
 $autoloader->addLocation('app' . DS . 'modules');
 $autoloader->register();
