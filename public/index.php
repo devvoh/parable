@@ -25,7 +25,7 @@ App::boot();
  */
 if (App::matchRoute()) {
     if (!App::executeRoute()) {
-        echo 'Route found but there\'s something wrong. Possibly the controller or action doesn\'t exist.';
+        echo App::getView()->partial('Error/Route.phtml');
     }
 } else {
     echo App::getView()->partial('Error/404.phtml');

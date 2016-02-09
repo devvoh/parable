@@ -52,12 +52,39 @@ class Response {
     public function sendResponse($onlyContent = false) {
         header('Content-Type: ' . $this->getContentType() . '; charset=' . $this->getCharset());
         if ($this->useOnlyContent() || $onlyContent) {
-            ob_end_clean();
-        }
-        if ($this->content) {
-            echo $this->content;
+            $this->endOB();
+            if ($this->content) {
+                echo $this->content;
+            }
+        } else {
+            echo $this->endOB();
         }
         return $this;
+    }
+
+    /**
+     * Make sure we always call sendResponse, even if we died in the meantime
+     */
+    public function __destruct() {
+        $this->sendResponse();
+    }
+
+    /**
+     * Enable output buffering
+     */
+    public function startOB() {
+        // Start by enabling output buffering
+        ob_start();
+        return $this;
+    }
+
+    /**
+     * End output buffering and return the buffer contents
+     *
+     * @return string
+     */
+    public function endOB() {
+        return ob_get_clean();
     }
 
     /**

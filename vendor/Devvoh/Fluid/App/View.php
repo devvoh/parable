@@ -39,6 +39,7 @@ class View {
      * @return null|string
      */
     public function partial($file, $module = null) {
+        // Look for a module, either as given or a current module. If neither, assume Core.
         if (!$module) {
             $module = 'Core';
             if (App::getRoute()) {
@@ -52,9 +53,9 @@ class View {
         // Set return value to null as default
         $return = null;
         if (file_exists($dir)) {
-            ob_start();
+            App::getResponse()->startOB();
             require($dir);
-            $return = ob_get_clean();
+            $return = App::getResponse()->endOB();
         }
         return $return;
     }

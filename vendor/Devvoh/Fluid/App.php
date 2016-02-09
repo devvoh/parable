@@ -146,6 +146,8 @@ class App {
      * Starts the App class and does some initial setup
      */
     public static function boot() {
+        self::getResponse()->startOB();
+
         // Find out what modules we have
         self::loadModules();
 
@@ -695,7 +697,7 @@ class App {
         }
 
         // Start a new level of output buffering to put whatever we're going to output into the Response
-        ob_start();
+        self::getResponse()->startOB();
 
         // Store the current module
         self::setCurrentModule($route['module']);
@@ -757,8 +759,7 @@ class App {
         }
 
         // And get the output buffer contents and add it to the Response
-        $return = ob_get_clean();
-        App::getResponse()->appendContent($return);
+        echo self::getResponse()->endOB();
 
         return true;
     }
