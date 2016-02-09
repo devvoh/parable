@@ -11,7 +11,7 @@ namespace App\Controller\Home;
 
 use \Devvoh\Fluid\App as App;
 
-class Test extends \Devvoh\Fluid\Controller {
+class Test extends \Core\Controller\Base {
 
     public function index() {
         echo 'This is a nested controller, using Home as a namespace node and subfolder, for more fine-grained control.';

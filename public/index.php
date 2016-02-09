@@ -16,9 +16,9 @@ use \Devvoh\Fluid\App;
 /**
  * App is the main entry point for all functionality, offering mostly static functions.
  *
- * Start the App. This will set debug and load the config
+ * Boot the App. This will set debug and load the config
  */
-App::start();
+App::boot();
 
 /**
  * Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.

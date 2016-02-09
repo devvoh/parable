@@ -24,6 +24,6 @@ $routes['test'] = [
 
 // Add module to all routes
 foreach ($routes as &$route) {
-    $route['module'] = 'App';
+    $route['module'] = App::getModuleFromPath(__DIR__);
 }
 App::getRouter()->addRoutes($routes);

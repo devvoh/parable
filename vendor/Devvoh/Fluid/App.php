@@ -145,7 +145,7 @@ class App {
     /**
      * Starts the App class and does some initial setup
      */
-    public static function start() {
+    public static function boot() {
         // Find out what modules we have
         self::loadModules();
 
@@ -281,7 +281,7 @@ class App {
      */
     public static function getViewDir($subPath = null, $module = null) {
         if (!$module) {
-            $module = self::$currentModule;
+            $module = self::getCurrentModule();
         }
 
         $dir = 'app' . DS . 'modules' . DS . $module . DS . 'view';
@@ -549,6 +549,45 @@ class App {
     }
 
     /**
+     * Returns the current module
+     *
+     * @return null|string
+     */
+    public static function getCurrentModule() {
+        return self::$currentModule;
+    }
+
+    /**
+     * Set the current module
+     *
+     * @param $currentModule
+     */
+    public static function setCurrentModule($currentModule) {
+        self::$currentModule = $currentModule;
+    }
+
+    /**
+     * Return the module name based on the given $path
+     *
+     * @param string $path
+     * @return mixed|null
+     */
+    public static function getModuleFromPath($path = null) {
+        if (!$path) {
+            return null;
+        }
+
+        $parts = explode(DS, $path);
+        $modulePart = array_pop($parts);
+        $moduleRoot = array_pop($parts);
+
+        if ($moduleRoot === 'modules') {
+            return $modulePart;
+        }
+        return null;
+    }
+
+    /**
      * Returns (and possibly instantiates) the Validate instance
      *
      * @return \Devvoh\Components\Validate
@@ -596,7 +635,7 @@ class App {
         $repository = new \Devvoh\Fluid\Repository();
 
         // Build the proper entity name
-        $entityName = '\\' . self::$currentModule . '\\Model\\' . $entityName;
+        $entityName = '\\' . self::getCurrentModule() . '\\Model\\' . $entityName;
 
         $entity = new $entityName();
         $repository->setEntity($entity);
@@ -659,7 +698,7 @@ class App {
         ob_start();
 
         // Store the current module
-        self::$currentModule = $route['module'];
+        self::setCurrentModule($route['module']);
         // Check for params
         if (isset($route['params'])) {
             foreach ($route['params'] as $param) {

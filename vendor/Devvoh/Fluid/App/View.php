@@ -33,14 +33,17 @@ class View {
     /**
      * Loads a partial into an output buffer and returns the parsed result
      *
-     * @param        $file
-     * @param string $module
+     * @param             $file
+     * @param string|null $module
      *
      * @return null|string
      */
-    public function partial($file, $module = 'Base') {
-        if (App::getRoute()) {
-            $module = App::getRoute()['module'];
+    public function partial($file, $module = null) {
+        if (!$module) {
+            $module = 'Core';
+            if (App::getRoute()) {
+                $module = App::getRoute()['module'];
+            }
         }
         // Build proper path
         $dir = 'app' . DS . 'modules' . DS . $module . DS . 'View' . DS . $file;
@@ -73,12 +76,9 @@ class View {
      *
      * @return bool
      */
-    public function __call($method, $args) {
-        if (count($args) == 1) {
-            $args = $args[0];
-        }
+    public function __call($method, $args = []) {
         if (method_exists('\Devvoh\Fluid\App', $method)) {
-            return App::$method($args);
+            return call_user_func_array(['\Devvoh\Fluid\App', $method], $args);
         }
         return false;
     }

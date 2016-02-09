@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-        <title>Hello from Fluid PHP Framework</title>
+        <title>Hello from Fluid PHP Framework <?=self::getVersion();?></title>
 
         <!-- Open Sans font from google fonts -->
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -81,7 +81,7 @@
 
             <article class="container">
                 <header class="container-header">
-                    Fluid PHP Framework <?=$this->getVersion();?>
+                    Fluid PHP Framework <?=self::getVersion();?>
                 </header>
                 <p class="container-box">
                     If you see this, Fluid is working properly. You should now be able to start
