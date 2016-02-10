@@ -56,8 +56,6 @@ class Response {
             if ($this->content) {
                 echo $this->content;
             }
-        } else {
-            echo $this->endOB();
         }
         return $this;
     }
