@@ -12,37 +12,142 @@ namespace Devvoh\Fluid;
 
 class App {
 
+    /**
+     * @var null|string
+     */
     static protected $version           = null;
+
+    /**
+     * @var null|string
+     */
     static protected $baseDir           = null;
+
+    /**
+     * @var null|string
+     */
     static protected $publicUrl         = null;
-    static protected $debugEnabled      = null;
+
+    /**
+     * @var bool
+     */
+    static protected $debugEnabled      = false;
+
+    /**
+     * @var null|\Devvoh\Components\Cli
+     */
     static protected $cli               = null;
+
+    /**
+     * @var null|\Devvoh\Fluid\App\Config
+     */
     static protected $config            = null;
+
+    /**
+     * @var null|\Devvoh\Components\Hook
+     */
     static protected $hook              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Dock
+     */
     static protected $dock              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Log
+     */
     static protected $log               = null;
+
+    /**
+     * @var null|\Devvoh\Components\GetSet
+     */
     static protected $param             = null;
+
+    /**
+     * @var null|\Devvoh\Components\GetSet
+     */
     static protected $post              = null;
+
+    /**
+     * @var null|\Devvoh\Components\GetSet
+     */
     static protected $get               = null;
+
+    /**
+     * @var null|\Devvoh\Components\GetSet
+     */
     static protected $session           = null;
+
+    /**
+     * @var null|\Devvoh\Components\SessionMessage
+     */
     static protected $sessionMessage    = null;
+
+    /**
+     * @var null|\Devvoh\Components\Response
+     */
     static protected $response          = null;
+
+    /**
+     * @var null|\Devvoh\Components\Router
+     */
     static protected $router            = null;
+
+    /**
+     * @var null|\Devvoh\Components\Database
+     */
     static protected $database          = null;
+
+    /**
+     * @var null|array
+     */
     static protected $route             = null;
+
+    /**
+     * @var null|\Devvoh\Components\Debug
+     */
     static protected $debug             = null;
+
+    /**
+     * @var null|\Devvoh\Fluid\App\View
+     */
     static protected $view              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Rights
+     */
     static protected $rights            = null;
+
+    /**
+     * @var null|\Devvoh\Components\Date
+     */
     static protected $date              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Curl
+     */
     static protected $curl              = null;
+
+    /**
+     * @var null|\Devvoh\Components\Validate
+     */
     static protected $validate          = null;
+
+    /**
+     * @var null|string
+     */
     static protected $currentModule     = null;
+
+    /**
+     * @var array
+     */
     static protected $modules           = [];
 
     /**
      * Starts the App class and does some initial setup
      */
-    public static function start() {
+    public static function boot() {
+        self::getResponse()->startOB();
+
         // Find out what modules we have
         self::loadModules();
 
@@ -178,7 +283,7 @@ class App {
      */
     public static function getViewDir($subPath = null, $module = null) {
         if (!$module) {
-            $module = self::$currentModule;
+            $module = self::getCurrentModule();
         }
 
         $dir = 'app' . DS . 'modules' . DS . $module . DS . 'view';
@@ -446,6 +551,45 @@ class App {
     }
 
     /**
+     * Returns the current module
+     *
+     * @return null|string
+     */
+    public static function getCurrentModule() {
+        return self::$currentModule;
+    }
+
+    /**
+     * Set the current module
+     *
+     * @param $currentModule
+     */
+    public static function setCurrentModule($currentModule) {
+        self::$currentModule = $currentModule;
+    }
+
+    /**
+     * Return the module name based on the given $path
+     *
+     * @param string $path
+     * @return mixed|null
+     */
+    public static function getModuleFromPath($path = null) {
+        if (!$path) {
+            return null;
+        }
+
+        $parts = explode(DS, $path);
+        $modulePart = array_pop($parts);
+        $moduleRoot = array_pop($parts);
+
+        if ($moduleRoot === 'modules') {
+            return $modulePart;
+        }
+        return null;
+    }
+
+    /**
      * Returns (and possibly instantiates) the Validate instance
      *
      * @return \Devvoh\Components\Validate
@@ -485,13 +629,15 @@ class App {
     /**
      * Returns a new Repository object
      *
-     * @return \Devvoh\Components\Repository
+     * @param null $entityName
+     *
+     * @return \Devvoh\Fluid\Repository
      */
     public static function createRepository($entityName = null) {
         $repository = new \Devvoh\Fluid\Repository();
 
         // Build the proper entity name
-        $entityName = '\\' . self::$currentModule . '\\Model\\' . $entityName;
+        $entityName = '\\' . self::getCurrentModule() . '\\Model\\' . $entityName;
 
         $entity = new $entityName();
         $repository->setEntity($entity);
@@ -551,10 +697,10 @@ class App {
         }
 
         // Start a new level of output buffering to put whatever we're going to output into the Response
-        ob_start();
+        self::getResponse()->startOB();
 
         // Store the current module
-        self::$currentModule = $route['module'];
+        self::setCurrentModule($route['module']);
         // Check for params
         if (isset($route['params'])) {
             foreach ($route['params'] as $param) {
@@ -613,14 +759,15 @@ class App {
         }
 
         // And get the output buffer contents and add it to the Response
-        $return = ob_get_clean();
-        App::getResponse()->appendContent($return);
+        echo self::getResponse()->endOB();
 
         return true;
     }
 
     /**
      * Redirect to $url
+     *
+     * @param null $url
      *
      * @return false
      */
@@ -638,7 +785,10 @@ class App {
     /**
      * Redirect to route
      *
-     * @return false
+     * @param null $routeName
+     * @param null $params
+     *
+     * @return bool|false
      */
     public static function redirectRoute($routeName = null, $params = null) {
         if (!$routeName) {

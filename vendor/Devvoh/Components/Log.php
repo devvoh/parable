@@ -12,12 +12,23 @@ namespace Devvoh\Components;
 
 class Log {
 
+    /**
+     * @var string
+     */
     protected $path             = 'var/log';
+
+    /**
+     * @var string
+     */
     protected $defaultLogFile   = 'fluid.log';
+
+    /**
+     * @var int
+     */
     protected $mode             = 0777;
 
     /**
-     * Sets the mode (0ctal)
+     * Sets the mode (octal)
      *
      * @param $mode
      * @return $this
@@ -97,11 +108,12 @@ class Log {
      *
      * @param      $message
      * @param null $logFile
-     * @param bool $forceWrite
-     * @throws \Exception
+     * @param bool $showTimezone
+     *
      * @return $this
+     * @throws \Exception
      */
-    public function write($message, $logFile = null, $showTimezone = false, $forceWrite = false) {
+    public function write($message, $logFile = null, $showTimezone = false) {
         if (!$logFile) {
             $logFile = $this->getDefaultLogFile();
         }

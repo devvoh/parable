@@ -12,6 +12,9 @@ namespace Devvoh\Components;
 
 class Hook {
 
+    /**
+     * @var array
+     */
     protected $hooks = [];
 
     /**
@@ -19,6 +22,7 @@ class Hook {
      *
      * @param null|string   $event
      * @param null|callable $closure
+     *
      * @return $this|false
      */
     public function into($event = null, $closure = null) {
@@ -39,6 +43,7 @@ class Hook {
      *
      * @param null $event
      * @param null $payload
+     *
      * @return $this|false
      */
     public function trigger($event = null, &$payload = null) {

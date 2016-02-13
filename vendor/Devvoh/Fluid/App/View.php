@@ -19,6 +19,7 @@ class View {
      * Loads and shows the template file
      *
      * @param $file
+     *
      * @return $this
      */
     public function loadTemplate($file) {
@@ -32,12 +33,18 @@ class View {
     /**
      * Loads a partial into an output buffer and returns the parsed result
      *
-     * @param $file
+     * @param             $file
+     * @param string|null $module
+     *
      * @return null|string
      */
-    public function partial($file, $module = 'Base') {
-        if (App::getRoute()) {
-            $module = App::getRoute()['module'];
+    public function partial($file, $module = null) {
+        // Look for a module, either as given or a current module. If neither, assume Core.
+        if (!$module) {
+            $module = 'Core';
+            if (App::getRoute()) {
+                $module = App::getRoute()['module'];
+            }
         }
         // Build proper path
         $dir = 'app' . DS . 'modules' . DS . $module . DS . 'View' . DS . $file;
@@ -46,15 +53,15 @@ class View {
         // Set return value to null as default
         $return = null;
         if (file_exists($dir)) {
-            ob_start();
+            App::getResponse()->startOB();
             require($dir);
-            $return = ob_get_clean();
+            $return = App::getResponse()->endOB();
         }
         return $return;
     }
 
     /**
-     * Allow view files to try to call static methods on App, to prevent use in phtmls or awkward
+     * Allow view files to try to call static methods on App, to prevent use in phtml files or awkward
      * \Devvoh\Fluid\App calls
      *
      * Possible uses:
@@ -66,15 +73,13 @@ class View {
      *    use \Devvoh\Fluid\App; App::getGet()->getValues();
      *
      * @param $method
-     * @param $args
+     * @param $parameters
+     *
      * @return bool
      */
-    public function __call($method, $args) {
-        if (count($args) == 1) {
-            $args = $args[0];
-        }
+    public function __call($method, $parameters = []) {
         if (method_exists('\Devvoh\Fluid\App', $method)) {
-            return App::$method($args);
+            return call_user_func_array(['\Devvoh\Fluid\App', $method], $parameters);
         }
         return false;
     }

@@ -12,6 +12,9 @@ namespace Devvoh\Components;
 
 class Validate {
 
+    /**
+     * @var array
+     */
     protected $customTypes = [];
 
     /**
@@ -20,6 +23,7 @@ class Validate {
      *
      * @param null $type
      * @param null $closure
+     *
      * @return $this|bool
      */
     public function addCustomType($type = null, $closure = null) {
@@ -46,6 +50,7 @@ class Validate {
      * @param null $data
      * @param null $validator
      * @param bool|true $returnBool
+     *
      * @return array|bool
      */
     public function run($data = null, $validator = null, $returnBool = true) {
@@ -78,6 +83,8 @@ class Validate {
             // And loop through the remaining types
             foreach ($types as $type) {
                 // Some validation types require a parameter, which uses =
+                $param = null;
+
                 if (strpos($type, '=') !== false) {
                     $parts = explode('=', $type);
                     $type = $parts[0];

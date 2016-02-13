@@ -12,22 +12,66 @@ namespace Devvoh\Components;
 
 class Query {
 
+    /**
+     * @var null|string
+     */
     protected $tableName    = null;
+
+    /**
+     * @var null|string
+     */
     protected $tableKey     = null;
+
+    /**
+     * @var null|int
+     */
     protected $limit        = null;
+
+    /**
+     * @var null|\PDO
+     */
     protected $pdoInstance  = null;
+
+    /**
+     * @var array
+     */
     protected $where        = [];
+
+    /**
+     * @var array
+     */
     protected $values       = [];
+
+    /**
+     * @var array
+     */
     protected $orderBy      = [];
+
+    /**
+     * @var array
+     */
     protected $groupBy      = [];
+
+    /**
+     * @var string
+     */
     protected $select       = '*';
+
+    /**
+     * @var string
+     */
     protected $action       = 'select';
+
+    /**
+     * @var array
+     */
     protected $joins        = [];
 
     /**
      * Set the tableName to work on
      *
      * @param string $tableName
+     *
      * @return $this
      */
     public function setTableName($tableName) {
@@ -48,6 +92,7 @@ class Query {
      * Set the pdoInstance to work on if it's a PDO instance
      *
      * @param \PDO $pdoInstance
+     *
      * @return $this
      */
     public function setPdoInstance($pdoInstance) {
@@ -70,6 +115,7 @@ class Query {
      * Set the tableKey to work with (for delete & update
      * )
      * @param string $key
+     *
      * @return $this
      */
     public function setTableKey($key) {
@@ -80,7 +126,8 @@ class Query {
     /**
      * Set the type of query we're going to do
      *
-     * @param string $action (select, insert, delete, update)
+     * @param string $action
+     *
      * @return $this
      */
     public function setAction($action) {
@@ -94,6 +141,7 @@ class Query {
      * In case of a select, what we're going to select (default *)
      *
      * @param string $select
+     *
      * @return $this
      */
     public function select($select) {
@@ -106,6 +154,7 @@ class Query {
      *
      * @param string $condition
      * @param mixed $value
+     *
      * @return $this
      */
     public function where($condition, $value = null) {
@@ -119,6 +168,7 @@ class Query {
      * @param string $table
      * @param string $condition
      * @param mixed $value
+     *
      * @return $this
      */
     public function join($table, $condition, $value = null) {
@@ -131,6 +181,7 @@ class Query {
      *
      * @param string $key
      * @param mixed $value
+     *
      * @return $this
      */
     public function addValue($key, $value) {
@@ -142,7 +193,8 @@ class Query {
      * Sets the order for select queries
      *
      * @param string $key
-     * @param string $direction (default DESC)
+     * @param string $direction
+     *
      * @return $this
      */
     public function orderBy($key, $direction = 'DESC') {
@@ -154,6 +206,7 @@ class Query {
      * Sets the group by for select queries
      *
      * @param string $key
+     *
      * @return $this
      */
     public function groupBy($key) {
@@ -166,6 +219,7 @@ class Query {
      *
      * @param int $limit
      * @param int $offset
+     *
      * @return $this
      */
     public function limit($limit, $offset = null) {
@@ -274,6 +328,10 @@ class Query {
 
             // now get the values
             if (count($this->values) > 0) {
+                // Set the table values to defaults
+                $tableKey = 'id';
+                $tableKeyValue = null;
+
                 $values = [];
                 foreach ($this->values as $value) {
                     // skip id, since we'll use that as a where condition
@@ -297,6 +355,9 @@ class Query {
 
             // now get the values
             if (count($this->values) > 0) {
+
+                $keys = [];
+                $values = [];
                 foreach ($this->values as $value) {
                     $keys[] = "'" . $value['key'] . "'";
                     $values[] = $this->pdoInstance->quote($value['value']);

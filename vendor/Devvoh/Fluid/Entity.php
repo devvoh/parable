@@ -14,9 +14,29 @@ use \Devvoh\Fluid\App;
 
 class Entity {
 
+    /**
+     * @var mixed
+     */
+    protected $id           = null;
+
+    /**
+     * @var null|string
+     */
     protected $tableName    = null;
+
+    /**
+     * @var null|string
+     */
     protected $tableKey     = null;
+
+    /**
+     * @var null|array
+     */
     protected $mapper       = null;
+
+    /**
+     * @var array
+     */
     protected $validator    = [];
 
     /**
@@ -100,6 +120,8 @@ class Entity {
      * Attempts to use stored mapper array to map fields from the current entity's properties to what is set in the
      * array.
      *
+     * @param $array
+     *
      * @return array
      */
     public function toMappedArray($array) {
@@ -142,6 +164,7 @@ class Entity {
      * Set the tableName
      *
      * @param $tableName
+     *
      * @return $this
      */
     public function setTableName($tableName) {
@@ -162,6 +185,7 @@ class Entity {
      * Set the tableKey
      *
      * @param $tableKey
+     *
      * @return $this
      */
     public function setTableKey($tableKey) {
@@ -182,6 +206,7 @@ class Entity {
      * Set the mapper
      *
      * @param $mapper
+     *
      * @return $this;
      */
     public function setMapper($mapper) {
@@ -202,6 +227,7 @@ class Entity {
      * Set the validator array
      *
      * @param $validator
+     *
      * @return $this
      */
     public function setValidator($validator) {

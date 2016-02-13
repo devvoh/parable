@@ -12,31 +12,77 @@ namespace Devvoh\Components;
 
 class Response {
 
+    /**
+     * @var array
+     */
     protected $contentTypes = [
         'json'  => 'application/json',
         'html'  => 'text/html',
         'xml'   => 'text/xml',
         'js'    => 'application/javascript',
     ];
+
+    /**
+     * @var string
+     */
     protected $charset      = 'utf-8';
+
+    /**
+     * @var string
+     */
     protected $contentType  = 'html';
+
+    /**
+     * @var null
+     */
     protected $content      = null;
+
+    /**
+     * @var bool
+     */
     protected $onlyContent  = false;
 
     /**
      * Set the response header configured on Response class
      *
+     * @param bool $onlyContent
+     *
      * @return $this
      */
     public function sendResponse($onlyContent = false) {
         header('Content-Type: ' . $this->getContentType() . '; charset=' . $this->getCharset());
-        if ($this->useOnlyContent()) {
-            ob_end_clean();
-        }
-        if ($this->content) {
-            echo $this->content;
+        if ($this->useOnlyContent() || $onlyContent) {
+            $this->endOB();
+            if ($this->content) {
+                echo $this->content;
+            }
         }
         return $this;
+    }
+
+    /**
+     * Make sure we always call sendResponse, even if we died in the meantime
+     */
+    public function __destruct() {
+        $this->sendResponse();
+    }
+
+    /**
+     * Enable output buffering
+     */
+    public function startOB() {
+        // Start by enabling output buffering
+        ob_start();
+        return $this;
+    }
+
+    /**
+     * End output buffering and return the buffer contents
+     *
+     * @return string
+     */
+    public function endOB() {
+        return ob_get_clean();
     }
 
     /**
@@ -54,6 +100,7 @@ class Response {
      * @TODO Add validation of character set
      *
      * @param $charset
+     *
      * @return $this
      */
     public function setCharset($charset) {
@@ -65,6 +112,7 @@ class Response {
      * Set the content type, based on either the short-hand (array key) or the full string (value/in_array)
      *
      * @param $type
+     *
      * @return $this
      */
     public function setContentType($type) {
@@ -90,6 +138,7 @@ class Response {
      * Set content from 0.
      *
      * @param $content
+     *
      * @return $this
      */
     public function setContent($content) {
@@ -101,6 +150,7 @@ class Response {
      * Prepend data to content
      *
      * @param $content
+     *
      * @return $this
      */
     public function prependContent($content) {
@@ -112,6 +162,7 @@ class Response {
      * Append data to content
      *
      * @param $content
+     *
      * @return $this
      */
     public function appendContent($content) {
@@ -127,6 +178,7 @@ class Response {
      *
      * @param null $data
      * @param bool|false $onlyContent
+     *
      * @return $this
      */
     public function setJson($data = null, $onlyContent = false) {
@@ -146,6 +198,7 @@ class Response {
      * Sets only content to (bool)$active
      *
      * @param $active
+     *
      * @return $this
      */
     public function setOnlyContent($active) {
