@@ -73,13 +73,13 @@ class View {
      *    use \Devvoh\Fluid\App; App::getGet()->getValues();
      *
      * @param $method
-     * @param $args
+     * @param $parameters
      *
      * @return bool
      */
-    public function __call($method, $args = []) {
+    public function __call($method, $parameters = []) {
         if (method_exists('\Devvoh\Fluid\App', $method)) {
-            return call_user_func_array(['\Devvoh\Fluid\App', $method], $args);
+            return call_user_func_array(['\Devvoh\Fluid\App', $method], $parameters);
         }
         return false;
     }
