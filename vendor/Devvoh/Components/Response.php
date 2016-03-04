@@ -145,6 +145,18 @@ class Response {
     }
 
     /**
+     * Send content immediately
+     *
+     * @param $content
+     *
+     * @return $this
+     */
+    public function sendContent($content) {
+        echo $content;
+        return $this;
+    }
+
+    /**
      * Prepend data to content
      *
      * @param $content
