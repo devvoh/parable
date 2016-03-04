@@ -1,9 +1,6 @@
 <?php
 /**
- * @package     Devvoh
- * @subpackage  Fluid
- * @subpackage  App
- * @subpackage  View
+ * @package     Devvoh Fluid
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
