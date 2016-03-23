@@ -1,8 +1,6 @@
 <?php
 /**
- * @package     Devvoh
- * @subpackage  Components
- * @subpackage  Cli
+ * @package     Devvoh Components
  * @license     Validate
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment

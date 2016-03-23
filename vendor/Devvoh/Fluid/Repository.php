@@ -1,8 +1,6 @@
 <?php
 /**
- * @package     Devvoh
- * @subpackage  Fluid
- * @subpackage  Repository
+ * @package     Devvoh Fluid
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
@@ -23,6 +21,16 @@ class Repository {
      * @var bool
      */
     protected $onlyCount    = false;
+
+    /**
+     * @var array
+     */
+    protected $orderBy      = [];
+
+    /**
+     * @var null|int
+     */
+    protected $limit        = [];
 
     /**
      * Generate a query set to use the current Entity's table name & key
@@ -88,6 +96,12 @@ class Repository {
         foreach ($conditionsArray as $condition => $value) {
             $query->where($condition, $value);
         }
+        if (count($this->orderBy)) {
+            $query->orderBy($this->orderBy['key'], $this->orderBy['direction']);
+        }
+        if (count($this->limit)) {
+            $query->limit($this->limit['limit'], $this->limit['offset']);
+        }
         $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
         $entities = [];
@@ -95,6 +109,32 @@ class Repository {
             $entities = $this->handleResult($result);
         }
         return $entities;
+    }
+
+    /**
+     * Allow multiple orders by $key in $direction
+     *
+     * @param $key
+     * @param $direction
+     *
+     * @return $this
+     */
+    public function orderBy($key, $direction = 'DESC') {
+        $this->orderBy = ['key' => $key, 'direction' => $direction];
+        return $this;
+    }
+
+    /**
+     * Sets the limit
+     *
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return $this
+     */
+    public function limit($limit, $offset = null) {
+        $this->limit = ['limit' => $limit, 'offset' => $offset];
+        return $this;
     }
 
     /**

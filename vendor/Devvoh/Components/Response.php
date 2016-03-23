@@ -1,8 +1,6 @@
 <?php
 /**
- * @package     Devvoh
- * @subpackage  Components
- * @subpackage  Response
+ * @package     Devvoh Components
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
@@ -143,6 +141,18 @@ class Response {
      */
     public function setContent($content) {
         $this->content = $content;
+        return $this;
+    }
+
+    /**
+     * Send content immediately
+     *
+     * @param $content
+     *
+     * @return $this
+     */
+    public function sendContent($content) {
+        echo $content;
         return $this;
     }
 

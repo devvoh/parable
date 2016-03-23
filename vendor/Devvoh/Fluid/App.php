@@ -1,8 +1,6 @@
 <?php
 /**
- * @package     Devvoh
- * @subpackage  Fluid
- * @subpackage  App
+ * @package     Devvoh Fluid
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
@@ -56,6 +54,11 @@ class App {
      * @var null|\Devvoh\Components\Log
      */
     static protected $log               = null;
+
+    /**
+     * @var null|\Devvoh\Components\Mailer
+     */
+    static protected $mailer            = null;
 
     /**
      * @var null|\Devvoh\Components\GetSet
@@ -309,6 +312,15 @@ class App {
     }
 
     /**
+     * Returns the current url
+     *
+     * @return null|string
+     */
+    public static function getCurrentUrl() {
+        return self::getUrl($_GET['path']);
+    }
+
+    /**
      * Enables debug mode, which will display errors. Errors are always logged (see Bootstrap.php)
      */
     public static function enableDebug() {
@@ -391,6 +403,18 @@ class App {
             self::$log = new \Devvoh\Components\Log();
         }
         return self::$log;
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Mailer instance
+     *
+     * @return \Devvoh\Components\Mailer
+     */
+    public static function getMailer() {
+        if (!self::$mailer) {
+            self::$mailer = new \Devvoh\Components\Mailer();
+        }
+        return self::$mailer;
     }
 
     /**
@@ -636,12 +660,22 @@ class App {
     public static function createRepository($entityName = null) {
         $repository = new \Devvoh\Fluid\Repository();
 
-        // Build the proper entity name
-        $entityName = '\\' . self::getCurrentModule() . '\\Model\\' . $entityName;
+        $entity = self::createEntity($entityName);
 
-        $entity = new $entityName();
         $repository->setEntity($entity);
         return $repository;
+    }
+
+    public static function createEntity($entityName = null) {
+        // Loop through models trying to find the appropriate class
+        foreach (self::getModules() as $module) {
+            $entityNameComplete = '\\' . $module['name'] . '\\Model\\' . $entityName;
+            if (class_exists($entityNameComplete)) {
+                $entity = new $entityNameComplete();
+                break;
+            }
+        }
+        return $entity;
     }
 
     /**
