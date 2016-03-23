@@ -25,7 +25,9 @@ class SessionMessage {
      */
     public function __construct() {
         $this->initSession();
-        $this->messages = $this->session->get('messages');
+        if (is_array($this->session->get('messages'))) {
+            $this->messages = $this->session->get('messages');
+        }
     }
 
     /**

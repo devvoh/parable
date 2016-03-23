@@ -42,4 +42,8 @@ class Config extends \Devvoh\Components\GetSet {
         return $this;
     }
 
+    public function getBool($key) {
+        return (bool)$this->get($key);
+    }
+
 }

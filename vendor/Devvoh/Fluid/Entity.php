@@ -88,7 +88,7 @@ class Entity {
             }
         }
         $result = App::getDatabase()->query($query);
-        if ($result) {
+        if ($result && $query->getAction() === 'insert') {
             $this->id = $query->getPdoInstance()->lastInsertId();
         }
         return $result;
@@ -103,8 +103,11 @@ class Entity {
         $array = (array)$this;
         // Remove protected values & null values, let the database sort those out
         foreach ($array as $key => $value) {
-            if (strpos($key, '*') || $value === null) {
+            if (strpos($key, '*')) {
                 unset($array[$key]);
+            }
+            if ($value !== 0 && empty($value)) {
+                $value = null;
             }
         }
         // If there's a mapper set, also map the array around

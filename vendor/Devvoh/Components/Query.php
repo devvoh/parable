@@ -136,6 +136,15 @@ class Query {
     }
 
     /**
+     * Return the action
+     *
+     * @return string
+     */
+    public function getAction() {
+        return $this->action;
+    }
+
+    /**
      * In case of a select, what we're going to select (default *)
      *
      * @param string $select
@@ -183,7 +192,7 @@ class Query {
      * @return $this
      */
     public function addValue($key, $value) {
-        $this->values[] = ['key' => $key, 'value' => $value];
+        $this->values[$key] = $value;
         return $this;
     }
 
@@ -315,8 +324,6 @@ class Query {
                     }
                 }
                 $query[] = "WHERE " . implode(' AND ', $wheres);
-            } else {
-                $query = [];
             }
 
         } elseif ($this->action === 'update') {
@@ -331,13 +338,18 @@ class Query {
                 $tableKeyValue = null;
 
                 $values = [];
-                foreach ($this->values as $value) {
+                foreach ($this->values as $key => $value) {
                     // skip id, since we'll use that as a where condition
-                    if ($value['key'] !== $this->tableKey) {
-                        $values[] = "'" . $value['key'] . "'=" . $this->pdoInstance->quote($value['value']);
+                    if ($key !== $this->tableKey) {
+                        if ($value === null) {
+                            $correctValue = 'NULL';
+                        } else {
+                            $correctValue = $this->pdoInstance->quote($value);
+                        }
+                        $values[] = "'" . $key . "'=" . $correctValue;
                     } else {
-                        $tableKey = $value['key'];
-                        $tableKeyValue = $value['value'];
+                        $tableKey = $key;
+                        $tableKeyValue = $value;
                     }
                 }
                 $query[] = "SET " . implode(',', $values);
@@ -356,9 +368,15 @@ class Query {
 
                 $keys = [];
                 $values = [];
-                foreach ($this->values as $value) {
-                    $keys[] = "'" . $value['key'] . "'";
-                    $values[] = $this->pdoInstance->quote($value['value']);
+                foreach ($this->values as $key => $value) {
+                    $keys[] = "'" . $key . "'";
+
+                    if ($value === null) {
+                        $correctValue = 'NULL';
+                    } else {
+                        $correctValue = $this->pdoInstance->quote($value);
+                    }
+                    $values[] = $correctValue;
                 }
 
                 $query[] = "(" . implode(',', $keys) . ")";
