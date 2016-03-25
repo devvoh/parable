@@ -15,22 +15,6 @@ use \Devvoh\Fluid\App;
 /**
  * App is the main entry point for all functionality, offering mostly static functions.
  *
- * Boot the App. This will set debug and load the config
+ * Run the App. This will set debug and load the config
  */
-App::boot();
-
-/**
- * Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
- */
-if (App::matchRoute()) {
-    if (!App::executeRoute()) {
-        echo App::getView()->partial('Error/Route.phtml');
-    }
-} else {
-    echo App::getView()->partial('Error/404.phtml');
-}
-
-/**
- * Last thing we do is ask our Response to send it all as configured
- */
-App::getResponse()->sendResponse();
+App::run();

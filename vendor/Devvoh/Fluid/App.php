@@ -148,7 +148,7 @@ class App {
     /**
      * Starts the App class and does some initial setup
      */
-    public static function boot() {
+    public static function run() {
         self::getResponse()->startOB();
 
         // Find out what modules we have
@@ -196,6 +196,18 @@ class App {
 
         // Start the session
         self::getSession()->startSession();
+
+        // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
+        if (self::matchRoute()) {
+            if (!self::executeRoute()) {
+                echo self::getView()->partial('Error/Route.phtml');
+            }
+        } else {
+            echo self::getView()->partial('Error/404.phtml');
+        }
+
+        // Last thing we do is ask our Response to send it all as configured
+        self::getResponse()->sendResponse();
     }
 
     /**
@@ -661,12 +673,13 @@ class App {
         $repository = new \Devvoh\Fluid\Repository();
 
         $entity = self::createEntity($entityName);
-
         $repository->setEntity($entity);
+
         return $repository;
     }
 
     public static function createEntity($entityName = null) {
+        $entity = new \Devvoh\Fluid\Entity();
         // Loop through models trying to find the appropriate class
         foreach (self::getModules() as $module) {
             $entityNameComplete = '\\' . $module['name'] . '\\Model\\' . $entityName;

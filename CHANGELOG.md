@@ -4,9 +4,12 @@
 
 __Changes__
 - Response->sendResponse() now exits and keeps track of whether it's already output the response. This is to prevent __destruct() from outputting the response again once the class unloads at the end of a successful render.
+- Moved App logic from index.php into App::run(), which used to be boot() but now also does the routing. Later on, split this into multiple functions.
+- Added some more information to the index view file.
 
 __Bugfixes__
 - View templates' output now gets sent to the Response Component and appended to the response. Now onlyContent=true stops all echoes and other direct output from php files.
+- App::createEntity() now returns an empty Entity object if the requested entity can't be found. This should prevent strange errors down the road (for example, due to App::createRepository() failing to call methods on the entity)
 
 ### 0.3.3
 
