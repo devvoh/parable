@@ -1,6 +1,6 @@
 # Fluid PHP Framework Changelog
 
-### 0.3.4
+### 0.3.4 - in progress
 
 __Bugfixes__
 - View templates' output now gets sent to the Response Component and appended to the response. Now onlyContent=true stops all echoes and other direct output from php files.
