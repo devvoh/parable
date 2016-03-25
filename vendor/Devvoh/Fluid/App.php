@@ -835,4 +835,8 @@ class App {
         return self::redirect(self::getUrl($url));
     }
 
+    public static function end($message = null) {
+        exit($message);
+    }
+
 }

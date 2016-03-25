@@ -2,6 +2,9 @@
 
 ### 0.3.4 - in progress
 
+__Changes__
+- Response->sendResponse() now exits and keeps track of whether it's already output the response. This is to prevent __destruct() from outputting the response again once the class unloads at the end of a successful render.
+
 __Bugfixes__
 - View templates' output now gets sent to the Response Component and appended to the response. Now onlyContent=true stops all echoes and other direct output from php files.
 
