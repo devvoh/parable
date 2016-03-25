@@ -51,10 +51,8 @@ class Response {
         header('Content-Type: ' . $this->getContentType() . '; charset=' . $this->getCharset());
         if ($this->useOnlyContent() || $onlyContent) {
             $this->endOB();
-            if ($this->content) {
-                echo $this->content;
-            }
         }
+        echo $this->content;
         return $this;
     }
 
