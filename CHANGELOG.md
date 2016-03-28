@@ -3,13 +3,16 @@
 ### 0.3.4 - in progress
 
 __Changes__
-- Response->sendResponse() now exits and keeps track of whether it's already output the response. This is to prevent __destruct() from outputting the response again once the class unloads at the end of a successful render.
+- Response->sendResponse() now exits and keeps track of whether it's already output the response. This is to prevent it being called double. As soon as sendResponse() has been called, the application stops.
+- Response no longer has a __destruct method. If you die/exit, it dies/exits without attempting to output the buffer.
 - Moved App logic from index.php into App::run(), which used to be boot() but now also does the routing. Later on, split this into multiple functions.
+- App::executeRoute now looks for the view parameter on a route definition regardless of closure or not. This allows overruling the auto-generated template or simply using a specific template if the auto-generated template doesn't exist.
 - Added some more information to the index view file.
 
 __Bugfixes__
 - View templates' output now gets sent to the Response Component and appended to the response. Now onlyContent=true stops all echoes and other direct output from php files.
 - App::createEntity() now returns an empty Entity object if the requested entity can't be found. This should prevent strange errors down the road (for example, due to App::createRepository() failing to call methods on the entity)
+- Entity's id property is now public. It doesn't need to be protected and this prevents IDE mismatches when directly interacting with the property.
 
 ### 0.3.3
 

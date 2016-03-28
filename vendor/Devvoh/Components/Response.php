@@ -65,13 +65,6 @@ class Response {
     }
 
     /**
-     * Make sure we always call sendResponse, even if we died in the meantime
-     */
-    public function __destruct() {
-        $this->sendResponse();
-    }
-
-    /**
      * Enable output buffering
      */
     public function startOB() {

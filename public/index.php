@@ -10,11 +10,10 @@
  * Include Bootstrap.php to enable all functionality.
  */
 require_once('../vendor/Devvoh/Fluid/Bootstrap.php');
-use \Devvoh\Fluid\App;
 
 /**
  * App is the main entry point for all functionality, offering mostly static functions.
  *
  * Run the App. This will set debug and load the config
  */
-App::run();
+\Devvoh\Fluid\App::run();

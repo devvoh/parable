@@ -756,6 +756,15 @@ class App {
                 }
             }
         }
+
+        // Check for view param in the router definition. This is only used in case of closures or if the auto-
+        // generated view template doesn't exist.
+        $viewTemplateRoute = null;
+        if (isset($route['view'])) {
+            $viewTemplateRoute = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['view'];
+        }
+
+        $viewTemplate = null;
         // Check for a closure
         if (isset($route['closure'])) {
             $closure = $route['closure'];
@@ -766,11 +775,6 @@ class App {
             } else {
                 // Not callable, so false
                 return false;
-            }
-
-            // Check for view param
-            if (isset($route['view'])) {
-                $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['view'] . '.phtml';
             }
         } else {
             // Not a closure, build a controller/action combination
@@ -799,10 +803,11 @@ class App {
                 return false;
             }
         }
-
         // If valid $viewTemplate is set, load it into the view
-        if (isset($viewTemplate) && file_exists($viewTemplate)) {
+        if (!$viewTemplateRoute && $viewTemplate && file_exists($viewTemplate)) {
             self::getView()->loadTemplate($viewTemplate);
+        } elseif ($viewTemplateRoute && file_exists($viewTemplateRoute)) {
+            self::getView()->loadTemplate($viewTemplateRoute);
         }
 
         // And get the output buffer contents and add it to the Response
