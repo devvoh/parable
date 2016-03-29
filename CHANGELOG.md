@@ -1,18 +1,25 @@
 # Fluid PHP Framework Changelog
 
-### 0.3.4 - in progress
+### 0.3.5 - in progress
+
+...
+
+### 0.3.4
 
 __Changes__
 - Response->sendResponse() now exits and keeps track of whether it's already output the response. This is to prevent it being called double. As soon as sendResponse() has been called, the application stops.
 - Response no longer has a __destruct method. If you die/exit, it dies/exits without attempting to output the buffer.
 - Moved App logic from index.php into App::run(), which used to be boot() but now also does the routing. Later on, split this into multiple functions.
 - App::executeRoute now looks for the view parameter on a route definition regardless of closure or not. This allows overruling the auto-generated template or simply using a specific template if the auto-generated template doesn't exist.
+- Added Fluid.php cli interpreter & \Devvoh\Fluid\Cli class to handle the logic behind Fluid.php, see app/modules/App/Cli/Index.php for current implementation (subject to change).
 - Added some more information to the index view file.
+- Added composer.json (experimental)
 
 __Bugfixes__
 - View templates' output now gets sent to the Response Component and appended to the response. Now onlyContent=true stops all echoes and other direct output from php files.
 - App::createEntity() now returns an empty Entity object if the requested entity can't be found. This should prevent strange errors down the road (for example, due to App::createRepository() failing to call methods on the entity)
 - Entity's id property is now public. It doesn't need to be protected and this prevents IDE mismatches when directly interacting with the property.
+- Boot & autoloader now no longer work on heavily customized path logic. Now use a properly set BASEDIR constant.
 
 ### 0.3.3
 
@@ -40,7 +47,7 @@ __Bugfixes__
 - Removed \Devvoh\Fluid\Controller as base since it'd be unwise to alter this as a developer building on top of Fluid. An update of Fluid would overwrite it or an annoying merging issue would arise. Replaced with user-alterable \Core\Controller\Base.
 - Added a number of currentModule-related functions to App, most important of which is getModuleFromPath, which is used by Routes.php to determine the module to set on all the routes instead of having to manually set it.
 - Changed the 'magic' references to App in index.phtml to self:: instead of $this for consistency's sake.Both still work, to allow the developer to decide which one they'd prefer.
-- \Devvoh\Fluid\App\View's __call magic method has been updated to use call_user_func_array to properly pass all parameters as they should.
+- \Devvoh\Fluid\App\View's _call magic method has been updated to use call_user_func_array to properly pass all parameters as they should.
 - App::start() has been renamed to App::boot() because it looks nicer. For some reason this is important to me.
 - Speaking of pretty things, redesigned the default 'hello' page to be more modern and playful.
 - Many less important for the end user improvements (reworked almost all comments, cody style fixes, etc.)
