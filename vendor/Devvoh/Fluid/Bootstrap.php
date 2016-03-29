@@ -9,7 +9,8 @@
 /**
  * Define some global values
  */
-define(DS, DIRECTORY_SEPARATOR);
+define('DS', DIRECTORY_SEPARATOR);
+define('BASEDIR', __DIR__ . DS . '..' . DS . '..' . DS . '..');
 
 /**
  * Set error reporting level
@@ -21,10 +22,10 @@ ini_set('display_errors', '1');
 /**
  * Register PSR-4 compatible autoloader
  */
-$autoloadPath = __DIR__ . DS . '..' . DS . 'Components' . DS . 'Autoloader.php';
+$autoloadPath = BASEDIR . DS . 'vendor' . DS . 'Devvoh' . DS . 'Components' . DS . 'Autoloader.php';
 require_once($autoloadPath);
 
 $autoloader = new \Devvoh\Components\Autoloader();
-$autoloader->addLocation('vendor');
-$autoloader->addLocation('app' . DS . 'modules');
+$autoloader->addLocation(BASEDIR . DS . 'vendor');
+$autoloader->addLocation(BASEDIR . DS . 'app' . DS . 'modules');
 $autoloader->register();

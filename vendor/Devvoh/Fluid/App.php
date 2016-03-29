@@ -197,17 +197,22 @@ class App {
         // Start the session
         self::getSession()->startSession();
 
-        // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
-        if (self::matchRoute()) {
-            if (!self::executeRoute()) {
-                echo self::getView()->partial('Error/Route.phtml');
+        /**
+         * If we're not in cli mode, we can route & send the response
+         */
+        if (php_sapi_name() !== 'cli') {
+            // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
+            if (self::matchRoute()) {
+                if (!self::executeRoute()) {
+                    echo self::getView()->partial('Error/Route.phtml');
+                }
+            } else {
+                echo self::getView()->partial('Error/404.phtml');
             }
-        } else {
-            echo self::getView()->partial('Error/404.phtml');
-        }
 
-        // Last thing we do is ask our Response to send it all as configured
-        self::getResponse()->sendResponse();
+            // Last thing we do is ask our Response to send it all as configured
+            self::getResponse()->sendResponse();
+        }
     }
 
     /**
@@ -644,7 +649,7 @@ class App {
      */
     public static function getVersion() {
         if (!self::$version) {
-            self::$version = file_get_contents(self::getBaseDir() . DS . 'version');
+            self::$version = trim(file_get_contents(self::getBaseDir() . DS . 'version'));
         }
         return self::$version;
     }
