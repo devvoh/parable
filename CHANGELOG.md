@@ -2,7 +2,8 @@
 
 ### 0.3.5 - in progress
 
-...
+__Changes__
+- Small one, but removed composer.json again. No use for Fluid, which will need an installer like symfony & laravel. For now just releases on github are enough. But I do know how to do it now, so that's something.
 
 ### 0.3.4
 
