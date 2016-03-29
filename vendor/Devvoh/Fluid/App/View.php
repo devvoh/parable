@@ -23,7 +23,8 @@ class View {
         if (!file_exists($file)) {
             return null;
         }
-        require($file);
+        $content = $this->render($file);
+        App::getResponse()->appendContent($content);
         return $this;
     }
 
@@ -50,11 +51,15 @@ class View {
         // Set return value to null as default
         $return = null;
         if (file_exists($dir)) {
-            App::getResponse()->startOB();
-            require($dir);
-            $return = App::getResponse()->endOB();
+            $return = $this->render($dir);
         }
         return $return;
+    }
+
+    public function render($file) {
+        App::getResponse()->startOB();
+        require($file);
+        return App::getResponse()->endOB();
     }
 
     /**

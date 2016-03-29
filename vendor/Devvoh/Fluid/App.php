@@ -148,7 +148,7 @@ class App {
     /**
      * Starts the App class and does some initial setup
      */
-    public static function boot() {
+    public static function run() {
         self::getResponse()->startOB();
 
         // Find out what modules we have
@@ -196,6 +196,23 @@ class App {
 
         // Start the session
         self::getSession()->startSession();
+
+        /**
+         * If we're not in cli mode, we can route & send the response
+         */
+        if (php_sapi_name() !== 'cli') {
+            // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
+            if (self::matchRoute()) {
+                if (!self::executeRoute()) {
+                    echo self::getView()->partial('Error/Route.phtml');
+                }
+            } else {
+                echo self::getView()->partial('Error/404.phtml');
+            }
+
+            // Last thing we do is ask our Response to send it all as configured
+            self::getResponse()->sendResponse();
+        }
     }
 
     /**
@@ -632,7 +649,7 @@ class App {
      */
     public static function getVersion() {
         if (!self::$version) {
-            self::$version = file_get_contents(self::getBaseDir() . DS . 'version');
+            self::$version = trim(file_get_contents(self::getBaseDir() . DS . 'version'));
         }
         return self::$version;
     }
@@ -661,12 +678,13 @@ class App {
         $repository = new \Devvoh\Fluid\Repository();
 
         $entity = self::createEntity($entityName);
-
         $repository->setEntity($entity);
+
         return $repository;
     }
 
     public static function createEntity($entityName = null) {
+        $entity = new \Devvoh\Fluid\Entity();
         // Loop through models trying to find the appropriate class
         foreach (self::getModules() as $module) {
             $entityNameComplete = '\\' . $module['name'] . '\\Model\\' . $entityName;
@@ -743,6 +761,15 @@ class App {
                 }
             }
         }
+
+        // Check for view param in the router definition. This is only used in case of closures or if the auto-
+        // generated view template doesn't exist.
+        $viewTemplateRoute = null;
+        if (isset($route['view'])) {
+            $viewTemplateRoute = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['view'];
+        }
+
+        $viewTemplate = null;
         // Check for a closure
         if (isset($route['closure'])) {
             $closure = $route['closure'];
@@ -753,11 +780,6 @@ class App {
             } else {
                 // Not callable, so false
                 return false;
-            }
-
-            // Check for view param
-            if (isset($route['view'])) {
-                $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['view'] . '.phtml';
             }
         } else {
             // Not a closure, build a controller/action combination
@@ -786,10 +808,11 @@ class App {
                 return false;
             }
         }
-
         // If valid $viewTemplate is set, load it into the view
-        if (isset($viewTemplate) && file_exists($viewTemplate)) {
+        if (!$viewTemplateRoute && $viewTemplate && file_exists($viewTemplate)) {
             self::getView()->loadTemplate($viewTemplate);
+        } elseif ($viewTemplateRoute && file_exists($viewTemplateRoute)) {
+            self::getView()->loadTemplate($viewTemplateRoute);
         }
 
         // And get the output buffer contents and add it to the Response
@@ -833,6 +856,10 @@ class App {
         }
         $url = self::getRouter()->buildRoute($routeName, $params);
         return self::redirect(self::getUrl($url));
+    }
+
+    public static function end($message = null) {
+        exit($message);
     }
 
 }

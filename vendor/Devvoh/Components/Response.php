@@ -41,28 +41,27 @@ class Response {
     protected $onlyContent  = false;
 
     /**
-     * Set the response header configured on Response class
+     * @var bool
+     */
+    protected $responseSent = false;
+
+    /**
+     * Set the response header configured on Response class and send the response immediately, then exit to prevent
+     * any more output.
      *
      * @param bool $onlyContent
-     *
-     * @return $this
      */
     public function sendResponse($onlyContent = false) {
+        if ($this->responseSent) {
+            exit();
+        }
         header('Content-Type: ' . $this->getContentType() . '; charset=' . $this->getCharset());
         if ($this->useOnlyContent() || $onlyContent) {
             $this->endOB();
-            if ($this->content) {
-                echo $this->content;
-            }
         }
-        return $this;
-    }
-
-    /**
-     * Make sure we always call sendResponse, even if we died in the meantime
-     */
-    public function __destruct() {
-        $this->sendResponse();
+        echo $this->content;
+        $this->responseSent = true;
+        exit();
     }
 
     /**

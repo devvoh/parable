@@ -15,7 +15,7 @@ class Entity {
     /**
      * @var mixed
      */
-    protected $id           = null;
+    public $id           = null;
 
     /**
      * @var null|string

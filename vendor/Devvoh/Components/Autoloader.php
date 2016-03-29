@@ -55,7 +55,7 @@ class Autoloader {
      */
     public function load($class) {
         $path = str_replace('\\', DS, $class);
-        $path = '../##replace##/' . trim($path, DS) . '.php';
+        $path = '##replace##/' . trim($path, DS) . '.php';
         $path = str_replace('/', DS, $path);
 
         foreach ($this->getLocations() as $subPath) {

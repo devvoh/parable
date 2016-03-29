@@ -9,7 +9,7 @@
 /**
  * Include Bootstrap.php to enable all functionality.
  */
-require_once('../vendor/Devvoh/Fluid/Bootstrap.php');
+require_once('./vendor/Devvoh/Fluid/Bootstrap.php');
 
 /**
  * App is the main entry point for all functionality, offering mostly static functions.
@@ -17,3 +17,13 @@ require_once('../vendor/Devvoh/Fluid/Bootstrap.php');
  * Run the App. This will set debug and load the config
  */
 \Devvoh\Fluid\App::run();
+
+/**
+ * Now we boot the Cli sub-app, passing the cli arguments
+ */
+\Devvoh\Fluid\Cli::boot($argv);
+
+/**
+ * And we run!
+ */
+\Devvoh\Fluid\Cli::run();
