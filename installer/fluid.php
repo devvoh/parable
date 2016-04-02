@@ -49,7 +49,6 @@ class Curl {
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//        curl_setopt($ch, CURLOPT_USERPWD, '0de9b1901197dd3413f849afe9e43bbfe7d37418:x-oauth-basic');
         curl_setopt($ch, CURLOPT_USERAGENT, $this->getUserAgent());
         $result = curl_exec($ch);
         curl_close($ch);
@@ -77,7 +76,6 @@ class Curl {
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_FILE, $fp);
-//        curl_setopt($ch, CURLOPT_USERPWD, '0de9b1901197dd3413f849afe9e43bbfe7d37418:x-oauth-basic');
         curl_setopt($ch, CURLOPT_USERAGENT, $this->getUserAgent());
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_exec($ch);
