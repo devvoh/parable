@@ -1,12 +1,12 @@
 <?php
 /**
- * @package     Devvoh Fluid
+ * @package     Devvoh Parable
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid;
+namespace Devvoh\Parable;
 
 class App {
 
@@ -36,7 +36,7 @@ class App {
     static protected $cli               = null;
 
     /**
-     * @var null|\Devvoh\Fluid\App\Config
+     * @var null|\Devvoh\Parable\App\Config
      */
     static protected $config            = null;
 
@@ -111,7 +111,7 @@ class App {
     static protected $debug             = null;
 
     /**
-     * @var null|\Devvoh\Fluid\App\View
+     * @var null|\Devvoh\Parable\App\View
      */
     static protected $view              = null;
 
@@ -377,11 +377,11 @@ class App {
     /**
      * Returns (and possibly instantiates) the Config instance
      *
-     * @return \Devvoh\Fluid\App\Config
+     * @return \Devvoh\Parable\App\Config
      */
     public static function getConfig() {
         if (!self::$config) {
-            self::$config = new \Devvoh\Fluid\App\Config();
+            self::$config = new \Devvoh\Parable\App\Config();
         }
         return self::$config;
     }
@@ -546,11 +546,11 @@ class App {
     /**
      * Returns (and possibly instantiates) the View instance
      *
-     * @return \Devvoh\Fluid\App\View
+     * @return \Devvoh\Parable\App\View
      */
     public static function getView() {
         if (!self::$view) {
-            self::$view = new \Devvoh\Fluid\App\View();
+            self::$view = new \Devvoh\Parable\App\View();
         }
         return self::$view;
     }
@@ -672,10 +672,10 @@ class App {
      *
      * @param null $entityName
      *
-     * @return \Devvoh\Fluid\Repository
+     * @return \Devvoh\Parable\Repository
      */
     public static function createRepository($entityName = null) {
-        $repository = new \Devvoh\Fluid\Repository();
+        $repository = new \Devvoh\Parable\Repository();
 
         $entity = self::createEntity($entityName);
         $repository->setEntity($entity);
@@ -684,7 +684,7 @@ class App {
     }
 
     public static function createEntity($entityName = null) {
-        $entity = new \Devvoh\Fluid\Entity();
+        $entity = new \Devvoh\Parable\Entity();
         // Loop through models trying to find the appropriate class
         foreach (self::getModules() as $module) {
             $entityNameComplete = '\\' . $module['name'] . '\\Model\\' . $entityName;

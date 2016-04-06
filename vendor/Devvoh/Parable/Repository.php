@@ -1,19 +1,19 @@
 <?php
 /**
- * @package     Devvoh Fluid
+ * @package     Devvoh Parable
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid;
+namespace Devvoh\Parable;
 
-use \Devvoh\Fluid\App;
+use \Devvoh\Parable\App;
 
 class Repository {
 
     /**
-     * @var null|\Devvoh\Fluid\Entity
+     * @var null|\Devvoh\Parable\Entity
      */
     protected $entity       = null;
 
@@ -68,7 +68,7 @@ class Repository {
      *
      * @param int $id
      *
-     * @return null|\Devvoh\Fluid\Entity
+     * @return null|\Devvoh\Parable\Entity
      */
     public function getById($id) {
         $query = $this->createQuery();
@@ -182,7 +182,7 @@ class Repository {
     /**
      * Returns a fresh clone of the stored Entity
      *
-     * @return \Devvoh\Fluid\Entity
+     * @return \Devvoh\Parable\Entity
      */
     public function createEntity() {
         return clone $this->getEntity();
@@ -191,7 +191,7 @@ class Repository {
     /**
      * Set an entity on the repository. Its values don't matter, it'll just be used for configuration purposes.
      *
-     * @param \Devvoh\Fluid\Entity $entity
+     * @param \Devvoh\Parable\Entity $entity
      *
      * @return $this
      */
@@ -203,7 +203,7 @@ class Repository {
     /**
      * Return entity
      *
-     * @return \Devvoh\Fluid\Entity|null
+     * @return \Devvoh\Parable\Entity|null
      */
     public function getEntity() {
         return $this->entity;

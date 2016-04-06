@@ -1,14 +1,14 @@
 <?php
 /**
- * @package     Devvoh Fluid
+ * @package     Devvoh Parable
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid\App;
+namespace Devvoh\Parable\App;
 
-use \Devvoh\Fluid\App;
+use \Devvoh\Parable\App;
 
 class View {
 
@@ -64,15 +64,15 @@ class View {
 
     /**
      * Allow view files to try to call static methods on App, to prevent use in phtml files or awkward
-     * \Devvoh\Fluid\App calls
+     * \Devvoh\Parable\App calls
      *
      * Possible uses:
      *    self::getGet()->getValues();
      *    $this->getGet()->getValues();
      *
      * Instead of:
-     *    \Devvoh\Fluid\App::getGet()->getValues();
-     *    use \Devvoh\Fluid\App; App::getGet()->getValues();
+     *    \Devvoh\Parable\App::getGet()->getValues();
+     *    use \Devvoh\Parable\App; App::getGet()->getValues();
      *
      * @param $method
      * @param $parameters
@@ -80,8 +80,8 @@ class View {
      * @return bool
      */
     public function __call($method, $parameters = []) {
-        if (method_exists('\Devvoh\Fluid\App', $method)) {
-            return call_user_func_array(['\Devvoh\Fluid\App', $method], $parameters);
+        if (method_exists('\Devvoh\Parable\App', $method)) {
+            return call_user_func_array(['\Devvoh\Parable\App', $method], $parameters);
         }
         return false;
     }

@@ -1,9 +1,14 @@
-# Fluid PHP Framework Changelog
+# Parable PHP Framework Changelog
 
-### 0.3.5 - in progress
+### 0.4.0
 
 __Changes__
-- Small one, but removed composer.json again. No use for Fluid, which will need an installer like symfony & laravel. For now just releases on github are enough. But I do know how to do it now, so that's something.
+- Renamed Fluid to Parable. The reason is that the Flow PHP framework has a component called Fluid, which is their template parser. As such, it's become clear that this little project required a new name. As this renames all classes and even some directories, it breaks backwards compatibility. Given that parable is still pre-release software, semantic versioning isn't completely in play yet and it merely raises the version to 0.4.0.
+
+### 0.3.5
+
+__Changes__
+- Small one, but removed composer.json again. No use for Parable, which will need an installer like symfony & laravel. For now just releases on github are enough. But I do know how to do it now, so that's something.
 
 ### 0.3.4
 
@@ -12,7 +17,7 @@ __Changes__
 - Response no longer has a __destruct method. If you die/exit, it dies/exits without attempting to output the buffer.
 - Moved App logic from index.php into App::run(), which used to be boot() but now also does the routing. Later on, split this into multiple functions.
 - App::executeRoute now looks for the view parameter on a route definition regardless of closure or not. This allows overruling the auto-generated template or simply using a specific template if the auto-generated template doesn't exist.
-- Added Fluid.php cli interpreter & \Devvoh\Fluid\Cli class to handle the logic behind Fluid.php, see app/modules/App/Cli/Index.php for current implementation (subject to change).
+- Added Parable.php cli interpreter & \Devvoh\Parable\Cli class to handle the logic behind Parable.php, see app/modules/App/Cli/Index.php for current implementation (subject to change).
 - Added some more information to the index view file.
 - Added composer.json (experimental)
 
@@ -45,10 +50,10 @@ __Bugfixes__
 - All references to ob_* output buffering functions have been moved into the Response object and are now called from there. This makes it clearer when output buffering is used and what type.
 - Default output buffering has been changed from using ob_gzhandler to regular, since ob_gzhandler would cause flicker before first byte sometimes. I need to look into this before enabling it again.
 - app\modules\Base has been renamed to app\modules\Core since it functions as a 'core' for completely standard functionality such as errors.
-- Removed \Devvoh\Fluid\Controller as base since it'd be unwise to alter this as a developer building on top of Fluid. An update of Fluid would overwrite it or an annoying merging issue would arise. Replaced with user-alterable \Core\Controller\Base.
+- Removed \Devvoh\Parable\Controller as base since it'd be unwise to alter this as a developer building on top of Parable. An update of Parable would overwrite it or an annoying merging issue would arise. Replaced with user-alterable \Core\Controller\Base.
 - Added a number of currentModule-related functions to App, most important of which is getModuleFromPath, which is used by Routes.php to determine the module to set on all the routes instead of having to manually set it.
 - Changed the 'magic' references to App in index.phtml to self:: instead of $this for consistency's sake.Both still work, to allow the developer to decide which one they'd prefer.
-- \Devvoh\Fluid\App\View's _call magic method has been updated to use call_user_func_array to properly pass all parameters as they should.
+- \Devvoh\Parable\App\View's _call magic method has been updated to use call_user_func_array to properly pass all parameters as they should.
 - App::start() has been renamed to App::boot() because it looks nicer. For some reason this is important to me.
 - Speaking of pretty things, redesigned the default 'hello' page to be more modern and playful.
 - Many less important for the end user improvements (reworked almost all comments, cody style fixes, etc.)
@@ -61,12 +66,12 @@ __Bugfixes__
 
 ### 0.3.0
 
-- Modules now use their own namespaces. app/modules/App/Controller/Home.php would use \App\Controller and Home as class.These are autoloaded by the same PSR-4 compatible autoloader that loads the Components and Fluid assets from vendor/.
+- Modules now use their own namespaces. app/modules/App/Controller/Home.php would use \App\Controller and Home as class.These are autoloaded by the same PSR-4 compatible autoloader that loads the Components and Parable assets from vendor/.
 - enableDebug() has been moved into App.php, to de-clutter index.php even more.
 
 ### 0.2.8
 
-- App::redirect($url) will now look if the url is an absolute one, and if not, runs it through App::getUrl($relativeUrl) to get a proper fluid-relevant url. This allows for safe use of App::redirect('/');
+- App::redirect($url) will now look if the url is an absolute one, and if not, runs it through App::getUrl($relativeUrl) to get a proper Parable-relevant url. This allows for safe use of App::redirect('/');
 - Response content types can now be set by either the shorthand (js) or the full string (application/javascript).
 - For those few App::methods() that take a parameter, which is always a maximum of 1, View now recognizes that and passes it as a single variable instead of the usual array.
 
@@ -77,6 +82,6 @@ __Bugfixes__
 
 ### 0.2.6
 
-- Added Devvoh\Component\Validate and the required assets on Devvoh\Fluid\Entity
+- Added Devvoh\Component\Validate and the required assets on Devvoh\Parable\Entity
 - On Entity->save(), id is now added to the entity for updates/saves later on or to add to other entities
 - Quoting table names due to common terms conflicting with sqlite

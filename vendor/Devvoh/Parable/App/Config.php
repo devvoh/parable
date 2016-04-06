@@ -1,14 +1,14 @@
 <?php
 /**
- * @package     Devvoh Fluid
+ * @package     Devvoh Parable
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid\App;
+namespace Devvoh\Parable\App;
 
-use \Devvoh\Fluid\App;
+use \Devvoh\Parable\App;
 
 class Config extends \Devvoh\Components\GetSet {
 
