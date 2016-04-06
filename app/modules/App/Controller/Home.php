@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Fluid
+ * @package     Parable
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  * @license     MIT
  * @author      Robin de Graaf (hello@devvoh.com)
@@ -8,7 +8,7 @@
 
 namespace App\Controller;
 
-use \Devvoh\Fluid\App as App;
+use \Devvoh\Parable\App as App;
 
 class Home extends \Core\Controller\Base {
 

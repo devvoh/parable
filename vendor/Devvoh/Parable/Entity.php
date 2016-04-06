@@ -1,14 +1,14 @@
 <?php
 /**
- * @package     Devvoh Fluid
+ * @package     Devvoh Parable
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid;
+namespace Devvoh\Parable;
 
-use \Devvoh\Fluid\App;
+use \Devvoh\Parable\App;
 
 class Entity {
 

@@ -1,14 +1,14 @@
 <?php
 /**
- * @package     Devvoh Fluid
+ * @package     Devvoh Parable
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Fluid;
+namespace Devvoh\Parable;
 
-use \Devvoh\Fluid\App;
+use \Devvoh\Parable\App;
 
 class Cli {
 
@@ -33,7 +33,7 @@ class Cli {
      * @param $argv
      */
     public static function boot($argv) {
-        App::getCli()->write('Fluid CLI - ' . App::getVersion());
+        App::getCli()->write('Parable CLI - ' . App::getVersion());
         App::getCli()->write(str_repeat('-', 70));
         self::loadModules();
         self::populateCommands();

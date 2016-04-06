@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * @package     Devvoh Fluid Installer
+ * @package     Devvoh Parable Installer
  * @license     MIT
  * @author      Robin de Graaf <hello@devvoh.com>
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
@@ -12,7 +12,7 @@ class Curl {
     /**
      * @var string
      */
-    protected $userAgent = 'fluid/curl';
+    protected $userAgent = 'parable/curl';
 
     /**
      * Return the user agent
@@ -248,7 +248,7 @@ $curl = new Curl();
 $cli = new Cli();
 $cli->setArguments($argv);
 
-$curlBaseUrl = 'https://api.github.com/repos/devvoh/Fluid/';
+$curlBaseUrl = 'https://api.github.com/repos/devvoh/parable/';
 
 switch ($cli->getArgument(1)) {
     case 'new':
@@ -262,12 +262,12 @@ switch ($cli->getArgument(1)) {
             $result = json_decode($curl->getContent($curlBaseUrl . 'releases'));
             $latest = $result[0];
 
-            $downloadName       = 'fluid-' . $latest->tag_name;
+            $downloadName       = 'parable-' . $latest->tag_name;
             $downloadFilename   = $downloadName . '.zip';
             $downloadDirectory  = getcwd() . DIRECTORY_SEPARATOR;
 
             $downloadPath       = $downloadDirectory . $downloadFilename;
-            $extractToPath      = $downloadDirectory . uniqid('fluid_');
+            $extractToPath      = $downloadDirectory . uniqid('parable_');
 
             $cli->write('Downloading release ' . $latest->tag_name . ' to ' . $downloadPath . '...');
 

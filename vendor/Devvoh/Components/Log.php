@@ -18,7 +18,7 @@ class Log {
     /**
      * @var string
      */
-    protected $defaultLogFile   = 'fluid.log';
+    protected $defaultLogFile   = 'parable.log';
 
     /**
      * @var int

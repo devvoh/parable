@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Fluid
+ * @package     Parable
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  * @license     MIT
  * @author      Robin de Graaf (hello@devvoh.com)
@@ -16,16 +16,16 @@
  *    and it would be wise to leave 'unique' as last (for performance), since it'll make a database connection to check.
  * 5) This is it. This is a working model. Note that the database column names should match these properties 1:1.
  * 6) In case you do want to use different property names, there is a very basic (no error-checking) toMappedArray
- *    method in \Devvoh\Fluid\Entity, which will use $entity->getMapper() to get a from => to array with which to map
+ *    method in \Devvoh\Parable\Entity, which will use $entity->getMapper() to get a from => to array with which to map
  *    the fields. You would use $entity->setUseMapper(true) to enable. This has NOT been tested yet, and is basically
  *    pseudo-code. Will be tested and implemented properly later.
  */
 
 namespace App\Model;
 
-use \Devvoh\Fluid\App as App;
+use \Devvoh\Parable\App as App;
 
-class Users extends \Devvoh\Fluid\Entity {
+class Users extends \Devvoh\Parable\Entity {
 
     protected $tableName    = 'users';
     protected $tableKey     = 'id';
