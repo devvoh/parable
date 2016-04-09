@@ -78,7 +78,9 @@ class Entity {
             $query->setAction('insert');
 
             foreach ($array as $key => $value) {
-                $query->addValue($key, $value);
+                if ($key !== $this->tableKey) {
+                    $query->addValue($key, $value);
+                }
             }
 
             // Since it's an insert, add created_at if the model implements it

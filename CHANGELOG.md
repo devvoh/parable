@@ -1,5 +1,15 @@
 # Parable PHP Framework Changelog
 
+### 0.4.1
+
+__Changes__
+- Components/Database and Components/Query now have a property (and appropriate get/set methods) to set whether 'all' should be quoted.
+- Closures should now return their value, after which their return value is added to the Response content.
+
+__Bugfixes__
+- Since NULL values are no longer automatically skipped (due to bug fix in 0.3.3), query was trying to set the id even on inserts. sqlite didn't care, but mysql does. TableKey is now always skipped in inserts.
+- MySQL mode now works.
+
 ### 0.4.0
 
 __Changes__
