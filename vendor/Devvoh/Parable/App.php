@@ -169,7 +169,7 @@ class App {
         if (self::getConfig()->get('storage_type') && self::getConfig()->get('storage_location')) {
             $config = [
                 'type'     => self::getConfig()->get('storage_type'),
-                'location' => self::getDir(self::getConfig()->get('storage_location')),
+                'location' => self::getConfig()->get('storage_location'),
                 'username' => self::getConfig()->get('storage_username'),
                 'password' => self::getConfig()->get('storage_password'),
                 'database' => self::getConfig()->get('storage_database'),
@@ -663,6 +663,7 @@ class App {
         $query = new \Devvoh\Components\Query();
         if (self::getDatabase()) {
             $query->setPdoInstance(self::getDatabase()->getInstance());
+            $query->setQuoteAll(self::getDatabase()->getQuoteAll());
         }
         return $query;
     }
@@ -770,13 +771,14 @@ class App {
         }
 
         $viewTemplate = null;
-        // Check for a closure
+        // Check for a closure and set the result to $closureReturn if valid
+        $closureReturn = null;
         if (isset($route['closure'])) {
             $closure = $route['closure'];
             // Check if we can call it
             if (is_callable($closure)) {
                 // Call it
-                $closure();
+                $closureReturn = $closure();
             } else {
                 // Not callable, so false
                 return false;
@@ -808,6 +810,11 @@ class App {
                 return false;
             }
         }
+
+        if ($closureReturn) {
+            self::getResponse()->appendContent($closureReturn);
+        }
+
         // If valid $viewTemplate is set, load it into the view
         if (!$viewTemplateRoute && $viewTemplate && file_exists($viewTemplate)) {
             self::getView()->loadTemplate($viewTemplate);

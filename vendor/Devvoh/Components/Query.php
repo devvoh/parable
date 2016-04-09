@@ -66,6 +66,11 @@ class Query {
     protected $joins        = [];
 
     /**
+     * @var bool
+     */
+    protected $quoteAll = false;
+
+    /**
      * Set the tableName to work on
      *
      * @param string $tableName
@@ -83,7 +88,11 @@ class Query {
      * @return string
      */
     public function getTableName() {
-        return $this->tableName;
+        $tableName = $this->tableName;
+        if ($this->quoteAll) {
+            $tableName = $this->pdoInstance->quote($tableName);
+        }
+        return $tableName;
     }
 
     /**
@@ -107,6 +116,26 @@ class Query {
      */
     public function getPdoInstance() {
         return $this->pdoInstance;
+    }
+
+    /**
+     * Set whether the table name should be quoted
+     *
+     * @param $quoteAll
+     * @return $this
+     */
+    public function setQuoteAll($quoteAll) {
+        $this->quoteAll = (bool)$quoteAll;
+        return $this;
+    }
+
+    /**
+     * Return whether table names should be quoted
+     *
+     * @return bool
+     */
+    public function getQuoteAll() {
+        return $this->quoteAll;
     }
 
     /**
@@ -252,7 +281,7 @@ class Query {
             // set select & what needs to be selected
             $query[] = "SELECT " . $this->select;
             // table
-            $query[] = "FROM " . $this->pdoInstance->quote($this->tableName);
+            $query[] = "FROM " . $this->getTableName();
 
             // Add the left joins
             if (count($this->joins) > 0) {
@@ -311,7 +340,7 @@ class Query {
         } elseif ($this->action === 'delete') {
 
             // set delete to the proper table
-            $query[] = "DELETE FROM " . $this->pdoInstance->quote($this->tableName);
+            $query[] = "DELETE FROM " . $this->getTableName();
 
             // now get the where clauses
             if (count($this->where) > 0) {
@@ -329,7 +358,7 @@ class Query {
         } elseif ($this->action === 'update') {
 
             // set update to the proper table
-            $query[] = "UPDATE " . $this->pdoInstance->quote($this->tableName);
+            $query[] = "UPDATE " . $this->getTableName();
 
             // now get the values
             if (count($this->values) > 0) {
@@ -346,7 +375,10 @@ class Query {
                         } else {
                             $correctValue = $this->pdoInstance->quote($value);
                         }
-                        $values[] = "'" . $key . "'=" . $correctValue;
+                        if ($this->getQuoteAll()) {
+                            $key = $this->getPdoInstance()->quote($key);
+                        }
+                        $values[] = $key . "=" . $correctValue;
                     } else {
                         $tableKey = $key;
                         $tableKeyValue = $value;
@@ -361,7 +393,7 @@ class Query {
         } elseif ($this->action === 'insert') {
 
             // set insert to the proper table
-            $query[] = "INSERT INTO " . $this->pdoInstance->quote($this->tableName);
+            $query[] = "INSERT INTO " . $this->getTableName();
 
             // now get the values
             if (count($this->values) > 0) {
@@ -369,7 +401,10 @@ class Query {
                 $keys = [];
                 $values = [];
                 foreach ($this->values as $key => $value) {
-                    $keys[] = "'" . $key . "'";
+                    if ($this->getQuoteAll()) {
+                        $key = $this->pdoInstance->quote($key);
+                    }
+                    $keys[] = $key;
 
                     if ($value === null) {
                         $correctValue = 'NULL';
