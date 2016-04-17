@@ -148,7 +148,8 @@ class App {
     /**
      * Starts the App class and does some initial setup
      */
-    public static function run() {
+    public static function boot()
+    {
         self::getResponse()->startOB();
 
         // Find out what modules we have
@@ -168,7 +169,7 @@ class App {
         // Set and enable database based on config
         if (self::getConfig()->get('storage_type') && self::getConfig()->get('storage_location')) {
             $config = [
-                'type'     => self::getConfig()->get('storage_type'),
+                'type' => self::getConfig()->get('storage_type'),
                 'location' => self::getConfig()->get('storage_location'),
                 'username' => self::getConfig()->get('storage_username'),
                 'password' => self::getConfig()->get('storage_password'),
@@ -196,23 +197,23 @@ class App {
 
         // Start the session
         self::getSession()->startSession();
+    }
 
-        /**
-         * If we're not in cli mode, we can route & send the response
-         */
-        if (php_sapi_name() !== 'cli') {
-            // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
-            if (self::matchRoute()) {
-                if (!self::executeRoute()) {
-                    echo self::getView()->partial('Error/Route.phtml');
-                }
-            } else {
-                echo self::getView()->partial('Error/404.phtml');
+    /**
+     * Run the app
+     */
+    public static function run() {
+        // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
+        if (self::matchRoute()) {
+            if (!self::executeRoute()) {
+                echo self::getView()->partial('Error/Route.phtml');
             }
-
-            // Last thing we do is ask our Response to send it all as configured
-            self::getResponse()->sendResponse();
+        } else {
+            echo self::getView()->partial('Error/404.phtml');
         }
+
+        // Last thing we do is ask our Response to send it all as configured
+        self::getResponse()->sendResponse();
     }
 
     /**

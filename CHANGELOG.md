@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.4.2
+
+__Changes__
+- In preparation of future changes, App::run has been split into App::boot (setup) and App::run (actually do the routing). This is mostly in preparation of the future addition of a Dispatcher.
+
 ### 0.4.1
 
 __Changes__

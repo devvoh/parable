@@ -29,3 +29,5 @@ $autoloader = new \Devvoh\Components\Autoloader();
 $autoloader->addLocation(BASEDIR . DS . 'vendor');
 $autoloader->addLocation(BASEDIR . DS . 'app' . DS . 'modules');
 $autoloader->register();
+
+\Devvoh\Parable\App::boot();
