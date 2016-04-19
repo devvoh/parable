@@ -13,11 +13,11 @@ use \Devvoh\Parable\App as App;
 class Run {
 
     public function preDispatch() {
-        echo 'preDispatch RUN';
+        // Do whatever preDispatch stuff you want to do here. This is BEFORE the controller/closure is called.
     }
 
     public function postDispatch() {
-        echo 'postDispatch RUN';
+        // Do whatever postDispatch stuff you want to do here. This is AFTER the view template is included.
     }
 
 }
