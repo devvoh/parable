@@ -1,9 +1,15 @@
 # Parable PHP Framework Changelog
 
-### 0.4.2
+### 0.5.0
+
+__Note: This version breaks backwards compatibility!__
 
 __Changes__
-- In preparation of future changes, App::run has been split into App::boot (setup) and App::run (actually do the routing). This is mostly in preparation of the future addition of a Dispatcher.
+- In preparation of future changes, App::run has been split into App::boot (setup) and App::dispatch (actually do the routing). This is mostly in preparation of the future addition of a Dispatcher. Also means run/dispatch no longer has to check whether it's running as a cli process, as the Cli class won't call dispatch.
+- \Devvoh\Parable\Dispatcher has been added, and actually executing the route has been pulled out of App. This is also in preparation of pre/postDispatch functionality.
+- On Dispatcher, the execute method has been reworked significantly, for better readability and more efficient code. Now also supports using a view key on a controller route, which will be looked for before looking for an auto-generated view path.
+- Added /app/modules/[module]/Run.php, which can implement preDispatch & postDispatch methods which will be run at appropriate times. Controller pre/postDispatch coming at a later date.
+- \Devvoh\Components\Getset now has a method setMany($array), which will set all key/value pairs in the passed array and add them to the resource.
 
 ### 0.4.1
 

@@ -8,12 +8,12 @@
 
 /**
  * Include Bootstrap.php to enable all functionality.
+ *
+ * This will set all base values and allow use of all App::methods
  */
 require_once('../vendor/Devvoh/Parable/Bootstrap.php');
 
 /**
- * App is the main entry point for all functionality, offering mostly static functions.
- *
- * Run the App. This will set debug and load the config
+ * Dispatch the current route.
  */
-\Devvoh\Parable\App::run();
+\Devvoh\Parable\App::dispatch();

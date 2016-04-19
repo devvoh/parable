@@ -1,7 +1,6 @@
 # Parable PHP Framework
 
 ### TODO list
-- \Devvoh\Parable\Dispatcher: move App's match & execute to it, rename execute to dispatch and clean it up.
 - If pre/postDispatch methods exist on controller, execute them at the appropriate moments.
 - Add app/ModuleName/Run.php, which should/can have setup, preDispatch and postDispatch methods. These are called
   when appropriate. setup is run after run is called, and pre/postDispatch same as controllers.
@@ -20,6 +19,9 @@
 - Verify PSR-4 compatibility.
 - Look into phpunit testing
 - Translation Component?
-- Look into generating the folder structure for
+- Look into generating the folder structure for Parable (for the install script)
+
+### DONE LIST
+- \Devvoh\Parable\Dispatcher: move App's match & execute to it, rename execute to dispatch and clean it up.
 - Made a logical mistake when calling App::run what it's called. Boot and run should be separated to allow, for ex.,
   route adding between setting it all up and running App. This would also allow preRun on Run.php.

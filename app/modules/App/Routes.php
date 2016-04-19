@@ -14,11 +14,12 @@ $routes['index'] = [
     'controller' => 'Home',
     'action' => 'index',
 ];
-$routes['test'] = [
+$routes['closure'] = [
     'method' => 'GET',
-    'path' => '/test',
-    'controller' => 'Home\Test',
-    'action' => 'index',
+    'path' => '/closure',
+    'closure' => function() {
+        return 'this is a closure';
+    },
 ];
 
 // Add module to all routes

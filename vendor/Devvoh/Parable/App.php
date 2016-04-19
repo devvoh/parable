@@ -200,12 +200,14 @@ class App {
     }
 
     /**
-     * Run the app
+     * Dispatch the current route
      */
-    public static function run() {
+    public static function dispatch() {
         // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
-        if (self::matchRoute()) {
-            if (!self::executeRoute()) {
+        $matchedRoute = self::matchRoute();
+        if ($matchedRoute) {
+            $dispatcher = self::createDispatcher($matchedRoute);
+            if (!$dispatcher->dispatch()) {
                 echo self::getView()->partial('Error/Route.phtml');
             }
         } else {
@@ -601,6 +603,19 @@ class App {
         return self::$currentModule;
     }
 
+    public static function getModuleRun() {
+        $module = self::getRoute()['module'];
+        $runPath = self::getDir('app' . DS . 'modules' . DS . $module . DS . 'Run.php');
+
+        $run = null;
+        // Now check if the path exists
+        if (file_exists($runPath)) {
+            $runName = '\\' . self::getRoute()['module'] . '\\' . 'Run';
+            $run = new $runName();
+        }
+        return $run;
+    }
+
     /**
      * Set the current module
      *
@@ -670,7 +685,7 @@ class App {
     }
 
     /**
-     * Returns a new Repository object
+     * Returns a new Repository instance
      *
      * @param null $entityName
      *
@@ -685,6 +700,12 @@ class App {
         return $repository;
     }
 
+    /**
+     * Returns a new Entity instance
+     *
+     * @param null|string $entityName
+     * @return Entity
+     */
     public static function createEntity($entityName = null) {
         $entity = new \Devvoh\Parable\Entity();
         // Loop through models trying to find the appropriate class
@@ -696,6 +717,17 @@ class App {
             }
         }
         return $entity;
+    }
+
+    /**
+     * Return a new Dispatcher instance
+     *
+     * @param null|array $route
+     * @return Dispatcher
+     */
+    public static function createDispatcher($route = null) {
+        $dispatcher = new \Devvoh\Parable\Dispatcher($route);
+        return $dispatcher;
     }
 
     /**
@@ -739,97 +771,6 @@ class App {
     }
 
     /**
-     * Executes a route
-     *
-     * @param $route
-     *
-     * @return bool
-     */
-    public static function executeRoute($route = null) {
-        if (!$route) {
-            $route = self::getRoute();
-        }
-
-        // Start a new level of output buffering to put whatever we're going to output into the Response
-        self::getResponse()->startOB();
-
-        // Store the current module
-        self::setCurrentModule($route['module']);
-        // Check for params
-        if (isset($route['params'])) {
-            foreach ($route['params'] as $param) {
-                if (isset($param['name']) && isset($param['value'])) {
-                    self::getParam()->set($param['name'], $param['value']);
-                }
-            }
-        }
-
-        // Check for view param in the router definition. This is only used in case of closures or if the auto-
-        // generated view template doesn't exist.
-        $viewTemplateRoute = null;
-        if (isset($route['view'])) {
-            $viewTemplateRoute = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['view'];
-        }
-
-        $viewTemplate = null;
-        // Check for a closure and set the result to $closureReturn if valid
-        $closureReturn = null;
-        if (isset($route['closure'])) {
-            $closure = $route['closure'];
-            // Check if we can call it
-            if (is_callable($closure)) {
-                // Call it
-                $closureReturn = $closure();
-            } else {
-                // Not callable, so false
-                return false;
-            }
-        } else {
-            // Not a closure, build a controller/action combination
-            $classNameFull = '\\' . $route['module'] . '\\' . 'Controller' . '\\' . $route['controller'];
-            $controllerFile = self::getBaseDir() . 'app/modules' . str_replace('\\', DS, $classNameFull) . '.php';
-            $viewTemplate = self::getBaseDir() . 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['controller'] . DS . $route['action'] . '.phtml';
-
-            // Just in case our controllerFile or viewTemplate variables contains any backslashes, replace them with regular ones
-            $controllerFile = str_replace('\\', '/', $controllerFile);
-            $viewTemplate = str_replace('\\', '/', $viewTemplate);
-
-            // And check whether the file exists before trying to instantiate it.
-            if (file_exists($controllerFile)) {
-                // Get all the data
-                $action         = $route['action'];
-                $controller     = new $classNameFull();
-                // And call the action if it exists
-                if (method_exists($controller, $action)) {
-                    $controller->$action();
-                } else {
-                    // Invalid action
-                    return false;
-                }
-            } else {
-                // Invalid controller
-                return false;
-            }
-        }
-
-        if ($closureReturn) {
-            self::getResponse()->appendContent($closureReturn);
-        }
-
-        // If valid $viewTemplate is set, load it into the view
-        if (!$viewTemplateRoute && $viewTemplate && file_exists($viewTemplate)) {
-            self::getView()->loadTemplate($viewTemplate);
-        } elseif ($viewTemplateRoute && file_exists($viewTemplateRoute)) {
-            self::getView()->loadTemplate($viewTemplateRoute);
-        }
-
-        // And get the output buffer contents and add it to the Response
-        echo self::getResponse()->endOB();
-
-        return true;
-    }
-
-    /**
      * Redirect to $url
      *
      * @param null $url
@@ -866,6 +807,11 @@ class App {
         return self::redirect(self::getUrl($url));
     }
 
+    /**
+     * End program execution immediately
+     *
+     * @param null|mixed $message
+     */
     public static function end($message = null) {
         exit($message);
     }

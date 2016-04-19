@@ -122,11 +122,28 @@ class GetSet {
             return false;
         }
 
-        // If local resource, set it as reference
+        // Decide where to store this key/value pair
         if ($this->useLocalResource) {
             $this->localResource[$this->getResource()][$key] = $value;
         } else {
             $GLOBALS['_' . $this->getResource()][$key] = $value;
+        }
+        return $this;
+    }
+
+    /**
+     * Set all key/value pairs in $values if resource is set and $values is an array
+     *
+     * @param $values
+     * @return $this|bool
+     */
+    public function setMany($values) {
+        if (!$this->getResource() || !is_array($values)) {
+            return false;
+        }
+
+        foreach ($values as $key => $value) {
+            $this->set($key, $value);
         }
         return $this;
     }
