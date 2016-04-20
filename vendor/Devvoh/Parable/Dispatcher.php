@@ -8,9 +8,8 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Dispatcher {
+    use \Devvoh\Parable\AppTrait;
 
     /**
      * @var null|array
@@ -23,6 +22,7 @@ class Dispatcher {
      * @param null $route
      */
     public function __construct($route = null) {
+        $this->initApp();
         $this->setRoute($route);
     }
 
@@ -53,19 +53,19 @@ class Dispatcher {
      */
     public function dispatch() {
         // Store the current module on App
-        App::setCurrentModule($this->getRoute()['module']);
+        $this->app->setCurrentModule($this->getRoute()['module']);
 
         // Get the route
         $route = $this->getRoute();
 
         // Trigger the parable_dispatcher_execute_before execute
-        App::getHook()->trigger('parable_dispatcher_execute_before', $route);
+        $this->app->getHook()->trigger('parable_dispatcher_execute_before', $route);
 
         // Execute the route
         $return = $this->execute();
 
         // Trigger the parable_dispatcher_execute_after execute
-        App::getHook()->trigger('parable_dispatcher_execute_after', $route);
+        $this->app->getHook()->trigger('parable_dispatcher_execute_after', $route);
 
         return $return;
     }
@@ -80,11 +80,11 @@ class Dispatcher {
         $route = $this->getRoute();
 
         // Start a new level of output buffering to put whatever we're going to output into the Response
-        App::getResponse()->startOB();
+        $this->app->getResponse()->startOB();
 
         // Check for route params and set them as App params
         if (isset($route['params'])) {
-            App::getParam()->setMany($route['params']);
+            $this->app->getParam()->setMany($route['params']);
         }
 
         // Get the template, if any
@@ -123,12 +123,12 @@ class Dispatcher {
 
         // If $content is set, add it to the Response
         if ($content) {
-            App::getResponse()->appendContent($content);
+            $this->app->getResponse()->appendContent($content);
         }
 
         // If $template is set, load the template on the View
         if ($template) {
-            App::getView()->loadTemplate($template);
+            $this->app->getView()->loadTemplate($template);
         }
 
         // And if we've gotten this far, let's just return true
@@ -142,7 +142,7 @@ class Dispatcher {
         $template = null;
         // If a view file is given, this will take precedence over an auto-generated template
         if (isset($route['view'])) {
-            $template = App::getDir(
+            $template = $this->app->getDir(
                 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['view']
             );
         }
@@ -155,7 +155,7 @@ class Dispatcher {
         // If template was never set or reset above, and there's a controller, we're going to see if a view file exists
         // in the default location.
         if (!$template && isset($route['controller'])) {
-            $template = App::getDir(
+            $template = $this->app->getDir(
                 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['controller'] . DS . $route['action'] . '.phtml'
             );
         }

@@ -6,16 +6,18 @@
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Parable\App;
-
-use \Devvoh\Parable\App;
+namespace Devvoh\Parable;
 
 class Config extends \Devvoh\Components\GetSet {
+    use \Devvoh\Parable\AppTrait;
 
     /**
      * Set the resource to config
      */
     public function __construct() {
+        $this->initApp();
+
+        $this->app = \Devvoh\Parable\App::getInstance();
         $this->setResource('config');
     }
 
@@ -27,8 +29,8 @@ class Config extends \Devvoh\Components\GetSet {
      * @return $this
      */
     public function load() {
-        $configFile = App::getDir('app/config/config.ini');
-        $customFile = App::getDir('app/config/custom.ini');
+        $configFile = $this->app->getDir('app/config/config.ini');
+        $customFile = $this->app->getDir('app/config/custom.ini');
 
         if (file_exists($configFile)) {
             $configData = parse_ini_file($configFile, true);

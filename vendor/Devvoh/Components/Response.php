@@ -61,7 +61,6 @@ class Response {
         }
         echo $this->content;
         $this->responseSent = true;
-        exit();
     }
 
     /**

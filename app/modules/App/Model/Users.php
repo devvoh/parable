@@ -23,8 +23,6 @@
 
 namespace App\Model;
 
-use \Devvoh\Parable\App as App;
-
 class Users extends \Devvoh\Parable\Entity {
 
     protected $tableName    = 'users';

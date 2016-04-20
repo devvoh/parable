@@ -8,23 +8,24 @@
 
 namespace App\Init;
 
-use \Devvoh\Parable\App as App;
-
 class Hooks {
+    use \Devvoh\Parable\AppTrait;
 
     public function __construct() {
+        $this->initApp();
+
         // Register global loop to log all triggers
-        App::getHook()->into('*', function($event) {
-            App::getLog()->write('Hook triggered: ' . $event);
+        $this->app->getHook()->into('*', function($event) {
+            $this->app->getLog()->write('Hook triggered: ' . $event);
         });
 
         // Register the before hook
-        App::getHook()->into('parable_dispatcher_execute_before', function($event, &$payload) {
+        $this->app->getHook()->into('parable_dispatcher_execute_before', function($event, &$payload) {
             // Do the stuff you want to do before dispatcher_execute
         });
 
         // Register the after hook
-        App::getHook()->into('parable_dispatcher_execute_after', function($event, &$payload) {
+        $this->app->getHook()->into('parable_dispatcher_execute_after', function($event, &$payload) {
             // Do the stuff you want to do after dispatcher_execute
         });
     }

@@ -6,11 +6,15 @@
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Parable\App;
-
-use \Devvoh\Parable\App;
+namespace Devvoh\Parable;
 
 class View {
+    use \Devvoh\Parable\AppTrait;
+
+    public function __construct()
+    {
+        $this->initApp();
+    }
 
     /**
      * Loads and shows the template file
@@ -24,7 +28,7 @@ class View {
             return null;
         }
         $content = $this->render($file);
-        App::getResponse()->appendContent($content);
+        $this->app->getResponse()->appendContent($content);
         return $this;
     }
 
@@ -40,13 +44,13 @@ class View {
         // Look for a module, either as given or a current module. If neither, assume Core.
         if (!$module) {
             $module = 'Core';
-            if (App::getRoute()) {
-                $module = App::getRoute()['module'];
+            if ($this->app->getRoute()) {
+                $module =$this->app->getRoute()['module'];
             }
         }
         // Build proper path
         $dir = 'app' . DS . 'modules' . DS . $module . DS . 'View' . DS . $file;
-        $dir = App::getDir($dir);
+        $dir = $this->app->getDir($dir);
 
         // Set return value to null as default
         $return = null;
@@ -57,9 +61,9 @@ class View {
     }
 
     public function render($file) {
-        App::getResponse()->startOB();
+        $this->app->getResponse()->startOB();
         require($file);
-        return App::getResponse()->endOB();
+        return $this->app->getResponse()->endOB();
     }
 
     /**
@@ -71,8 +75,8 @@ class View {
      *    $this->getGet()->getValues();
      *
      * Instead of:
-     *    \Devvoh\Parable\App::getGet()->getValues();
-     *    use \Devvoh\Parable\App; App::getGet()->getValues();
+     *    \Devvoh\Parable\App::getInstance()->getGet()->getValues();
+     *    use \Devvoh\Parable\App; App::getInstance()->getGet()->getValues();
      *
      * @param $method
      * @param $parameters
@@ -81,7 +85,7 @@ class View {
      */
     public function __call($method, $parameters = []) {
         if (method_exists('\Devvoh\Parable\App', $method)) {
-            return call_user_func_array(['\Devvoh\Parable\App', $method], $parameters);
+            return call_user_func_array([$this->app, $method], $parameters);
         }
         return false;
     }

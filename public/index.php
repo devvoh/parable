@@ -9,11 +9,11 @@
 /**
  * Include Bootstrap.php to enable all functionality.
  *
- * This will set all base values and allow use of all App::methods
+ * This will set all base values and allow use of all App->methods
  */
-require_once('../vendor/Devvoh/Parable/Bootstrap.php');
+$app = require_once('../vendor/Devvoh/Parable/Bootstrap.php');
 
 /**
  * Dispatch the current route.
  */
-\Devvoh\Parable\App::dispatch();
+$app->dispatch();

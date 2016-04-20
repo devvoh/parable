@@ -97,7 +97,7 @@ class Router {
                     }
                 }
 
-                // If we get here, the route is a match and all the params have been added to App::getParam()
+                // If we get here, the route is a match
                 return $data + [
                     'params' => $params,
                 ];

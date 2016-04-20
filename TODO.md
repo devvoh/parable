@@ -2,7 +2,7 @@
 
 ### TODO list
 - Add core events (parable_script_method_action, i.e. parable_dispatcher_execute_before) and trigger 'em.
-- Add css/jss/script/style functionality, probably through a \Devvoh\Parable\App\View\Assets component. Allow scripts
+- Add css/jss/script/style functionality, probably through a \Devvoh\Parable\View\Assets component. Allow scripts
   to be added and removed. These can be added to 'sets', so one could distinguish between header and footer, for ex.
 - Router function match should be split into single-responsibility functionality as much as possible. REWRITE.
 - Consider whether to use App::method or Parable::getApp()->method. The second is cleaner, but does require

@@ -8,9 +8,8 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Cli {
+    use \Devvoh\Parable\AppTraitStatic;
 
     /**
      * @var array
@@ -33,8 +32,10 @@ class Cli {
      * @param $argv
      */
     public static function boot($argv) {
-        App::getCli()->write('Parable CLI - ' . App::getVersion());
-        App::getCli()->write(str_repeat('-', 70));
+        self::initApp();
+
+        self::$app->getCli()->write('Parable CLI - ' . self::$app->getVersion());
+        self::$app->getCli()->write(str_repeat('-', 70));
         self::loadModules();
         self::populateCommands();
         self::populateParameters($argv);
@@ -59,7 +60,7 @@ class Cli {
      * Load all the modules
      */
     protected static function loadModules() {
-        $modules = App::getModules();
+        $modules = self::$app->getModules();
         foreach ($modules as $module) {
             $cliClass = '\\' . $module['name'] . '\Cli\Index';
             if (class_exists($cliClass)) {
@@ -147,15 +148,15 @@ class Cli {
      * Show all found commands in all found modules
      */
     public static function showCommands() {
-        App::getCli()->write('The following commands are available:');
+        self::$app->getCli()->write('The following commands are available:');
         foreach (self::$commands as $module => $commands) {
-            App::getCli()->nl();
+            self::$app->getCli()->nl();
             foreach ($commands as $command) {
                 $output = str_pad('    ' . $module . ':' . $command['method'], 50, ' ', STR_PAD_RIGHT);
                 $output .= count($command['parameters']) . ' parameters';
-                App::getCli()->write($output);
+                self::$app->getCli()->write($output);
             }
-            App::getCli()->nl();
+            self::$app->getCli()->nl();
         }
     }
 
@@ -165,7 +166,7 @@ class Cli {
      * @param $command
      */
     public static function endInvalidCommand($command) {
-        App::getCli()->addLine('Invalid command: ' .  $command[0] . ':' . $command[1])->end();
+        self::$app->getCli()->addLine('Invalid command: ' .  $command[0] . ':' . $command[1])->end();
     }
 
     /**
@@ -176,9 +177,9 @@ class Cli {
      */
     public static function endMissingParameters($command, $missingParameters) {
         $missingParameters = implode(', ', $missingParameters);
-        App::getCli()->addLine('Cannot run command ' . $command[0] . ':' . $command[1]);
-        App::getCli()->addLine('Missing parameters: ' . $missingParameters);
-        App::getCli()->end();
+        self::$app->getCli()->addLine('Cannot run command ' . $command[0] . ':' . $command[1]);
+        self::$app->getCli()->addLine('Missing parameters: ' . $missingParameters);
+        self::$app->getCli()->end();
     }
 
 }

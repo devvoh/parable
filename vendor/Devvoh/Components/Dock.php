@@ -54,15 +54,23 @@ class Dock {
             return false;
         }
 
-        // Check if the event exists and has closures to call
-        if (!isset($this->docks[$event]) || count($this->docks[$event]) == 0) {
-            return false;
+        // Get all global docks
+        $globalDocks = [];
+        if (isset($this->docks['*']) && count($this->docks['*']) > 0) {
+            $globalDocks = $this->docks['*'];
         }
 
-        $docks = $this->docks[$event];
-        // If global event '*' is registered, also include those
-        if (isset($this->docks['*']) && count($this->docks['*']) > 0) {
-            $docks = array_merge($docks, $this->docks['*']);
+        // Check if the event exists and has closures to call
+        if (!isset($this->docks[$event]) || count($this->docks[$event]) == 0) {
+            // There are no specific hooks, but maybe there's global hooks?
+            if (count($globalDocks) === 0) {
+                // There is nothing to do here
+                return false;
+            }
+            $docks = $globalDocks;
+        } else {
+            $docks = $this->docks[$event];
+            $docks = array_merge($docks, $globalDocks);
         }
 
         // All good, let's call those closures

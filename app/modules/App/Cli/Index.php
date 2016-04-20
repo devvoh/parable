@@ -8,9 +8,8 @@
 
 namespace App\Cli;
 
-use \Devvoh\Parable\App as App;
-
 class Index {
+    use \Devvoh\Parable\AppTrait;
 
     /**
      * @var array
@@ -24,21 +23,25 @@ class Index {
      * setAccess will loop through $accessList and apply all given rights to the corresponding paths
      */
     public function setAccess() {
-        App::getCli()->write('Setting access...');
+        $this->app->getCli()->write('Setting access...');
         foreach ($this->accessList as $path => $rights) {
-            $path = App::getDir($path);
-            App::getCli()->write('... ' . $path . ' set to ' . base_convert($rights, 10, 8));
+            $path = $this->app->getDir($path);
+            if (!file_exists($path)) {
+                mkdir($path);
+            }
+            chmod($path, $rights);
+            $this->app->getCli()->write('... ' . $path . ' set to ' . base_convert($rights, 10, 8));
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
             foreach ($iterator as $item) {
                 chmod($item, $rights);
             }
         }
-        App::getCli()->write('Done!')->nl();
+        $this->app->getCli()->write('Done!')->nl();
         return;
     }
 
     public function removeUser($id, $name) {
-        App::getCli()->write('Remove user with id ' . $id . ' and name ' . $name . '...');
+        $this->app->getCli()->write('Remove user with id ' . $id . ' and name ' . $name . '...');
     }
 
 }

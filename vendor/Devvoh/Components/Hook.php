@@ -50,15 +50,23 @@ class Hook {
             return false;
         }
 
-        // Check if the event exists and has closures to call
-        if (!isset($this->hooks[$event]) || count($this->hooks[$event]) == 0) {
-            return false;
+        // Get all global hooks
+        $globalHooks = [];
+        if (isset($this->hooks['*']) && count($this->hooks['*']) > 0) {
+            $globalHooks = $this->hooks['*'];
         }
 
-        $hooks = $this->hooks[$event];
-        // If global event '*' is registered, also include those
-        if (isset($this->hooks['*']) && count($this->hooks['*']) > 0) {
-            $hooks = array_merge($hooks, $this->hooks['*']);
+        // Check if the event exists and has closures to call
+        if (!isset($this->hooks[$event]) || count($this->hooks[$event]) == 0) {
+            // There are no specific hooks, but maybe there's global hooks?
+            if (count($globalHooks) === 0) {
+                // There is nothing to do here
+                return false;
+            }
+            $hooks = $globalHooks;
+        } else {
+            $hooks = $this->hooks[$event];
+            $hooks = array_merge($hooks, $globalHooks);
         }
 
         // All good, let's call those closures

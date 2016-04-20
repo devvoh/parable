@@ -8,9 +8,8 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Repository {
+    use \Devvoh\Parable\AppTrait;
 
     /**
      * @var null|\Devvoh\Parable\Entity
@@ -38,7 +37,7 @@ class Repository {
      * @return \Devvoh\Components\Query
      */
     public function createQuery() {
-        $query = App::createQuery();
+        $query = $this->app->createQuery();
         $query->setTableName($this->getEntity()->getTableName());
         $query->setTableKey($this->getEntity()->getTableKey());
         if ($this->getOnlyCount()) {
@@ -54,7 +53,7 @@ class Repository {
      */
     public function getAll() {
         $query = $this->createQuery();
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $this->app->getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
         $entities = [];
         if ($result) {
@@ -73,7 +72,7 @@ class Repository {
     public function getById($id) {
         $query = $this->createQuery();
         $query->where($this->getEntity()->getTableKey() . ' = ?', $id);
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $this->app->getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
         $entity = null;
         if ($result) {
@@ -102,7 +101,7 @@ class Repository {
         if (count($this->limit)) {
             $query->limit($this->limit['limit'], $this->limit['offset']);
         }
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $this->app->getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
         $entities = [];
         if ($result) {

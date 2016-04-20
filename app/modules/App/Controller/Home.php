@@ -8,8 +8,6 @@
 
 namespace App\Controller;
 
-use \Devvoh\Parable\App as App;
-
 class Home extends \Core\Controller\Base {
 
     public function index() {

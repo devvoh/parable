@@ -30,4 +30,10 @@ $autoloader->addLocation(BASEDIR . DS . 'vendor');
 $autoloader->addLocation(BASEDIR . DS . 'app' . DS . 'modules');
 $autoloader->register();
 
-\Devvoh\Parable\App::boot();
+/**
+ * And run boot on App to get it all started
+ */
+$app = \Devvoh\Parable\App::getInstance();
+$app->boot();
+
+return $app;
