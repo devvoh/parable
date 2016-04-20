@@ -2,7 +2,7 @@
 
 ### 0.5.0
 
-__Note: This version breaks backwards compatibility!__
+__Note: This version MASSIVELY breaks backwards compatibility!__
 
 __Changes__
 - App has been changed from a statically called Singleton (App::method($params)) to a singleton. Throughout Parable, App is now used with non-static method calls.
