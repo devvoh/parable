@@ -6,7 +6,7 @@
  * @author      Robin de Graaf (hello@devvoh.com)
  */
 
-namespace App;
+namespace App\Init;
 
 use \Devvoh\Parable\App as App;
 
@@ -14,7 +14,7 @@ class Hooks {
 
     public function __construct() {
         // Register global loop to log all triggers
-        App::getHook()->into('*', function($event, &$payload) {
+        App::getHook()->into('*', function($event) {
             App::getLog()->write('Hook triggered: ' . $event);
         });
 

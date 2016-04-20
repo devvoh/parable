@@ -13,13 +13,6 @@
 require_once('./vendor/Devvoh/Parable/Bootstrap.php');
 
 /**
- * App is the main entry point for all functionality, offering mostly static functions.
- *
- * Run the App. This will set debug and load the config
- */
-\Devvoh\Parable\App::run();
-
-/**
  * Now we boot the Cli sub-app, passing the cli arguments
  */
 \Devvoh\Parable\Cli::boot($argv);

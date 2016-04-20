@@ -197,6 +197,9 @@ class App {
 
         // Start the session
         self::getSession()->startSession();
+
+        // Load all module Init scripts
+        self::loadModuleInits();
     }
 
     /**
@@ -206,9 +209,6 @@ class App {
         // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
         $matchedRoute = self::matchRoute();
         if ($matchedRoute) {
-            // Init the module hooks, since we've definitely got a module
-            self::initModuleHooks();
-
             // Create the dispatcher and try to dispatch
             $dispatcher = self::createDispatcher($matchedRoute);
             if (!$dispatcher->dispatch()) {
@@ -226,14 +226,40 @@ class App {
      * Load the modules and store their names in self::$modules
      */
     public static function loadModules() {
-        $dir = self::getDir('app/modules') . DS . '*';
-        foreach (glob($dir) as $filename) {
-            $filenameArray = explode(DS, $filename);
-            $moduleName = end($filenameArray);
-            self::$modules[$moduleName] = [
-                'name' => $moduleName,
-                'path' => $filename,
+        $dirIt = new \RecursiveDirectoryIterator(self::getDir('app/modules'), \RecursiveDirectoryIterator::SKIP_DOTS);
+        foreach ($dirIt as $file) {
+            self::$modules[$file->getFileName()] = [
+                'name' => $file->getFileName(),
+                'path' => $file->getPathName(),
             ];
+        }
+    }
+
+    /**
+     * Where applicable, load all scripts in app/modules/APPNAME/Init
+     */
+    public static function loadModuleInits() {
+        $modules = self::getModules();
+        foreach ($modules as $module) {
+            // Build init path for this module
+            $initPath = $module['path'] . DS . 'Init';
+            // If there's no init path, just go onto the next module
+            if (!file_exists($initPath)) {
+                continue;
+            }
+            // Generate an iterator for our files
+            $dirIt = new \RecursiveDirectoryIterator($initPath, \RecursiveDirectoryIterator::SKIP_DOTS);
+            foreach ($dirIt as $file) {
+                // Skip non-php files
+                if (strpos($file->getFileName(), '.php') === false) {
+                    continue;
+                }
+                // Generate the class to instantiate
+                $className = str_replace('.php', '', $file->getFileName());
+                $className = '\\' . $module['name'] . '\\Init\\' . $className;
+                // And instantiate it
+                new $className();
+            }
         }
     }
 
@@ -605,24 +631,6 @@ class App {
      */
     public static function getCurrentModule() {
         return self::$currentModule;
-    }
-
-    /**
-     * Init a module's Hooks, if available
-     *
-     * @return null|Hooks
-     */
-    public static function initModuleHooks() {
-        $module = self::getRoute()['module'];
-        $hooksPath = self::getDir('app' . DS . 'modules' . DS . $module . DS . 'Hooks.php');
-
-        $hooks = null;
-        // Now check if the path exists
-        if (file_exists($hooksPath)) {
-            $hooksName = '\\' . self::getRoute()['module'] . '\\' . 'Hooks';
-            $hooks = new $hooksName();
-        }
-        return $hooks;
     }
 
     /**

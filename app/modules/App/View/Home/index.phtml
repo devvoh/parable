@@ -1,9 +1,12 @@
+<?php
+/** @var $this \Devvoh\Parable\App */
+?>
 <!DOCTYPE HTML>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-        <title>Hello from Parable PHP Framework <?=self::getVersion();?></title>
+        <title>Hello from Parable PHP Framework <?=$this->getVersion();?></title>
 
         <!-- Raleway font from google fonts -->
         <link href='https://fonts.googleapis.com/css?family=Raleway:100,400' rel='stylesheet' type='text/css'>
@@ -60,7 +63,7 @@
 
             <article class="container">
                 <header>
-                    Parable <?=self::getVersion();?>
+                    Parable <?=$this->getVersion();?>
                 </header>
                 <aside>
                     PHP framework by <a href="http://devvoh.com">devvoh</a>

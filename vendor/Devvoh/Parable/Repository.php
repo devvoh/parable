@@ -28,7 +28,7 @@ class Repository {
     protected $orderBy      = [];
 
     /**
-     * @var null|int
+     * @var array
      */
     protected $limit        = [];
 
