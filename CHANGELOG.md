@@ -7,7 +7,7 @@ __Note: This version MASSIVELY breaks backwards compatibility!__
 __Changes__
 - App has been changed from a statically called Singleton (App::method($params)) to a singleton. Throughout Parable, App is now used with non-static method calls.
 - To make the above change easier to work with, two traits have been added: AppTrait and AppTraitStatic. Using the AppTrait allows the use of $this->initApp(), which will make $this->app available. See the Core/Base controller for a clear example.
-- All calls to get a singleton (getView, getResponse, getLog, etc.) have been code de-duplicated. They now internally call getSingleton with their className. This simplifies both the property declaration (as the singletons are now stored in App->singletons rather than separate properties) but also makes the logic far simplier.
+- All calls to get a singleton (getView, getResponse, getLog, etc.) have been code de-duplicated. They now internally call getSingleton with their className. This simplifies both the property declaration (as the singletons are now stored in App->singletons rather than separate properties) but also makes the logic far simpler.
 - 'Tool' functionality has been moved into \Devvoh\Components\Tool.
 - View and Config have been moved into vendor/Devvoh/Parable.
 - Bootstrap now returns an $app singleton instance, which is then used in public/index.php.
