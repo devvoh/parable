@@ -8,8 +8,10 @@ __Changes__
 - In preparation of future changes, App::run has been split into App::boot (setup) and App::dispatch (actually do the routing). This is mostly in preparation of the future addition of a Dispatcher. Also means run/dispatch no longer has to check whether it's running as a cli process, as the Cli class won't call dispatch.
 - \Devvoh\Parable\Dispatcher has been added, and actually executing the route has been pulled out of App. This is also in preparation of pre/postDispatch functionality.
 - On Dispatcher, the execute method has been reworked significantly, for better readability and more efficient code. Now also supports using a view key on a controller route, which will be looked for before looking for an auto-generated view path.
-- Added /app/modules/[module]/Run.php, which can implement preDispatch & postDispatch methods which will be run at appropriate times. Controller pre/postDispatch coming at a later date.
+- Added /app/modules/[module]/Hooks.php, which is loaded as soon as App knows for sure there's a module being loaded. On construct, Hook->into calls are made to implement pre/postDispatch functionality. In the example app/modules/App/Hooks file, a global ('*') event is added to log all triggered events. Currently there's only two dispatcher events, but more core events will be added where necessary.
 - \Devvoh\Components\Getset now has a method setMany($array), which will set all key/value pairs in the passed array and add them to the resource.
+- \Devvoh\Components\Hook now supports global events, using the '*' wildcard event name. Any closures added to this event will be called on every trigger. Handy for debugging.
+- \Devvoh\Components\Hook and \Devvoh\Components\Dock now pass back the event they were triggered with, as the first parameter to the closure. The payload is now in second place, since it's optional.
 
 ### 0.4.1
 

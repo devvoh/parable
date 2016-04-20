@@ -1,7 +1,21 @@
 # Parable PHP Framework
 
 ### TODO list
-- If pre/postDispatch methods exist on controller, execute them at the appropriate moments.
+- It's come to my attention that Hooks isn't the only kind of thing you'd want to do on run-time, and that it should be
+  possible to have global 'on-runtime' scripts as well. As it stands, App can only find the module Hooks file after it's
+  matched the route, meaning Cli tools can't use it automatically. I'm probably going to add a Boot/Init/something
+  directory to every module, and Parable will auto-load all files in there. This will allow hooks, docks, database
+  manipulation, anything to be done before routing has even started. This will also allow hooks to tie into Parable
+  far earlier.
+
+  So: ./app/modules/App/Init/*.php
+      - When App::boot has set up the sessions, will call self::loadModuleInits();
+
+  Init is optional, and the naming of files in it don't matter, as long as they're PSR-4 compatible.
+
+  namespace App\Init
+  class Hooks {}
+
 - Add app/ModuleName/Run.php, which should/can have setup, preDispatch and postDispatch methods. These are called
   when appropriate. setup is run after run is called, and pre/postDispatch same as controllers.
 - Add css/jss/script/style functionality, probably through a \Devvoh\Parable\App\View\Assets component. Allow scripts
