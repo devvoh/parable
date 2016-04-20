@@ -206,6 +206,10 @@ class App {
         // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
         $matchedRoute = self::matchRoute();
         if ($matchedRoute) {
+            // Init the module hooks, since we've definitely got a module
+            self::initModuleHooks();
+
+            // Create the dispatcher and try to dispatch
             $dispatcher = self::createDispatcher($matchedRoute);
             if (!$dispatcher->dispatch()) {
                 echo self::getView()->partial('Error/Route.phtml');
@@ -603,17 +607,22 @@ class App {
         return self::$currentModule;
     }
 
-    public static function getModuleRun() {
+    /**
+     * Init a module's Hooks, if available
+     *
+     * @return null|Hooks
+     */
+    public static function initModuleHooks() {
         $module = self::getRoute()['module'];
-        $runPath = self::getDir('app' . DS . 'modules' . DS . $module . DS . 'Run.php');
+        $hooksPath = self::getDir('app' . DS . 'modules' . DS . $module . DS . 'Hooks.php');
 
-        $run = null;
+        $hooks = null;
         // Now check if the path exists
-        if (file_exists($runPath)) {
-            $runName = '\\' . self::getRoute()['module'] . '\\' . 'Run';
-            $run = new $runName();
+        if (file_exists($hooksPath)) {
+            $hooksName = '\\' . self::getRoute()['module'] . '\\' . 'Hooks';
+            $hooks = new $hooksName();
         }
-        return $run;
+        return $hooks;
     }
 
     /**

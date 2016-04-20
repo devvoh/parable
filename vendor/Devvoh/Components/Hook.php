@@ -46,7 +46,7 @@ class Hook {
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct
-        if (!$event) {
+        if (!$event || $event === '*') {
             return false;
         }
 
@@ -55,10 +55,16 @@ class Hook {
             return false;
         }
 
+        $hooks = $this->hooks[$event];
+        // If global event '*' is registered, also include those
+        if (isset($this->hooks['*']) && count($this->hooks['*']) > 0) {
+            $hooks = array_merge($hooks, $this->hooks['*']);
+        }
+
         // All good, let's call those closures
-        foreach ($this->hooks[$event] as $closure) {
+        foreach ($hooks as $closure) {
             if (is_callable($closure)) {
-                $closure($payload);
+                $closure($event, $payload);
             }
         }
 

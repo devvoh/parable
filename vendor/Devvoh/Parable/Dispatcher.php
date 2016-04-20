@@ -18,11 +18,6 @@ class Dispatcher {
     protected $route = null;
 
     /**
-     * @var null
-     */
-    protected $run = null;
-
-    /**
      * Dispatcher constructor.
      *
      * @param null $route
@@ -52,38 +47,6 @@ class Dispatcher {
     }
 
     /**
-     * Return the run
-     *
-     * @return mixed
-     */
-    public function getRun() {
-        return $this->run;
-    }
-
-    /**
-     * Set the run
-     *
-     * @param $run
-     * @return $this
-     */
-    public function setRun($run) {
-        $this->run = $run;
-        return $this;
-    }
-
-    /**
-     * Execute Run preDispatch code, if available
-     *
-     * @return $this
-     */
-    public function preDispatch() {
-        if (method_exists($this->getRun(), 'preDispatch')) {
-            $this->getRun()->preDispatch();
-        }
-        return $this;
-    }
-
-    /**
      * Call all relevant methods in order
      *
      * @return $this
@@ -91,30 +54,20 @@ class Dispatcher {
     public function dispatch() {
         // Store the current module on App
         App::setCurrentModule($this->getRoute()['module']);
-        // And get the module's run, if available
-        if ($run = App::getModuleRun()) {
-            $this->setRun($run);
-        }
 
-        // Run preDispatch, which will run the module's Run->preDispatch method, if available
-        $this->preDispatch();
+        // Get the route
+        $route = $this->getRoute();
+
+        // Trigger the parable_dispatcher_execute_before execute
+        App::getHook()->trigger('parable_dispatcher_execute_before', $route);
+
         // Execute the route
-        $this->execute();
-        // Run postDispatch, which will run the module's Run->postDispatch method, if available
-        $this->postDispatch();
-        return $this;
-    }
+        $return = $this->execute();
 
-    /**
-     * Execute Run postDispatch code, if available
-     *
-     * @return $this
-     */
-    public function postDispatch() {
-        if (method_exists($this->getRun(), 'postDispatch')) {
-            $this->getRun()->postDispatch();
-        }
-        return $this;
+        // Trigger the parable_dispatcher_execute_after execute
+        App::getHook()->trigger('parable_dispatcher_execute_after', $route);
+
+        return $return;
     }
 
     /**

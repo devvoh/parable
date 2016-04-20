@@ -50,7 +50,7 @@ class Dock {
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct
-        if (!$event) {
+        if (!$event || $event === '*') {
             return false;
         }
 
@@ -59,8 +59,14 @@ class Dock {
             return false;
         }
 
+        $docks = $this->docks[$event];
+        // If global event '*' is registered, also include those
+        if (isset($this->docks['*']) && count($this->docks['*']) > 0) {
+            $docks = array_merge($docks, $this->docks['*']);
+        }
+
         // All good, let's call those closures
-        foreach ($this->docks[$event] as $dock) {
+        foreach ($docks as $dock) {
             if (is_callable($dock['closure'])) {
                 $dock['closure']($payload);
                 // And include the viewFile if we have one. Data should be passed to the viewFile through
