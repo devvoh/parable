@@ -422,7 +422,7 @@ class App {
      * @return Entity
      */
     public static function createEntity($entityName = null) {
-        $entity = new \Devvoh\Parable\Entity();
+        $entity = null;
         // Loop through models trying to find the appropriate class
         foreach (self::getModules() as $module) {
             $entityNameComplete = '\\' . $module['name'] . '\\Model\\' . $entityName;

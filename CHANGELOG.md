@@ -19,6 +19,7 @@ __Changes__
 __Bugfixes__
 - display_errors was set to 1 by default in Bootstrap.php. Now set to 0 as it should.
 - Even though it's not a permanent addition, app/modules/App/Cli/Index::setAccess did not create directories if they were supposed to be chmodded. Now it does. Also did not chmod the actual directory, only the files under it. Now it does.
+- Entity returned an empty instance of itself if it couldn't find a suitable model. It should return null instead, which it now does.
 
 ### 0.4.1
 
