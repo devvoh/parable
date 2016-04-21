@@ -17,7 +17,7 @@ class Tool {
      *
      * @param null $url
      *
-     * @return false
+     * @return false|void
      */
     public function redirect($url = null) {
         if (!$url) {
@@ -28,6 +28,7 @@ class Tool {
         }
         header('location: ' . $url);
         $this->end();
+        return;
     }
 
     /**

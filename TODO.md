@@ -8,7 +8,7 @@
 - Consider whether to use App::method or Parable::getApp()->method. The second is cleaner, but does require
   $app = \Devvoh\Parable\Parable::getApp();. App should be cleaned up significantly, offering lazy loaders and
   nothing more.
-- Split App functionality as much as possible, preferrably keeping only lazy getters in App. Move ::boot() to
+- Split App functionality as much as possible, preferably keeping only lazy getters in App. Move ::boot() to
   Bootstrap? Move it into a separate class? Also see:
 - Consider separating 'tool' functionality from App into
   \Devvoh\Components\Tools. It could be the only 'mandatory' component,  and it would allow basedir/publicurl
@@ -31,7 +31,7 @@
     ->translate('String value that is stored somewhere');
 
 - Look into generating the folder structure for Parable (for the install script), as well as asking for what the
-  public folder should be named (public, puhlib_html, web, etc.)
+  public folder should be named (public, public_html, web, etc.)
 
 ### DONE LIST
 - \Devvoh\Parable\Dispatcher: move App's match & execute to it, rename execute to dispatch and clean it up.

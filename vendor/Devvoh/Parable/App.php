@@ -472,7 +472,7 @@ class App {
     }
 
     /**
-     * Returns (and possibily creates an instance of the $className class)
+     * Returns (and possibly creates an instance of the $className class)
      *
      * @param $className
      *
@@ -668,7 +668,7 @@ class App {
     /**
      * Returns (and possibly instantiates) the Tool instance
      *
-     * @return \Devvoh\Components\Tool
+     * @return \Devvoh\Parable\Tool
      */
     public static function getTool() {
         return self::getSingleton('\Devvoh\Parable\Tool');
