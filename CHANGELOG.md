@@ -6,6 +6,7 @@ __Note: This version breaks backwards compatibility!__
 
 __Changes__
 - All calls to get a singleton (getView, getResponse, getLog, etc.) have been code de-duplicated. They now internally call getSingleton with their className. This simplifies both the property declaration (as the singletons are now stored in App::$singletons[] rather than as separate properties) but also makes the logic far simpler.
+- getSingleton has an optional $singletonName, which defaults to the classname. Since GetSet is loaded 5 times as 5 separate contextual singletons, they clashed.
 - 'Tool' functionality has been moved into \Devvoh\Components\Tool.
 - View and Config have been moved into vendor/Devvoh/Parable.
 - App::run has been split into App::boot (setup) and App::dispatch (actually does the routing). Means run/dispatch no longer has to check whether it's running as a cli process, as the Cli class won't call dispatch.
@@ -15,6 +16,8 @@ __Changes__
 - \Devvoh\Components\Getset now has a method setMany($array), which will set all key/value pairs in the passed array and add them to the resource.
 - \Devvoh\Components\Hook and \Devvoh\Components\Dock now support global events, using the '*' wildcard event name. Any closures added to this event will be called on every trigger. Handy for debugging. Even if there's no valid events on a trigger, the global event will still be called.
 - \Devvoh\Components\Hook and \Devvoh\Components\Dock now pass back the event they were triggered with, as the first parameter to the closure. The payload is now in second place, since it's optional.
+- GetSet no longer resets the localResource when using setResource. Not only does this fix a bug where using setResource multiple times would clear it every time, it also makes it possible to use, for example, App::getParam()->setResource('headerJs')->getAll(). This makes Param even more powerful and useful. Param does, however, remember the last set resource, so switching is necessary whenever you want a different resource.
+- Added App::getCookies(), a new GetSet contextual singleton that handles the $_COOKIE superglobal.
 
 __Bugfixes__
 - display_errors was set to 1 by default in Bootstrap.php. Now set to 0 as it should.

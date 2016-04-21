@@ -63,7 +63,9 @@ class GetSet {
             $this->resource = strtoupper($type);
         } else {
             $this->useLocalResource = true;
-            $this->localResource[$this->getResource()] = [];
+            if (!isset($this->localResource[$this->getResource()])) {
+                $this->localResource[$this->getResource()] = [];
+            }
         }
         return $this;
     }

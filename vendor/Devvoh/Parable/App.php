@@ -43,7 +43,7 @@ class App {
     /**
      * @var array
      */
-    static protected $modules                  = [];
+    static protected $modules           = [];
 
     /**
      * @var array
@@ -478,11 +478,15 @@ class App {
      *
      * @return mixed
      */
-    protected static function getSingleton($className) {
-        if (!isset(self::$singletons[$className])) {
-            self::$singletons[$className] = new $className();
+    protected static function getSingleton($className, $singletonName = null) {
+        if (!$singletonName) {
+            $singletonName = $className;
         }
-        return self::$singletons[$className];
+        if (!isset(self::$singletons[$singletonName])) {
+            self::$singletons[$singletonName] = new $className();
+            self::$singletons[$singletonName]->time = time();
+        }
+        return self::$singletons[$singletonName];
     }
 
     /**
@@ -536,7 +540,16 @@ class App {
      * @return \Devvoh\Components\Mailer
      */
     public static function getMailer() {
-        return self::getSingleton('\Devvoh\Components\GetSet');
+        return self::getSingleton('\Devvoh\Components\Mailer');
+    }
+
+    /**
+     * Returns (and possibly instantiates) the GetSet instance with context session
+     *
+     * @return \Devvoh\Components\GetSet
+     */
+    public static function getCookies() {
+        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetCookies')->setResource('cookie');
     }
 
     /**
@@ -545,7 +558,7 @@ class App {
      * @return \Devvoh\Components\GetSet
      */
     public static function getSession() {
-        return self::getSingleton('\Devvoh\Components\GetSet')->setResource('session');
+        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetSession')->setResource('session');
     }
 
     /**
@@ -554,7 +567,7 @@ class App {
      * @return \Devvoh\Components\GetSet
      */
     public static function getParam() {
-        return self::getSingleton('\Devvoh\Components\GetSet')->setResource('param');
+        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetParam')->setResource('param');
     }
 
     /**
@@ -563,7 +576,7 @@ class App {
      * @return \Devvoh\Components\GetSet
      */
     public static function getPost() {
-        return self::getSingleton('\Devvoh\Components\GetSet')->setResource('post');
+        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetPost')->setResource('post');
     }
 
     /**
@@ -572,7 +585,7 @@ class App {
      * @return \Devvoh\Components\GetSet
      */
     public static function getGet() {
-        return self::getSingleton('\Devvoh\Components\GetSet')->setResource('get');
+        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetGet')->setResource('get');
     }
 
     /**
