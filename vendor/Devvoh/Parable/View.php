@@ -8,13 +8,9 @@
 
 namespace Devvoh\Parable;
 
-class View {
-    use \Devvoh\Parable\AppTrait;
+use \Devvoh\Parable\App;
 
-    public function __construct()
-    {
-        $this->initApp();
-    }
+class View {
 
     /**
      * Loads and shows the template file
@@ -28,7 +24,7 @@ class View {
             return null;
         }
         $content = $this->render($file);
-        $this->app->getResponse()->appendContent($content);
+        App::getResponse()->appendContent($content);
         return $this;
     }
 
@@ -44,13 +40,13 @@ class View {
         // Look for a module, either as given or a current module. If neither, assume Core.
         if (!$module) {
             $module = 'Core';
-            if ($this->app->getRoute()) {
-                $module =$this->app->getRoute()['module'];
+            if (App::getRoute()) {
+                $module =App::getRoute()['module'];
             }
         }
         // Build proper path
         $dir = 'app' . DS . 'modules' . DS . $module . DS . 'View' . DS . $file;
-        $dir = $this->app->getDir($dir);
+        $dir = App::getDir($dir);
 
         // Set return value to null as default
         $return = null;
@@ -61,9 +57,9 @@ class View {
     }
 
     public function render($file) {
-        $this->app->getResponse()->startOB();
+        App::getResponse()->startOB();
         require($file);
-        return $this->app->getResponse()->endOB();
+        return App::getResponse()->endOB();
     }
 
     /**
@@ -85,7 +81,7 @@ class View {
      */
     public function __call($method, $parameters = []) {
         if (method_exists('\Devvoh\Parable\App', $method)) {
-            return call_user_func_array([$this->app, $method], $parameters);
+            return call_user_func_array(['\Devvoh\Parable\App', $method], $parameters);
         }
         return false;
     }

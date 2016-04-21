@@ -6,7 +6,7 @@
  * @author      Robin de Graaf (hello@devvoh.com)
  */
 
-$app = \Devvoh\Parable\App::getInstance();
+use \Devvoh\Parable\App;
 
 $routes['index'] = [
     'method' => 'GET',
@@ -24,6 +24,6 @@ $routes['closure'] = [
 
 // Add module to all routes
 foreach ($routes as &$route) {
-    $route['module'] = $app->getModuleFromPath(__DIR__);
+    $route['module'] = App::getModuleFromPath(__DIR__);
 }
-$app->getRouter()->addRoutes($routes);
+App::getRouter()->addRoutes($routes);

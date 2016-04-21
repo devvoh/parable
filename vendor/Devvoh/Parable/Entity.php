@@ -8,8 +8,9 @@
 
 namespace Devvoh\Parable;
 
+use \Devvoh\Parable\App;
+
 class Entity {
-    use \Devvoh\Parable\AppTrait;
 
     /**
      * @var mixed
@@ -36,17 +37,13 @@ class Entity {
      */
     protected $validator    = [];
 
-    public function __construct() {
-        $this->initApp();
-    }
-
     /**
      * Generate a query set to use the current Entity's table name & key
      *
      * @return \Devvoh\Components\Query
      */
     public function createQuery() {
-        $query = $this->app->createQuery();
+        $query = App::createQuery();
         $query->setTableName($this->getTableName());
         $query->setTableKey($this->getTableKey());
         return $query;
@@ -92,7 +89,7 @@ class Entity {
                 $this->created_at = $now;
             }
         }
-        $result = $this->app->getDatabase()->query($query);
+        $result = App::getDatabase()->query($query);
         if ($result && $query->getAction() === 'insert') {
             $this->id = $query->getPdoInstance()->lastInsertId();
         }
@@ -147,7 +144,7 @@ class Entity {
         $query = $this->createQuery();
         $query->setAction('delete');
         $query->where($this->getTableKey() . ' = ?', $this->id);
-        return $this->app->getDatabase()->query($query);
+        return App::getDatabase()->query($query);
     }
 
     /**
@@ -253,7 +250,7 @@ class Entity {
     public function validate($returnBool = true) {
         $data = $this->toArray();
         $validator = $this->getValidator();
-        return $this->app->getValidate()->run($data, $validator, $returnBool);
+        return App::getValidate()->run($data, $validator, $returnBool);
     }
 
 }

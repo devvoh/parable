@@ -33,7 +33,4 @@ $autoloader->register();
 /**
  * And run boot on App to get it all started
  */
-$app = \Devvoh\Parable\App::getInstance();
-$app->boot();
-
-return $app;
+\Devvoh\Parable\App::boot();

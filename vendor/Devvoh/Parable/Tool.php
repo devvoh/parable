@@ -8,12 +8,9 @@
 
 namespace Devvoh\Parable;
 
-class Tool {
-    use \Devvoh\Parable\AppTrait;
+use \Devvoh\Parable\App;
 
-    public function __construct() {
-        $this->initApp();
-    }
+class Tool {
 
     /**
      * Redirect to $url
@@ -27,7 +24,7 @@ class Tool {
             return false;
         }
         if (strpos($url, 'http://') === false) {
-            $url = $this->app->getUrl($url);
+            $url = App::getUrl($url);
         }
         header('location: ' . $url);
         $this->end();
@@ -48,8 +45,8 @@ class Tool {
         if ($params && !is_array($params)) {
             $params = [$params];
         }
-        $url = $this->app->getRouter()->buildRoute($routeName, $params);
-        return $this->redirect($this->app->getUrl($url));
+        $url = App::getRouter()->buildRoute($routeName, $params);
+        return $this->redirect(App::getUrl($url));
     }
 
     /**

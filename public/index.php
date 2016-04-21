@@ -11,9 +11,9 @@
  *
  * This will set all base values and allow use of all App->methods
  */
-$app = require_once('../vendor/Devvoh/Parable/Bootstrap.php');
+require_once('../vendor/Devvoh/Parable/Bootstrap.php');
 
 /**
  * Dispatch the current route.
  */
-$app->dispatch();
+\Devvoh\Parable\App::dispatch();

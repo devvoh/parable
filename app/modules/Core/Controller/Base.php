@@ -8,10 +8,8 @@
 
 namespace Core\Controller;
 
-class Base {
-    use \Devvoh\Parable\AppTrait;
+use \Devvoh\Parable\App;
 
-    public function __construct() {
-        $this->initApp();
-    }
+class Base {
+
 }

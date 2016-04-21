@@ -2,19 +2,16 @@
 
 ### 0.5.0
 
-__Note: This version MASSIVELY breaks backwards compatibility!__
+__Note: This version breaks backwards compatibility!__
 
 __Changes__
-- App has been changed from a statically called Singleton (App::method($params)) to a singleton. Throughout Parable, App is now used with non-static method calls.
-- To make the above change easier to work with, two traits have been added: AppTrait and AppTraitStatic. Using the AppTrait allows the use of $this->initApp(), which will make $this->app available. See the Core/Base controller for a clear example.
-- All calls to get a singleton (getView, getResponse, getLog, etc.) have been code de-duplicated. They now internally call getSingleton with their className. This simplifies both the property declaration (as the singletons are now stored in App->singletons rather than separate properties) but also makes the logic far simpler.
+- All calls to get a singleton (getView, getResponse, getLog, etc.) have been code de-duplicated. They now internally call getSingleton with their className. This simplifies both the property declaration (as the singletons are now stored in App::$singletons[] rather than as separate properties) but also makes the logic far simpler.
 - 'Tool' functionality has been moved into \Devvoh\Components\Tool.
 - View and Config have been moved into vendor/Devvoh/Parable.
-- Bootstrap now returns an $app singleton instance, which is then used in public/index.php.
-- App->run has been split into App->boot (setup) and App->dispatch (actually do the routing). Means run/dispatch no longer has to check whether it's running as a cli process, as the Cli class won't call dispatch.
-- \Devvoh\Parable\Dispatcher has been added, and actually executing the route has been pulled out of App. This is also in preparation of pre/postDispatch functionality.
+- App::run has been split into App::boot (setup) and App::dispatch (actually does the routing). Means run/dispatch no longer has to check whether it's running as a cli process, as the Cli class won't call dispatch.
+- \Devvoh\Parable\Dispatcher has been added, and actually executing the route has been pulled out of App.
 - On Dispatcher, the execute method has been reworked significantly, for better readability and more efficient code. Now also supports using a view key on a controller route, which will be looked for before looking for an auto-generated view path.
-- Added /app/modules/[module]/Init/ functionality. All php scripts in this directory will be loaded & instantiated at the end of App->boot(), allowing the developer to plug into events as soon as is possible. At this point in Parable's runtime, all config is loaded and the session and database are available. Included is a Hooks init script, which adds 3 hooks.
+- Added /app/modules/[module]/Init/ functionality. All php scripts in this directory will be loaded & instantiated at the end of App::boot(), allowing the developer to plug into events as soon as is possible. At this point in Parable's runtime, all config is loaded and the session and database are available. Included is a Hooks init script, which adds 3 hooks.
 - \Devvoh\Components\Getset now has a method setMany($array), which will set all key/value pairs in the passed array and add them to the resource.
 - \Devvoh\Components\Hook and \Devvoh\Components\Dock now support global events, using the '*' wildcard event name. Any closures added to this event will be called on every trigger. Handy for debugging. Even if there's no valid events on a trigger, the global event will still be called.
 - \Devvoh\Components\Hook and \Devvoh\Components\Dock now pass back the event they were triggered with, as the first parameter to the closure. The payload is now in second place, since it's optional.
