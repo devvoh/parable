@@ -16,13 +16,25 @@ __Changes__
 - \Devvoh\Components\Getset now has a method setMany($array), which will set all key/value pairs in the passed array and add them to the resource.
 - \Devvoh\Components\Hook and \Devvoh\Components\Dock now support global events, using the '*' wildcard event name. Any closures added to this event will be called on every trigger. Handy for debugging. Even if there's no valid events on a trigger, the global event will still be called.
 - \Devvoh\Components\Hook and \Devvoh\Components\Dock now pass back the event they were triggered with, as the first parameter to the closure. The payload is now in second place, since it's optional.
-- GetSet no longer resets the localResource when using setResource. Not only does this fix a bug where using setResource multiple times would clear it every time, it also makes it possible to use, for example, App::getParam()->setResource('headerJs')->getAll(). This makes Param even more powerful and useful. Param does, however, remember the last set resource, so switching is necessary whenever you want a different resource.
+- GetSet has a remove(key) method now, which sets the value to null.
+- GetSet also gained regenerateSession, which will at a later moment be moved to a Parable\Session class which implements GetSet, moving all session-related logic to there.
 - Added App::getCookies(), a new GetSet contextual singleton that handles the $_COOKIE superglobal.
+- Version is no longer stored in 'version' but directly on the App class as a property.
+- Added a Request Component to offer base functionality on dealing with the request (most useful: isPost(), etc.)
+- Added an Auth class to Parable for base user rights. It is really straightforward but can always be extended or not used. This will be built out at a later date.
+- Added ->returnOne() and ->returnAll() to Repository, which will return the first result only, preventing the need for either manual current() calls or [0].
+- In Repository, orderBy and limit are now implemented on getQuery, which enables it everywhere.
 
 __Bugfixes__
+- GetSet no longer resets the localResource when using setResource. Not only does this fix a bug where using setResource multiple times would clear it every time, it also makes it possible to use, for example, App::getParam()->setResource('headerJs')->getAll(). This makes Param even more powerful and useful. Param does, however, remember the last set resource, so switching is necessary whenever you want a different resource.
 - display_errors was set to 1 by default in Bootstrap.php. Now set to 0 as it should.
 - Even though it's not a permanent addition, app/modules/App/Cli/Index::setAccess did not create directories if they were supposed to be chmodded. Now it does. Also did not chmod the actual directory, only the files under it. Now it does.
 - Entity returned an empty instance of itself if it couldn't find a suitable model. It should return null instead, which it now does.
+- Entity's handling of null values was flawed. Now it'll keep a null value only if the value is string 'null'
+- Router Component at a certain point picked up a bug in returning params, which has now been fixed.
+- App now picks up on sqlite requiring a path for the location. Now does so only in case of sqlite.
+- Reverted Param handling in Dispatcher to a foreach since they dont use $key => $val but [key] => $key, [val] => $val
+- Repositories now attempt to fetch separately from handling the result, preventing odd errors if the query is incorrect.
 
 ### 0.4.1
 

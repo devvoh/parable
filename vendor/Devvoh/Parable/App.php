@@ -276,9 +276,13 @@ class App {
 
         // Set and enable database based on config
         if (self::getConfig()->get('storage_type') && self::getConfig()->get('storage_location')) {
+            $location = self::getConfig()->get('storage_location');
+            if (strpos(self::getConfig()->get('storage_type'), 'sqlite') !== false) {
+                $location = self::getDir(self::getConfig()->get('storage_location'));
+            }
             $config = [
                 'type'      => self::getConfig()->get('storage_type'),
-                'location'  => self::getConfig()->get('storage_location'),
+                'location'  => $location,
                 'username'  => self::getConfig()->get('storage_username'),
                 'password'  => self::getConfig()->get('storage_password'),
                 'database'  => self::getConfig()->get('storage_database'),
@@ -625,6 +629,15 @@ class App {
     }
 
     /**
+     * Returns (and possibly instantiates) the Request instance
+     *
+     * @return \Devvoh\Components\Request
+     */
+    public static function getRequest() {
+        return self::getSingleton('\Devvoh\Components\Request');
+    }
+
+    /**
      * Returns (and possibly instantiates) the Debug instance
      *
      * @return \Devvoh\Components\Debug
@@ -685,6 +698,15 @@ class App {
      */
     public static function getTool() {
         return self::getSingleton('\Devvoh\Parable\Tool');
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Auth instance
+     *
+     * @return \Devvoh\Parable\Auth
+     */
+    public static function getAuth() {
+        return self::getSingleton('\Devvoh\Parable\Auth');
     }
 
 }

@@ -104,12 +104,18 @@ class Entity {
     public function toArray() {
         $array = (array)$this;
         // Remove protected values & null values, let the database sort those out
-        foreach ($array as $key => $value) {
-            if (strpos($key, '*')) {
+        foreach ($array as $key => &$value) {
+            if (strpos($key, '*') !== false) {
                 unset($array[$key]);
+                continue;
+            }
+            if ($value === 'null') {
+                $value = null;
+                continue;
             }
             if ($value !== 0 && empty($value)) {
-                $value = null;
+                unset($array[$key]);
+                continue;
             }
         }
         // If there's a mapper set, also map the array around

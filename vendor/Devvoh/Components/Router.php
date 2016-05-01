@@ -96,11 +96,9 @@ class Router {
                         }
                     }
                 }
-
                 // If we get here, the route is a match
-                return $data + [
-                    'params' => $params,
-                ];
+                $data['params'] = $params;
+                return $data;
             }
         }
         return false;

@@ -84,7 +84,12 @@ class Dispatcher {
 
         // Check for route params and set them as App params
         if (isset($route['params'])) {
-            App::getParam()->setMany($route['params']);
+            foreach ($route['params'] as $param) {
+                if (!is_array($param)) {
+                    continue;
+                }
+                App::getParam()->set($param['name'], $param['value']);
+            }
         }
 
         // Get the template, if any

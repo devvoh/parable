@@ -33,6 +33,11 @@ class Repository {
     protected $limit        = [];
 
     /**
+     * @var bool
+     */
+    protected $returnOne    = false;
+
+    /**
      * Generate a query set to use the current Entity's table name & key
      *
      * @return \Devvoh\Components\Query
@@ -44,6 +49,12 @@ class Repository {
         if ($this->getOnlyCount()) {
             $query->select('count(*)');
         }
+        if (count($this->orderBy)) {
+            $query->orderBy($this->orderBy['key'], $this->orderBy['direction']);
+        }
+        if (count($this->limit)) {
+            $query->limit($this->limit['limit'], $this->limit['offset']);
+        }
         return $query;
     }
 
@@ -54,11 +65,15 @@ class Repository {
      */
     public function getAll() {
         $query = $this->createQuery();
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = App::getDatabase()->query($query);
 
         $entities = [];
         if ($result) {
+            $result = $result->fetchAll(\PDO::FETCH_ASSOC);
             $entities = $this->handleResult($result);
+        }
+        if ($this->returnOne) {
+            return current($entities);
         }
         return $entities;
     }
@@ -73,14 +88,14 @@ class Repository {
     public function getById($id) {
         $query = $this->createQuery();
         $query->where($this->getEntity()->getTableKey() . ' = ?', $id);
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = App::getDatabase()->query($query);
 
         $entity = null;
         if ($result) {
+            $result = $result->fetchAll(\PDO::FETCH_ASSOC);
             $entities = $this->handleResult($result);
-            $entity = $entities[0];
+            $entity = current($entities);
         }
-
         return $entity;
     }
 
@@ -96,17 +111,15 @@ class Repository {
         foreach ($conditionsArray as $condition => $value) {
             $query->where($condition, $value);
         }
-        if (count($this->orderBy)) {
-            $query->orderBy($this->orderBy['key'], $this->orderBy['direction']);
-        }
-        if (count($this->limit)) {
-            $query->limit($this->limit['limit'], $this->limit['offset']);
-        }
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = App::getDatabase()->query($query);
 
         $entities = [];
         if ($result) {
+            $result = $result->fetchAll(\PDO::FETCH_ASSOC);
             $entities = $this->handleResult($result);
+        }
+        if ($this->returnOne) {
+            return current($entities);
         }
         return $entities;
     }
@@ -138,12 +151,32 @@ class Repository {
     }
 
     /**
+     * Sets the repo to return only one (the first), the same as getById always does
+     *
+     * @return $this
+     */
+    public function returnOne() {
+        $this->returnOne = true;
+        return $this;
+    }
+
+    /**
+     * Sets the repo to return all values, always in an array (except for getByid)
+     *
+     * @return $this
+     */
+    public function returnAll() {
+        $this->returnOne = false;
+        return $this;
+    }
+
+    /**
      * Returns all rows matching specific condition given
      *
      * @param $condition
      * @param $value
      *
-     * @return array
+     * @return array|mixed
      */
     public function getByCondition($condition, $value) {
         $conditionsArray = [$condition => $value];

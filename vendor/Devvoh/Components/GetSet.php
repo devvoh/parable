@@ -166,6 +166,10 @@ class GetSet {
         return $this;
     }
 
+    public function remove($key) {
+        return $this->set($key, null);
+    }
+
     /**
      * Start the session
      *
@@ -173,6 +177,17 @@ class GetSet {
      */
     public function startSession() {
         session_start();
+        return $this;
+    }
+
+    /**
+     * Regenerate the session
+     *
+     * @param bool|false $deleteOldSession
+     * @return $this
+     */
+    public function regenerateSession($deleteOldSession = false) {
+        session_regenerate_id($deleteOldSession);
         return $this;
     }
 
