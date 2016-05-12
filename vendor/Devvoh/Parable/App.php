@@ -313,7 +313,7 @@ class App {
         self::getSession()->startSession();
 
         // Load all module Init scripts
-        self::loadModuleInits();
+        self::getInit()->run();
     }
 
     /**
@@ -360,33 +360,6 @@ class App {
             ];
         }
         self::getHook()->trigger('parable_app_loadModules_after');
-    }
-
-    /**
-     * Where applicable, load all scripts in app/modules/APPNAME/Init
-     */
-    public static function loadModuleInits() {
-        foreach (self::getModules() as $module) {
-            // Build init path for this module
-            $initPath = $module['path'] . DS . 'Init';
-            // If there's no init path, just go onto the next module
-            if (!file_exists($initPath)) {
-                continue;
-            }
-            // Generate an iterator for our files
-            $dirIt = new \RecursiveDirectoryIterator($initPath, \RecursiveDirectoryIterator::SKIP_DOTS);
-            foreach ($dirIt as $file) {
-                // Skip non-php files
-                if (strpos($file->getFileName(), '.php') === false) {
-                    continue;
-                }
-                // Generate the class to instantiate
-                $className = str_replace('.php', '', $file->getFileName());
-                $className = '\\' . $module['name'] . '\\Init\\' . $className;
-                // And instantiate it
-                new $className();
-            }
-        }
     }
 
     /**
@@ -707,6 +680,15 @@ class App {
      */
     public static function getAuth() {
         return self::getSingleton('\Devvoh\Parable\Auth');
+    }
+
+    /**
+     * Returns (and possibly instantiates) the Init instance
+     *
+     * @return \Devvoh\Parable\Init
+     */
+    public static function getInit() {
+        return self::getSingleton('\Devvoh\Parable\Init');
     }
 
 }

@@ -12,7 +12,9 @@ use \Devvoh\Parable\App;
 
 class Hooks {
 
-    public function __construct() {
+    public $order = 1;
+
+    public function run() {
         // Register global loop to log all triggers
         App::getHook()->into('*', function($event) {
             App::getLog()->write('Hook triggered: ' . $event);
