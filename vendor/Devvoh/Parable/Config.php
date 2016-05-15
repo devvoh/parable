@@ -23,7 +23,6 @@ class Config extends \Devvoh\Components\GetSet {
      * Shim to allow App to proceed without config code existing
      *
      * @throws \Exception
-     *
      * @return $this
      */
     public function load() {
@@ -42,6 +41,12 @@ class Config extends \Devvoh\Components\GetSet {
         return $this;
     }
 
+    /**
+     * Return the value in $key as a boolean
+     *
+     * @param $key
+     * @return bool
+     */
     public function getBool($key) {
         return (bool)$this->get($key);
     }

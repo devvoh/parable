@@ -12,29 +12,19 @@ use \Devvoh\Parable\App;
 
 class Repository {
 
-    /**
-     * @var null|\Devvoh\Parable\Entity
-     */
+    /** @var null|\Devvoh\Parable\Entity */
     protected $entity       = null;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $onlyCount    = false;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $orderBy      = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $limit        = [];
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $returnOne    = false;
 
     /**
@@ -61,7 +51,7 @@ class Repository {
     /**
      * Returns all rows for this entity type
      *
-     * @return array
+     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
      */
     public function getAll() {
         $query = $this->createQuery();
@@ -82,7 +72,6 @@ class Repository {
      * Returns a single entity
      *
      * @param int $id
-     *
      * @return null|\Devvoh\Parable\Entity
      */
     public function getById($id) {
@@ -102,11 +91,10 @@ class Repository {
     /**
      * Returns all rows matching all conditions passed
      *
-     * @param $conditionsArray
-     *
-     * @return array
+     * @param array $conditionsArray
+     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
      */
-    public function getByConditions($conditionsArray) {
+    public function getByConditions(array $conditionsArray) {
         $query = $this->createQuery();
         foreach ($conditionsArray as $condition => $value) {
             $query->where($condition, $value);
@@ -127,9 +115,8 @@ class Repository {
     /**
      * Allow multiple orders by $key in $direction
      *
-     * @param $key
-     * @param $direction
-     *
+     * @param string $key
+     * @param string $direction
      * @return $this
      */
     public function orderBy($key, $direction = 'DESC') {
@@ -142,7 +129,6 @@ class Repository {
      *
      * @param int $limit
      * @param int $offset
-     *
      * @return $this
      */
     public function limit($limit, $offset = null) {
@@ -161,7 +147,7 @@ class Repository {
     }
 
     /**
-     * Sets the repo to return all values, always in an array (except for getByid)
+     * Sets the repo to return all values, always in an array (except for getById)
      *
      * @return $this
      */
@@ -173,10 +159,9 @@ class Repository {
     /**
      * Returns all rows matching specific condition given
      *
-     * @param $condition
-     * @param $value
-     *
-     * @return array|mixed
+     * @param string $condition
+     * @param string $value
+     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
      */
     public function getByCondition($condition, $value) {
         $conditionsArray = [$condition => $value];
@@ -186,11 +171,10 @@ class Repository {
     /**
      * Handle the result of one of the get functions
      *
-     * @param $result
-     *
-     * @return array|int
+     * @param array $result
+     * @return \Devvoh\Parable\Entity[]|int
      */
-    public function handleResult($result) {
+    public function handleResult(array $result) {
         /**
          * If we're only counting, return the count result as integer
          */
@@ -215,7 +199,7 @@ class Repository {
     /**
      * Returns a fresh clone of the stored Entity
      *
-     * @return \Devvoh\Parable\Entity
+     * @return \Devvoh\Parable\Entity|null
      */
     public function createEntity() {
         return clone $this->getEntity();
@@ -225,7 +209,6 @@ class Repository {
      * Set an entity on the repository. Its values don't matter, it'll just be used for configuration purposes.
      *
      * @param \Devvoh\Parable\Entity $entity
-     *
      * @return $this
      */
     public function setEntity($entity) {
@@ -245,8 +228,7 @@ class Repository {
     /**
      * Set onlyCount to true or false
      *
-     * @param $value
-     *
+     * @param bool $value
      * @return $this
      */
     public function setOnlyCount($value) {

@@ -93,10 +93,7 @@ class Response {
     /**
      * Set the character set
      *
-     * @TODO Add validation of character set
-     *
      * @param $charset
-     *
      * @return $this
      */
     public function setCharset($charset) {
@@ -108,7 +105,6 @@ class Response {
      * Set the content type, based on either the short-hand (array key) or the full string (value/in_array)
      *
      * @param $type
-     *
      * @return $this
      */
     public function setContentType($type) {
@@ -134,7 +130,6 @@ class Response {
      * Set content from 0.
      *
      * @param $content
-     *
      * @return $this
      */
     public function setContent($content) {
@@ -146,7 +141,6 @@ class Response {
      * Send content immediately
      *
      * @param $content
-     *
      * @return $this
      */
     public function sendContent($content) {
@@ -158,7 +152,6 @@ class Response {
      * Prepend data to content
      *
      * @param $content
-     *
      * @return $this
      */
     public function prependContent($content) {
@@ -170,7 +163,6 @@ class Response {
      * Append data to content
      *
      * @param $content
-     *
      * @return $this
      */
     public function appendContent($content) {
@@ -186,7 +178,6 @@ class Response {
      *
      * @param null $data
      * @param bool|false $onlyContent
-     *
      * @return $this
      */
     public function setJson($data = null, $onlyContent = false) {
@@ -206,7 +197,6 @@ class Response {
      * Sets only content to (bool)$active
      *
      * @param $active
-     *
      * @return $this
      */
     public function setOnlyContent($active) {

@@ -10,24 +10,16 @@ namespace Devvoh\Components;
 
 class GetSet {
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $resource         = null;
 
-    /**
-     * @var bool
-     */
+    /** @var bool*/
     protected $useLocalResource = false;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $localResource    = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $globals          = ['get', 'post', 'session', 'cookie'];
 
     /**
@@ -52,7 +44,6 @@ class GetSet {
      * Sets the resource type, which can be either a PHP superglobal (GET/POST/SESSION, etc) or a custom one.
      *
      * @param $type
-     *
      * @return $this
      */
     public function setResource($type) {
@@ -88,8 +79,7 @@ class GetSet {
     /**
      * Get specific value by key if resource set
      *
-     * @param $key
-     *
+     * @param string $key
      * @return mixed|null
      */
     public function get($key) {
@@ -114,9 +104,8 @@ class GetSet {
     /**
      * Set specific value by key if resource set
      *
-     * @param $key
-     * @param $value
-     *
+     * @param string $key
+     * @param mixed $value
      * @return $this|false
      */
     public function set($key, $value) {
@@ -154,7 +143,6 @@ class GetSet {
      * Set entire array onto the resource
      *
      * @param $values
-     *
      * @return $this
      */
     public function setAll($values) {

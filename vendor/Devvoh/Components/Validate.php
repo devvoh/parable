@@ -21,7 +21,6 @@ class Validate {
      *
      * @param null $type
      * @param null $closure
-     *
      * @return $this|bool
      */
     public function addCustomType($type = null, $closure = null) {
@@ -48,7 +47,6 @@ class Validate {
      * @param null $data
      * @param null $validator
      * @param bool|true $returnBool
-     *
      * @return array|bool
      */
     public function run($data = null, $validator = null, $returnBool = true) {

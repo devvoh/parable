@@ -10,7 +10,7 @@ namespace App\Controller;
 
 use \Devvoh\Parable\App;
 
-class Home extends \Core\Controller\Base {
+class Home {
 
     public function index() {
         /** Doesn't need anything if there's just a view */

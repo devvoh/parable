@@ -10,9 +10,7 @@ namespace Devvoh\Components;
 
 class Dock {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $docks = [];
 
     /**
@@ -20,8 +18,7 @@ class Dock {
      *
      * @param null|string   $event
      * @param null|callable $closure
-     * @param null          $viewFile
-     *
+     * @param null|string   $viewFile
      * @return $this|false
      */
     public function into($event = null, $closure = null, $viewFile = null) {
@@ -36,16 +33,14 @@ class Dock {
             'viewFile' => $viewFile,
         ];
 
-        // And return ourselves
         return $this;
     }
 
     /**
      * Trigger $event and run through all hooks referenced, passing along $payload to all $closures
      *
-     * @param null $event
-     * @param null $payload
-     *
+     * @param null|string $event
+     * @param null|mixed $payload
      * @return $this|false
      */
     public function trigger($event = null, &$payload = null) {

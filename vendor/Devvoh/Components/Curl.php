@@ -10,9 +10,7 @@ namespace Devvoh\Components;
 
 class Curl {
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $userAgent = 'devvoh/components/curl';
 
     /**
@@ -27,8 +25,7 @@ class Curl {
     /**
      * Sets the user agent
      *
-     * @param $userAgent
-     *
+     * @param string $userAgent
      * @return $this
      */
     public function setUserAgent($userAgent) {
@@ -39,13 +36,12 @@ class Curl {
     /**
      * Returns the result from loading url
      *
-     * @param string $url
-     *
-     * @return string|false
+     * @param null|string $url
+     * @return string|null
      */
     public function getContent($url = null) {
         if (!$url) {
-            return false;
+            return null;
         }
 
         $ch = curl_init($url);
@@ -62,14 +58,10 @@ class Curl {
      * @param string $url
      * @param string $path
      * @param string $filename
-     *
-     * @return string|false
+     * @return bool
      */
     public function download($url = null, $path = null, $filename = null) {
-        if (!$url || !$path || !$filename) {
-            return false;
-        }
-        if (!is_dir($path) || !is_writable($path)) {
+        if (!$url || !$path || !$filename || !is_dir($path) || !is_writable($path)) {
             return false;
         }
         $filename = $path . DS . $filename;
@@ -83,7 +75,7 @@ class Curl {
         curl_close($ch);
 
         fclose($fp);
-        return $filename;
+        return true;
     }
 
 }

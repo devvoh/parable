@@ -12,30 +12,23 @@ use \Devvoh\Parable\App;
 
 class Entity {
 
-    /**
-     * @var mixed
-     */
-    public $id           = null;
+    /** @var null|int */
+    public $id              = null;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $tableName    = null;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $tableKey     = null;
 
-    /**
-     * @var null|array
-     */
-    protected $mapper       = null;
+    /** @var array */
+    protected $mapper       = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $validator    = [];
+
+    /** @var array */
+    protected $exportable   = [];
 
     /**
      * Generate a query set to use the current Entity's table name & key
@@ -130,7 +123,6 @@ class Entity {
      * array.
      *
      * @param $array
-     *
      * @return array
      */
     public function toMappedArray($array) {
@@ -157,7 +149,6 @@ class Entity {
      * Populates the current entity with the data provided
      *
      * @param array $data
-     *
      * @return $this;
      */
     public function populate($data = []) {
@@ -173,7 +164,6 @@ class Entity {
      * Set the tableName
      *
      * @param $tableName
-     *
      * @return $this
      */
     public function setTableName($tableName) {
@@ -194,7 +184,6 @@ class Entity {
      * Set the tableKey
      *
      * @param $tableKey
-     *
      * @return $this
      */
     public function setTableKey($tableKey) {
@@ -215,7 +204,6 @@ class Entity {
      * Set the mapper
      *
      * @param $mapper
-     *
      * @return $this;
      */
     public function setMapper($mapper) {
@@ -236,14 +224,8 @@ class Entity {
      * Set the validator array
      *
      * @param $validator
-     *
      * @return $this
      */
-    public function setValidator($validator) {
-        $this->validator = $validator;
-        return $this;
-    }
-
     /**
      * Return the validator array
      *
@@ -253,10 +235,40 @@ class Entity {
         return $this->validator;
     }
 
+    /**
+     * Validate the entity's values based on the $validator array.
+     *
+     * @param bool|true $returnBool
+     * @return array|bool
+     */
     public function validate($returnBool = true) {
         $data = $this->toArray();
         $validator = $this->getValidator();
         return App::getValidate()->run($data, $validator, $returnBool);
+    }
+
+    /**
+     * Returns the exportable array
+     *
+     * @return array
+     */
+    public function getExportable() {
+        return $this->exportable;
+    }
+
+    /**
+     * Export to array, which will exclude unexportable keys
+     *
+     * @return array
+     */
+    public function exportToArray() {
+        $exportable = $this->getExportable();
+        $data = $this->toArray();
+        $exportData = [];
+        foreach ($exportable as $key) {
+            $exportData[$key] = $data[$key];
+        }
+        return $exportData;
     }
 
 }

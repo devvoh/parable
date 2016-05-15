@@ -29,7 +29,6 @@ class Rights {
      * Add a right to the list. The correct value is calculated automatically.
      *
      * @param $name
-     *
      * @return $this
      */
     public function addRight($name) {
@@ -56,7 +55,6 @@ class Rights {
      * Get a specific right by name
      *
      * @param $name
-     *
      * @return int|false
      */
     public function getRight($name) {
@@ -71,7 +69,6 @@ class Rights {
      *
      * @param $provided
      * @param $name
-     *
      * @return bool
      */
     public function check($provided, $name) {
@@ -85,7 +82,6 @@ class Rights {
      * Takes an array of binary string values ([00011], [10011], ...])
      *
      * @param $rights
-     *
      * @return string
      */
     public function combine($rights) {

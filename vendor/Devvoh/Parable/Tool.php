@@ -15,8 +15,7 @@ class Tool {
     /**
      * Redirect to $url
      *
-     * @param null $url
-     *
+     * @param null|string $url
      * @return false|void
      */
     public function redirect($url = null) {
@@ -27,24 +26,19 @@ class Tool {
             $url = App::getUrl($url);
         }
         header('location: ' . $url);
-        $this->end();
-        return;
+        return $this->end();
     }
 
     /**
      * Redirect to route
      *
-     * @param null $routeName
-     * @param null $params
-     *
-     * @return bool|false
+     * @param null|string $routeName
+     * @param array $params
+     * @return false|void
      */
-    public function redirectRoute($routeName = null, $params = null) {
+    public function redirectRoute($routeName = null, array $params = []) {
         if (!$routeName) {
             return false;
-        }
-        if ($params && !is_array($params)) {
-            $params = [$params];
         }
         $url = App::getRouter()->buildRoute($routeName, $params);
         return $this->redirect(App::getUrl($url));
@@ -53,7 +47,7 @@ class Tool {
     /**
      * End program execution immediately
      *
-     * @param null|mixed $message
+     * @param null|string $message
      */
     public static function end($message = null) {
         exit($message);

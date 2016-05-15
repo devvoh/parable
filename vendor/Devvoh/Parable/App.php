@@ -10,52 +10,36 @@ namespace Devvoh\Parable;
 
 class App {
 
-    /**
-     * @var string
-     */
+    /** @var string */
     static protected $version           = '0.5.0';
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     static protected $baseDir           = null;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     static protected $publicUrl         = null;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     static protected $debugEnabled      = false;
 
-    /**
-     * @var null|array
-     */
+    /** @var null|array */
     static protected $route             = null;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     static protected $currentModule     = null;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     static protected $modules           = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     static protected $singletons        = [];
 
     /**
      * Set the route
      *
-     * @param $route
+     * @param array $route
      */
-    public static function setRoute($route) {
+    public static function setRoute(array $route) {
         self::$route = $route;
     }
 
@@ -120,7 +104,6 @@ class App {
      * Returns a dir based on the base dir
      *
      * @param null|string $path
-     *
      * @return null|string
      */
     public static function getDir($path = null) {
@@ -136,7 +119,6 @@ class App {
      *
      * @param string    $subPath
      * @param null      $module
-     *
      * @return string|null
      */
     public static function getViewDir($subPath = null, $module = null) {
@@ -155,7 +137,6 @@ class App {
      * Returns an url based on the public url
      *
      * @param null|string $path
-     *
      * @return null|string
      */
     public static function getUrl($path = null) {
@@ -323,18 +304,19 @@ class App {
         self::getHook()->trigger('parable_app_dispatch_before');
         // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
         $matchedRoute = self::matchRoute();
+        $dispatched = false;
         if ($matchedRoute) {
             // Create the dispatcher and try to dispatch
             $dispatcher = self::createDispatcher($matchedRoute);
-            if (!$dispatcher->dispatch()) {
-                self::getResponse()->appendContent(
-                    self::getView()->partial('Error/Route.phtml')
-                );
+            $dispatched = $dispatcher->dispatch();
+        }
+
+        if (!$dispatched) {
+            $template = self::getView()->partial('Error/404.phtml');
+            if (!$template) {
+                $template = '404: Page Not Found';
             }
-        } else {
-            self::getResponse()->appendContent(
-                self::getView()->partial('Error/404.phtml')
-            );
+            self::getResponse()->setContent($template);
         }
 
         // Last thing we do is ask our Response to send it all as configured
@@ -380,7 +362,6 @@ class App {
      * Returns a new Repository instance
      *
      * @param null $entityName
-     *
      * @return \Devvoh\Parable\Repository
      */
     public static function createRepository($entityName = null) {
@@ -452,7 +433,7 @@ class App {
      * Returns (and possibly creates an instance of the $className class)
      *
      * @param $className
-     *
+     * @param null $singletonName
      * @return mixed
      */
     protected static function getSingleton($className, $singletonName = null) {

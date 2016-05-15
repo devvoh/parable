@@ -10,10 +10,20 @@ namespace Devvoh\Parable;
 
 class Auth {
 
+    /** @var bool */
     protected $authenticated        = false;
+
+    /** @var array */
     protected $authenticationData   = [];
+
+    /** @var null|\App\Model\User */
     protected $user                 = null;
 
+    /**
+     * Initialize the authentication, picking up on session data if possible.
+     *
+     * @return bool
+     */
     public function initialize() {
         if ($this->checkAuthentication()) {
             $data = $this->getAuthenticationData();
@@ -27,9 +37,15 @@ class Auth {
             $this->setUser($user);
             return true;
         }
+        return false;
     }
 
-    public function checkAuthentication() {
+    /**
+     * Checks whether there's an auth session
+     *
+     * @return bool
+     */
+    protected function checkAuthentication() {
         $authSession = App::getSession()->get('auth');
         if ($authSession) {
             $this->setAuthenticated($authSession['authenticated']);
@@ -39,33 +55,73 @@ class Auth {
         return false;
     }
 
+    /**
+     * Sets whether there's an authenticated user or not
+     *
+     * @param bool $value
+     * @return $this
+     */
     public function setAuthenticated($value = true) {
         $this->authenticated = (bool)$value;
         return $this;
     }
 
+    /**
+     * Checks whether there's an authenticated user or not
+     *
+     * @return bool
+     */
     public function isAuthenticated() {
         return $this->authenticated;
     }
 
+    /**
+     * Set the data for the user currently authenticated
+     *
+     * @param array $data
+     * @return $this
+     */
     public function setAuthenticationData($data = []) {
         $this->authenticationData = $data;
         return $this;
     }
 
+    /**
+     * Return the authentication data, if any
+     *
+     * @return array
+     */
     public function getAuthenticationData() {
         return $this->authenticationData;
     }
 
-    public function setUser($user) {
+    /**
+     * Set the authenticated user entity
+     *
+     * @param \Devvoh\Parable\Entity $user
+     * @return $this
+     */
+    public function setUser(\Devvoh\Parable\Entity $user) {
         $this->user = $user;
         return $this;
     }
 
+    /**
+     * Return the user entity
+     *
+     * @return \App\Model\User|null
+     */
     public function getUser() {
         return $this->user;
     }
 
+    /**
+     * Check whether the provided password matches the password hash. If so, return true.
+     *
+     * @param string $passwordProvided
+     * @param string $passwordHash
+     * @return bool
+     */
     public function authenticate($passwordProvided, $passwordHash) {
         if (password_verify($passwordProvided, $passwordHash)) {
             $this->setAuthenticated(true);

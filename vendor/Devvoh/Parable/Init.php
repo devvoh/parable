@@ -12,8 +12,13 @@ use \Devvoh\Parable\App;
 
 class Init {
 
+    /** @var array */
     protected $orderedModules    = [];
+
+    /** @var array */
     protected $unorderedModules  = [];
+
+    /** @var bool */
     protected $hasRun           = false;
 
     /**
@@ -22,13 +27,12 @@ class Init {
      * @return $this
      */
     public function run() {
-        if ($this->hasRun) {
-            return;
+        if (!$this->hasRun) {
+            if (count($this->orderedModules + $this->unorderedModules) == 0) {
+                $this->loadInits();
+            }
+            $this->runAllInits();
         }
-        if (count($this->orderedModules + $this->unorderedModules) == 0) {
-            $this->loadInits();
-        }
-        $this->runAllInits();
         return $this;
     }
 
@@ -87,11 +91,10 @@ class Init {
     /**
      * Run passed inits
      *
-     * @param $inits
-     *
+     * @param array $inits
      * @return $this
      */
-    protected function runInits($inits) {
+    protected function runInits(array $inits) {
         foreach ($inits as $init) {
             $init->run();
         }

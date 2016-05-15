@@ -15,8 +15,7 @@ class View {
     /**
      * Loads and shows the template file
      *
-     * @param $file
-     *
+     * @param string $file
      * @return $this
      */
     public function loadTemplate($file) {
@@ -31,31 +30,39 @@ class View {
     /**
      * Loads a partial into an output buffer and returns the parsed result
      *
-     * @param             $file
-     * @param string|null $module
-     *
+     * @param string $file
+     * @param null|string $module
      * @return null|string
      */
     public function partial($file, $module = null) {
-        // Look for a module, either as given or a current module. If neither, assume Core.
-        if (!$module) {
-            $module = 'Core';
-            if (App::getRoute()) {
-                $module =App::getRoute()['module'];
-            }
-        }
-        // Build proper path
-        $dir = 'app' . DS . 'modules' . DS . $module . DS . 'View' . DS . $file;
-        $dir = App::getDir($dir);
-
-        // Set return value to null as default
+        // Set the return value to null by default
         $return = null;
-        if (file_exists($dir)) {
-            $return = $this->render($dir);
+
+        // If a module is given, build a fitting array for consistency with App::getModules()
+        $modules = [['name' => $module]];
+        if (!$module) {
+            $modules = App::getModules();
+        }
+
+        // Now loop through whatever array we're left with and bail on the first match. If a specific module is
+        // wanted, pass a module to partial()
+        foreach ($modules as $module) {
+            $dir = 'app' . DS . 'modules' . DS . $module['name'] . DS . 'View' . DS . $file;
+            $dir = App::getDir($dir);
+            if (file_exists($dir)) {
+                $return = $this->render($dir);
+                break;
+            }
         }
         return $return;
     }
 
+    /**
+     * Render the $file and return the interpreted code
+     *
+     * @param string$file
+     * @return string
+     */
     public function render($file) {
         App::getResponse()->startOB();
         require($file);
@@ -74,12 +81,11 @@ class View {
      *    \Devvoh\Parable\App::getInstance()->getGet()->getValues();
      *    use \Devvoh\Parable\App; App::getInstance()->getGet()->getValues();
      *
-     * @param $method
-     * @param $parameters
-     *
-     * @return bool
+     * @param string $method
+     * @param array $parameters
+     * @return mixed|false
      */
-    public function __call($method, $parameters = []) {
+    public function __call($method, array $parameters = []) {
         if (method_exists('\Devvoh\Parable\App', $method)) {
             return call_user_func_array(['\Devvoh\Parable\App', $method], $parameters);
         }

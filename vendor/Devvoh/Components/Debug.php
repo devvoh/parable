@@ -10,22 +10,18 @@ namespace Devvoh\Components;
 
 class Debug {
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected static $timerStart = 0;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected static $timerEnd   = 0;
 
     /**
      * Pretty var_dump $data
      *
-     * @param $data
+     * @param mixed $data
      */
-    public static function d($data = null) {
+    public static function d($data) {
         echo '<pre>';
         var_dump($data);
         echo '</pre>';
@@ -34,9 +30,9 @@ class Debug {
     /**
      * Pretty print_r $data
      *
-     * @param $data
+     * @param mixed $data
      */
-    public static function p($data = null) {
+    public static function p($data) {
         echo '<pre>';
         print_r($data);
         echo '</pre>';
@@ -45,7 +41,7 @@ class Debug {
     /**
      * Pretty var_dump $data, then die
      *
-     * @param $data
+     * @param mixed $data
      */
     public static function dd($data) {
         self::d($data);
@@ -55,7 +51,7 @@ class Debug {
     /**
      * Pretty print_r $data, then die
      *
-     * @param $data
+     * @param mixed $data
      */
     public static function pd($data) {
         self::p($data);
@@ -63,11 +59,14 @@ class Debug {
     }
 
     /**
-     * Start the execution timer
+     * Start the execution timer and returns the timerStart value
+     *
+     * @return int
      */
     public static function startTimer() {
         self::$timerEnd = 0;
         self::$timerStart = microtime(true);
+        return self::$timerStart;
     }
 
     /**

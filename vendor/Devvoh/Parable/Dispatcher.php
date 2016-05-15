@@ -12,24 +12,22 @@ use \Devvoh\Parable\App;
 
 class Dispatcher {
 
-    /**
-     * @var null|array
-     */
+    /** @var null|array */
     protected $route = null;
 
     /**
      * Dispatcher constructor.
      *
-     * @param null $route
+     * @param array $route
      */
-    public function __construct($route = null) {
+    public function __construct(array $route = []) {
         $this->setRoute($route);
     }
 
     /**
      * Return the route
      *
-     * @return null|array
+     * @return array
      */
     public function getRoute() {
         return $this->route;
@@ -38,10 +36,10 @@ class Dispatcher {
     /**
      * Set the route
      *
-     * @param $route
+     * @param array $route
      * @return $this
      */
-    public function setRoute($route) {
+    public function setRoute(array $route) {
         $this->route = $route;
         return $this;
     }
@@ -140,6 +138,11 @@ class Dispatcher {
         return true;
     }
 
+    /**
+     * Return the template, if a relevant template can be found
+     *
+     * @return null|string
+     */
     public function getTemplate() {
         $route = $this->getRoute();
 

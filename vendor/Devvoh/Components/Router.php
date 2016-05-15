@@ -23,10 +23,7 @@ class Router {
     /**
      * Route the path given or simply the current path being looked at
      *
-     * @todo Split parameter interpretation into separate method
-     *
      * @param null|string $path
-     *
      * @return null|array|bool
      */
     public function match($path = null) {
@@ -108,7 +105,6 @@ class Router {
      * Returns a route by name
      *
      * @param $name
-     *
      * @return null|array
      */
     public function getRouteByName($name) {
@@ -125,7 +121,6 @@ class Router {
      *
      * @param       $routeName
      * @param array $params
-     *
      * @return string|null
      */
     public function buildRoute($routeName, $params = []) {
@@ -150,7 +145,6 @@ class Router {
 
     /**
      * Return the routes
-     *
      * @return null|array
      */
     public function getRoutes() {
@@ -161,7 +155,6 @@ class Router {
      * Add an array of routes to the router
      *
      * @param null $routes
-     *
      * @return $this|false
      */
     public function addRoutes($routes = null) {
@@ -179,7 +172,6 @@ class Router {
      *
      * @param $name
      * @param $route
-     *
      * @return $this
      * @throws \Exception
      */

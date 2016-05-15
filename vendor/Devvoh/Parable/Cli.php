@@ -12,27 +12,21 @@ use \Devvoh\Parable\App;
 
 class Cli {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected static $cliModules = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected static $commands = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected static $parameters = [];
 
     /**
      * Set up everything for our cli app
      *
-     * @param $argv
+     * @param array $argv
      */
-    public static function boot($argv) {
+    public static function boot(array $argv) {
         App::getCli()->write('Parable CLI - ' . App::getVersion());
         App::getCli()->write(str_repeat('-', 70));
         self::loadModules();
@@ -96,9 +90,9 @@ class Cli {
     /**
      * Populate the parameters based on the arguments given on the cli
      *
-     * @param $argv
+     * @param array $argv
      */
-    protected static function populateParameters($argv) {
+    protected static function populateParameters(array $argv) {
         // Remove the first element, as it'll be the script called
         array_shift($argv);
 
@@ -110,10 +104,10 @@ class Cli {
     /**
      * Handle the command based on its index in the argument list and the command found
      *
-     * @param $index
-     * @param $command
+     * @param int $index
+     * @param array $command
      */
-    protected static function handleCommand($index, $command) {
+    protected static function handleCommand($index, array $command) {
         $commandModule = $command[0];
         $commandAction = $command[1];
 
@@ -162,19 +156,19 @@ class Cli {
     /**
      * End due to invalid $command
      *
-     * @param $command
+     * @param array $command
      */
-    public static function endInvalidCommand($command) {
+    public static function endInvalidCommand(array $command) {
         App::getCli()->addLine('Invalid command: ' .  $command[0] . ':' . $command[1])->end();
     }
 
     /**
      * End due to $missingParameters of $command
      *
-     * @param $command
-     * @param $missingParameters
+     * @param array $command
+     * @param string $missingParameters
      */
-    public static function endMissingParameters($command, $missingParameters) {
+    public static function endMissingParameters(array $command, $missingParameters) {
         $missingParameters = implode(', ', $missingParameters);
         App::getCli()->addLine('Cannot run command ' . $command[0] . ':' . $command[1]);
         App::getCli()->addLine('Missing parameters: ' . $missingParameters);

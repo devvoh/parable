@@ -33,7 +33,7 @@ __Bugfixes__
 - Entity's handling of null values was flawed. Now it'll keep a null value only if the value is string 'null'
 - Router Component at a certain point picked up a bug in returning params, which has now been fixed.
 - App now picks up on sqlite requiring a path for the location. Now does so only in case of sqlite.
-- Reverted Param handling in Dispatcher to a foreach since they dont use $key => $val but [key] => $key, [val] => $val
+- Reverted Param handling in Dispatcher to a foreach since they don't use $key => $val but [key] => $key, [val] => $val
 - Repositories now attempt to fetch separately from handling the result, preventing odd errors if the query is incorrect.
 
 ### 0.4.1

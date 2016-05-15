@@ -107,7 +107,6 @@ class Log {
      * @param      $message
      * @param null $logFile
      * @param bool $showTimezone
-     *
      * @return $this
      * @throws \Exception
      */
