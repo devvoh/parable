@@ -125,13 +125,12 @@ class Validate {
                 }
             }
 
-            foreach ($this->getCustomTypes() as $type => $closure) {
-                if (strpos($typeString, $type) !== false) {
-                    echo $type . '<br>';
-                    $return = $closure($data[$key]);
-                    var_dump($return);
-                }
-            }
+//            foreach ($this->getCustomTypes() as $type => $closure) {
+//                if (strpos($typeString, $type) !== false) {
+//                    echo $type . '<br>';
+//                    $return = $closure($data[$key]);
+//                }
+//            }
         }
 
         // If we're only supposed to return a boolean value, we're going to have to loop through our results and

@@ -8,15 +8,18 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Config extends \Devvoh\Components\GetSet {
+
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
 
     /**
      * Set the resource to config
      */
-    public function __construct() {
-        $this->setResource('config');
+    public function __construct(
+        \Devvoh\Parable\Tool $tool
+    ) {
+        $this->tool = $tool;
     }
 
     /**
@@ -26,8 +29,8 @@ class Config extends \Devvoh\Components\GetSet {
      * @return $this
      */
     public function load() {
-        $configFile = App::getDir('app/config/config.ini');
-        $customFile = App::getDir('app/config/custom.ini');
+        $configFile = $this->tool->getDir('app/config/config.ini');
+        $customFile =$this->tool->getDir('app/config/custom.ini');
 
         if (file_exists($configFile)) {
             $configData = parse_ini_file($configFile, true);

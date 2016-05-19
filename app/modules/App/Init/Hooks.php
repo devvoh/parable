@@ -14,19 +14,33 @@ class Hooks {
 
     public $order = 1;
 
+    /** @var \Devvoh\Components\Hook */
+    protected $hook;
+
+    /** @var \Devvoh\Components\Log  */
+    protected $log;
+
+    public function __construct(
+        \Devvoh\Components\Hook $hook,
+        \Devvoh\Components\Log $log
+    ) {
+        $this->hook = $hook;
+        $this->log  = $log;
+    }
+
     public function run() {
         // Register global loop to log all triggers
-        App::Hook()->into('*', function($event) {
-            App::Log()->write('Hook triggered: ' . $event);
+        $this->hook->into('*', function($event) {
+            $this->log->write('Hook triggered: ' . $event);
         });
 
         // Register the before hook
-        App::Hook()->into('parable_dispatcher_execute_before', function($event, &$payload) {
+        $this->hook->into('parable_dispatcher_execute_before', function($event, &$payload) {
             // Do the stuff you want to do before dispatcher_execute
         });
 
         // Register the after hook
-        App::Hook()->into('parable_dispatcher_execute_after', function($event, &$payload) {
+        $this->hook->into('parable_dispatcher_execute_after', function($event, &$payload) {
             // Do the stuff you want to do after dispatcher_execute
         });
     }

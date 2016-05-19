@@ -27,13 +27,27 @@ class Repository {
     /** @var bool */
     protected $returnOne    = false;
 
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    /** @var \Devvoh\Components\Database */
+    protected $database;
+
+    public function __construct(
+        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Components\Database $database
+    ) {
+        $this->tool = $tool;
+        $this->database = $database;
+    }
+
     /**
      * Generate a query set to use the current Entity's table name & key
      *
      * @return \Devvoh\Components\Query
      */
     public function createQuery() {
-        $query = App::createQuery();
+        $query = $this->toolcreateQuery();
         $query->setTableName($this->getEntity()->getTableName());
         $query->setTableKey($this->getEntity()->getTableKey());
         if ($this->getOnlyCount()) {
@@ -55,7 +69,7 @@ class Repository {
      */
     public function getAll() {
         $query = $this->createQuery();
-        $result = App::Database()->query($query);
+        $result = $this->database->query($query);
 
         $entities = [];
         if ($result) {
@@ -77,7 +91,7 @@ class Repository {
     public function getById($id) {
         $query = $this->createQuery();
         $query->where($this->getEntity()->getTableKey() . ' = ?', $id);
-        $result = App::Database()->query($query);
+        $result = $this->database->query($query);
 
         $entity = null;
         if ($result) {
@@ -99,7 +113,7 @@ class Repository {
         foreach ($conditionsArray as $condition => $value) {
             $query->where($condition, $value);
         }
-        $result = App::Database()->query($query);
+        $result = $this->database->query($query);
 
         $entities = [];
         if ($result) {

@@ -12,6 +12,20 @@ use \Devvoh\Parable\App;
 
 class View {
 
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    /** @var \Devvoh\Components\Response */
+    protected $response;
+
+    public function __construct(
+        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Components\Response $response
+    ) {
+        $this->tool     = $tool;
+        $this->response = $response;
+    }
+
     /**
      * Loads and shows the template file
      *
@@ -23,7 +37,7 @@ class View {
             return null;
         }
         $content = $this->render($file);
-        App::Response()->appendContent($content);
+        $this->response->appendContent($content);
         return $this;
     }
 
@@ -41,14 +55,14 @@ class View {
         // If a module is given, build a fitting array for consistency with App::getModules()
         $modules = [['name' => $module]];
         if (!$module) {
-            $modules = App::getModules();
+            $modules = $this->tool->getModules();
         }
 
         // Now loop through whatever array we're left with and bail on the first match. If a specific module is
         // wanted, pass a module to partial()
         foreach ($modules as $module) {
             $dir = 'app' . DS . 'modules' . DS . $module['name'] . DS . 'View' . DS . $file;
-            $dir = App::getDir($dir);
+            $dir = $this->tool->getDir($dir);
             if (file_exists($dir)) {
                 $return = $this->render($dir);
                 break;
@@ -64,9 +78,9 @@ class View {
      * @return string
      */
     public function render($file) {
-        App::Response()->startOB();
+        $this->response->startOB();
         require($file);
-        return App::Response()->endOB();
+        return $this->response->endOB();
     }
 
     /**

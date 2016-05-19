@@ -30,13 +30,32 @@ class Entity {
     /** @var array */
     protected $exportable   = [];
 
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    /** @var \Devvoh\Components\Database */
+    protected $database;
+
+    /** @var \Devvoh\Components\Validate */
+    protected $validate;
+
+    public function __construct(
+        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Components\Database $database,
+        \Devvoh\Components\Validate $validate
+    ) {
+        $this->tool = $tool;
+        $this->database = $database;
+        $this->validate = $validate;
+    }
+
     /**
      * Generate a query set to use the current Entity's table name & key
      *
      * @return \Devvoh\Components\Query
      */
     public function createQuery() {
-        $query = App::createQuery();
+        $query = $this->tool->createQuery();
         $query->setTableName($this->getTableName());
         $query->setTableKey($this->getTableKey());
         return $query;
@@ -82,7 +101,7 @@ class Entity {
                 $this->created_at = $now;
             }
         }
-        $result = App::Database()->query($query);
+        $result = $this->database->query($query);
         if ($result && $query->getAction() === 'insert') {
             $this->id = $query->getPdoInstance()->lastInsertId();
         }
@@ -142,7 +161,7 @@ class Entity {
         $query = $this->createQuery();
         $query->setAction('delete');
         $query->where($this->getTableKey() . ' = ?', $this->id);
-        return App::Database()->query($query);
+        return $this->database->query($query);
     }
 
     /**
@@ -244,7 +263,7 @@ class Entity {
     public function validate($returnBool = true) {
         $data = $this->toArray();
         $validator = $this->getValidator();
-        return App::Validate()->run($data, $validator, $returnBool);
+        return $this->validate->run($data, $validator, $returnBool);
     }
 
     /**

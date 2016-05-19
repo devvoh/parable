@@ -11,689 +11,237 @@ namespace Devvoh\Parable;
 class App {
 
     /** @var string */
-    static protected $version           = '0.5.0';
+    protected $version           = '0.5.0';
 
     /** @var null|string */
-    static protected $baseDir           = null;
+    protected $baseDir           = null;
 
     /** @var null|string */
-    static protected $publicUrl         = null;
+    protected $publicUrl         = null;
 
     /** @var bool */
-    static protected $debugEnabled      = false;
+    protected $debugEnabled      = false;
 
     /** @var null|array */
-    static protected $route             = null;
+    protected $route             = null;
 
     /** @var null|string */
-    static protected $currentModule     = null;
+    protected $currentModule     = null;
 
     /** @var array */
-    static protected $modules           = [];
+    protected $modules           = [];
 
-    /** @var array */
-    static protected $singletons        = [];
+    /** @var \Devvoh\Components\Date */
+    protected $date;
+
+    /** @var \Devvoh\Components\Database */
+    protected $database;
+
+    /** @var \Devvoh\Components\Debug */
+    protected $debug;
+
+    /** @var \Devvoh\Components\Hook */
+    protected $hook;
+
+    /** @var \Devvoh\Components\Log */
+    protected $log;
+
+    /** @var \Devvoh\Components\Response */
+    protected $response;
+
+    /** @var \Devvoh\Components\Rights */
+    protected $rights;
+
+    /** @var \Devvoh\Components\Router */
+    protected $router;
+
+    /** @var \Devvoh\Parable\Config */
+    protected $config;
+
+    /** @var \Devvoh\Parable\Init */
+    protected $init;
+
+    /** @var \Devvoh\Parable\Session */
+    protected $session;
+
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    /** @var \Devvoh\Parable\View */
+    protected $view;
 
     public function __construct(
-        \Devvoh\Components\Database $database,
         \Devvoh\Components\Date $date,
+        \Devvoh\Components\Database $database,
         \Devvoh\Components\Debug $debug,
-        \Devvoh\Components\Log $log,
         \Devvoh\Components\Hook $hook,
+        \Devvoh\Components\Log $log,
         \Devvoh\Components\Response $response,
+        \Devvoh\Components\Rights $rights,
         \Devvoh\Components\Router $router,
         \Devvoh\Parable\Config $config,
+        \Devvoh\Parable\Init $init,
         \Devvoh\Parable\Session $session,
-        \Devvoh\Parable\Init $init
+        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Parable\View $view
     ) {
-        die('APP CONSTRUCT');
-    }
-
-    /**
-     * Set the route
-     *
-     * @param array $route
-     */
-    public static function setRoute(array $route) {
-        self::$route = $route;
-    }
-
-    /**
-     * Returns the route
-     *
-     * @return null|array
-     */
-    public static function getRoute() {
-        return self::$route;
-    }
-
-    /**
-     * Return the loaded modules
-     *
-     * @return array
-     */
-    public static function getModules() {
-        return self::$modules;
-    }
-
-    /**
-     * Returns the base directory for the application.
-     *
-     * @return null|string
-     */
-    public static function getBaseDir() {
-        if (!self::$baseDir) {
-            $baseDir = rtrim(getcwd(), DS);
-            self::$baseDir = rtrim($baseDir, 'public');
-        }
-        return self::$baseDir;
-    }
-
-    /**
-     * Returns the public url for the application.
-     *
-     * @return null|string
-     */
-    public static function getPublicUrl() {
-        if (!self::$publicUrl) {
-            // Now get the complete public url & store it
-            if (!isset($_SERVER['REQUEST_SCHEME'])) {
-                if (!isset($_SERVER['REDIRECT_REQUEST_SCHEME'])) {
-                    // Assume http since we don't know
-                    $_SERVER['REQUEST_SCHEME'] = 'http';
-                } else {
-                    $_SERVER['REQUEST_SCHEME'] = $_SERVER['REDIRECT_REQUEST_SCHEME'];
-                }
-            }
-            $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
-
-            $url = rtrim($url, '/');
-            $url = rtrim($url, 'public');
-
-            self::$publicUrl = rtrim($url, '/');
-        }
-        return self::$publicUrl;
-    }
-
-    /**
-     * Returns a dir based on the base dir
-     *
-     * @param null|string $path
-     * @return null|string
-     */
-    public static function getDir($path = null) {
-        $dir = self::getBaseDir();
-        if ($path) {
-            $dir = rtrim($dir, DS) . DS . trim($path, DS);
-        }
-        return $dir;
-    }
-
-    /**
-     * Returns the view directory for either the given module or the current one
-     *
-     * @param string    $subPath
-     * @param null      $module
-     * @return string|null
-     */
-    public static function getViewDir($subPath = null, $module = null) {
-        if (!$module) {
-            $module = self::getCurrentModule();
-        }
-
-        $dir = 'app' . DS . 'modules' . DS . $module . DS . 'view';
-        if ($subPath) {
-            $dir = $dir . DS . trim($subPath) . '.phtml';
-        }
-        return self::getDir($dir);
-    }
-
-    /**
-     * Returns an url based on the public url
-     *
-     * @param null|string $path
-     * @return null|string
-     */
-    public static function getUrl($path = null) {
-        $url = self::getPublicUrl();
-        if ($path) {
-            $url = $url . '/' . trim($path, '/');
-        }
-        return $url;
-    }
-
-    /**
-     * Returns the current url
-     *
-     * @return null|string
-     */
-    public static function getCurrentUrl() {
-        return self::getUrl($_GET['path']);
-    }
-
-    /**
-     * Enables debug mode, which will display errors. Errors are always logged (see Bootstrap.php)
-     */
-    public static function enableDebug() {
-        self::$debugEnabled = true;
-        ini_set('display_errors', '1');
-    }
-
-    /**
-     * Disables debug mode, which will hide errors. Errors are always logged (see Bootstrap.php)
-     */
-    public static function disableDebug() {
-        self::$debugEnabled = false;
-        ini_set('display_errors', '0');
-    }
-
-    /**
-     * Returns whether debug is enabled or not
-     *
-     * @return bool
-     */
-    public static function isDebugEnabled() {
-        return (bool)self::$debugEnabled;
-    }
-
-    /**
-     * Returns the current module
-     *
-     * @return null|string
-     */
-    public static function getCurrentModule() {
-        return self::$currentModule;
-    }
-
-    /**
-     * Set the current module
-     *
-     * @param $currentModule
-     */
-    public static function setCurrentModule($currentModule) {
-        self::$currentModule = $currentModule;
-    }
-
-    /**
-     * Return the module name based on the given $path
-     *
-     * @param string $path
-     * @return mixed|null
-     */
-    public static function getModuleFromPath($path = null) {
-        if (!$path) {
-            return null;
-        }
-
-        $parts = explode(DS, $path);
-        $modulePart = array_pop($parts);
-        $moduleRoot = array_pop($parts);
-
-        if ($moduleRoot !== 'modules') {
-            return null;
-        }
-        return $modulePart;
-    }
-
-    /**
-     * Gets and returns the version stored in ./version
-     *
-     * @return string
-     */
-    public static function getVersion() {
-        return self::$version;
+        $this->date     = $date;
+        $this->database = $database;
+        $this->debug    = $debug;
+        $this->hook     = $hook;
+        $this->log      = $log;
+        $this->response = $response;
+        $this->rights   = $rights;
+        $this->router   = $router;
+        $this->config   = $config;
+        $this->init     = $init;
+        $this->session  = $session;
+        $this->tool     = $tool;
+        $this->view     = $view;
     }
 
     /**
      * Starts the App class and does some initial setup
      *
+     * @return $this
      * @throws \Exception
      */
-    public static function boot()
+    public function boot()
     {
-        self::Response()->startOB();
+        $this->response->startOB();
 
         // Find out what modules we have
-        self::loadModules();
+        $this->loadModules();
 
         // Collect the routes, now that we know our modules
-        self::collectRoutes();
+        $this->collectRoutes();
 
         // And load the App config
-        self::Config()->load();
+        $this->config->load();
 
         // Set debug enabled/disabled based on config
-        if (self::Config()->get('debug_enabled')) {
-            self::enableDebug();
-            self::Debug()->startTimer();
+        if ($this->config->get('debug_enabled')) {
+            $this->tool->enableDebug();
+            $this->debug->startTimer();
         } else {
-            self::disableDebug();
+            $this->tool->disableDebug();
         }
 
         // Set and enable database based on config
-        if (self::Config()->get('storage_type') && self::Config()->get('storage_location')) {
-            $location = self::Config()->get('storage_location');
-            if (strpos(self::Config()->get('storage_type'), 'sqlite') !== false) {
-                $location = self::getDir(self::Config()->get('storage_location'));
+        if ($this->config->get('storage_type') && $this->config->get('storage_location')) {
+            $location = $this->config->get('storage_location');
+            if (strpos($this->config->get('storage_type'), 'sqlite') !== false) {
+                $location = $this->getDir($this->config->get('storage_location'));
             }
             $config = [
-                'type'      => self::Config()->get('storage_type'),
+                'type'      => $this->config->get('storage_type'),
                 'location'  => $location,
-                'username'  => self::Config()->get('storage_username'),
-                'password'  => self::Config()->get('storage_password'),
-                'database'  => self::Config()->get('storage_database'),
+                'username'  => $this->config->get('storage_username'),
+                'password'  => $this->config->get('storage_password'),
+                'database'  => $this->config->get('storage_database'),
             ];
-            self::Database()->setConfig($config);
+            $this->database->setConfig($config);
         }
 
         // Set timezone if given, otherwise default to Europe/London
-        self::Date()->setTimezone('Europe/London');
-        if (self::Config()->get('default_timezone')) {
-            self::Date()->setTimezone(
-                self::Config()->get('default_timezone')
+        $this->date->setTimezone('Europe/London');
+        if ($this->config->get('default_timezone')) {
+            $this->date->setTimezone(
+                $this->config->get('default_timezone')
             );
         }
 
         // Set the appropriate log directory & default file name
-        self::Log()->setPath(self::getBaseDir() . 'var' . DS . 'log');
+        $this->log->setPath($this->tool->getBaseDir() . 'var' . DS . 'log');
 
         // And see if there's additional rights levels we should add
-        if (self::Config()->get('rights_add')) {
-            $toAdd = explode(',', self::Config()->get('rights_add'));
+        if ($this->config->get('rights_add')) {
+            $toAdd = explode(',', $this->config->get('rights_add'));
             foreach ($toAdd as $right) {
-                self::Rights()->addRight(trim($right));
+                $this->rights->addRight(trim($right));
             }
         }
 
         // Start the session
-        self::Session()->startSession();
+        $this->session->startSession();
 
         // Load all module Init scripts
-        self::Init()->run();
+        $this->init->run();
+
+        return $this;
     }
 
     /**
      * Dispatch the current route
      */
-    public static function dispatch() {
-        self::Hook()->trigger('parable_app_dispatch_before');
+    public function dispatch() {
+        $this->hook->trigger('parable_app_dispatch_before');
         // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
-        $matchedRoute = self::matchRoute();
+        $matchedRoute = $this->matchRoute();
         $dispatched = false;
         if ($matchedRoute) {
             // Create the dispatcher and try to dispatch
-            $dispatcher = self::createDispatcher($matchedRoute);
+            $dispatcher = \Devvoh\Components\DI::get('\Devvoh\Parable\Dispatcher')->setRoute($matchedRoute);
             $dispatched = $dispatcher->dispatch();
         }
 
         if (!$dispatched) {
-            $template = self::View()->partial('Error/404.phtml');
+            $template = $this->view->partial('Error/404.phtml');
             if (!$template) {
                 $template = '404: Page Not Found';
             }
-            self::Response()->setContent($template);
+            $this->response->setContent($template);
         }
 
         // Last thing we do is ask our Response to send it all as configured
-        self::Hook()->trigger('parable_app_response_sendResponse_before');
-        self::Response()->sendResponse();
-        self::Hook()->trigger('parable_app_response_sendResponse_after');
-        self::Hook()->trigger('parable_app_dispatch_after');
+        $this->hook->trigger('parable_app_response_sendResponse_before');
+        $this->response->sendResponse();
+        $this->hook->trigger('parable_app_response_sendResponse_after');
+        $this->hook->trigger('parable_app_dispatch_after');
     }
 
     /**
-     * Load the modules and store their names in self::$modules
+     * Load the modules and store their names in $this->modules
      */
-    public static function loadModules() {
-        self::Hook()->trigger('parable_app_loadModules_before');
+    public function loadModules() {
+        $this->hook->trigger('parable_app_loadModules_before');
         $dirIt = new \RecursiveDirectoryIterator(
-            self::getDir('app/modules'),
+            $this->tool->getDir('app/modules'),
             \RecursiveDirectoryIterator::SKIP_DOTS
         );
         foreach ($dirIt as $file) {
-            self::$modules[$file->getFileName()] = [
+            $this->tool->addModule($file->getFileName(), [
                 'name' => $file->getFileName(),
                 'path' => $file->getPathName(),
-            ];
+            ]);
         }
-        self::Hook()->trigger('parable_app_loadModules_after');
+        $this->hook->trigger('parable_app_loadModules_after');
     }
 
     /**
-     * Returns a new Query object, with the PDO instance set if possible
-     *
-     * @return \Devvoh\Components\Query
-     */
-    public static function createQuery() {
-        $query = new \Devvoh\Components\Query();
-        if (self::Database()) {
-            $query->setPdoInstance(self::Database()->getInstance());
-            $query->setQuoteAll(self::Database()->getQuoteAll());
-        }
-        return $query;
-    }
-
-    /**
-     * Returns a new Repository instance
-     *
-     * @param null $entityName
-     * @return \Devvoh\Parable\Repository
-     */
-    public static function createRepository($entityName = null) {
-        $repository = new \Devvoh\Parable\Repository();
-
-        $entity = self::createEntity($entityName);
-        $repository->setEntity($entity);
-
-        return $repository;
-    }
-
-    /**
-     * Returns a new Entity instance
-     *
-     * @param null|string $entityName
-     * @return Entity
-     */
-    public static function createEntity($entityName = null) {
-        $entity = null;
-        // Loop through models trying to find the appropriate class
-        foreach (self::getModules() as $module) {
-            $entityNameComplete = '\\' . $module['name'] . '\\Model\\' . $entityName;
-            if (class_exists($entityNameComplete)) {
-                $entity = new $entityNameComplete();
-                break;
-            }
-        }
-        return $entity;
-    }
-
-    /**
-     * Return a new Dispatcher instance
-     *
-     * @param null|array $route
-     * @return Dispatcher
-     */
-    public static function createDispatcher($route = null) {
-        $dispatcher = new \Devvoh\Parable\Dispatcher($route);
-        return $dispatcher;
-    }
-
-    /**
-     * Match the route using the router and store the result with self::setRoute()
+     * Match the route using the router and store the result with $this->setRoute()
      *
      * @return null|array
      */
-    public static function matchRoute() {
-        self::Hook()->trigger('parable_app_router_match_before');
-        self::setRoute(
-            self::Router()->match()
+    public function matchRoute() {
+        $this->hook->trigger('parable_app_router_match_before');
+        $this->tool->setRoute(
+            $this->router->match()
         );
-        self::Hook()->trigger('parable_app_router_match_after');
-        return self::getRoute();
+        $this->hook->trigger('parable_app_router_match_after');
+        return $this->tool->getRoute();
     }
 
     /**
      * Collect routes and include the files, which will add their routes to the router automatically
      */
-    public static function collectRoutes() {
-        foreach (self::getModules() as $module) {
+    public function collectRoutes() {
+        foreach ($this->tool->getModules() as $module) {
             $routerFilename = $module['path'] . DS . 'Routes.php';
             if (file_exists($routerFilename)) {
                 require_once($routerFilename);
             }
         }
-    }
-
-    /**
-     * Returns (and possibly creates an instance of the $className class)
-     *
-     * @param $className
-     * @param null $singletonName
-     * @return mixed
-     */
-    protected static function getSingleton($className, $singletonName = null) {
-        if (!$singletonName) {
-            $singletonName = $className;
-        }
-        if (!isset(self::$singletons[$singletonName])) {
-            self::$singletons[$singletonName] = new $className();
-            self::$singletons[$singletonName]->time = time();
-        }
-        return self::$singletons[$singletonName];
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Cli instance
-     *
-     * @return \Devvoh\Components\Cli
-     */
-    public static function Cli() {
-        return self::getSingleton('\Devvoh\Components\Cli');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Config instance
-     *
-     * @return \Devvoh\Parable\Config
-     */
-    public static function Config() {
-        return self::getSingleton('\Devvoh\Parable\Config');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Hook instance
-     *
-     * @return \Devvoh\Components\Hook
-     */
-    public static function Hook() {
-        return self::getSingleton('\Devvoh\Components\Hook');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Dock instance
-     *
-     * @return \Devvoh\Components\Dock
-     */
-    public static function Dock() {
-        return self::getSingleton('\Devvoh\Components\Dock');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Log instance
-     *
-     * @return \Devvoh\Components\Log
-     */
-    public static function Log() {
-        return self::getSingleton('\Devvoh\Components\Log');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Mailer instance
-     *
-     * @return \Devvoh\Components\Mailer
-     */
-    public static function Mailer() {
-        return self::getSingleton('\Devvoh\Components\Mailer');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the GetSet instance with context session
-     *
-     * @return \Devvoh\Components\GetSet
-     */
-    public static function Cookies() {
-        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetCookies')->setResource('cookie');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the GetSet instance with context session
-     *
-     * @return \Devvoh\Components\GetSet
-     */
-    public static function Session() {
-        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetSession')->setResource('session');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the GetSet instance with context param
-     *
-     * @return \Devvoh\Components\GetSet
-     */
-    public static function Param() {
-        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetParam')->setResource('param');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the GetSet instance with context post
-     *
-     * @return \Devvoh\Components\GetSet
-     */
-    public static function Post() {
-        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetPost')->setResource('post');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the GetSet instance with context get
-     *
-     * @return \Devvoh\Components\GetSet
-     */
-    public static function Get() {
-        return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetGet')->setResource('get');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the sessionMessage instance
-     *
-     * @return \Devvoh\Components\SessionMessage
-     */
-    public static function SessionMessage() {
-        return self::getSingleton('\Devvoh\Components\SessionMessage');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Router instance
-     *
-     * @return \Devvoh\Components\Router
-     */
-    public static function Router() {
-        return self::getSingleton('\Devvoh\Components\Router');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Database instance
-     *
-     * @return \Devvoh\Components\Database
-     */
-    public static function Database() {
-        return self::getSingleton('\Devvoh\Components\Database');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Response instance
-     *
-     * @return \Devvoh\Components\Response
-     */
-    public static function Response() {
-        return self::getSingleton('\Devvoh\Components\Response');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Request instance
-     *
-     * @return \Devvoh\Components\Request
-     */
-    public static function Request() {
-        return self::getSingleton('\Devvoh\Components\Request');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Debug instance
-     *
-     * @return \Devvoh\Components\Debug
-     */
-    public static function Debug() {
-        return self::getSingleton('\Devvoh\Components\Debug');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the View instance
-     *
-     * @return \Devvoh\Parable\View
-     */
-    public static function View() {
-        return self::getSingleton('\Devvoh\Parable\View');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Rights instance
-     *
-     * @return \Devvoh\Components\Rights
-     */
-    public static function Rights() {
-        return self::getSingleton('\Devvoh\Components\Rights');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Date instance
-     *
-     * @return \Devvoh\Components\Date
-     */
-    public static function Date() {
-        return self::getSingleton('\Devvoh\Components\Date');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Curl instance
-     *
-     * @return \Devvoh\Components\Curl
-     */
-    public static function Curl() {
-        return self::getSingleton('\Devvoh\Components\Curl');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Validate instance
-     *
-     * @return \Devvoh\Components\Validate
-     */
-    public static function Validate() {
-        return self::getSingleton('\Devvoh\Components\Validate');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Tool instance
-     *
-     * @return \Devvoh\Parable\Tool
-     */
-    public static function Tool() {
-        return self::getSingleton('\Devvoh\Parable\Tool');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Auth instance
-     *
-     * @return \Devvoh\Parable\Auth
-     */
-    public static function Auth() {
-        return self::getSingleton('\Devvoh\Parable\Auth');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the Init instance
-     *
-     * @return \Devvoh\Parable\Init
-     */
-    public static function Init() {
-        return self::getSingleton('\Devvoh\Parable\Init');
-    }
-
-    /**
-     * Returns (and possibly instantiates) the DI instance
-     *
-     * @return \Devvoh\Components\DI
-     */
-    public static function DI() {
-        return self::getSingleton('\Devvoh\Components\DI');
     }
 
 }

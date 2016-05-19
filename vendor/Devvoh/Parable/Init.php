@@ -21,6 +21,15 @@ class Init {
     /** @var bool */
     protected $hasRun           = false;
 
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    public function __construct(
+        \Devvoh\Parable\Tool $tool
+    ) {
+        $this->tool = $tool;
+    }
+
     /**
      * Where applicable, load all scripts in app/modules/[name]/Init/
      *
@@ -42,7 +51,7 @@ class Init {
      * @return $this
      */
     public function loadInits() {
-        foreach (App::getModules() as $module) {
+        foreach ($this->tool->getModules() as $module) {
             // Build init path for this module
             $initPath = $module['path'] . DS . 'Init';
             // If there's no init path, just go onto the next module
@@ -60,7 +69,7 @@ class Init {
                 $className = str_replace('.php', '', $file->getFileName());
                 $className = '\\' . $module['name'] . '\\Init\\' . $className;
                 // And instantiate it
-                $class = new $className();
+                $class = \Devvoh\Components\DI::get($className);
                 // Get the order, if any
                 if (!property_exists($class, 'order')) {
                     $this->unorderedModules[] = $class;

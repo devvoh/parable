@@ -10,13 +10,14 @@ namespace Devvoh\Components;
 
 class DI {
 
-    protected static $instances = [];
+    public static $instances = [];
 
     public static function get($className, $requiredBy = null) {
-        if (!isset(self::$instances[$className])) {
-            self::$instances[$className] = self::create($className, $requiredBy);
+        if (!isset(self::$instances[ltrim($className, '\\')])) {
+            self::$instances[ltrim($className, '\\')] = self::create($className, $requiredBy);
         }
-        return self::$instances[$className];
+//        echo $className . ' requested by ' . $requiredBy . ' and it was already there<br>';
+        return self::$instances[ltrim($className, '\\')];
     }
 
     /**
@@ -52,7 +53,7 @@ class DI {
             if ($parameter->getClass()) {
                 $subClassName = $parameter->getClass()->name;
             }
-            $dpndcClasses[] = self::create($subClassName, $className);
+            $dpndcClasses[] = self::get($subClassName, $className);
         }
         return (new \ReflectionClass($className))->newInstanceArgs($dpndcClasses);
     }

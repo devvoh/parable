@@ -15,13 +15,38 @@ class Dispatcher {
     /** @var null|array */
     protected $route = null;
 
-    /**
-     * Dispatcher constructor.
-     *
-     * @param array $route
-     */
-    public function __construct(array $route = []) {
-        $this->setRoute($route);
+    /** @var \Devvoh\Parable\App */
+    protected $app;
+
+    /** @var \Devvoh\Components\Hook */
+    protected $hook;
+
+    /** @var \Devvoh\Components\Response */
+    protected $response;
+
+    /** @var \Devvoh\Parable\Param */
+    protected $param;
+
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    /** @var \Devvoh\Parable\View */
+    protected $view;
+
+    public function __construct(
+        \Devvoh\Components\Hook $hook,
+        \Devvoh\Components\Response $response,
+        \Devvoh\Parable\App $app,
+        \Devvoh\Parable\Param $param,
+        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Parable\View $view
+    ) {
+        $this->app  = $app;
+        $this->hook = $hook;
+        $this->response = $response;
+        $this->param = $param;
+        $this->tool = $tool;
+        $this->view = $view;
     }
 
     /**
@@ -50,21 +75,20 @@ class Dispatcher {
      * @return $this
      */
     public function dispatch() {
-        // Store the current module on App
-        App::setCurrentModule($this->getRoute()['module']);
+        // Store the current module on Tool
+        $this->tool->setCurrentModule($this->getRoute()['module']);
 
         // Get the route
         $route = $this->getRoute();
 
         // Trigger the parable_dispatcher_execute_before execute
-        App::Hook()->trigger('parable_dispatcher_execute_before', $route);
+        $this->hook->trigger('parable_dispatcher_execute_before', $route);
 
         // Execute the route
         $return = $this->execute();
 
         // Trigger the parable_dispatcher_execute_after execute
-        App::Hook()->trigger('parable_dispatcher_execute_after', $route);
-
+        $this->hook->trigger('parable_dispatcher_execute_after', $route);
         return $return;
     }
 
@@ -78,7 +102,7 @@ class Dispatcher {
         $route = $this->getRoute();
 
         // Start a new level of output buffering to put whatever we're going to output into the Response
-        App::Response()->startOB();
+        $this->response->startOB();
 
         // Check for route params and set them as App params
         if (isset($route['params'])) {
@@ -86,7 +110,7 @@ class Dispatcher {
                 if (!is_array($param)) {
                     continue;
                 }
-                App::Param()->set($param['name'], $param['value']);
+                $this->param->set($param['name'], $param['value']);
             }
         }
 
@@ -126,12 +150,12 @@ class Dispatcher {
 
         // If $content is set, add it to the Response
         if ($content) {
-            App::Response()->appendContent($content);
+            $this->response->appendContent($content);
         }
 
         // If $template is set, load the template on the View
         if ($template) {
-            App::View()->loadTemplate($template);
+            $this->view->loadTemplate($template);
         }
 
         // And if we've gotten this far, let's just return true
@@ -150,7 +174,7 @@ class Dispatcher {
         $template = null;
         // If a view file is given, this will take precedence over an auto-generated template
         if (isset($route['view'])) {
-            $template = App::getDir(
+            $template = $this->tool->getDir(
                 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['view']
             );
         }
@@ -163,7 +187,7 @@ class Dispatcher {
         // If template was never set or reset above, and there's a controller, we're going to see if a view file exists
         // in the default location.
         if (!$template && isset($route['controller'])) {
-            $template = App::getDir(
+            $template = $this->tool->getDir(
                 'app/modules' . DS . $route['module'] . DS . 'View' . DS . $route['controller'] . DS . $route['action'] . '.phtml'
             );
         }

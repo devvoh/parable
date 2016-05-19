@@ -11,17 +11,17 @@ namespace Devvoh\Components;
 class Debug {
 
     /** @var int */
-    protected static $timerStart = 0;
+    protected $timerStart = 0;
 
     /** @var int */
-    protected static $timerEnd   = 0;
+    protected $timerEnd   = 0;
 
     /**
      * Pretty var_dump $data
      *
      * @param mixed $data
      */
-    public static function d($data) {
+    public function d($data) {
         echo '<pre>';
         var_dump($data);
         echo '</pre>';
@@ -32,7 +32,7 @@ class Debug {
      *
      * @param mixed $data
      */
-    public static function p($data) {
+    public function p($data) {
         echo '<pre>';
         print_r($data);
         echo '</pre>';
@@ -43,8 +43,8 @@ class Debug {
      *
      * @param mixed $data
      */
-    public static function dd($data) {
-        self::d($data);
+    public function dd($data) {
+        $this->d($data);
         die();
     }
 
@@ -53,8 +53,8 @@ class Debug {
      *
      * @param mixed $data
      */
-    public static function pd($data) {
-        self::p($data);
+    public function pd($data) {
+        $this->p($data);
         die();
     }
 
@@ -63,10 +63,10 @@ class Debug {
      *
      * @return int
      */
-    public static function startTimer() {
-        self::$timerEnd = 0;
-        self::$timerStart = microtime(true);
-        return self::$timerStart;
+    public function startTimer() {
+        $this->timerEnd = 0;
+        $this->timerStart = microtime(true);
+        return $this->timerStart;
     }
 
     /**
@@ -74,9 +74,9 @@ class Debug {
      *
      * @return string
      */
-    public static function endTimer() {
-        self::$timerEnd = microtime(true);
-        return self::getTimerDiff();
+    public function endTimer() {
+        $this->timerEnd = microtime(true);
+        return $this->getTimerDiff();
     }
 
     /**
@@ -84,8 +84,8 @@ class Debug {
      *
      * @return string
      */
-    public static function getTimerDiff() {
-        return number_format(self::$timerEnd - self::$timerStart, 4);
+    public function getTimerDiff() {
+        return number_format($this->timerEnd - $this->timerStart, 4);
     }
 
 }

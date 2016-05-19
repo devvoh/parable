@@ -1,6 +1,15 @@
 # Parable PHP Framework Changelog
 
-### 0.5.0
+### 0.6.0
+
+__Note: This version breaks backwards compatibility!__
+
+__Changes__
+- APP IS GONE. ALL HAIL APP.
+- Because App is gone, much of the changelog of 0.5.0 is redundant, but I leave it for historical purposes.
+- \Devvoh\Components\DI has been added. This is why App could go. Parable now has a barebones dependency injection system and uses it throughout. It does NOT have a way to deal with cyclical references, so if you add class A as a dependency to B and B as a dependency to A, get ready for timeouts.
+
+### 0.5.0 - UNRELEASED
 
 __Note: This version breaks backwards compatibility!__
 

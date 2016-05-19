@@ -19,6 +19,20 @@ class Auth {
     /** @var null|\App\Model\User */
     protected $user                 = null;
 
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    /** @var \Devvoh\Parable\Session */
+    protected $session;
+
+    public function __construct(
+        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Parable\Session $session
+    ) {
+        $this->tool = $tool;
+        $this->session = $session;
+    }
+
     /**
      * Initialize the authentication, picking up on session data if possible.
      *
@@ -28,7 +42,7 @@ class Auth {
         if ($this->checkAuthentication()) {
             $data = $this->getAuthenticationData();
             $userId = $data['user_id'];
-            $user = App::createRepository('User')->getById($userId);
+            $user = $this->tool->createRepository('User')->getById($userId);
             if (!$user) {
                 $this->setAuthenticated(false);
                 $this->setAuthenticationData([]);
@@ -46,7 +60,7 @@ class Auth {
      * @return bool
      */
     protected function checkAuthentication() {
-        $authSession = App::Session()->get('auth');
+        $authSession = $this->session->get('auth');
         if ($authSession) {
             $this->setAuthenticated($authSession['authenticated']);
             $this->setAuthenticationData($authSession['data']);
@@ -125,13 +139,13 @@ class Auth {
     public function authenticate($passwordProvided, $passwordHash) {
         if (password_verify($passwordProvided, $passwordHash)) {
             $this->setAuthenticated(true);
-            App::Session()->set('auth', [
+            $this->session->set('auth', [
                 'authenticated' => true,
                 'data' => $this->authenticationData,
             ]);
         } else {
             $this->setAuthenticated(false);
-            App::Session()->remove('auth');
+            $this->session->remove('auth');
         }
         return $this->isAuthenticated();
     }
