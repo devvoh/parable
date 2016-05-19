@@ -236,7 +236,7 @@ class App {
      */
     public static function boot()
     {
-        self::getResponse()->startOB();
+        self::Response()->startOB();
 
         // Find out what modules we have
         self::loadModules();
@@ -245,63 +245,63 @@ class App {
         self::collectRoutes();
 
         // And load the App config
-        self::getConfig()->load();
+        self::Config()->load();
 
         // Set debug enabled/disabled based on config
-        if (self::getConfig()->get('debug_enabled')) {
+        if (self::Config()->get('debug_enabled')) {
             self::enableDebug();
-            self::getDebug()->startTimer();
+            self::Debug()->startTimer();
         } else {
             self::disableDebug();
         }
 
         // Set and enable database based on config
-        if (self::getConfig()->get('storage_type') && self::getConfig()->get('storage_location')) {
-            $location = self::getConfig()->get('storage_location');
-            if (strpos(self::getConfig()->get('storage_type'), 'sqlite') !== false) {
-                $location = self::getDir(self::getConfig()->get('storage_location'));
+        if (self::Config()->get('storage_type') && self::Config()->get('storage_location')) {
+            $location = self::Config()->get('storage_location');
+            if (strpos(self::Config()->get('storage_type'), 'sqlite') !== false) {
+                $location = self::getDir(self::Config()->get('storage_location'));
             }
             $config = [
-                'type'      => self::getConfig()->get('storage_type'),
+                'type'      => self::Config()->get('storage_type'),
                 'location'  => $location,
-                'username'  => self::getConfig()->get('storage_username'),
-                'password'  => self::getConfig()->get('storage_password'),
-                'database'  => self::getConfig()->get('storage_database'),
+                'username'  => self::Config()->get('storage_username'),
+                'password'  => self::Config()->get('storage_password'),
+                'database'  => self::Config()->get('storage_database'),
             ];
-            self::getDatabase()->setConfig($config);
+            self::Database()->setConfig($config);
         }
 
         // Set timezone if given, otherwise default to Europe/London
-        self::getDate()->setTimezone('Europe/London');
-        if (self::getConfig()->get('default_timezone')) {
-            self::getDate()->setTimezone(
-                self::getConfig()->get('default_timezone')
+        self::Date()->setTimezone('Europe/London');
+        if (self::Config()->get('default_timezone')) {
+            self::Date()->setTimezone(
+                self::Config()->get('default_timezone')
             );
         }
 
         // Set the appropriate log directory & default file name
-        self::getLog()->setPath(self::getBaseDir() . 'var' . DS . 'log');
+        self::Log()->setPath(self::getBaseDir() . 'var' . DS . 'log');
 
         // And see if there's additional rights levels we should add
-        if (self::getConfig()->get('rights_add')) {
-            $toAdd = explode(',', self::getConfig()->get('rights_add'));
+        if (self::Config()->get('rights_add')) {
+            $toAdd = explode(',', self::Config()->get('rights_add'));
             foreach ($toAdd as $right) {
-                self::getRights()->addRight(trim($right));
+                self::Rights()->addRight(trim($right));
             }
         }
 
         // Start the session
-        self::getSession()->startSession();
+        self::Session()->startSession();
 
         // Load all module Init scripts
-        self::getInit()->run();
+        self::Init()->run();
     }
 
     /**
      * Dispatch the current route
      */
     public static function dispatch() {
-        self::getHook()->trigger('parable_app_dispatch_before');
+        self::Hook()->trigger('parable_app_dispatch_before');
         // Try to match the path to an existing route. If no path given to ->route(), current $_GET value is used.
         $matchedRoute = self::matchRoute();
         $dispatched = false;
@@ -312,25 +312,25 @@ class App {
         }
 
         if (!$dispatched) {
-            $template = self::getView()->partial('Error/404.phtml');
+            $template = self::View()->partial('Error/404.phtml');
             if (!$template) {
                 $template = '404: Page Not Found';
             }
-            self::getResponse()->setContent($template);
+            self::Response()->setContent($template);
         }
 
         // Last thing we do is ask our Response to send it all as configured
-        self::getHook()->trigger('parable_app_response_sendResponse_before');
-        self::getResponse()->sendResponse();
-        self::getHook()->trigger('parable_app_response_sendResponse_after');
-        self::getHook()->trigger('parable_app_dispatch_after');
+        self::Hook()->trigger('parable_app_response_sendResponse_before');
+        self::Response()->sendResponse();
+        self::Hook()->trigger('parable_app_response_sendResponse_after');
+        self::Hook()->trigger('parable_app_dispatch_after');
     }
 
     /**
      * Load the modules and store their names in self::$modules
      */
     public static function loadModules() {
-        self::getHook()->trigger('parable_app_loadModules_before');
+        self::Hook()->trigger('parable_app_loadModules_before');
         $dirIt = new \RecursiveDirectoryIterator(
             self::getDir('app/modules'),
             \RecursiveDirectoryIterator::SKIP_DOTS
@@ -341,7 +341,7 @@ class App {
                 'path' => $file->getPathName(),
             ];
         }
-        self::getHook()->trigger('parable_app_loadModules_after');
+        self::Hook()->trigger('parable_app_loadModules_after');
     }
 
     /**
@@ -351,9 +351,9 @@ class App {
      */
     public static function createQuery() {
         $query = new \Devvoh\Components\Query();
-        if (self::getDatabase()) {
-            $query->setPdoInstance(self::getDatabase()->getInstance());
-            $query->setQuoteAll(self::getDatabase()->getQuoteAll());
+        if (self::Database()) {
+            $query->setPdoInstance(self::Database()->getInstance());
+            $query->setQuoteAll(self::Database()->getQuoteAll());
         }
         return $query;
     }
@@ -409,11 +409,11 @@ class App {
      * @return null|array
      */
     public static function matchRoute() {
-        self::getHook()->trigger('parable_app_router_match_before');
+        self::Hook()->trigger('parable_app_router_match_before');
         self::setRoute(
-            self::getRouter()->match()
+            self::Router()->match()
         );
-        self::getHook()->trigger('parable_app_router_match_after');
+        self::Hook()->trigger('parable_app_router_match_after');
         return self::getRoute();
     }
 
@@ -452,7 +452,7 @@ class App {
      *
      * @return \Devvoh\Components\Cli
      */
-    public static function getCli() {
+    public static function Cli() {
         return self::getSingleton('\Devvoh\Components\Cli');
     }
 
@@ -461,7 +461,7 @@ class App {
      *
      * @return \Devvoh\Parable\Config
      */
-    public static function getConfig() {
+    public static function Config() {
         return self::getSingleton('\Devvoh\Parable\Config');
     }
 
@@ -470,7 +470,7 @@ class App {
      *
      * @return \Devvoh\Components\Hook
      */
-    public static function getHook() {
+    public static function Hook() {
         return self::getSingleton('\Devvoh\Components\Hook');
     }
 
@@ -479,7 +479,7 @@ class App {
      *
      * @return \Devvoh\Components\Dock
      */
-    public static function getDock() {
+    public static function Dock() {
         return self::getSingleton('\Devvoh\Components\Dock');
     }
 
@@ -488,7 +488,7 @@ class App {
      *
      * @return \Devvoh\Components\Log
      */
-    public static function getLog() {
+    public static function Log() {
         return self::getSingleton('\Devvoh\Components\Log');
     }
 
@@ -497,7 +497,7 @@ class App {
      *
      * @return \Devvoh\Components\Mailer
      */
-    public static function getMailer() {
+    public static function Mailer() {
         return self::getSingleton('\Devvoh\Components\Mailer');
     }
 
@@ -506,7 +506,7 @@ class App {
      *
      * @return \Devvoh\Components\GetSet
      */
-    public static function getCookies() {
+    public static function Cookies() {
         return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetCookies')->setResource('cookie');
     }
 
@@ -515,7 +515,7 @@ class App {
      *
      * @return \Devvoh\Components\GetSet
      */
-    public static function getSession() {
+    public static function Session() {
         return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetSession')->setResource('session');
     }
 
@@ -524,7 +524,7 @@ class App {
      *
      * @return \Devvoh\Components\GetSet
      */
-    public static function getParam() {
+    public static function Param() {
         return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetParam')->setResource('param');
     }
 
@@ -533,7 +533,7 @@ class App {
      *
      * @return \Devvoh\Components\GetSet
      */
-    public static function getPost() {
+    public static function Post() {
         return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetPost')->setResource('post');
     }
 
@@ -542,7 +542,7 @@ class App {
      *
      * @return \Devvoh\Components\GetSet
      */
-    public static function getGet() {
+    public static function Get() {
         return self::getSingleton('\Devvoh\Components\GetSet', 'GetSetGet')->setResource('get');
     }
 
@@ -551,7 +551,7 @@ class App {
      *
      * @return \Devvoh\Components\SessionMessage
      */
-    public static function getSessionMessage() {
+    public static function SessionMessage() {
         return self::getSingleton('\Devvoh\Components\SessionMessage');
     }
 
@@ -560,7 +560,7 @@ class App {
      *
      * @return \Devvoh\Components\Router
      */
-    public static function getRouter() {
+    public static function Router() {
         return self::getSingleton('\Devvoh\Components\Router');
     }
 
@@ -569,7 +569,7 @@ class App {
      *
      * @return \Devvoh\Components\Database
      */
-    public static function getDatabase() {
+    public static function Database() {
         return self::getSingleton('\Devvoh\Components\Database');
     }
 
@@ -578,7 +578,7 @@ class App {
      *
      * @return \Devvoh\Components\Response
      */
-    public static function getResponse() {
+    public static function Response() {
         return self::getSingleton('\Devvoh\Components\Response');
     }
 
@@ -587,7 +587,7 @@ class App {
      *
      * @return \Devvoh\Components\Request
      */
-    public static function getRequest() {
+    public static function Request() {
         return self::getSingleton('\Devvoh\Components\Request');
     }
 
@@ -596,7 +596,7 @@ class App {
      *
      * @return \Devvoh\Components\Debug
      */
-    public static function getDebug() {
+    public static function Debug() {
         return self::getSingleton('\Devvoh\Components\Debug');
     }
 
@@ -605,7 +605,7 @@ class App {
      *
      * @return \Devvoh\Parable\View
      */
-    public static function getView() {
+    public static function View() {
         return self::getSingleton('\Devvoh\Parable\View');
     }
 
@@ -614,7 +614,7 @@ class App {
      *
      * @return \Devvoh\Components\Rights
      */
-    public static function getRights() {
+    public static function Rights() {
         return self::getSingleton('\Devvoh\Components\Rights');
     }
 
@@ -623,7 +623,7 @@ class App {
      *
      * @return \Devvoh\Components\Date
      */
-    public static function getDate() {
+    public static function Date() {
         return self::getSingleton('\Devvoh\Components\Date');
     }
 
@@ -632,7 +632,7 @@ class App {
      *
      * @return \Devvoh\Components\Curl
      */
-    public static function getCurl() {
+    public static function Curl() {
         return self::getSingleton('\Devvoh\Components\Curl');
     }
 
@@ -641,7 +641,7 @@ class App {
      *
      * @return \Devvoh\Components\Validate
      */
-    public static function getValidate() {
+    public static function Validate() {
         return self::getSingleton('\Devvoh\Components\Validate');
     }
 
@@ -650,7 +650,7 @@ class App {
      *
      * @return \Devvoh\Parable\Tool
      */
-    public static function getTool() {
+    public static function Tool() {
         return self::getSingleton('\Devvoh\Parable\Tool');
     }
 
@@ -659,7 +659,7 @@ class App {
      *
      * @return \Devvoh\Parable\Auth
      */
-    public static function getAuth() {
+    public static function Auth() {
         return self::getSingleton('\Devvoh\Parable\Auth');
     }
 
@@ -668,8 +668,17 @@ class App {
      *
      * @return \Devvoh\Parable\Init
      */
-    public static function getInit() {
+    public static function Init() {
         return self::getSingleton('\Devvoh\Parable\Init');
+    }
+
+    /**
+     * Returns (and possibly instantiates) the DI instance
+     *
+     * @return \Devvoh\Components\DI
+     */
+    public static function DI() {
+        return self::getSingleton('\Devvoh\Components\DI');
     }
 
 }

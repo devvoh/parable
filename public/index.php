@@ -13,6 +13,11 @@
  */
 require_once('../vendor/Devvoh/Parable/Bootstrap.php');
 
+echo '<pre>';
+$test = \Devvoh\Parable\App::DI()->instantiate('\App\Model\Test');
+var_dump($test);
+die();
+
 /**
  * Dispatch the current route.
  */

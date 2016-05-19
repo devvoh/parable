@@ -57,13 +57,13 @@ class Dispatcher {
         $route = $this->getRoute();
 
         // Trigger the parable_dispatcher_execute_before execute
-        App::getHook()->trigger('parable_dispatcher_execute_before', $route);
+        App::Hook()->trigger('parable_dispatcher_execute_before', $route);
 
         // Execute the route
         $return = $this->execute();
 
         // Trigger the parable_dispatcher_execute_after execute
-        App::getHook()->trigger('parable_dispatcher_execute_after', $route);
+        App::Hook()->trigger('parable_dispatcher_execute_after', $route);
 
         return $return;
     }
@@ -78,7 +78,7 @@ class Dispatcher {
         $route = $this->getRoute();
 
         // Start a new level of output buffering to put whatever we're going to output into the Response
-        App::getResponse()->startOB();
+        App::Response()->startOB();
 
         // Check for route params and set them as App params
         if (isset($route['params'])) {
@@ -86,7 +86,7 @@ class Dispatcher {
                 if (!is_array($param)) {
                     continue;
                 }
-                App::getParam()->set($param['name'], $param['value']);
+                App::Param()->set($param['name'], $param['value']);
             }
         }
 
@@ -126,12 +126,12 @@ class Dispatcher {
 
         // If $content is set, add it to the Response
         if ($content) {
-            App::getResponse()->appendContent($content);
+            App::Response()->appendContent($content);
         }
 
         // If $template is set, load the template on the View
         if ($template) {
-            App::getView()->loadTemplate($template);
+            App::View()->loadTemplate($template);
         }
 
         // And if we've gotten this far, let's just return true

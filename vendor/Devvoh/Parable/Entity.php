@@ -82,7 +82,7 @@ class Entity {
                 $this->created_at = $now;
             }
         }
-        $result = App::getDatabase()->query($query);
+        $result = App::Database()->query($query);
         if ($result && $query->getAction() === 'insert') {
             $this->id = $query->getPdoInstance()->lastInsertId();
         }
@@ -142,7 +142,7 @@ class Entity {
         $query = $this->createQuery();
         $query->setAction('delete');
         $query->where($this->getTableKey() . ' = ?', $this->id);
-        return App::getDatabase()->query($query);
+        return App::Database()->query($query);
     }
 
     /**
@@ -244,7 +244,7 @@ class Entity {
     public function validate($returnBool = true) {
         $data = $this->toArray();
         $validator = $this->getValidator();
-        return App::getValidate()->run($data, $validator, $returnBool);
+        return App::Validate()->run($data, $validator, $returnBool);
     }
 
     /**

@@ -55,7 +55,7 @@ class Repository {
      */
     public function getAll() {
         $query = $this->createQuery();
-        $result = App::getDatabase()->query($query);
+        $result = App::Database()->query($query);
 
         $entities = [];
         if ($result) {
@@ -77,7 +77,7 @@ class Repository {
     public function getById($id) {
         $query = $this->createQuery();
         $query->where($this->getEntity()->getTableKey() . ' = ?', $id);
-        $result = App::getDatabase()->query($query);
+        $result = App::Database()->query($query);
 
         $entity = null;
         if ($result) {
@@ -99,7 +99,7 @@ class Repository {
         foreach ($conditionsArray as $condition => $value) {
             $query->where($condition, $value);
         }
-        $result = App::getDatabase()->query($query);
+        $result = App::Database()->query($query);
 
         $entities = [];
         if ($result) {

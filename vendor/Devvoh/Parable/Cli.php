@@ -27,8 +27,8 @@ class Cli {
      * @param array $argv
      */
     public static function boot(array $argv) {
-        App::getCli()->write('Parable CLI - ' . App::getVersion());
-        App::getCli()->write(str_repeat('-', 70));
+        App::Cli()->write('Parable CLI - ' . App::getVersion());
+        App::Cli()->write(str_repeat('-', 70));
         self::loadModules();
         self::populateCommands();
         self::populateParameters($argv);
@@ -141,15 +141,15 @@ class Cli {
      * Show all found commands in all found modules
      */
     public static function showCommands() {
-        App::getCli()->write('The following commands are available:');
+        App::Cli()->write('The following commands are available:');
         foreach (self::$commands as $module => $commands) {
-            App::getCli()->nl();
+            App::Cli()->nl();
             foreach ($commands as $command) {
                 $output = str_pad('    ' . $module . ':' . $command['method'], 50, ' ', STR_PAD_RIGHT);
                 $output .= count($command['parameters']) . ' parameters';
-                App::getCli()->write($output);
+                App::Cli()->write($output);
             }
-            App::getCli()->nl();
+            App::Cli()->nl();
         }
     }
 
@@ -159,7 +159,7 @@ class Cli {
      * @param array $command
      */
     public static function endInvalidCommand(array $command) {
-        App::getCli()->addLine('Invalid command: ' .  $command[0] . ':' . $command[1])->end();
+        App::Cli()->addLine('Invalid command: ' .  $command[0] . ':' . $command[1])->end();
     }
 
     /**
@@ -170,9 +170,9 @@ class Cli {
      */
     public static function endMissingParameters(array $command, $missingParameters) {
         $missingParameters = implode(', ', $missingParameters);
-        App::getCli()->addLine('Cannot run command ' . $command[0] . ':' . $command[1]);
-        App::getCli()->addLine('Missing parameters: ' . $missingParameters);
-        App::getCli()->end();
+        App::Cli()->addLine('Cannot run command ' . $command[0] . ':' . $command[1]);
+        App::Cli()->addLine('Missing parameters: ' . $missingParameters);
+        App::Cli()->end();
     }
 
 }

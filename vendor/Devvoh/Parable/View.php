@@ -23,7 +23,7 @@ class View {
             return null;
         }
         $content = $this->render($file);
-        App::getResponse()->appendContent($content);
+        App::Response()->appendContent($content);
         return $this;
     }
 
@@ -64,9 +64,9 @@ class View {
      * @return string
      */
     public function render($file) {
-        App::getResponse()->startOB();
+        App::Response()->startOB();
         require($file);
-        return App::getResponse()->endOB();
+        return App::Response()->endOB();
     }
 
     /**
@@ -74,12 +74,12 @@ class View {
      * \Devvoh\Parable\App calls
      *
      * Possible uses:
-     *    self::getGet()->getValues();
-     *    $this->getGet()->getValues();
+     *    self::Get()->getValues();
+     *    $this->Get()->getValues();
      *
      * Instead of:
-     *    \Devvoh\Parable\App::getInstance()->getGet()->getValues();
-     *    use \Devvoh\Parable\App; App::getInstance()->getGet()->getValues();
+     *    \Devvoh\Parable\App::getInstance()->Get()->getValues();
+     *    use \Devvoh\Parable\App; App::getInstance()->Get()->getValues();
      *
      * @param string $method
      * @param array $parameters

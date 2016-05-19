@@ -40,7 +40,7 @@ class Tool {
         if (!$routeName) {
             return false;
         }
-        $url = App::getRouter()->buildRoute($routeName, $params);
+        $url = App::Router()->buildRoute($routeName, $params);
         return $this->redirect(App::getUrl($url));
     }
 

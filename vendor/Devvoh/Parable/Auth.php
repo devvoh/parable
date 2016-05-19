@@ -46,7 +46,7 @@ class Auth {
      * @return bool
      */
     protected function checkAuthentication() {
-        $authSession = App::getSession()->get('auth');
+        $authSession = App::Session()->get('auth');
         if ($authSession) {
             $this->setAuthenticated($authSession['authenticated']);
             $this->setAuthenticationData($authSession['data']);
@@ -125,13 +125,13 @@ class Auth {
     public function authenticate($passwordProvided, $passwordHash) {
         if (password_verify($passwordProvided, $passwordHash)) {
             $this->setAuthenticated(true);
-            App::getSession()->set('auth', [
+            App::Session()->set('auth', [
                 'authenticated' => true,
                 'data' => $this->authenticationData,
             ]);
         } else {
             $this->setAuthenticated(false);
-            App::getSession()->remove('auth');
+            App::Session()->remove('auth');
         }
         return $this->isAuthenticated();
     }

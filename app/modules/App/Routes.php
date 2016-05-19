@@ -26,4 +26,4 @@ $routes['closure'] = [
 foreach ($routes as &$route) {
     $route['module'] = App::getModuleFromPath(__DIR__);
 }
-App::getRouter()->addRoutes($routes);
+App::Router()->addRoutes($routes);
