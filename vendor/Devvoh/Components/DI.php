@@ -16,15 +16,15 @@ class DI {
      * @param $className
      * @param null $requiredBy
      * @return mixed
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
-    public function instantiate($className, $requiredBy = null) {
+    public static function instantiate($className, $requiredBy = null) {
         if (!class_exists($className)) {
             $message = 'Could not create instance of "' . $className . '"';
             if ($requiredBy) {
                 $message .= ', required by "' . $requiredBy . '"';
             }
-            throw new \Exception($message);
+            throw new \Devvoh\Components\Exception($message);
         }
         $reflection = new \ReflectionClass($className);
         /** @var \ReflectionMethod $construct */
@@ -43,7 +43,7 @@ class DI {
             if ($parameter->getClass()) {
                 $subClassName = $parameter->getClass()->name;
             }
-            $dpndcClasses[] = $this->instantiate($subClassName, $className);
+            $dpndcClasses[] = self::instantiate($subClassName, $className);
         }
         return (new \ReflectionClass($className))->newInstanceArgs($dpndcClasses);
     }
