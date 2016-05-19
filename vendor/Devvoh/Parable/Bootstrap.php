@@ -33,4 +33,7 @@ $autoloader->register();
 /**
  * And run boot on App to get it all started
  */
-\Devvoh\Parable\App::boot();
+$app = \Devvoh\Components\DI::get('\Devvoh\Parable\App');
+$app->boot();
+
+return $app;

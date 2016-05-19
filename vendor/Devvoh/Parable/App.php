@@ -34,6 +34,21 @@ class App {
     /** @var array */
     static protected $singletons        = [];
 
+    public function __construct(
+        \Devvoh\Components\Database $database,
+        \Devvoh\Components\Date $date,
+        \Devvoh\Components\Debug $debug,
+        \Devvoh\Components\Log $log,
+        \Devvoh\Components\Hook $hook,
+        \Devvoh\Components\Response $response,
+        \Devvoh\Components\Router $router,
+        \Devvoh\Parable\Config $config,
+        \Devvoh\Parable\Session $session,
+        \Devvoh\Parable\Init $init
+    ) {
+        die('APP CONSTRUCT');
+    }
+
     /**
      * Set the route
      *

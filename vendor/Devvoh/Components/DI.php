@@ -10,6 +10,15 @@ namespace Devvoh\Components;
 
 class DI {
 
+    protected static $instances = [];
+
+    public static function get($className, $requiredBy = null) {
+        if (!isset(self::$instances[$className])) {
+            self::$instances[$className] = self::create($className, $requiredBy);
+        }
+        return self::$instances[$className];
+    }
+
     /**
      * Instantiate a class and fulfill its dependency requirements
      *
@@ -18,7 +27,7 @@ class DI {
      * @return mixed
      * @throws \Devvoh\Components\Exception
      */
-    public static function instantiate($className, $requiredBy = null) {
+    public static function create($className, $requiredBy = null) {
         if (!class_exists($className)) {
             $message = 'Could not create instance of "' . $className . '"';
             if ($requiredBy) {
@@ -43,7 +52,7 @@ class DI {
             if ($parameter->getClass()) {
                 $subClassName = $parameter->getClass()->name;
             }
-            $dpndcClasses[] = self::instantiate($subClassName, $className);
+            $dpndcClasses[] = self::create($subClassName, $className);
         }
         return (new \ReflectionClass($className))->newInstanceArgs($dpndcClasses);
     }

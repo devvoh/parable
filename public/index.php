@@ -11,14 +11,10 @@
  *
  * This will set all base values and allow use of all App->methods
  */
-require_once('../vendor/Devvoh/Parable/Bootstrap.php');
-
-echo '<pre>';
-$test = \Devvoh\Components\DI::instantiate('\App\Model\Test');
-var_dump($test);
-die();
+/** @var \Devvoh\Parable\App $app */
+$app = require_once('../vendor/Devvoh/Parable/Bootstrap.php');
 
 /**
  * Dispatch the current route.
  */
-\Devvoh\Parable\App::dispatch();
+$app->dispatch();
