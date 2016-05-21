@@ -70,20 +70,35 @@ class App {
     /** @var \Devvoh\Parable\View */
     protected $view;
 
+    /**
+     * @param \Devvoh\Components\Date     $date
+     * @param \Devvoh\Components\Database $database
+     * @param \Devvoh\Components\Debug    $debug
+     * @param \Devvoh\Components\Hook     $hook
+     * @param \Devvoh\Components\Log      $log
+     * @param \Devvoh\Components\Response $response
+     * @param \Devvoh\Components\Rights   $rights
+     * @param \Devvoh\Components\Router   $router
+     * @param \Devvoh\Parable\Config      $config
+     * @param \Devvoh\Parable\Init        $init
+     * @param \Devvoh\Parable\Session     $session
+     * @param \Devvoh\Parable\Tool        $tool
+     * @param \Devvoh\Parable\View        $view
+     */
     public function __construct(
-        \Devvoh\Components\Date $date,
+        \Devvoh\Components\Date     $date,
         \Devvoh\Components\Database $database,
-        \Devvoh\Components\Debug $debug,
-        \Devvoh\Components\Hook $hook,
-        \Devvoh\Components\Log $log,
+        \Devvoh\Components\Debug    $debug,
+        \Devvoh\Components\Hook     $hook,
+        \Devvoh\Components\Log      $log,
         \Devvoh\Components\Response $response,
-        \Devvoh\Components\Rights $rights,
-        \Devvoh\Components\Router $router,
-        \Devvoh\Parable\Config $config,
-        \Devvoh\Parable\Init $init,
-        \Devvoh\Parable\Session $session,
-        \Devvoh\Parable\Tool $tool,
-        \Devvoh\Parable\View $view
+        \Devvoh\Components\Rights   $rights,
+        \Devvoh\Components\Router   $router,
+        \Devvoh\Parable\Config      $config,
+        \Devvoh\Parable\Init        $init,
+        \Devvoh\Parable\Session     $session,
+        \Devvoh\Parable\Tool        $tool,
+        \Devvoh\Parable\View        $view
     ) {
         $this->date     = $date;
         $this->database = $database;
