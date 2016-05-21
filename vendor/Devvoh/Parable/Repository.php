@@ -8,8 +8,6 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Repository {
 
     /** @var null|\Devvoh\Parable\Entity */
@@ -33,11 +31,15 @@ class Repository {
     /** @var \Devvoh\Components\Database */
     protected $database;
 
+    /**
+     * @param \Devvoh\Parable\Tool        $tool
+     * @param \Devvoh\Components\Database $database
+     */
     public function __construct(
-        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Parable\Tool        $tool,
         \Devvoh\Components\Database $database
     ) {
-        $this->tool = $tool;
+        $this->tool     = $tool;
         $this->database = $database;
     }
 

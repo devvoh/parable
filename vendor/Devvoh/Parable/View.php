@@ -8,8 +8,6 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class View {
 
     /** @var \Devvoh\Parable\Tool */
@@ -18,8 +16,12 @@ class View {
     /** @var \Devvoh\Components\Response */
     protected $response;
 
+    /**
+     * @param \Devvoh\Parable\Tool        $tool
+     * @param \Devvoh\Components\Response $response
+     */
     public function __construct(
-        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Parable\Tool        $tool,
         \Devvoh\Components\Response $response
     ) {
         $this->tool     = $tool;
@@ -83,22 +85,6 @@ class View {
         return $this->response->endOB();
     }
 
-    /**
-     * Allow view files to try to call static methods on App, to prevent use in phtml files or awkward
-     * \Devvoh\Parable\App calls
-     *
-     * Possible uses:
-     *    self::Get()->getValues();
-     *    $this->Get()->getValues();
-     *
-     * Instead of:
-     *    \Devvoh\Parable\App::getInstance()->Get()->getValues();
-     *    use \Devvoh\Parable\App; App::getInstance()->Get()->getValues();
-     *
-     * @param string $method
-     * @param array $parameters
-     * @return mixed|false
-     */
     public function __call($method, array $parameters = []) {
         if (method_exists('\Devvoh\Parable\App', $method)) {
             return call_user_func_array(['\Devvoh\Parable\App', $method], $parameters);

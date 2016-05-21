@@ -6,26 +6,56 @@
  * @author      Robin de Graaf (hello@devvoh.com)
  */
 
-$app    = \Devvoh\Components\DI::get('\Devvoh\Parable\App');
-$tool   = \Devvoh\Components\DI::get('\Devvoh\Parable\Tool');
-$router = \Devvoh\Components\DI::get('\Devvoh\Components\Router');
+namespace App;
 
-$routes['index'] = [
-    'method' => 'GET',
-    'path' => '/',
-    'controller' => 'Home',
-    'action' => 'index',
-];
-$routes['closure'] = [
-    'method' => 'GET',
-    'path' => '/closure',
-    'closure' => function() {
-        return 'this is a closure';
-    },
-];
+class Routes {
 
-// Add module to all routes
-foreach ($routes as &$route) {
-    $route['module'] = $tool->getModuleFromPath(__DIR__);
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    /** @var \Devvoh\Components\Router */
+    protected $router;
+
+    /**
+     * @param \Devvoh\Parable\Tool      $tool
+     * @param \Devvoh\Components\Router $router
+     */
+    public function __construct(
+        \Devvoh\Parable\Tool      $tool,
+        \Devvoh\Components\Router $router
+    ) {
+        $this->tool   = $tool;
+        $this->router = $router;
+
+        $this->registerRoutes();
+    }
+
+    /**
+     *
+     */
+    protected function registerRoutes() {
+        $routes = [
+            'index' => [
+                'method' => 'GET',
+                'path' => '/',
+                'controller' => 'Home',
+                'action' => 'index',
+            ],
+            'closure' => [
+                'method' => 'GET',
+                'path' => '/closure',
+                'closure' => function() {
+                    return 'this is a closure';
+                },
+            ],
+        ];
+
+        // Add module to all routes
+        foreach ($routes as &$route) {
+            $route['module'] = $this->tool->getModuleFromPath(__DIR__);
+        }
+        $this->router->addRoutes($routes);
+    }
+
 }
-$router->addRoutes($routes);
+

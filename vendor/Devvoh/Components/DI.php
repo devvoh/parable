@@ -10,29 +10,54 @@ namespace Devvoh\Components;
 
 class DI {
 
-    public static $instances = [];
+    /** @var array */
+    protected static $instances = [];
 
-    public static function get($className, $requiredBy = null) {
-        if (!isset(self::$instances[ltrim($className, '\\')])) {
-            self::$instances[ltrim($className, '\\')] = self::create($className, $requiredBy);
+    /** @var array */
+    protected static $relations = [];
+
+    /**
+     * @param string        $className
+     * @param null|string   $parentClassName
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function get($className, $parentClassName = null) {
+        // We store the relationship between class & parent to prevent cyclical references
+        if ($parentClassName) {
+            self::$relations[$className][$parentClassName] = true;
         }
-//        echo $className . ' requested by ' . $requiredBy . ' and it was already there<br>';
-        return self::$instances[ltrim($className, '\\')];
+
+        // And we check for cyclical references to prevent inifinite loops
+        if (
+            $parentClassName
+            && isset(self::$relations[$parentClassName])
+            && isset(self::$relations[$parentClassName][$className])
+        ) {
+            $message  = 'Cyclical dependency found: ' . $className . ' depends on ' . $parentClassName;
+            $message .= ' but is itself a dependency of ' . $parentClassName . '.';
+            throw new \Devvoh\Components\Exception($message);
+        }
+
+        if (!isset(self::$instances[$className])) {
+            self::$instances[$className] = self::create($className, $parentClassName);
+        }
+        return self::$instances[$className];
     }
 
     /**
      * Instantiate a class and fulfill its dependency requirements
      *
-     * @param $className
-     * @param null $requiredBy
+     * @param string      $className
+     * @param null|string $parentClassName
      * @return mixed
      * @throws \Devvoh\Components\Exception
      */
-    public static function create($className, $requiredBy = null) {
+    public static function create($className, $parentClassName = null) {
         if (!class_exists($className)) {
             $message = 'Could not create instance of "' . $className . '"';
-            if ($requiredBy) {
-                $message .= ', required by "' . $requiredBy . '"';
+            if ($parentClassName) {
+                $message .= ', required by "' . $parentClassName . '"';
             }
             throw new \Devvoh\Components\Exception($message);
         }
@@ -47,15 +72,15 @@ class DI {
         /** @var \ReflectionParameter[] $parameters */
         $parameters = $construct->getParameters();
 
-        $dpndcClasses = [];
+        $dependencies = [];
         foreach ($parameters as $parameter) {
             $subClassName = $parameter->name;
             if ($parameter->getClass()) {
                 $subClassName = $parameter->getClass()->name;
             }
-            $dpndcClasses[] = self::get($subClassName, $className);
+            $dependencies[] = self::get($subClassName, $className);
         }
-        return (new \ReflectionClass($className))->newInstanceArgs($dpndcClasses);
+        return (new \ReflectionClass($className))->newInstanceArgs($dependencies);
     }
 
 }

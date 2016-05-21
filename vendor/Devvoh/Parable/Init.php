@@ -8,8 +8,6 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Init {
 
     /** @var array */
@@ -24,6 +22,9 @@ class Init {
     /** @var \Devvoh\Parable\Tool */
     protected $tool;
 
+    /**
+     * @param \Devvoh\Parable\Tool $tool
+     */
     public function __construct(
         \Devvoh\Parable\Tool $tool
     ) {
@@ -67,7 +68,7 @@ class Init {
                 }
                 // Generate the class to instantiate
                 $className = str_replace('.php', '', $file->getFileName());
-                $className = '\\' . $module['name'] . '\\Init\\' . $className;
+                $className = $module['name'] . '\\Init\\' . $className;
                 // And instantiate it
                 $class = \Devvoh\Components\DI::get($className);
                 // Get the order, if any

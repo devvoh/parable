@@ -8,8 +8,6 @@
 
 namespace App\Init;
 
-use \Devvoh\Parable\App;
-
 class Hooks {
 
     public $order = 1;
@@ -20,9 +18,13 @@ class Hooks {
     /** @var \Devvoh\Components\Log  */
     protected $log;
 
+    /**
+     * @param \Devvoh\Components\Hook $hook
+     * @param \Devvoh\Components\Log  $log
+     */
     public function __construct(
         \Devvoh\Components\Hook $hook,
-        \Devvoh\Components\Log $log
+        \Devvoh\Components\Log  $log
     ) {
         $this->hook = $hook;
         $this->log  = $log;

@@ -8,12 +8,9 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Tool {
 
-    protected $baseDir;
-    protected $modules;
+    /** @var string */
     protected $version = '0.6.0';
 
     /** @var \Devvoh\Components\Router */
@@ -22,11 +19,27 @@ class Tool {
     /** @var \Devvoh\Components\Database */
     protected $database;
 
+    /** @var array */
+    protected $route;
+
+    /** @var string */
+    protected $publicUrl;
+
+    /** @var string */
+    protected $baseDir;
+
+    /** @var array */
+    protected $modules;
+
+    /**
+     * @param \Devvoh\Components\Router   $router
+     * @param \Devvoh\Components\Database $database
+     */
     public function __construct(
-        \Devvoh\Components\Router $router,
+        \Devvoh\Components\Router   $router,
         \Devvoh\Components\Database $database
     ) {
-        $this->router = $router;
+        $this->router   = $router;
         $this->database = $database;
     }
 
@@ -67,16 +80,16 @@ class Tool {
      *
      * @param null|string $message
      */
-    public static function end($message = null) {
+    public function end($message = null) {
         exit($message);
     }
 
     /**
      * Set the route
      *
-     * @param array $route
+     * @param null|array $route
      */
-    public function setRoute(array $route) {
+    public function setRoute($route) {
         $this->route = $route;
     }
 

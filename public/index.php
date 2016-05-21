@@ -13,7 +13,7 @@
  */
 /** @var \Devvoh\Parable\App $app */
 $app = require_once('../vendor/Devvoh/Parable/Bootstrap.php');
-ini_set('display_errors', 1);
+
 /**
  * Dispatch the current route.
  */

@@ -8,8 +8,6 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Dispatcher {
 
     /** @var null|array */
@@ -33,20 +31,29 @@ class Dispatcher {
     /** @var \Devvoh\Parable\View */
     protected $view;
 
+    /**
+     * Dispatcher constructor.
+     * @param \Devvoh\Components\Hook     $hook
+     * @param \Devvoh\Components\Response $response
+     * @param \Devvoh\Parable\App         $app
+     * @param \Devvoh\Parable\Param       $param
+     * @param \Devvoh\Parable\Tool        $tool
+     * @param \Devvoh\Parable\View        $view
+     */
     public function __construct(
-        \Devvoh\Components\Hook $hook,
+        \Devvoh\Components\Hook     $hook,
         \Devvoh\Components\Response $response,
-        \Devvoh\Parable\App $app,
-        \Devvoh\Parable\Param $param,
-        \Devvoh\Parable\Tool $tool,
-        \Devvoh\Parable\View $view
+        \Devvoh\Parable\App         $app,
+        \Devvoh\Parable\Param       $param,
+        \Devvoh\Parable\Tool        $tool,
+        \Devvoh\Parable\View        $view
     ) {
-        $this->app  = $app;
-        $this->hook = $hook;
+        $this->app      = $app;
+        $this->hook     = $hook;
         $this->response = $response;
-        $this->param = $param;
-        $this->tool = $tool;
-        $this->view = $view;
+        $this->param    = $param;
+        $this->tool     = $tool;
+        $this->view     = $view;
     }
 
     /**

@@ -25,11 +25,16 @@ class Auth {
     /** @var \Devvoh\Parable\Session */
     protected $session;
 
+    /**
+     * Auth constructor.
+     * @param \Devvoh\Parable\Tool    $tool
+     * @param \Devvoh\Parable\Session $session
+     */
     public function __construct(
-        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Parable\Tool    $tool,
         \Devvoh\Parable\Session $session
     ) {
-        $this->tool = $tool;
+        $this->tool     = $tool;
         $this->session = $session;
     }
 

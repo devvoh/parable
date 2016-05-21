@@ -31,8 +31,22 @@ $autoloader->addLocation(BASEDIR . DS . 'app' . DS . 'modules');
 $autoloader->register();
 
 /**
+ * Set Exception handler
+ */
+set_exception_handler(function(\Exception $e) {
+    ?>
+<pre style="border:1px solid #d00;background:#eee;padding: 0.5rem;">
+<h3 style="margin: 0;">Uncaught <?=get_class($e);?></h3>
+in "<strong><?=$e->getFile();?>" on line <?=$e->getLine();?></strong><br />
+<?=$e->getMessage();?><br />
+<?=$e->getTraceAsString();?><br />
+</pre>
+    <?php
+});
+
+/**
  * And run boot on App to get it all started
  *
  * @var \Devvoh\Parable\App $app
  */
-return \Devvoh\Components\DI::get('\Devvoh\Parable\App')->boot();
+return \Devvoh\Components\DI::get(\Devvoh\Parable\App::class)->boot();

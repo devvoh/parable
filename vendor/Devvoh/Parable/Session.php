@@ -8,8 +8,6 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Session extends \Devvoh\Components\GetSet {
 
     /**

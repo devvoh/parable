@@ -8,8 +8,6 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Get extends \Devvoh\Components\GetSet {
 
     /**

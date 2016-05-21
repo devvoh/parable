@@ -8,8 +8,6 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Entity {
 
     /** @var null|int */
@@ -39,12 +37,17 @@ class Entity {
     /** @var \Devvoh\Components\Validate */
     protected $validate;
 
+    /**
+     * @param \Devvoh\Parable\Tool        $tool
+     * @param \Devvoh\Components\Database $database
+     * @param \Devvoh\Components\Validate $validate
+     */
     public function __construct(
-        \Devvoh\Parable\Tool $tool,
+        \Devvoh\Parable\Tool        $tool,
         \Devvoh\Components\Database $database,
         \Devvoh\Components\Validate $validate
     ) {
-        $this->tool = $tool;
+        $this->tool     = $tool;
         $this->database = $database;
         $this->validate = $validate;
     }

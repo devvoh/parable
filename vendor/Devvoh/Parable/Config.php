@@ -14,12 +14,14 @@ class Config extends \Devvoh\Components\GetSet {
     protected $tool;
 
     /**
-     * Set the resource to config
+     * @param \Devvoh\Parable\Tool $tool
      */
     public function __construct(
         \Devvoh\Parable\Tool $tool
     ) {
         $this->tool = $tool;
+
+        $this->setResource('config');
     }
 
     /**

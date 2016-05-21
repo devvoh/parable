@@ -24,11 +24,11 @@ class Router {
      * Route the path given or simply the current path being looked at
      *
      * @param null|string $path
-     * @return null|array|bool
+     * @return null|array
      */
     public function match($path = null) {
         if (!$this->routes) {
-            return false;
+            return null;
         }
 
         if (!$path && isset($_GET['path'])) {
@@ -98,7 +98,7 @@ class Router {
                 return $data;
             }
         }
-        return false;
+        return null;
     }
 
     /**

@@ -8,6 +8,8 @@
 
 namespace Devvoh\Parable;
 
+use Devvoh\Components\DI;
+
 class App {
 
     /** @var string */
@@ -131,7 +133,7 @@ class App {
         if ($this->config->get('storage_type') && $this->config->get('storage_location')) {
             $location = $this->config->get('storage_location');
             if (strpos($this->config->get('storage_type'), 'sqlite') !== false) {
-                $location = $this->getDir($this->config->get('storage_location'));
+                $location = $this->tool->getDir($this->config->get('storage_location'));
             }
             $config = [
                 'type'      => $this->config->get('storage_type'),
@@ -181,7 +183,7 @@ class App {
         $dispatched = false;
         if ($matchedRoute) {
             // Create the dispatcher and try to dispatch
-            $dispatcher = \Devvoh\Components\DI::get('\Devvoh\Parable\Dispatcher')->setRoute($matchedRoute);
+            $dispatcher = \Devvoh\Components\DI::get(\Devvoh\Parable\Dispatcher::class)->setRoute($matchedRoute);
             $dispatched = $dispatcher->dispatch();
         }
 
@@ -237,9 +239,9 @@ class App {
      */
     public function collectRoutes() {
         foreach ($this->tool->getModules() as $module) {
-            $routerFilename = $module['path'] . DS . 'Routes.php';
-            if (file_exists($routerFilename)) {
-                require_once($routerFilename);
+            $className = $module['name'] . '\\Routes';
+            if (class_exists($className)) {
+                \Devvoh\Components\DI::create($className);
             }
         }
     }
