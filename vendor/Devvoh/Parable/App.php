@@ -8,8 +8,6 @@
 
 namespace Devvoh\Parable;
 
-use Devvoh\Components\DI;
-
 class App {
 
     /** @var string */
