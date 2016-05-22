@@ -10,9 +10,7 @@ namespace Devvoh\Components;
 
 class Dock {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $docks = [];
 
     /**
@@ -20,8 +18,7 @@ class Dock {
      *
      * @param null|string   $event
      * @param null|callable $closure
-     * @param null          $viewFile
-     *
+     * @param null|string   $viewFile
      * @return $this|false
      */
     public function into($event = null, $closure = null, $viewFile = null) {
@@ -36,31 +33,43 @@ class Dock {
             'viewFile' => $viewFile,
         ];
 
-        // And return ourselves
         return $this;
     }
 
     /**
      * Trigger $event and run through all hooks referenced, passing along $payload to all $closures
      *
-     * @param null $event
-     * @param null $payload
-     *
+     * @param null|string $event
+     * @param null|mixed $payload
      * @return $this|false
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct
-        if (!$event) {
+        if (!$event || $event === '*') {
             return false;
+        }
+
+        // Get all global docks
+        $globalDocks = [];
+        if (isset($this->docks['*']) && count($this->docks['*']) > 0) {
+            $globalDocks = $this->docks['*'];
         }
 
         // Check if the event exists and has closures to call
         if (!isset($this->docks[$event]) || count($this->docks[$event]) == 0) {
-            return false;
+            // There are no specific hooks, but maybe there's global hooks?
+            if (count($globalDocks) === 0) {
+                // There is nothing to do here
+                return false;
+            }
+            $docks = $globalDocks;
+        } else {
+            $docks = $this->docks[$event];
+            $docks = array_merge($docks, $globalDocks);
         }
 
         // All good, let's call those closures
-        foreach ($this->docks[$event] as $dock) {
+        foreach ($docks as $dock) {
             if (is_callable($dock['closure'])) {
                 $dock['closure']($payload);
                 // And include the viewFile if we have one. Data should be passed to the viewFile through

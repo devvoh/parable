@@ -20,7 +20,6 @@ class Hook {
      *
      * @param null|string   $event
      * @param null|callable $closure
-     *
      * @return $this|false
      */
     public function into($event = null, $closure = null) {
@@ -41,24 +40,37 @@ class Hook {
      *
      * @param null $event
      * @param null $payload
-     *
      * @return $this|false
      */
     public function trigger($event = null, &$payload = null) {
         // Check if all data is given and correct
-        if (!$event) {
+        if (!$event || $event === '*') {
             return false;
+        }
+
+        // Get all global hooks
+        $globalHooks = [];
+        if (isset($this->hooks['*']) && count($this->hooks['*']) > 0) {
+            $globalHooks = $this->hooks['*'];
         }
 
         // Check if the event exists and has closures to call
         if (!isset($this->hooks[$event]) || count($this->hooks[$event]) == 0) {
-            return false;
+            // There are no specific hooks, but maybe there's global hooks?
+            if (count($globalHooks) === 0) {
+                // There is nothing to do here
+                return false;
+            }
+            $hooks = $globalHooks;
+        } else {
+            $hooks = $this->hooks[$event];
+            $hooks = array_merge($hooks, $globalHooks);
         }
 
         // All good, let's call those closures
-        foreach ($this->hooks[$event] as $closure) {
+        foreach ($hooks as $closure) {
             if (is_callable($closure)) {
-                $closure($payload);
+                $closure($event, $payload);
             }
         }
 

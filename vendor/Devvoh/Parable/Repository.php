@@ -8,29 +8,40 @@
 
 namespace Devvoh\Parable;
 
-use \Devvoh\Parable\App;
-
 class Repository {
 
-    /**
-     * @var null|\Devvoh\Parable\Entity
-     */
+    /** @var null|\Devvoh\Parable\Entity */
     protected $entity       = null;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $onlyCount    = false;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $orderBy      = [];
 
-    /**
-     * @var null|int
-     */
+    /** @var array */
     protected $limit        = [];
+
+    /** @var bool */
+    protected $returnOne    = false;
+
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
+    /** @var \Devvoh\Components\Database */
+    protected $database;
+
+    /**
+     * @param \Devvoh\Parable\Tool        $tool
+     * @param \Devvoh\Components\Database $database
+     */
+    public function __construct(
+        \Devvoh\Parable\Tool        $tool,
+        \Devvoh\Components\Database $database
+    ) {
+        $this->tool     = $tool;
+        $this->database = $database;
+    }
 
     /**
      * Generate a query set to use the current Entity's table name & key
@@ -38,11 +49,17 @@ class Repository {
      * @return \Devvoh\Components\Query
      */
     public function createQuery() {
-        $query = App::createQuery();
+        $query = $this->tool->createQuery();
         $query->setTableName($this->getEntity()->getTableName());
         $query->setTableKey($this->getEntity()->getTableKey());
         if ($this->getOnlyCount()) {
             $query->select('count(*)');
+        }
+        if (count($this->orderBy)) {
+            $query->orderBy($this->orderBy['key'], $this->orderBy['direction']);
+        }
+        if (count($this->limit)) {
+            $query->limit($this->limit['limit'], $this->limit['offset']);
         }
         return $query;
     }
@@ -50,15 +67,19 @@ class Repository {
     /**
      * Returns all rows for this entity type
      *
-     * @return array
+     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
      */
     public function getAll() {
         $query = $this->createQuery();
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $this->database->query($query);
 
         $entities = [];
         if ($result) {
+            $result = $result->fetchAll(\PDO::FETCH_ASSOC);
             $entities = $this->handleResult($result);
+        }
+        if ($this->returnOne) {
+            return current($entities);
         }
         return $entities;
     }
@@ -67,46 +88,42 @@ class Repository {
      * Returns a single entity
      *
      * @param int $id
-     *
      * @return null|\Devvoh\Parable\Entity
      */
     public function getById($id) {
         $query = $this->createQuery();
         $query->where($this->getEntity()->getTableKey() . ' = ?', $id);
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $this->database->query($query);
 
         $entity = null;
         if ($result) {
+            $result = $result->fetchAll(\PDO::FETCH_ASSOC);
             $entities = $this->handleResult($result);
-            $entity = $entities[0];
+            $entity = current($entities);
         }
-
         return $entity;
     }
 
     /**
      * Returns all rows matching all conditions passed
      *
-     * @param $conditionsArray
-     *
-     * @return array
+     * @param array $conditionsArray
+     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
      */
-    public function getByConditions($conditionsArray) {
+    public function getByConditions(array $conditionsArray) {
         $query = $this->createQuery();
         foreach ($conditionsArray as $condition => $value) {
             $query->where($condition, $value);
         }
-        if (count($this->orderBy)) {
-            $query->orderBy($this->orderBy['key'], $this->orderBy['direction']);
-        }
-        if (count($this->limit)) {
-            $query->limit($this->limit['limit'], $this->limit['offset']);
-        }
-        $result = App::getDatabase()->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $this->database->query($query);
 
         $entities = [];
         if ($result) {
+            $result = $result->fetchAll(\PDO::FETCH_ASSOC);
             $entities = $this->handleResult($result);
+        }
+        if ($this->returnOne) {
+            return current($entities);
         }
         return $entities;
     }
@@ -114,9 +131,8 @@ class Repository {
     /**
      * Allow multiple orders by $key in $direction
      *
-     * @param $key
-     * @param $direction
-     *
+     * @param string $key
+     * @param string $direction
      * @return $this
      */
     public function orderBy($key, $direction = 'DESC') {
@@ -129,7 +145,6 @@ class Repository {
      *
      * @param int $limit
      * @param int $offset
-     *
      * @return $this
      */
     public function limit($limit, $offset = null) {
@@ -138,12 +153,31 @@ class Repository {
     }
 
     /**
+     * Sets the repo to return only one (the first), the same as getById always does
+     *
+     * @return $this
+     */
+    public function returnOne() {
+        $this->returnOne = true;
+        return $this;
+    }
+
+    /**
+     * Sets the repo to return all values, always in an array (except for getById)
+     *
+     * @return $this
+     */
+    public function returnAll() {
+        $this->returnOne = false;
+        return $this;
+    }
+
+    /**
      * Returns all rows matching specific condition given
      *
-     * @param $condition
-     * @param $value
-     *
-     * @return array
+     * @param string $condition
+     * @param string $value
+     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
      */
     public function getByCondition($condition, $value) {
         $conditionsArray = [$condition => $value];
@@ -153,11 +187,10 @@ class Repository {
     /**
      * Handle the result of one of the get functions
      *
-     * @param $result
-     *
-     * @return array|int
+     * @param array $result
+     * @return \Devvoh\Parable\Entity[]|int
      */
-    public function handleResult($result) {
+    public function handleResult(array $result) {
         /**
          * If we're only counting, return the count result as integer
          */
@@ -182,7 +215,7 @@ class Repository {
     /**
      * Returns a fresh clone of the stored Entity
      *
-     * @return \Devvoh\Parable\Entity
+     * @return \Devvoh\Parable\Entity|null
      */
     public function createEntity() {
         return clone $this->getEntity();
@@ -192,7 +225,6 @@ class Repository {
      * Set an entity on the repository. Its values don't matter, it'll just be used for configuration purposes.
      *
      * @param \Devvoh\Parable\Entity $entity
-     *
      * @return $this
      */
     public function setEntity($entity) {
@@ -212,8 +244,7 @@ class Repository {
     /**
      * Set onlyCount to true or false
      *
-     * @param $value
-     *
+     * @param bool $value
      * @return $this
      */
     public function setOnlyCount($value) {

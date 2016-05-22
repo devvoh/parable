@@ -10,22 +10,18 @@ namespace Devvoh\Components;
 
 class Debug {
 
-    /**
-     * @var int
-     */
-    protected static $timerStart = 0;
+    /** @var int */
+    protected $timerStart = 0;
 
-    /**
-     * @var int
-     */
-    protected static $timerEnd   = 0;
+    /** @var int */
+    protected $timerEnd   = 0;
 
     /**
      * Pretty var_dump $data
      *
-     * @param $data
+     * @param mixed $data
      */
-    public static function d($data = null) {
+    public function d($data) {
         echo '<pre>';
         var_dump($data);
         echo '</pre>';
@@ -34,9 +30,9 @@ class Debug {
     /**
      * Pretty print_r $data
      *
-     * @param $data
+     * @param mixed $data
      */
-    public static function p($data = null) {
+    public function p($data) {
         echo '<pre>';
         print_r($data);
         echo '</pre>';
@@ -45,29 +41,32 @@ class Debug {
     /**
      * Pretty var_dump $data, then die
      *
-     * @param $data
+     * @param mixed $data
      */
-    public static function dd($data) {
-        self::d($data);
+    public function dd($data) {
+        $this->d($data);
         die();
     }
 
     /**
      * Pretty print_r $data, then die
      *
-     * @param $data
+     * @param mixed $data
      */
-    public static function pd($data) {
-        self::p($data);
+    public function pd($data) {
+        $this->p($data);
         die();
     }
 
     /**
-     * Start the execution timer
+     * Start the execution timer and returns the timerStart value
+     *
+     * @return int
      */
-    public static function startTimer() {
-        self::$timerEnd = 0;
-        self::$timerStart = microtime(true);
+    public function startTimer() {
+        $this->timerEnd = 0;
+        $this->timerStart = microtime(true);
+        return $this->timerStart;
     }
 
     /**
@@ -75,9 +74,9 @@ class Debug {
      *
      * @return string
      */
-    public static function endTimer() {
-        self::$timerEnd = microtime(true);
-        return self::getTimerDiff();
+    public function endTimer() {
+        $this->timerEnd = microtime(true);
+        return $this->getTimerDiff();
     }
 
     /**
@@ -85,8 +84,8 @@ class Debug {
      *
      * @return string
      */
-    public static function getTimerDiff() {
-        return number_format(self::$timerEnd - self::$timerStart, 4);
+    public function getTimerDiff() {
+        return number_format($this->timerEnd - $this->timerStart, 4);
     }
 
 }

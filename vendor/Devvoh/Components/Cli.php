@@ -10,25 +10,19 @@ namespace Devvoh\Components;
 
 class Cli {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $parameters           = [];
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $lastProgressLength   = 0;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $lines                = [];
 
     /**
      * Write a line ending in a line break
      *
-     * @param $message
+     * @param string $message
      * @return \Devvoh\Components\Cli
      */
     public function write($message) {
@@ -39,7 +33,7 @@ class Cli {
     /**
      * print_r the $message ending in a line break
      *
-     * @param $message
+     * @param string $message
      * @return $this
      */
     public function dump($message) {
@@ -51,7 +45,7 @@ class Cli {
     /**
      * Add a line to $this->lines array
      *
-     * @param $message
+     * @param string $message
      * @return $this
      */
     public function addLine($message) {
@@ -83,11 +77,10 @@ class Cli {
     /**
      * Parse $params into array of parameters and values
      *
-     * @param $params
-     *
+     * @param array $params
      * @return $this
      */
-    public function parseParameters($params) {
+    public function parseParameters(array $params) {
         // Check for parameters given
         for ($i = 1; $i < count($params); $i++) {
             if (substr($params[$i], 0, 1) === '-') {
@@ -116,8 +109,7 @@ class Cli {
     /**
      * Get one specific parameter by key or false
      *
-     * @param $key
-     *
+     * @param string $key
      * @return mixed|false
      */
     public function getParameter($key) {
@@ -130,9 +122,8 @@ class Cli {
     /**
      * Ask a yes/no question with a $default option and keep asking until a valid answer has been given
      *
-     * @param      $question
+     * @param string $question
      * @param bool $default
-     *
      * @return bool
      */
     public function yesNo($question, $default = true) {
@@ -159,8 +150,7 @@ class Cli {
     /**
      * Show or update progress message, which will replace itself if called again
      *
-     * @param $message
-     *
+     * @param string $message
      * @return $this
      */
     public function progress($message) {

@@ -10,24 +10,16 @@ namespace Devvoh\Components;
 
 class GetSet {
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $resource         = null;
 
-    /**
-     * @var bool
-     */
+    /** @var bool*/
     protected $useLocalResource = false;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $localResource    = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $globals          = ['get', 'post', 'session', 'cookie'];
 
     /**
@@ -52,7 +44,6 @@ class GetSet {
      * Sets the resource type, which can be either a PHP superglobal (GET/POST/SESSION, etc) or a custom one.
      *
      * @param $type
-     *
      * @return $this
      */
     public function setResource($type) {
@@ -63,7 +54,9 @@ class GetSet {
             $this->resource = strtoupper($type);
         } else {
             $this->useLocalResource = true;
-            $this->localResource[$this->getResource()] = [];
+            if (!isset($this->localResource[$this->getResource()])) {
+                $this->localResource[$this->getResource()] = [];
+            }
         }
         return $this;
     }
@@ -86,8 +79,7 @@ class GetSet {
     /**
      * Get specific value by key if resource set
      *
-     * @param $key
-     *
+     * @param string $key
      * @return mixed|null
      */
     public function get($key) {
@@ -112,9 +104,8 @@ class GetSet {
     /**
      * Set specific value by key if resource set
      *
-     * @param $key
-     * @param $value
-     *
+     * @param string $key
+     * @param mixed $value
      * @return $this|false
      */
     public function set($key, $value) {
@@ -122,7 +113,7 @@ class GetSet {
             return false;
         }
 
-        // If local resource, set it as reference
+        // Decide where to store this key/value pair
         if ($this->useLocalResource) {
             $this->localResource[$this->getResource()][$key] = $value;
         } else {
@@ -132,10 +123,26 @@ class GetSet {
     }
 
     /**
+     * Set all key/value pairs in $values if resource is set and $values is an array
+     *
+     * @param $values
+     * @return $this|bool
+     */
+    public function setMany($values) {
+        if (!$this->getResource() || !is_array($values)) {
+            return false;
+        }
+
+        foreach ($values as $key => $value) {
+            $this->set($key, $value);
+        }
+        return $this;
+    }
+
+    /**
      * Set entire array onto the resource
      *
      * @param $values
-     *
      * @return $this
      */
     public function setAll($values) {
@@ -147,6 +154,10 @@ class GetSet {
         return $this;
     }
 
+    public function remove($key) {
+        return $this->set($key, null);
+    }
+
     /**
      * Start the session
      *
@@ -154,6 +165,17 @@ class GetSet {
      */
     public function startSession() {
         session_start();
+        return $this;
+    }
+
+    /**
+     * Regenerate the session
+     *
+     * @param bool|false $deleteOldSession
+     * @return $this
+     */
+    public function regenerateSession($deleteOldSession = false) {
+        session_regenerate_id($deleteOldSession);
         return $this;
     }
 

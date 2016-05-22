@@ -10,9 +10,7 @@ namespace Devvoh\Components;
 
 class Autoloader {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $locations = [];
 
     /**
@@ -28,8 +26,7 @@ class Autoloader {
     /**
      * Add a location to the stack
      *
-     * @param $location
-     *
+     * @param string $location
      * @return $this
      */
     public function addLocation($location) {
@@ -49,8 +46,7 @@ class Autoloader {
     /**
      * Attempts to load the class if it exists
      *
-     * @param $class
-     *
+     * @param string $class
      * @return bool
      */
     public function load($class) {

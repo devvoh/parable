@@ -1,5 +1,67 @@
 # Parable PHP Framework Changelog
 
+### 0.6.0
+
+__Note: This version significantly breaks backwards compatibility!__
+
+Up until 0.5.0, Parable used the superclass App for almost all framework functionality. While this was an effective way
+to quickly get everything running (and it worked relatively intuitively), there were issues with the approach. Testing,
+for example, was inconvenienced significantly. Since I want to work towards a 1.0.0 release, testing is starting to
+become something I want to start on. So App needed to go.
+
+I've had many conversations with fellow devs about how to approach this, and one thing kept coming back - dependency
+injection. I've worked with it before and never liked the implementations. They were either too limited or too fiddly,
+but they were almost always, to me at least, over-engineered. The necessity of having to replace App with something
+forced me to experiment. I've settled upon a super-lightweight constructor-based DI system. It's not configurable,
+you can't send populated instances into it (only freshly generated classes) and it doesn't have robust error handling.
+
+But as a launching point for professionalisation, it seems to do the trick.
+
+So yes. PHPUnit, here I come.
+
+__Changes__
+- APP IS DEAD. ALL HAIL APP.
+- Because App is gone, much of the changelog of 0.5.0 is redundant, but I leave it for historical purposes.
+- \Devvoh\Components\DI has been added. This is why App could go. Parable now has a barebones dependency injection system and uses it throughout. It attempts to keep track of class dependency hierarchy to prevent cyclical references. It should throw an Exception when A requires B requires A...etc.
+- Views now can no longer simply re-route all function calls to App. Therefore, magic methods have been added to \Devvoh\Parable\View to allow the ->getXXX calls to still work (they now go through DI, though), and really only affects the methods previously directly called on App (getUrl, createRepository, etc.), which are almost all moved to \Devvoh\Parable\Tool
+- Although this major refactor has been tested (and found to work correctly) on one project, it's entirely possible bugs may still be hidden.
+
+### 0.5.0 - UNRELEASED
+
+__Note: This version breaks backwards compatibility!__
+
+__Changes__
+- All calls to get a singleton (getView, getResponse, getLog, etc.) have been code de-duplicated. They now internally call getSingleton with their className. This simplifies both the property declaration (as the singletons are now stored in App::$singletons[] rather than as separate properties) but also makes the logic far simpler.
+- getSingleton has an optional $singletonName, which defaults to the classname. Since GetSet is loaded 5 times as 5 separate contextual singletons, they clashed.
+- 'Tool' functionality has been moved into \Devvoh\Components\Tool.
+- View and Config have been moved into vendor/Devvoh/Parable.
+- App::run has been split into App::boot (setup) and App::dispatch (actually does the routing). Means run/dispatch no longer has to check whether it's running as a cli process, as the Cli class won't call dispatch.
+- \Devvoh\Parable\Dispatcher has been added, and actually executing the route has been pulled out of App.
+- On Dispatcher, the execute method has been reworked significantly, for better readability and more efficient code. Now also supports using a view key on a controller route, which will be looked for before looking for an auto-generated view path.
+- Added /app/modules/[module]/Init/ functionality. All php scripts in this directory will be loaded & instantiated at the end of App::boot(), allowing the developer to plug into events as soon as is possible. At this point in Parable's runtime, all config is loaded and the session and database are available. Included is a Hooks init script, which adds 3 hooks. Init scripts can be either sorted (lowest order first) or unsorted.
+- \Devvoh\Components\Getset now has a method setMany($array), which will set all key/value pairs in the passed array and add them to the resource.
+- \Devvoh\Components\Hook and \Devvoh\Components\Dock now support global events, using the '*' wildcard event name. Any closures added to this event will be called on every trigger. Handy for debugging. Even if there's no valid events on a trigger, the global event will still be called.
+- \Devvoh\Components\Hook and \Devvoh\Components\Dock now pass back the event they were triggered with, as the first parameter to the closure. The payload is now in second place, since it's optional.
+- GetSet has a remove(key) method now, which sets the value to null.
+- GetSet also gained regenerateSession, which will at a later moment be moved to a Parable\Session class which implements GetSet, moving all session-related logic to there.
+- Added App::getCookies(), a new GetSet contextual singleton that handles the $_COOKIE superglobal.
+- Version is no longer stored in 'version' but directly on the App class as a property.
+- Added a Request Component to offer base functionality on dealing with the request (most useful: isPost(), etc.)
+- Added an Auth class to Parable for base user rights. It is really straightforward but can always be extended or not used. This will be built out at a later date.
+- Added ->returnOne() and ->returnAll() to Repository, which will return the first result only, preventing the need for either manual current() calls or [0].
+- In Repository, orderBy and limit are now implemented on getQuery, which enables it everywhere.
+
+__Bugfixes__
+- GetSet no longer resets the localResource when using setResource. Not only does this fix a bug where using setResource multiple times would clear it every time, it also makes it possible to use, for example, App::getParam()->setResource('headerJs')->getAll(). This makes Param even more powerful and useful. Param does, however, remember the last set resource, so switching is necessary whenever you want a different resource.
+- display_errors was set to 1 by default in Bootstrap.php. Now set to 0 as it should.
+- Even though it's not a permanent addition, app/modules/App/Cli/Index::setAccess did not create directories if they were supposed to be chmodded. Now it does. Also did not chmod the actual directory, only the files under it. Now it does.
+- Entity returned an empty instance of itself if it couldn't find a suitable model. It should return null instead, which it now does.
+- Entity's handling of null values was flawed. Now it'll keep a null value only if the value is string 'null'
+- Router Component at a certain point picked up a bug in returning params, which has now been fixed.
+- App now picks up on sqlite requiring a path for the location. Now does so only in case of sqlite.
+- Reverted Param handling in Dispatcher to a foreach since they don't use $key => $val but [key] => $key, [val] => $val
+- Repositories now attempt to fetch separately from handling the result, preventing odd errors if the query is incorrect.
+
 ### 0.4.1
 
 __Changes__

@@ -6,16 +6,21 @@
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Parable\App;
-
-use \Devvoh\Parable\App;
+namespace Devvoh\Parable;
 
 class Config extends \Devvoh\Components\GetSet {
 
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
+
     /**
-     * Set the resource to config
+     * @param \Devvoh\Parable\Tool $tool
      */
-    public function __construct() {
+    public function __construct(
+        \Devvoh\Parable\Tool $tool
+    ) {
+        $this->tool = $tool;
+
         $this->setResource('config');
     }
 
@@ -23,12 +28,11 @@ class Config extends \Devvoh\Components\GetSet {
      * Shim to allow App to proceed without config code existing
      *
      * @throws \Exception
-     *
      * @return $this
      */
     public function load() {
-        $configFile = App::getDir('app/config/config.ini');
-        $customFile = App::getDir('app/config/custom.ini');
+        $configFile = $this->tool->getDir('app/config/config.ini');
+        $customFile =$this->tool->getDir('app/config/custom.ini');
 
         if (file_exists($configFile)) {
             $configData = parse_ini_file($configFile, true);
@@ -42,6 +46,12 @@ class Config extends \Devvoh\Components\GetSet {
         return $this;
     }
 
+    /**
+     * Return the value in $key as a boolean
+     *
+     * @param $key
+     * @return bool
+     */
     public function getBool($key) {
         return (bool)$this->get($key);
     }

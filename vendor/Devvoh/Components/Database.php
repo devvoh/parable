@@ -10,45 +10,31 @@ namespace Devvoh\Components;
 
 class Database {
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $type     = null;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $location = null;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $username = null;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $password = null;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     protected $database = null;
 
-    /**
-     * @var null|\PDO
-     */
+    /** @var null|\PDO */
     protected $instance = null;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $quoteAll = false;
 
     /**
      * Returns the type, if any
      *
-     * @return string|null
+     * @return null|string
      */
     public function getType() {
         return $this->type;
@@ -57,8 +43,7 @@ class Database {
     /**
      * Set the type
      *
-     * @param $type
-     *
+     * @param string $type
      * @return $this
      */
     public function setType($type) {
@@ -69,7 +54,7 @@ class Database {
     /**
      * Returns the location, if any
      *
-     * @return string|null
+     * @return null|string
      */
     public function getLocation() {
         return $this->location;
@@ -78,8 +63,7 @@ class Database {
     /**
      * Set the location
      *
-     * @param $location
-     *
+     * @param string $location
      * @return $this
      */
     public function setLocation($location) {
@@ -90,7 +74,7 @@ class Database {
     /**
      * Return the username
      *
-     * @return string|null
+     * @return null|string
      */
     public function getUsername() {
         return $this->username;
@@ -99,8 +83,7 @@ class Database {
     /**
      * Set the username
      *
-     * @param $username
-     *
+     * @param string $username
      * @return $this
      */
     public function setUsername($username) {
@@ -111,7 +94,7 @@ class Database {
     /**
      * Return the password
      *
-     * @return string|null
+     * @return null|string
      */
     public function getPassword() {
         return $this->password;
@@ -120,8 +103,7 @@ class Database {
     /**
      * Set the password
      *
-     * @param $password
-     *
+     * @param string $password
      * @return $this
      */
     public function setPassword($password) {
@@ -132,7 +114,7 @@ class Database {
     /**
      * Return the database, if any
      *
-     * @return string|null
+     * @return null|string
      */
     public function getDatabase() {
         return $this->database;
@@ -141,8 +123,7 @@ class Database {
     /**
      * Set the database
      *
-     * @param $database
-     *
+     * @param string $database
      * @return $this
      */
     public function setDatabase($database) {
@@ -153,7 +134,7 @@ class Database {
     /**
      * Set whether the table name should be quoted
      *
-     * @param $quoteAll
+     * @param bool $quoteAll
      * @return $this
      */
     public function setQuoteAll($quoteAll) {
@@ -199,11 +180,10 @@ class Database {
     /**
      * Sets the instance
      *
-     * @param $instance
-     *
+     * @param \PDO $instance
      * @return $this
      */
-    public function setInstance($instance) {
+    public function setInstance(\PDO $instance) {
         $this->instance = $instance;
         return $this;
     }
@@ -211,13 +191,12 @@ class Database {
     /**
      * If an instance is available, quote/escape the message through PDO's quote function
      *
-     * @param $string
-     *
-     * @return string|false
+     * @param string $string
+     * @return null|string
      */
     public function quote($string) {
         if (!$this->getInstance()) {
-            return false;
+            return null;
         }
         return $this->getInstance()->quote($string);
     }
@@ -226,8 +205,7 @@ class Database {
      * Passes $query on to the PDO instance if it's successfully initialized. If not, returns false. If so, returns
      * PDO result object.
      *
-     * @param $query
-     *
+     * @param string $query
      * @return bool|\PDOStatement
      */
     public function query($query) {
@@ -241,11 +219,10 @@ class Database {
      * Use an array to pass multiple config values at the same time
      *
      * @param array $config
-     *
      * @return $this
      * @throws \Exception
      */
-    public function setConfig($config = []) {
+    public function setConfig(array $config = []) {
         foreach ($config as $type => $value) {
             $method = 'set' . ucfirst($type);
             if (method_exists($this, $method)) {
