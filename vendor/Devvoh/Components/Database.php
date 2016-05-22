@@ -220,7 +220,7 @@ class Database {
      *
      * @param array $config
      * @return $this
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
     public function setConfig(array $config = []) {
         foreach ($config as $type => $value) {
@@ -228,7 +228,7 @@ class Database {
             if (method_exists($this, $method)) {
                 $this->$method($value);
             } else {
-                throw new \Exception('Tried to call non-existing method ' . $method . ' on ' . get_class($this));
+                throw new \Devvoh\Components\Exception('Tried to call non-existing method ' . $method . ' on ' . get_class($this));
             }
         }
         return $this;

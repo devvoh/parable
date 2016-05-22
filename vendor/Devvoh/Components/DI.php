@@ -20,7 +20,7 @@ class DI {
      * @param string        $className
      * @param null|string   $parentClassName
      * @return mixed
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
     public static function get($className, $parentClassName = null) {
         // We store the relationship between class & parent to prevent cyclical references

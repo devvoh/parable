@@ -98,7 +98,7 @@ class App {
      * Starts the App class and does some initial setup
      *
      * @return $this
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
     public function boot()
     {

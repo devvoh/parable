@@ -169,11 +169,11 @@ class Router {
      * @param $name
      * @param $route
      * @return $this
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
     public function addRoute($name, $route) {
         if (isset($this->routes[$name])) {
-            throw new \Exception('Route already added with name: ' . $name . ' in a different module. Please use unique names.');
+            throw new \Devvoh\Components\Exception('Route already added with name: ' . $name . ' in a different module. Please use unique names.');
         }
         $this->routes[$name] = $route;
         return $this;

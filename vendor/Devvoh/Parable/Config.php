@@ -25,10 +25,10 @@ class Config extends \Devvoh\Components\GetSet {
     }
 
     /**
-     * Shim to allow App to proceed without config code existing
+     * Load the config if it exists, and merge custom into it if it exists
      *
-     * @throws \Exception
      * @return $this
+     * @throws \Devvoh\Components\Exception
      */
     public function load() {
         $configFile = $this->tool->getDir('app/config/config.ini');
@@ -37,7 +37,7 @@ class Config extends \Devvoh\Components\GetSet {
         if (file_exists($configFile)) {
             $configData = parse_ini_file($configFile, true);
         } else {
-            throw new \Exception('config.ini not found');
+            throw new \Devvoh\Components\Exception('Required file config.ini not found');
         }
         if (file_exists($customFile)) {
             $configData = parse_ini_file($customFile) + $configData;

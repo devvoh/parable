@@ -75,21 +75,21 @@ class Log {
     /**
      * Returns the path, and if it doesn't exist, attempts to create it
      *
-     * @throws \Exception
      * @return string
+     * @throws \Devvoh\Components\Exception
      */
     public function getPath() {
         if (!is_dir($this->path)) {
             // Create directory
             $created = @mkdir($this->path, $this->getMode(), true);
             if (!$created) {
-                throw new \Exception('Could not create log directory: ' . $this->path);
+                throw new \Devvoh\Components\Exception('Could not create log directory: ' . $this->path);
             }
         }
         if (!is_writable($this->path)) {
             $chmod = chmod($this->path, $this->getMode());
             if (!$chmod) {
-                throw new \Exception('Log directory is not writable: ' . $this->path);
+                throw new \Devvoh\Components\Exception('Log directory is not writable: ' . $this->path);
             }
         }
         return $this->path;
@@ -102,7 +102,7 @@ class Log {
      * @param null $logFile
      * @param bool $showTimezone
      * @return $this
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
     public function write($message, $logFile = null, $showTimezone = false) {
         if (!$logFile) {
