@@ -6,7 +6,7 @@ __Note: This version significantly breaks backwards compatibility!__
 
 __Changes__
 - APP IS DEAD. ALL HAIL APP.
-- Because App is gone, much of the changelog of 0.5.0 is redundant, but I leave it for historical purposes.
+- Because App is gone, much of the changelog of 0.5.0 is redundant, but I have included what's still relevant.
 - \Devvoh\Components\DI has been added. This is why App could go. Parable now has a barebones dependency injection system and uses it throughout. It attempts to keep track of class dependency hierarchy to prevent cyclical references. It should throw an Exception when A requires B requires A...etc.
 - Views now can no longer simply re-route all function calls to App. Therefore, magic methods have been added to \Devvoh\Parable\View to allow the ->getXXX calls to still work (they now go through DI, though), and really only affects the methods previously directly called on App (getUrl, createRepository, etc.), which are almost all moved to \Devvoh\Parable\Tool
 - Although this major refactor has been tested (and found to work correctly) on one project, it's entirely possible bugs may still be hidden.
