@@ -10,26 +10,26 @@ namespace Devvoh\Parable;
 
 class Repository {
 
-    /** @var null|\Devvoh\Parable\Entity */
-    protected $entity       = null;
-
-    /** @var bool */
-    protected $onlyCount    = false;
-
-    /** @var array */
-    protected $orderBy      = [];
-
-    /** @var array */
-    protected $limit        = [];
-
-    /** @var bool */
-    protected $returnOne    = false;
-
     /** @var \Devvoh\Parable\Tool */
     protected $tool;
 
     /** @var \Devvoh\Components\Database */
     protected $database;
+
+    /** @var null|\Devvoh\Parable\Entity */
+    protected $entity;
+
+    /** @var bool */
+    protected $onlyCount = false;
+
+    /** @var array */
+    protected $orderBy   = [];
+
+    /** @var array */
+    protected $limit     = [];
+
+    /** @var bool */
+    protected $returnOne = false;
 
     /**
      * @param \Devvoh\Parable\Tool        $tool
@@ -215,7 +215,7 @@ class Repository {
     /**
      * Returns a fresh clone of the stored Entity
      *
-     * @return \Devvoh\Parable\Entity|null
+     * @return null|\Devvoh\Parable\Entity
      */
     public function createEntity() {
         return clone $this->getEntity();
@@ -235,7 +235,7 @@ class Repository {
     /**
      * Return entity
      *
-     * @return \Devvoh\Parable\Entity|null
+     * @return null|\Devvoh\Parable\Entity
      */
     public function getEntity() {
         return $this->entity;

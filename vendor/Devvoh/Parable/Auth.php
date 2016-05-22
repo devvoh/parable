@@ -10,23 +10,22 @@ namespace Devvoh\Parable;
 
 class Auth {
 
-    /** @var bool */
-    protected $authenticated        = false;
-
-    /** @var array */
-    protected $authenticationData   = [];
-
-    /** @var null|\App\Model\User */
-    protected $user                 = null;
-
     /** @var \Devvoh\Parable\Tool */
     protected $tool;
 
     /** @var \Devvoh\Parable\Session */
     protected $session;
 
+    /** @var bool */
+    protected $authenticated      = false;
+
+    /** @var array */
+    protected $authenticationData = [];
+
+    /** @var null|\App\Model\User */
+    protected $user;
+
     /**
-     * Auth constructor.
      * @param \Devvoh\Parable\Tool    $tool
      * @param \Devvoh\Parable\Session $session
      */
@@ -128,7 +127,7 @@ class Auth {
     /**
      * Return the user entity
      *
-     * @return \App\Model\User|null
+     * @return null|\App\Model\User
      */
     public function getUser() {
         return $this->user;

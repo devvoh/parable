@@ -10,20 +10,14 @@ namespace Devvoh\Components;
 
 class Log {
 
-    /**
-     * @var string
-     */
-    protected $path             = 'var/log';
+    /** @var string */
+    protected $path           = 'var/log';
 
-    /**
-     * @var string
-     */
-    protected $defaultLogFile   = 'parable.log';
+    /** @var string */
+    protected $defaultLogFile = 'parable.log';
 
-    /**
-     * @var int
-     */
-    protected $mode             = 0777;
+    /** @var int */
+    protected $mode           = 0777;
 
     /**
      * Sets the mode (octal)

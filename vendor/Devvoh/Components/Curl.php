@@ -37,7 +37,7 @@ class Curl {
      * Returns the result from loading url
      *
      * @param null|string $url
-     * @return string|null
+     * @return null|string
      */
     public function getContent($url = null) {
         if (!$url) {

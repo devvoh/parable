@@ -11,19 +11,19 @@ namespace Devvoh\Components;
 class Cli {
 
     /** @var array */
-    protected $parameters           = [];
+    protected $parameters         = [];
 
     /** @var int */
-    protected $lastProgressLength   = 0;
+    protected $lastProgressLength = 0;
 
     /** @var array */
-    protected $lines                = [];
+    protected $lines              = [];
 
     /**
      * Write a line ending in a line break
      *
      * @param string $message
-     * @return \Devvoh\Components\Cli
+     * @return $this
      */
     public function write($message) {
         echo $message . PHP_EOL;
@@ -110,13 +110,13 @@ class Cli {
      * Get one specific parameter by key or false
      *
      * @param string $key
-     * @return mixed|false
+     * @return null|mixed
      */
     public function getParameter($key) {
         if (isset($this->parameters[$key])) {
             return $this->parameters[$key];
         }
-        return false;
+        return null;
     }
 
     /**

@@ -1,5 +1,21 @@
 # Parable PHP Framework Changelog
 
+### 0.7.0
+
+__Note: This version breaks backwards compatibility!__
+
+__Changes__
+- Since SessionMessage depends on an instantiated & set to 'session' resource GetSet, it shouldn't be a Component. It's been moved to \Devvoh\Parable. Because this means a namespace change, it's yet another minor version bump. Goes quickly.
+- To make the module Routes file simpler, the more framework-y functionality (DI & the module adding) has been moved to a new class - \Devvoh\Parable\Routes. This means yet another backwards incompatible change. I'm on a roll.
+- Comments have been improved significantly. Handy.
+- index.phtml mapped $this to \Devvoh\Parable\App, but it should now map to \Devvoh\Parable\View
+- set_exception_handler function has been moved up, so it will also catch Autoloader/DI exceptions.
+- Property definitions now no longer explicitly set to null. Order of properties has been made consistent: DI properties > defined properties > undefined properties.
+- Some small fixes where false was being returned where a value was expected. These now return null.
+- Vestigial properties have been removed from App, since the functionality has been moved to Tool.
+- Session management methods have been moved to \Devvoh\Parable\Session and out of \Devvoh\Components\GetSet, as they should be.
+- SessionMessage has lost initSession and gained a DI.
+
 ### 0.6.0
 
 __Note: This version significantly breaks backwards compatibility!__

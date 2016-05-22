@@ -10,15 +10,11 @@ namespace Devvoh\Components;
 
 class Router {
 
-    /**
-     * @var null|string
-     */
-    protected $currentPath  = null;
+    /** @var null|string */
+    protected $currentPath;
 
-    /**
-     * @var null|array
-     */
-    protected $routes       = null;
+    /** @var null|array */
+    protected $routes;
 
     /**
      * Route the path given or simply the current path being looked at
@@ -121,7 +117,7 @@ class Router {
      *
      * @param       $routeName
      * @param array $params
-     * @return string|null
+     * @return null|string
      */
     public function buildRoute($routeName, $params = []) {
         // Get the route first, and if not found, return null

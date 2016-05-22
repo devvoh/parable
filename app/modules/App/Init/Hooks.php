@@ -30,6 +30,9 @@ class Hooks {
         $this->log  = $log;
     }
 
+    /**
+     * This function is automatically executed when inits are loaded at the end of $app->boot();
+     */
     public function run() {
         // Register global loop to log all triggers
         $this->hook->into('*', function($event) {

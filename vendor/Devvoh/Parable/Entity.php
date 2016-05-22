@@ -10,24 +10,6 @@ namespace Devvoh\Parable;
 
 class Entity {
 
-    /** @var null|int */
-    public $id              = null;
-
-    /** @var null|string */
-    protected $tableName    = null;
-
-    /** @var null|string */
-    protected $tableKey     = null;
-
-    /** @var array */
-    protected $mapper       = [];
-
-    /** @var array */
-    protected $validator    = [];
-
-    /** @var array */
-    protected $exportable   = [];
-
     /** @var \Devvoh\Parable\Tool */
     protected $tool;
 
@@ -36,6 +18,24 @@ class Entity {
 
     /** @var \Devvoh\Components\Validate */
     protected $validate;
+
+    /** @var array */
+    protected $mapper     = [];
+
+    /** @var array */
+    protected $validator  = [];
+
+    /** @var array */
+    protected $exportable = [];
+
+    /** @var null|int */
+    public $id;
+
+    /** @var null|string */
+    protected $tableName;
+
+    /** @var null|string */
+    protected $tableKey;
 
     /**
      * @param \Devvoh\Parable\Tool        $tool
@@ -196,7 +196,7 @@ class Entity {
     /**
      * Return the tableName
      *
-     * @return string|null
+     * @return null|string
      */
     public function getTableName() {
         return $this->tableName;
@@ -216,7 +216,7 @@ class Entity {
     /**
      * Return the tableKey
      *
-     * @return string|null
+     * @return null|string
      */
     public function getTableKey() {
         return $this->tableKey;
@@ -236,18 +236,12 @@ class Entity {
     /**
      * Return the mapper
      *
-     * @return array|null
+     * @return array
      */
     public function getMapper() {
         return $this->mapper;
     }
 
-    /**
-     * Set the validator array
-     *
-     * @param $validator
-     * @return $this
-     */
     /**
      * Return the validator array
      *

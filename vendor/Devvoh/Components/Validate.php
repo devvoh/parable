@@ -10,9 +10,7 @@ namespace Devvoh\Components;
 
 class Validate {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $customTypes = [];
 
     /**

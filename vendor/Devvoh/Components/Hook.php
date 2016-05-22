@@ -10,9 +10,7 @@ namespace Devvoh\Components;
 
 class Hook {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $hooks = [];
 
     /**

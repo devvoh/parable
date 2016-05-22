@@ -10,26 +10,26 @@ namespace Devvoh\Components;
 
 class Database {
 
-    /** @var null|string */
-    protected $type     = null;
-
-    /** @var null|string */
-    protected $location = null;
-
-    /** @var null|string */
-    protected $username = null;
-
-    /** @var null|string */
-    protected $password = null;
-
-    /** @var null|string */
-    protected $database = null;
-
-    /** @var null|\PDO */
-    protected $instance = null;
-
     /** @var bool */
     protected $quoteAll = false;
+
+    /** @var null|string */
+    protected $type;
+
+    /** @var null|string */
+    protected $location;
+
+    /** @var null|string */
+    protected $username;
+
+    /** @var null|string */
+    protected $password;
+
+    /** @var null|string */
+    protected $database;
+
+    /** @var null|\PDO */
+    protected $instance;
 
     /**
      * Returns the type, if any
@@ -154,7 +154,7 @@ class Database {
     /**
      * Return instance, if any
      *
-     * @return \PDO|null
+     * @return null|\PDO
      */
     public function getInstance() {
         if (!$this->instance && $this->getType() && $this->getLocation()) {

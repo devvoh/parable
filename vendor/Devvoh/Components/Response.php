@@ -10,40 +10,28 @@ namespace Devvoh\Components;
 
 class Response {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $contentTypes = [
-        'json'  => 'application/json',
-        'html'  => 'text/html',
-        'xml'   => 'text/xml',
-        'js'    => 'application/javascript',
+        'json' => 'application/json',
+        'html' => 'text/html',
+        'xml'  => 'text/xml',
+        'js'   => 'application/javascript',
     ];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $charset      = 'utf-8';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $contentType  = 'html';
 
-    /**
-     * @var null
-     */
-    protected $content      = null;
-
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $onlyContent  = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $responseSent = false;
+
+    /** @var null|string */
+    protected $content;
 
     /**
      * Set the response header configured on Response class and send the response immediately, then exit to prevent

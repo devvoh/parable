@@ -10,17 +10,17 @@ namespace Devvoh\Parable;
 
 class Init {
 
-    /** @var array */
-    protected $orderedModules    = [];
+    /** @var \Devvoh\Parable\Tool */
+    protected $tool;
 
     /** @var array */
-    protected $unorderedModules  = [];
+    protected $orderedModules   = [];
+
+    /** @var array */
+    protected $unorderedModules = [];
 
     /** @var bool */
     protected $hasRun           = false;
-
-    /** @var \Devvoh\Parable\Tool */
-    protected $tool;
 
     /**
      * @param \Devvoh\Parable\Tool $tool

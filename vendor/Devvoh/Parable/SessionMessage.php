@@ -6,40 +6,28 @@
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Components;
+namespace Devvoh\Parable;
 
 class SessionMessage {
 
-    /**
-     * @var \Devvoh\Components\GetSet
-     */
-    protected $session  = null;
-
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $messages = [];
+
+    /** @var \Devvoh\Parable\Session */
+    protected $session;
 
     /**
      * Initialize the session object and store all current messages on ourself
+     *
+     * @param \Devvoh\Parable\Session $session
      */
-    public function __construct() {
-        $this->initSession();
+    public function __construct(
+        \Devvoh\Parable\Session $session
+    ) {
+        $this->session = $session;
         if (is_array($this->session->get('messages'))) {
             $this->messages = $this->session->get('messages');
         }
-    }
-
-    /**
-     * Initialize the session object
-     *
-     * @return $this
-     */
-    protected function initSession() {
-        if (!$this->session) {
-            $this->session = (new GetSet())->setResource('session');
-        }
-        return $this;
     }
 
     /**
@@ -131,7 +119,6 @@ class SessionMessage {
      * @return $this
      */
     protected function writeToSession() {
-        $this->initSession();
         $this->session->set('messages', $this->messages);
         return $this;
     }

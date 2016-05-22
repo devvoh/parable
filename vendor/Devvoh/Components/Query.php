@@ -10,65 +10,41 @@ namespace Devvoh\Components;
 
 class Query {
 
-    /**
-     * @var null|string
-     */
-    protected $tableName    = null;
+    /** @var array */
+    protected $where    = [];
 
-    /**
-     * @var null|string
-     */
-    protected $tableKey     = null;
+    /** @var array */
+    protected $values   = [];
 
-    /**
-     * @var null|int
-     */
-    protected $limit        = null;
+    /** @var array */
+    protected $orderBy  = [];
 
-    /**
-     * @var null|\PDO
-     */
-    protected $pdoInstance  = null;
+    /** @var array */
+    protected $groupBy  = [];
 
-    /**
-     * @var array
-     */
-    protected $where        = [];
+    /** @var string */
+    protected $select   = '*';
 
-    /**
-     * @var array
-     */
-    protected $values       = [];
+    /** @var string */
+    protected $action   = 'select';
 
-    /**
-     * @var array
-     */
-    protected $orderBy      = [];
+    /** @var array */
+    protected $joins    = [];
 
-    /**
-     * @var array
-     */
-    protected $groupBy      = [];
-
-    /**
-     * @var string
-     */
-    protected $select       = '*';
-
-    /**
-     * @var string
-     */
-    protected $action       = 'select';
-
-    /**
-     * @var array
-     */
-    protected $joins        = [];
-
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $quoteAll = false;
+
+    /** @var null|string */
+    protected $tableName;
+
+    /** @var null|string */
+    protected $tableKey;
+
+    /** @var null|int */
+    protected $limit;
+
+    /** @var null|\PDO */
+    protected $pdoInstance;
 
     /**
      * Set the tableName to work on

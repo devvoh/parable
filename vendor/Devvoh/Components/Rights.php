@@ -10,9 +10,7 @@ namespace Devvoh\Components;
 
 class Rights {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $rights = [];
 
     /**

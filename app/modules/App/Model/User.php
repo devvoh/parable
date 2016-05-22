@@ -10,15 +10,28 @@ namespace App\Model;
 
 class User extends \Devvoh\Parable\Entity {
 
-    protected $tableName    = 'users';
-    protected $tableKey     = 'id';
+    /** @var string */
+    protected $tableName  = 'users';
 
-    public $id;
-    public $email;
-    public $password;
-    public $created_at;
-    public $updated_at;
+    /** @var string */
+    protected $tableKey   = 'id';
 
+    /** @var array */
     protected $exportable = ['id', 'email', 'created_at', 'updated_at'];
+
+    /** @var int */
+    public $id;
+
+    /** @var string */
+    public $email;
+
+    /** @var string */
+    public $password;
+
+    /** @var string */
+    public $created_at;
+
+    /** @var string */
+    public $updated_at;
 
 }

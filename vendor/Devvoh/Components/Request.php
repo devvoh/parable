@@ -11,13 +11,13 @@ namespace Devvoh\Components;
 class Request {
 
     /** @var null|string */
-    protected $method       = null;
+    protected $method;
 
     /** @var null|string */
-    protected $userAgent    = null;
+    protected $userAgent;
 
     /** @var null|string */
-    protected $scheme       = null;
+    protected $scheme;
 
     /**
      * Set the method, userAgent & scheme upon load

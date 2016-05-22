@@ -10,27 +10,6 @@ namespace Devvoh\Parable;
 
 class App {
 
-    /** @var string */
-    protected $version           = '0.5.0';
-
-    /** @var null|string */
-    protected $baseDir           = null;
-
-    /** @var null|string */
-    protected $publicUrl         = null;
-
-    /** @var bool */
-    protected $debugEnabled      = false;
-
-    /** @var null|array */
-    protected $route             = null;
-
-    /** @var null|string */
-    protected $currentModule     = null;
-
-    /** @var array */
-    protected $modules           = [];
-
     /** @var \Devvoh\Components\Date */
     protected $date;
 
@@ -256,7 +235,7 @@ class App {
         foreach ($this->tool->getModules() as $module) {
             $className = $module['name'] . '\\Routes';
             if (class_exists($className)) {
-                \Devvoh\Components\DI::create($className);
+                \Devvoh\Components\DI::create($className)->run();
             }
         }
     }

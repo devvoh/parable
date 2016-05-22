@@ -10,9 +10,6 @@ namespace Devvoh\Parable;
 
 class Tool {
 
-    /** @var string */
-    protected $version = '0.6.0';
-
     /** @var \Devvoh\Components\Autoloader */
     protected $autoloader;
 
@@ -22,20 +19,23 @@ class Tool {
     /** @var \Devvoh\Components\Database */
     protected $database;
 
+    /** @var string */
+    protected $version     = '0.7.0';
+
     /** @var array */
-    protected $route = [];
+    protected $route       = [];
+
+    /** @var array */
+    protected $modules     = [];
+
+    /** @var array */
+    protected $resourceMap = [];
 
     /** @var string */
     protected $publicUrl;
 
     /** @var string */
     protected $baseDir;
-
-    /** @var array */
-    protected $modules = [];
-
-    /** @var array */
-    protected $resourceMap = [];
 
     /** @var bool */
     protected $debugEnabled;
@@ -44,8 +44,9 @@ class Tool {
     protected $currentModule;
 
     /**
-     * @param \Devvoh\Components\Router   $router
-     * @param \Devvoh\Components\Database $database
+     * @param \Devvoh\Components\Autoloader $autoloader
+     * @param \Devvoh\Components\Router     $router
+     * @param \Devvoh\Components\Database   $database
      */
     public function __construct(
         \Devvoh\Components\Autoloader $autoloader,
@@ -183,7 +184,7 @@ class Tool {
      *
      * @param string    $subPath
      * @param null      $module
-     * @return string|null
+     * @return null|string
      */
     public function getViewDir($subPath = null, $module = null) {
         if (!$module) {
@@ -271,7 +272,7 @@ class Tool {
      * Return the module name based on the given $path
      *
      * @param string $path
-     * @return mixed|null
+     * @return null|mixed
      */
     public function getModuleFromPath($path = null) {
         if (!$path) {
@@ -329,7 +330,7 @@ class Tool {
      * Returns a new Entity instance
      *
      * @param null|string $entityName
-     * @return Entity
+     * @return null|Entity
      */
     public function createEntity($entityName = null) {
         $entity = null;
@@ -345,6 +346,8 @@ class Tool {
     }
 
     /**
+     * Load the resource map
+     *
      * @return $this
      */
     public function loadResourceMap() {
@@ -367,9 +370,10 @@ class Tool {
     }
 
     /**
-     * @param $index
+     * Return a mapping
      *
-     * @return null
+     * @param $index
+     * @return null|string
      */
     public function getResourceMapping($index) {
         if (isset($this->resourceMap[$index])) {

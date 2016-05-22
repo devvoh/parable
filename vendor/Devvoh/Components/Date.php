@@ -11,7 +11,7 @@ namespace Devvoh\Components;
 class Date {
 
     /** @var null|\DateTimeZone */
-    protected $timezone = null;
+    protected $timezone;
 
     /**
      * Set the timezone in string or DateTimeZone format
@@ -30,7 +30,7 @@ class Date {
     /**
      * Return the currently set timezone
      *
-     * @return \DateTimeZone|null
+     * @return null|\DateTimeZone
      */
     public function getTimezone() {
         return $this->timezone;

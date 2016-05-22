@@ -10,9 +10,6 @@ namespace Devvoh\Components;
 
 class GetSet {
 
-    /** @var null|string */
-    protected $resource         = null;
-
     /** @var bool*/
     protected $useLocalResource = false;
 
@@ -21,6 +18,9 @@ class GetSet {
 
     /** @var array */
     protected $globals          = ['get', 'post', 'session', 'cookie'];
+
+    /** @var null|string */
+    protected $resource;
 
     /**
      * Return globals
@@ -64,7 +64,7 @@ class GetSet {
     /**
      * Get all from resource if resource set
      *
-     * @return array|null
+     * @return null|array
      */
     public function getAll() {
         if (!$this->getResource()) {
@@ -80,7 +80,7 @@ class GetSet {
      * Get specific value by key if resource set
      *
      * @param string $key
-     * @return mixed|null
+     * @return null|mixed
      */
     public function get($key) {
         if (!$this->getResource()) {
@@ -156,37 +156,6 @@ class GetSet {
 
     public function remove($key) {
         return $this->set($key, null);
-    }
-
-    /**
-     * Start the session
-     *
-     * @return $this
-     */
-    public function startSession() {
-        session_start();
-        return $this;
-    }
-
-    /**
-     * Regenerate the session
-     *
-     * @param bool|false $deleteOldSession
-     * @return $this
-     */
-    public function regenerateSession($deleteOldSession = false) {
-        session_regenerate_id($deleteOldSession);
-        return $this;
-    }
-
-    /**
-     * Destroy the session
-     *
-     * @return $this
-     */
-    public function destroySession() {
-        session_destroy();
-        return $this;
     }
 
 }
