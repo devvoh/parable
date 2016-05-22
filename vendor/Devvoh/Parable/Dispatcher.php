@@ -140,11 +140,11 @@ class Dispatcher {
             $content = $closure();
         } elseif (isset($route['controller']) && isset($route['action'])) {
             // Get the data from the route
-            $controllerName = '\\' . $route['module'] . '\\' . 'Controller' . '\\' . $route['controller'];
+            $controllerName = $route['module'] . '\\' . 'Controller' . '\\' . $route['controller'];
             $action = $route['action'];
 
             // And start an instance
-            $controller = new $controllerName();
+            $controller = \Devvoh\Components\DI::create($controllerName);
 
             // Check whether the action exists, return false if not
             if (!method_exists($controller, $route['action'])) {

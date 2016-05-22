@@ -13,6 +13,9 @@ class Tool {
     /** @var string */
     protected $version = '0.6.0';
 
+    /** @var \Devvoh\Components\Autoloader */
+    protected $autoloader;
+
     /** @var \Devvoh\Components\Router */
     protected $router;
 
@@ -20,7 +23,7 @@ class Tool {
     protected $database;
 
     /** @var array */
-    protected $route;
+    protected $route = [];
 
     /** @var string */
     protected $publicUrl;
@@ -29,18 +32,29 @@ class Tool {
     protected $baseDir;
 
     /** @var array */
-    protected $modules;
+    protected $modules = [];
+
+    /** @var array */
+    protected $resourceMap = [];
+
+    /** @var bool */
+    protected $debugEnabled;
+
+    /** @var string */
+    protected $currentModule;
 
     /**
      * @param \Devvoh\Components\Router   $router
      * @param \Devvoh\Components\Database $database
      */
     public function __construct(
-        \Devvoh\Components\Router   $router,
-        \Devvoh\Components\Database $database
+        \Devvoh\Components\Autoloader $autoloader,
+        \Devvoh\Components\Router     $router,
+        \Devvoh\Components\Database   $database
     ) {
-        $this->router   = $router;
-        $this->database = $database;
+        $this->autoloader = $autoloader;
+        $this->router     = $router;
+        $this->database   = $database;
     }
 
     /**
@@ -304,8 +318,7 @@ class Tool {
      * @return \Devvoh\Parable\Repository
      */
     public function createRepository($entityName = null) {
-        $repository = new \Devvoh\Parable\Repository();
-
+        $repository = \Devvoh\Components\DI::create(\Devvoh\Parable\Repository::class);
         $entity = $this->createEntity($entityName);
         $repository->setEntity($entity);
 
@@ -329,6 +342,40 @@ class Tool {
             }
         }
         return $entity;
+    }
+
+    /**
+     * @return $this
+     */
+    public function loadResourceMap() {
+        $dirIterator = new \RecursiveDirectoryIterator($this->getDir('vendor'), \RecursiveDirectoryIterator::SKIP_DOTS);
+        $iteratorIterator = new \RecursiveIteratorIterator($dirIterator);
+        /**
+         * @var \SplFileInfo $file
+         */
+        foreach ($iteratorIterator as $path => $file) {
+            $fullClassName = str_replace($this->getDir('vendor') . '/', null, $path);
+            $fullClassName = str_replace('.' . $file->getExtension(), null, $fullClassName);
+            $fullClassName = str_replace('/', '\\', $fullClassName);
+
+            $classParts = explode('\\', $fullClassName);
+            $className = end($classParts);
+
+            $this->resourceMap[$className] = $fullClassName;
+        }
+        return $this;
+    }
+
+    /**
+     * @param $index
+     *
+     * @return null
+     */
+    public function getResourceMapping($index) {
+        if (isset($this->resourceMap[$index])) {
+            return $this->resourceMap[$index];
+        }
+        return null;
     }
 
 }

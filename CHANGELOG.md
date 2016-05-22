@@ -2,12 +2,29 @@
 
 ### 0.6.0
 
-__Note: This version breaks backwards compatibility!__
+__Note: This version significantly breaks backwards compatibility!__
+
+Up until 0.5.0, Parable used the superclass App for almost all framework functionality. While this was an effective way
+to quickly get everything running (and it worked relatively intuitively), there were issues with the approach. Testing,
+for example, was inconvenienced significantly. Since I want to work towards a 1.0.0 release, testing is starting to
+become something I want to start on. So App needed to go.
+
+I've had many conversations with fellow devs about how to approach this, and one thing kept coming back - dependency
+injection. I've worked with it before and never liked the implementations. They were either too limited or too fiddly,
+but they were almost always, to me at least, over-engineered. The necessity of having to replace App with something
+forced me to experiment. I've settled upon a super-lightweight constructor-based DI system. It's not configurable,
+you can't send populated instances into it (only freshly generated classes) and it doesn't have robust error handling.
+
+But as a launching point for professionalisation, it seems to do the trick.
+
+So yes. PHPUnit, here I come.
 
 __Changes__
-- APP IS GONE. ALL HAIL APP.
+- APP IS DEAD. ALL HAIL APP.
 - Because App is gone, much of the changelog of 0.5.0 is redundant, but I leave it for historical purposes.
-- \Devvoh\Components\DI has been added. This is why App could go. Parable now has a barebones dependency injection system and uses it throughout. It does NOT have a way to deal with cyclical references, so if you add class A as a dependency to B and B as a dependency to A, get ready for timeouts.
+- \Devvoh\Components\DI has been added. This is why App could go. Parable now has a barebones dependency injection system and uses it throughout. It attempts to keep track of class dependency hierarchy to prevent cyclical references. It should throw an Exception when A requires B requires A...etc.
+- Views now can no longer simply re-route all function calls to App. Therefore, magic methods have been added to \Devvoh\Parable\View to allow the ->getXXX calls to still work (they now go through DI, though), and really only affects the methods previously directly called on App (getUrl, createRepository, etc.), which are almost all moved to \Devvoh\Parable\Tool
+- Although this major refactor has been tested (and found to work correctly) on one project, it's entirely possible bugs may still be hidden.
 
 ### 0.5.0 - UNRELEASED
 

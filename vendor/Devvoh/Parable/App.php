@@ -128,6 +128,8 @@ class App {
         // Find out what modules we have
         $this->loadModules();
 
+        $this->tool->loadResourceMap();
+
         // Collect the routes, now that we know our modules
         $this->collectRoutes();
 

@@ -49,7 +49,7 @@ class Repository {
      * @return \Devvoh\Components\Query
      */
     public function createQuery() {
-        $query = $this->toolcreateQuery();
+        $query = $this->tool->createQuery();
         $query->setTableName($this->getEntity()->getTableName());
         $query->setTableKey($this->getEntity()->getTableKey());
         if ($this->getOnlyCount()) {

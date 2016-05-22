@@ -10,7 +10,7 @@
  * Define some global values
  */
 define('DS', DIRECTORY_SEPARATOR);
-define('BASEDIR', __DIR__ . DS . '..' . DS . '..' . DS . '..');
+define('BASEDIR', realpath(__DIR__ . DS . '..' . DS . '..' . DS . '..'));
 
 /**
  * Set error reporting level
@@ -23,9 +23,11 @@ ini_set('display_errors', '1');
  * Register PSR-4 compatible autoloader
  */
 $autoloadPath = BASEDIR . DS . 'vendor' . DS . 'Devvoh' . DS . 'Components' . DS . 'Autoloader.php';
+$diPath = BASEDIR . DS . 'vendor' . DS . 'Devvoh' . DS . 'Components' . DS . 'DI.php';
 require_once($autoloadPath);
+require_once($diPath);
 
-$autoloader = new \Devvoh\Components\Autoloader();
+$autoloader = \Devvoh\Components\DI::get(\Devvoh\Components\Autoloader::class);
 $autoloader->addLocation(BASEDIR . DS . 'vendor');
 $autoloader->addLocation(BASEDIR . DS . 'app' . DS . 'modules');
 $autoloader->register();
@@ -49,4 +51,6 @@ in "<strong><?=$e->getFile();?>" on line <?=$e->getLine();?></strong><br />
  *
  * @var \Devvoh\Parable\App $app
  */
-return \Devvoh\Components\DI::get(\Devvoh\Parable\App::class)->boot();
+$app = \Devvoh\Components\DI::get(\Devvoh\Parable\App::class);
+$app->boot();
+return $app;
