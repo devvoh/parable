@@ -62,8 +62,6 @@ class Tool {
      * Redirect to $url or the root url
      *
      * @param string $url
-     *
-     * @return void
      */
     public function redirect($url = '/') {
         if (strpos($url, 'http://') === false) {
@@ -78,12 +76,10 @@ class Tool {
      *
      * @param string $routeName
      * @param array  $params
-     *
-     * @return void
      */
     public function redirectRoute($routeName, array $params = []) {
         $url = $this->router->buildRoute($routeName, $params);
-        return $this->redirect($this->getUrl($url));
+        $this->redirect($this->getUrl($url));
     }
 
     /**
