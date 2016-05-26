@@ -9,6 +9,7 @@ __Changes__
 - To make the module Routes file simpler, the more framework-y functionality (DI & the module adding) has been moved to a new class - \Devvoh\Parable\Routes. This means yet another backwards incompatible change. I'm on a roll.
 - Comments have been improved significantly. Handy.
 - index.phtml mapped $this to \Devvoh\Parable\App, but it should now map to \Devvoh\Parable\View
+- The magic methods in \Devvoh\Parable\View are gone again. Though they worked fine, they felt out of place and inconsistent with how the rest of Parable now approaches its DI components. They've been replaced with magic properties that do the exact same thing. In a view, you can use $this->tool->method(), etc.
 - set_exception_handler function has been moved up, so it will also catch Autoloader/DI exceptions.
 - Property definitions now no longer explicitly set to null. Order of properties has been made consistent: DI properties > defined properties > undefined properties.
 - Some small fixes where false was being returned where a value was expected. These now return null.

@@ -33,7 +33,7 @@ class Auth {
         \Devvoh\Parable\Tool    $tool,
         \Devvoh\Parable\Session $session
     ) {
-        $this->tool     = $tool;
+        $this->tool    = $tool;
         $this->session = $session;
     }
 

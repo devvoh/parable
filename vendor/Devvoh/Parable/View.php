@@ -9,52 +9,29 @@
 namespace Devvoh\Parable;
 
 /**
- * @method \Devvoh\Components\Validate      getValidate() get Devvoh\Components\Validate
- * @method \Devvoh\Components\Debug         getDebug() get Devvoh\Components\Debug
- * @method \Devvoh\Components\Database      getDatabase() get Devvoh\Components\Database
- * @method \Devvoh\Components\Date          getDate() get Devvoh\Components\Date
- * @method \Devvoh\Components\Exception     getException() get Devvoh\Components\Exception
- * @method \Devvoh\Components\Request       getRequest() get Devvoh\Components\Request
- * @method \Devvoh\Components\Curl          getCurl() get Devvoh\Components\Curl
- * @method \Devvoh\Components\Hook          getHook() get Devvoh\Components\Hook
- * @method \Devvoh\Components\Cli           getCli() get Devvoh\Components\Cli
- * @method \Devvoh\Components\Dock          getDock() get Devvoh\Components\Dock
- * @method \Devvoh\Components\Mailer        getMailer() get Devvoh\Components\Mailer
- * @method \Devvoh\Components\Router        getRouter() get Devvoh\Components\Router
- * @method \Devvoh\Components\Rights        getRights() get Devvoh\Components\Rights
- * @method \Devvoh\Components\Response      getResponse() get Devvoh\Components\Response
- * @method \Devvoh\Components\Log           getLog() get Devvoh\Components\Log
- * @method \Devvoh\Parable\Post             getPost() get Devvoh\Parable\Post
- * @method \Devvoh\Parable\Config           getConfig() get Devvoh\Parable\Config
- * @method \Devvoh\Parable\Session          getSession() get Devvoh\Parable\Session
- * @method \Devvoh\Parable\SessionMessage   getSessionMessage() get Devvoh\Parable\SessionMessage
- * @method \Devvoh\Parable\Auth             getAuth() get Devvoh\Parable\Auth
- * @method \Devvoh\Parable\Param            getParam() get Devvoh\Parable\Param
- * @method \Devvoh\Parable\Get              getGet() get Devvoh\Parable\Get
- * @method \Devvoh\Parable\Tool             getTool() get Devvoh\Parable\Tool
- * @method \Devvoh\Components\Validate      createValidate() create Devvoh\Components\Validate
- * @method \Devvoh\Components\Debug         createDebug() create Devvoh\Components\Debug
- * @method \Devvoh\Components\Database      createDatabase() create Devvoh\Components\Database
- * @method \Devvoh\Components\Date          createDate() create Devvoh\Components\Date
- * @method \Devvoh\Components\Exception     createException() create Devvoh\Components\Exception
- * @method \Devvoh\Components\Request       createRequest() create Devvoh\Components\Request
- * @method \Devvoh\Components\Curl          createCurl() create Devvoh\Components\Curl
- * @method \Devvoh\Components\Hook          createHook() create Devvoh\Components\Hook
- * @method \Devvoh\Components\Cli           createCli() create Devvoh\Components\Cli
- * @method \Devvoh\Components\Dock          createDock() create Devvoh\Components\Dock
- * @method \Devvoh\Components\Mailer        createMailer() create Devvoh\Components\Mailer
- * @method \Devvoh\Components\Router        createRouter() create Devvoh\Components\Router
- * @method \Devvoh\Components\Rights        createRights() create Devvoh\Components\Rights
- * @method \Devvoh\Components\Response      createResponse() create Devvoh\Components\Response
- * @method \Devvoh\Components\Log           createLog() create Devvoh\Components\Log
- * @method \Devvoh\Parable\Post             createPost() create Devvoh\Parable\Post
- * @method \Devvoh\Parable\Config           createConfig() create Devvoh\Parable\Config
- * @method \Devvoh\Parable\Session          createSession() create Devvoh\Parable\Session
- * @method \Devvoh\Parable\SessionMessage   createSessionMessage() create Devvoh\Parable\SessionMessage
- * @method \Devvoh\Parable\Auth             createAuth() create Devvoh\Parable\Auth
- * @method \Devvoh\Parable\Param            createParam() create Devvoh\Parable\Param
- * @method \Devvoh\Parable\Get              createGet() create Devvoh\Parable\Get
- * @method \Devvoh\Parable\Tool             createTool() create Devvoh\Parable\Tool
+ * @property \Devvoh\Components\Cli           $cli
+ * @property \Devvoh\Components\Curl          $curl
+ * @property \Devvoh\Components\Database      $database
+ * @property \Devvoh\Components\Date          $date
+ * @property \Devvoh\Components\Debug         $debug
+ * @property \Devvoh\Components\Dock          $dock
+ * @property \Devvoh\Components\Exception     $exception
+ * @property \Devvoh\Components\Hook          $hook
+ * @property \Devvoh\Components\Log           $log
+ * @property \Devvoh\Components\Mailer        $mailer
+ * @property \Devvoh\Components\Response      $response
+ * @property \Devvoh\Components\Request       $request
+ * @property \Devvoh\Components\Rights        $rights
+ * @property \Devvoh\Components\Router        $router
+ * @property \Devvoh\Components\Validate      $validate
+ * @property \Devvoh\Parable\Auth             $auth
+ * @property \Devvoh\Parable\Config           $config
+ * @property \Devvoh\Parable\Get              $get
+ * @property \Devvoh\Parable\Param            $param
+ * @property \Devvoh\Parable\Post             $post
+ * @property \Devvoh\Parable\Session          $session
+ * @property \Devvoh\Parable\SessionMessage   $sessionMessage
+ * @property \Devvoh\Parable\Tool             $tool
  */
 class View {
 
