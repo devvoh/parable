@@ -43,6 +43,7 @@ __Changes__
 - Added ->returnOne() and ->returnAll() to Repository, which will return the first result only, preventing the need for either manual current() calls or [0].
 - In Repository, orderBy and limit are now implemented on getQuery, which enables it everywhere.
 - All Cli functionality removed until Cli has been refactored.
+- Training wheels are off. Soft requirement for parameters (returning falls on required parameter null values) is out and hard requirements are in. Also made type hinting more strict. In some cases, it's no longer possible to pass either a string or an array, casting the string to array, it'll always need an array instead.
 
 __Bugfixes__
 - GetSet no longer resets the localResource when using setResource. Not only does this fix a bug where using setResource multiple times would clear it every time, it also makes it possible to use, for example, App::getParam()->setResource('headerJs')->getAll(). This makes Param even more powerful and useful. Param does, however, remember the last set resource, so switching is necessary whenever you want a different resource.
