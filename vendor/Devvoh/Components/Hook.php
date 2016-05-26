@@ -16,36 +16,25 @@ class Hook {
     /**
      * Add hook referencing $closure to $event, returns false if $closure isn't a function
      *
-     * @param null|string   $event
-     * @param null|callable $closure
-     * @return $this|false
+     * @param string   $event
+     * @param callable $closure
+     *
+     * @return $this
      */
-    public function into($event = null, $closure = null) {
-        // Check if all data is given and correct
-        if (!$event || !$closure || !is_callable($closure)) {
-            return false;
-        }
-
-        // All good, add the event & closure to hooks
+    public function into($event, callable $closure) {
         $this->hooks[$event][] = $closure;
-
-        // And return ourselves
         return $this;
     }
 
     /**
      * Trigger $event and run through all hooks referenced, passing along $payload to all $closures
      *
-     * @param null $event
-     * @param null $payload
-     * @return $this|false
+     * @param string     $event
+     * @param null|mixed $payload
+     *
+     * @return $this
      */
-    public function trigger($event = null, &$payload = null) {
-        // Check if all data is given and correct
-        if (!$event || $event === '*') {
-            return false;
-        }
-
+    public function trigger($event, &$payload = null) {
         // Get all global hooks
         $globalHooks = [];
         if (isset($this->hooks['*']) && count($this->hooks['*']) > 0) {
@@ -57,7 +46,7 @@ class Hook {
             // There are no specific hooks, but maybe there's global hooks?
             if (count($globalHooks) === 0) {
                 // There is nothing to do here
-                return false;
+                return $this;
             }
             $hooks = $globalHooks;
         } else {
@@ -67,9 +56,7 @@ class Hook {
 
         // All good, let's call those closures
         foreach ($hooks as $closure) {
-            if (is_callable($closure)) {
-                $closure($event, $payload);
-            }
+            $closure($event, $payload);
         }
 
         // And return ourselves

@@ -59,33 +59,29 @@ class Tool {
     }
 
     /**
-     * Redirect to $url
+     * Redirect to $url or the root url
      *
-     * @param null|string $url
-     * @return false|void
+     * @param string $url
+     *
+     * @return void
      */
-    public function redirect($url = null) {
-        if (!$url) {
-            return false;
-        }
+    public function redirect($url = '/') {
         if (strpos($url, 'http://') === false) {
             $url = $this->getUrl($url);
         }
         header('location: ' . $url);
-        return $this->end();
+        $this->end();
     }
 
     /**
      * Redirect to route
      *
-     * @param null|string $routeName
-     * @param array $params
-     * @return false|void
+     * @param string $routeName
+     * @param array  $params
+     *
+     * @return void
      */
-    public function redirectRoute($routeName = null, array $params = []) {
-        if (!$routeName) {
-            return false;
-        }
+    public function redirectRoute($routeName, array $params = []) {
         $url = $this->router->buildRoute($routeName, $params);
         return $this->redirect($this->getUrl($url));
     }
@@ -93,7 +89,7 @@ class Tool {
     /**
      * End program execution immediately
      *
-     * @param null|string $message
+     * @param null|string|int $message
      */
     public function end($message = null) {
         exit($message);
@@ -102,16 +98,19 @@ class Tool {
     /**
      * Set the route
      *
-     * @param null|array $route
+     * @param array $route
+     *
+     * @return $this
      */
-    public function setRoute($route) {
+    public function setRoute(array $route) {
         $this->route = $route;
+        return $this;
     }
 
     /**
      * Returns the route
      *
-     * @return null|array
+     * @return array
      */
     public function getRoute() {
         return $this->route;
@@ -129,7 +128,7 @@ class Tool {
     /**
      * Returns the base directory for the application.
      *
-     * @return null|string
+     * @return string
      */
     public function getBaseDir() {
         if (!$this->baseDir) {
@@ -142,7 +141,7 @@ class Tool {
     /**
      * Returns the public url for the application.
      *
-     * @return null|string
+     * @return string
      */
     public function getPublicUrl() {
         if (!$this->publicUrl) {
@@ -168,10 +167,11 @@ class Tool {
     /**
      * Returns a dir based on the base dir
      *
-     * @param null|string $path
-     * @return null|string
+     * @param string $path
+     *
+     * @return string
      */
-    public function getDir($path = null) {
+    public function getDir($path) {
         $dir = $this->getBaseDir();
         if ($path) {
             $dir = rtrim($dir, DS) . DS . trim($path, DS);
@@ -182,9 +182,10 @@ class Tool {
     /**
      * Returns the view directory for either the given module or the current one
      *
-     * @param string    $subPath
-     * @param null      $module
-     * @return null|string
+     * @param null|string $subPath
+     * @param null|string $module
+     *
+     * @return string
      */
     public function getViewDir($subPath = null, $module = null) {
         if (!$module) {
@@ -202,7 +203,8 @@ class Tool {
      * Returns an url based on the public url
      *
      * @param null|string $path
-     * @return null|string
+     *
+     * @return string
      */
     public function getUrl($path = null) {
         $url = $this->getPublicUrl();
@@ -215,7 +217,7 @@ class Tool {
     /**
      * Returns the current url
      *
-     * @return null|string
+     * @return string
      */
     public function getCurrentUrl() {
         return $this->getUrl($_GET['path']);
@@ -223,18 +225,24 @@ class Tool {
 
     /**
      * Enables debug mode, which will display errors. Errors are always logged (see Bootstrap.php)
+     *
+     * @return $this
      */
     public function enableDebug() {
         $this->debugEnabled = true;
         ini_set('display_errors', '1');
+        return $this;
     }
 
     /**
      * Disables debug mode, which will hide errors. Errors are always logged (see Bootstrap.php)
+     *
+     * @return $this
      */
     public function disableDebug() {
         $this->debugEnabled = false;
         ini_set('display_errors', '0');
+        return $this;
     }
 
     /**
@@ -249,7 +257,7 @@ class Tool {
     /**
      * Returns the current module
      *
-     * @return null|string
+     * @return string
      */
     public function getCurrentModule() {
         return $this->currentModule;
@@ -258,20 +266,33 @@ class Tool {
     /**
      * Set the current module
      *
-     * @param $currentModule
+     * @param string $currentModule
+     *
+     * @return $this
      */
     public function setCurrentModule($currentModule) {
         $this->currentModule = $currentModule;
+        return $this;
     }
 
-    public function addModule($name, $data) {
+    /**
+     * Add a module
+     *
+     * @param string $name
+     * @param array  $data
+     *
+     * @return $this
+     */
+    public function addModule($name, array $data) {
         $this->modules[$name] = $data;
+        return $this;
     }
 
     /**
      * Return the module name based on the given $path
      *
      * @param string $path
+     *
      * @return null|mixed
      */
     public function getModuleFromPath($path = null) {
@@ -315,10 +336,11 @@ class Tool {
     /**
      * Returns a new Repository instance
      *
-     * @param null $entityName
+     * @param string $entityName
+     *
      * @return \Devvoh\Parable\Repository
      */
-    public function createRepository($entityName = null) {
+    public function createRepository($entityName) {
         $repository = \Devvoh\Components\DI::create(\Devvoh\Parable\Repository::class);
         $entity = $this->createEntity($entityName);
         $repository->setEntity($entity);
@@ -329,10 +351,11 @@ class Tool {
     /**
      * Returns a new Entity instance
      *
-     * @param null|string $entityName
+     * @param string $entityName
+     *
      * @return null|Entity
      */
-    public function createEntity($entityName = null) {
+    public function createEntity($entityName) {
         $entity = null;
         // Loop through models trying to find the appropriate class
         foreach ($this->getModules() as $module) {
@@ -353,10 +376,8 @@ class Tool {
     public function loadResourceMap() {
         $dirIterator = new \RecursiveDirectoryIterator($this->getDir('vendor'), \RecursiveDirectoryIterator::SKIP_DOTS);
         $iteratorIterator = new \RecursiveIteratorIterator($dirIterator);
-        /**
-         * @var \SplFileInfo $file
-         */
         foreach ($iteratorIterator as $path => $file) {
+            /** @var \SplFileInfo $file */
             $fullClassName = str_replace($this->getDir('vendor') . '/', null, $path);
             $fullClassName = str_replace('.' . $file->getExtension(), null, $fullClassName);
             $fullClassName = str_replace('/', '\\', $fullClassName);
@@ -372,7 +393,8 @@ class Tool {
     /**
      * Return a mapping
      *
-     * @param $index
+     * @param string $index
+     *
      * @return null|string
      */
     public function getResourceMapping($index) {

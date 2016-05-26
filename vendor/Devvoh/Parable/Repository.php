@@ -67,7 +67,7 @@ class Repository {
     /**
      * Returns all rows for this entity type
      *
-     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
+     * @return array|\Devvoh\Parable\Entity
      */
     public function getAll() {
         $query = $this->createQuery();
@@ -88,6 +88,7 @@ class Repository {
      * Returns a single entity
      *
      * @param int $id
+     *
      * @return null|\Devvoh\Parable\Entity
      */
     public function getById($id) {
@@ -108,7 +109,8 @@ class Repository {
      * Returns all rows matching all conditions passed
      *
      * @param array $conditionsArray
-     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
+     *
+     * @return array|\Devvoh\Parable\Entity
      */
     public function getByConditions(array $conditionsArray) {
         $query = $this->createQuery();
@@ -133,6 +135,7 @@ class Repository {
      *
      * @param string $key
      * @param string $direction
+     *
      * @return $this
      */
     public function orderBy($key, $direction = 'DESC') {
@@ -143,8 +146,9 @@ class Repository {
     /**
      * Sets the limit
      *
-     * @param int $limit
-     * @param int $offset
+     * @param int      $limit
+     * @param null|int $offset
+     *
      * @return $this
      */
     public function limit($limit, $offset = null) {
@@ -177,7 +181,8 @@ class Repository {
      *
      * @param string $condition
      * @param string $value
-     * @return \Devvoh\Parable\Entity[]|\Devvoh\Parable\Entity
+     *
+     * @return array|\Devvoh\Parable\Entity
      */
     public function getByCondition($condition, $value) {
         $conditionsArray = [$condition => $value];
@@ -188,21 +193,16 @@ class Repository {
      * Handle the result of one of the get functions
      *
      * @param array $result
-     * @return \Devvoh\Parable\Entity[]|int
+     *
+     * @return array|int
      */
     public function handleResult(array $result) {
-        /**
-         * If we're only counting, return the count result as integer
-         */
         if ($this->getOnlyCount()) {
             foreach ($result[0] as $row) {
                 return (int)$row;
             }
         }
 
-        /**
-         * Not a count, so create entities for every row in the result
-         */
         $entities = [];
         foreach ($result as $row) {
             $entity = clone $this->getEntity();
@@ -225,6 +225,7 @@ class Repository {
      * Set an entity on the repository. Its values don't matter, it'll just be used for configuration purposes.
      *
      * @param \Devvoh\Parable\Entity $entity
+     *
      * @return $this
      */
     public function setEntity($entity) {
@@ -245,6 +246,7 @@ class Repository {
      * Set onlyCount to true or false
      *
      * @param bool $value
+     *
      * @return $this
      */
     public function setOnlyCount($value) {

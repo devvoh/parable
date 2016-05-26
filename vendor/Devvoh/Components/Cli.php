@@ -23,6 +23,7 @@ class Cli {
      * Write a line ending in a line break
      *
      * @param string $message
+     *
      * @return $this
      */
     public function write($message) {
@@ -33,11 +34,12 @@ class Cli {
     /**
      * print_r the $message ending in a line break
      *
-     * @param string $message
+     * @param mixed $data
+     *
      * @return $this
      */
-    public function dump($message) {
-        print_r($message);
+    public function dump($data) {
+        print_r($data);
         echo PHP_EOL;
         return $this;
     }
@@ -46,6 +48,7 @@ class Cli {
      * Add a line to $this->lines array
      *
      * @param string $message
+     *
      * @return $this
      */
     public function addLine($message) {
@@ -78,6 +81,7 @@ class Cli {
      * Parse $params into array of parameters and values
      *
      * @param array $params
+     *
      * @return $this
      */
     public function parseParameters(array $params) {
@@ -107,9 +111,10 @@ class Cli {
     }
 
     /**
-     * Get one specific parameter by key or false
+     * Get one specific parameter by key
      *
-     * @param string $key
+     * @param mixed $key
+     *
      * @return null|mixed
      */
     public function getParameter($key) {
@@ -123,7 +128,8 @@ class Cli {
      * Ask a yes/no question with a $default option and keep asking until a valid answer has been given
      *
      * @param string $question
-     * @param bool $default
+     * @param bool   $default
+     *
      * @return bool
      */
     public function yesNo($question, $default = true) {
@@ -151,6 +157,7 @@ class Cli {
      * Show or update progress message, which will replace itself if called again
      *
      * @param string $message
+     *
      * @return $this
      */
     public function progress($message) {

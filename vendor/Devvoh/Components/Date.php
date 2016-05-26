@@ -17,6 +17,7 @@ class Date {
      * Set the timezone in string or DateTimeZone format
      *
      * @param \DateTimeZone|string $timezone
+     *
      * @return $this
      */
     public function setTimezone($timezone) {
@@ -40,6 +41,7 @@ class Date {
      * Get the timezone-corrected date, either now or based on provided date string or DateTime instance
      *
      * @param string|\DateTime $date
+     *
      * @return \DateTime
      */
     public function getDateTime($date) {
@@ -53,11 +55,12 @@ class Date {
     /**
      * Return the timezone-corrected date in formatted string value
      *
-     * @param null|string $date
+     * @param string $date
      * @param string $format
+     *
      * @return string
      */
-    public function format($date = null, $format = 'd-m-Y H:i:s') {
+    public function format($date, $format = 'd-m-Y H:i:s') {
         return $this->getDateTime($date)->format($format);
     }
 

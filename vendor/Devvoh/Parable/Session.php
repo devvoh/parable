@@ -31,6 +31,7 @@ class Session extends \Devvoh\Components\GetSet {
      * Regenerate the session
      *
      * @param bool|false $deleteOldSession
+     *
      * @return $this
      */
     public function regenerateSession($deleteOldSession = false) {

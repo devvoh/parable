@@ -6,12 +6,6 @@
  * @author      Robin de Graaf (hello@devvoh.com)
  */
 
-/**
- * @var \Devvoh\Parable\App $app
- */
+/** @var \Devvoh\Parable\App $app */
 $app = require_once('../vendor/Devvoh/Parable/Bootstrap.php');
-
-/**
- * Dispatch the current route
- */
 $app->dispatch();

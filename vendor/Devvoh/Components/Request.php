@@ -23,9 +23,9 @@ class Request {
      * Set the method, userAgent & scheme upon load
      */
     public function __construct() {
-        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->method    = $_SERVER['REQUEST_METHOD'];
         $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
-        $this->scheme = $_SERVER['REQUEST_SCHEME'];
+        $this->scheme    = $_SERVER['REQUEST_SCHEME'];
     }
 
     /**
@@ -41,6 +41,7 @@ class Request {
      * Check whether the request method is equal to $method
      *
      * @param string $method
+     *
      * @return bool
      */
     public function isMethod($method) {

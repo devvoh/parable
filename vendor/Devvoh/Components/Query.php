@@ -50,6 +50,7 @@ class Query {
      * Set the tableName to work on
      *
      * @param string $tableName
+     *
      * @return $this
      */
     public function setTableName($tableName) {
@@ -74,12 +75,11 @@ class Query {
      * Set the pdoInstance to work on if it's a PDO instance
      *
      * @param \PDO $pdoInstance
+     *
      * @return $this
      */
-    public function setPdoInstance($pdoInstance) {
-        if ($pdoInstance instanceof \PDO) {
-            $this->pdoInstance = $pdoInstance;
-        }
+    public function setPdoInstance(\PDO $pdoInstance) {
+        $this->pdoInstance = $pdoInstance;
         return $this;
     }
 
@@ -95,7 +95,8 @@ class Query {
     /**
      * Set whether the table name should be quoted
      *
-     * @param $quoteAll
+     * @param bool $quoteAll
+     *
      * @return $this
      */
     public function setQuoteAll($quoteAll) {
@@ -116,6 +117,7 @@ class Query {
      * Set the tableKey to work with (for delete & update)
      *
      * @param string $key
+     *
      * @return $this
      */
     public function setTableKey($key) {
@@ -127,6 +129,7 @@ class Query {
      * Set the type of query we're going to do
      *
      * @param string $action
+     *
      * @return $this
      */
     public function setAction($action) {
@@ -149,6 +152,7 @@ class Query {
      * In case of a select, what we're going to select (default *)
      *
      * @param string $select
+     *
      * @return $this
      */
     public function select($select) {
@@ -159,8 +163,9 @@ class Query {
     /**
      * Adds a where condition for relevant queries
      *
-     * @param string $condition
-     * @param mixed $value
+     * @param string     $condition
+     * @param null|mixed $value
+     *
      * @return $this
      */
     public function where($condition, $value = null) {
@@ -171,9 +176,10 @@ class Query {
     /**
      * Adds a simple join clause
      *
-     * @param string $table
-     * @param string $condition
-     * @param mixed $value
+     * @param string     $table
+     * @param string     $condition
+     * @param null|mixed $value
+     *
      * @return $this
      */
     public function join($table, $condition, $value = null) {
@@ -185,7 +191,8 @@ class Query {
      * Adds a value to update/insert queries
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return $this
      */
     public function addValue($key, $value) {
@@ -198,6 +205,7 @@ class Query {
      *
      * @param string $key
      * @param string $direction
+     *
      * @return $this
      */
     public function orderBy($key, $direction = 'DESC') {
@@ -209,6 +217,7 @@ class Query {
      * Sets the group by for select queries
      *
      * @param string $key
+     *
      * @return $this
      */
     public function groupBy($key) {
@@ -219,8 +228,9 @@ class Query {
     /**
      * Sets the limit
      *
-     * @param int $limit
-     * @param int $offset
+     * @param int      $limit
+     * @param null|int $offset
+     *
      * @return $this
      */
     public function limit($limit, $offset = null) {

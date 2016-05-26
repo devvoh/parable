@@ -102,6 +102,7 @@ class Init {
      * Run passed inits
      *
      * @param array $inits
+     *
      * @return $this
      */
     protected function runInits(array $inits) {

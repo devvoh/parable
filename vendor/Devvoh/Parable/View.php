@@ -57,7 +57,8 @@ class View {
      * Loads and shows the template file
      *
      * @param string $file
-     * @return $this
+     *
+     * @return null|$this
      */
     public function loadTemplate($file) {
         if (!file_exists($file)) {
@@ -71,8 +72,9 @@ class View {
     /**
      * Loads a partial into an output buffer and returns the parsed result
      *
-     * @param string $file
+     * @param string      $file
      * @param null|string $module
+     *
      * @return null|string
      */
     public function partial($file, $module = null) {
@@ -101,7 +103,8 @@ class View {
     /**
      * Render the $file and return the interpreted code
      *
-     * @param string$file
+     * @param string $file
+     *
      * @return string
      */
     public function render($file) {
@@ -110,21 +113,20 @@ class View {
         return $this->response->endOB();
     }
 
-    public function __call($resourceGetter, $params) {
-        if (substr($resourceGetter, 0, 3) == 'get') {
-            $resource = substr($resourceGetter, 3);
-            $mapping = $this->tool->getResourceMapping($resource);
-            if ($mapping) {
-                return \Devvoh\Components\DI::get($mapping);
-            }
+    /**
+     * Return DI::get magic property
+     *
+     * @param string $property
+     *
+     * @return null|mixed
+     * @throws \Devvoh\Components\Exception
+     */
+    public function __get($property) {
+        $mappedProperty = $this->tool->getResourceMapping(ucfirst($property));
+        if ($mappedProperty) {
+            return \Devvoh\Components\DI::get($mappedProperty);
         }
-        if (substr($resourceGetter, 0, 6) == 'create') {
-            $resource = substr($resourceGetter, 6);
-            $mapping = $this->tool->getResourceMapping($resource);
-            if ($mapping) {
-                return \Devvoh\Components\DI::create($mapping);
-            }
-        }
+        return null;
     }
 
 }
