@@ -16,6 +16,7 @@ __Changes__
 - Vestigial properties have been removed from App, since the functionality has been moved to Tool.
 - Session management methods have been moved to \Devvoh\Parable\Session and out of \Devvoh\Components\GetSet, as they should be.
 - SessionMessage has lost initSession and gained a DI.
+- Cli has been reworked, now offers cll (clear line), cr (return to beginning of line) as well as colors.
 
 ### 0.6.0
 
