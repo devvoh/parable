@@ -8,32 +8,12 @@
 
 namespace App;
 
-class Routes {
-
-    /** @var \Devvoh\Parable\Tool */
-    protected $tool;
-
-    /** @var \Devvoh\Components\Router */
-    protected $router;
+class Routes extends \Devvoh\Parable\Routes {
 
     /**
-     * @param \Devvoh\Parable\Tool      $tool
-     * @param \Devvoh\Components\Router $router
+     * This function is automatically called when the routes are being loaded
      */
-    public function __construct(
-        \Devvoh\Parable\Tool      $tool,
-        \Devvoh\Components\Router $router
-    ) {
-        $this->tool   = $tool;
-        $this->router = $router;
-
-        $this->registerRoutes();
-    }
-
-    /**
-     *
-     */
-    protected function registerRoutes() {
+    public function run() {
         $routes = [
             'index' => [
                 'method' => 'GET',
@@ -49,12 +29,7 @@ class Routes {
                 },
             ],
         ];
-
-        // Add module to all routes
-        foreach ($routes as &$route) {
-            $route['module'] = $this->tool->getModuleFromPath(__DIR__);
-        }
-        $this->router->addRoutes($routes);
+        $this->registerRoutes($routes, __DIR__);
     }
 
 }

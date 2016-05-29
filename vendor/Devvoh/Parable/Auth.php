@@ -10,23 +10,22 @@ namespace Devvoh\Parable;
 
 class Auth {
 
-    /** @var bool */
-    protected $authenticated        = false;
-
-    /** @var array */
-    protected $authenticationData   = [];
-
-    /** @var null|\App\Model\User */
-    protected $user                 = null;
-
     /** @var \Devvoh\Parable\Tool */
     protected $tool;
 
     /** @var \Devvoh\Parable\Session */
     protected $session;
 
+    /** @var bool */
+    protected $authenticated      = false;
+
+    /** @var array */
+    protected $authenticationData = [];
+
+    /** @var null|\App\Model\User */
+    protected $user;
+
     /**
-     * Auth constructor.
      * @param \Devvoh\Parable\Tool    $tool
      * @param \Devvoh\Parable\Session $session
      */
@@ -34,7 +33,7 @@ class Auth {
         \Devvoh\Parable\Tool    $tool,
         \Devvoh\Parable\Session $session
     ) {
-        $this->tool     = $tool;
+        $this->tool    = $tool;
         $this->session = $session;
     }
 
@@ -78,6 +77,7 @@ class Auth {
      * Sets whether there's an authenticated user or not
      *
      * @param bool $value
+     *
      * @return $this
      */
     public function setAuthenticated($value = true) {
@@ -98,9 +98,10 @@ class Auth {
      * Set the data for the user currently authenticated
      *
      * @param array $data
+     *
      * @return $this
      */
-    public function setAuthenticationData($data = []) {
+    public function setAuthenticationData(array $data) {
         $this->authenticationData = $data;
         return $this;
     }
@@ -118,6 +119,7 @@ class Auth {
      * Set the authenticated user entity
      *
      * @param \Devvoh\Parable\Entity $user
+     *
      * @return $this
      */
     public function setUser(\Devvoh\Parable\Entity $user) {
@@ -128,7 +130,7 @@ class Auth {
     /**
      * Return the user entity
      *
-     * @return \App\Model\User|null
+     * @return null|\App\Model\User
      */
     public function getUser() {
         return $this->user;
@@ -139,6 +141,7 @@ class Auth {
      *
      * @param string $passwordProvided
      * @param string $passwordHash
+     *
      * @return bool
      */
     public function authenticate($passwordProvided, $passwordHash) {

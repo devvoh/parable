@@ -26,6 +26,7 @@ class Curl {
      * Sets the user agent
      *
      * @param string $userAgent
+     *
      * @return $this
      */
     public function setUserAgent($userAgent) {
@@ -37,7 +38,8 @@ class Curl {
      * Returns the result from loading url
      *
      * @param null|string $url
-     * @return string|null
+     *
+     * @return null|string
      */
     public function getContent($url = null) {
         if (!$url) {
@@ -58,6 +60,7 @@ class Curl {
      * @param string $url
      * @param string $path
      * @param string $filename
+     *
      * @return bool
      */
     public function download($url = null, $path = null, $filename = null) {

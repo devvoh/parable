@@ -10,23 +10,19 @@ namespace Devvoh\Components;
 
 class Validate {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $customTypes = [];
 
     /**
      * If needed, custom validation types can be added, where closures are given that return true or false (and if not,
      * will be cast to a boolean value anyway).
      *
-     * @param null $type
-     * @param null $closure
-     * @return $this|bool
+     * @param string   $type
+     * @param callable $closure
+     *
+     * @return $this
      */
-    public function addCustomType($type = null, $closure = null) {
-        if (!$type || !is_callable($closure)) {
-            return false;
-        }
+    public function addCustomType($type = null, callable $closure) {
         $this->customTypes[$type] = $closure;
         return $this;
     }
@@ -41,23 +37,20 @@ class Validate {
     }
 
     /**
-     * Run validation on the $data given, using the validators in $validator. If $returnBool is true, return only
-     * an overall true/false value, otherwise return an array with every validation field set to a boolean value.
+     * Run validation on the $data given, using $validators, returning an array with every validation field set to a
+     * boolean value.
      *
-     * @param null $data
-     * @param null $validator
-     * @param bool|true $returnBool
-     * @return array|bool
+     * @param string $data
+     * @param array  $validators
+     * @param bool   $returnBool
+     *
+     * @return array
      */
-    public function run($data = null, $validator = null, $returnBool = true) {
-        if (!$data || !$validator) {
-            return false;
-        }
-
+    public function run($data, array $validators, $returnBool = true) {
         // We're only going to loop through the values specifically requiring validation. Our results array will
         // not contain the values that we're not validating.
         $results = [];
-        foreach ($validator as $key => $typeString) {
+        foreach ($validators as $key => $typeString) {
 
             // If missing, don't need to do the type check
             if (!array_key_exists($key, $data)) {
@@ -124,28 +117,27 @@ class Validate {
                         break;
                 }
             }
-
-//            foreach ($this->getCustomTypes() as $type => $closure) {
-//                if (strpos($typeString, $type) !== false) {
-//                    echo $type . '<br>';
-//                    $return = $closure($data[$key]);
-//                }
-//            }
-        }
-
-        // If we're only supposed to return a boolean value, we're going to have to loop through our results and
-        // return false if even one of them is false
-        if ($returnBool) {
-            foreach ($results as $result) {
-                if (!$result) {
-                    return false;
-                }
-            }
-            return true;
         }
 
         // Return the results array
         return $results;
+    }
+
+    /**
+     * Return a boolean value when validation based on $validators succeeds or fails.
+     *
+     * @param string $data
+     * @param array  $validators
+     *
+     * @return bool
+     */
+    public function runBool($data, array $validators) {
+        foreach ($this->run($data, $validators) as $result) {
+            if (!$result) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -10,27 +10,6 @@ namespace Devvoh\Parable;
 
 class App {
 
-    /** @var string */
-    protected $version           = '0.5.0';
-
-    /** @var null|string */
-    protected $baseDir           = null;
-
-    /** @var null|string */
-    protected $publicUrl         = null;
-
-    /** @var bool */
-    protected $debugEnabled      = false;
-
-    /** @var null|array */
-    protected $route             = null;
-
-    /** @var null|string */
-    protected $currentModule     = null;
-
-    /** @var array */
-    protected $modules           = [];
-
     /** @var \Devvoh\Components\Date */
     protected $date;
 
@@ -119,7 +98,7 @@ class App {
      * Starts the App class and does some initial setup
      *
      * @return $this
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
     public function boot()
     {
@@ -190,6 +169,8 @@ class App {
 
     /**
      * Dispatch the current route
+     *
+     * @return $this
      */
     public function dispatch() {
         $this->hook->trigger('parable_app_dispatch_before');
@@ -197,7 +178,7 @@ class App {
         $matchedRoute = $this->matchRoute();
         $dispatched = false;
         if ($matchedRoute) {
-            // Create the dispatcher and try to dispatch
+            /** @var \Devvoh\Parable\Dispatcher $dispatcher */
             $dispatcher = \Devvoh\Components\DI::get(\Devvoh\Parable\Dispatcher::class)->setRoute($matchedRoute);
             $dispatched = $dispatcher->dispatch();
         }
@@ -215,10 +196,14 @@ class App {
         $this->response->sendResponse();
         $this->hook->trigger('parable_app_response_sendResponse_after');
         $this->hook->trigger('parable_app_dispatch_after');
+
+        return $this;
     }
 
     /**
      * Load the modules and store their names in $this->modules
+     *
+     * @return $this
      */
     public function loadModules() {
         $this->hook->trigger('parable_app_loadModules_before');
@@ -233,6 +218,8 @@ class App {
             ]);
         }
         $this->hook->trigger('parable_app_loadModules_after');
+
+        return $this;
     }
 
     /**
@@ -251,14 +238,17 @@ class App {
 
     /**
      * Collect routes and include the files, which will add their routes to the router automatically
+     *
+     * @return $this
      */
     public function collectRoutes() {
         foreach ($this->tool->getModules() as $module) {
             $className = $module['name'] . '\\Routes';
             if (class_exists($className)) {
-                \Devvoh\Components\DI::create($className);
+                \Devvoh\Components\DI::create($className)->run();
             }
         }
+        return $this;
     }
 
 }

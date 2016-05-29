@@ -6,46 +6,35 @@
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Devvoh\Components;
+namespace Devvoh\Parable;
 
 class SessionMessage {
 
-    /**
-     * @var \Devvoh\Components\GetSet
-     */
-    protected $session  = null;
-
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $messages = [];
+
+    /** @var \Devvoh\Parable\Session */
+    protected $session;
 
     /**
      * Initialize the session object and store all current messages on ourself
+     *
+     * @param \Devvoh\Parable\Session $session
      */
-    public function __construct() {
-        $this->initSession();
+    public function __construct(
+        \Devvoh\Parable\Session $session
+    ) {
+        $this->session = $session;
         if (is_array($this->session->get('messages'))) {
             $this->messages = $this->session->get('messages');
         }
     }
 
     /**
-     * Initialize the session object
-     *
-     * @return $this
-     */
-    protected function initSession() {
-        if (!$this->session) {
-            $this->session = (new GetSet())->setResource('session');
-        }
-        return $this;
-    }
-
-    /**
      * Get all messages or all messages of $type
      *
-     * @param null $type
+     * @param null|string $type
+     *
      * @return array
      */
     public function get($type = null) {
@@ -63,7 +52,8 @@ class SessionMessage {
     /**
      * Get all messages or all messages of $type and then clear those messages
      *
-     * @param null $type
+     * @param null|string $type
+     *
      * @return array
      */
     public function getClear($type = null) {
@@ -75,11 +65,12 @@ class SessionMessage {
     /**
      * Add a message to type notice by default, or to $type instead
      *
-     * @param null   $message
+     * @param string $message
      * @param string $type
+     *
      * @return $this
      */
-    public function add($message = null, $type = 'notice') {
+    public function add($message, $type = 'info') {
         if (!isset($this->messages[$type]) || !is_array($this->messages[$type])) {
             $this->messages[$type] = [];
         }
@@ -93,7 +84,8 @@ class SessionMessage {
     /**
      * Clear all messages or all messages of $type
      *
-     * @param null $type
+     * @param null|string $type
+     *
      * @return $this
      */
     public function clear($type = null) {
@@ -110,7 +102,8 @@ class SessionMessage {
     /**
      * Count all messages or all messages of $type
      *
-     * @param null $type
+     * @param null|string $type
+     *
      * @return int
      */
     public function count($type = null) {
@@ -131,7 +124,6 @@ class SessionMessage {
      * @return $this
      */
     protected function writeToSession() {
-        $this->initSession();
         $this->session->set('messages', $this->messages);
         return $this;
     }

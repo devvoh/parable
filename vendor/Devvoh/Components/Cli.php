@@ -11,56 +11,125 @@ namespace Devvoh\Components;
 class Cli {
 
     /** @var array */
-    protected $parameters           = [];
+    protected $parameters         = [];
 
     /** @var int */
-    protected $lastProgressLength   = 0;
+    protected $lastProgressLength = 0;
 
     /** @var array */
-    protected $lines                = [];
+    protected $lines              = [];
+
+    /** @var array */
+    protected $foreColors = [
+        "default"       => "39",
+        "black"         => "30",
+        "red"           => "31",
+        "green"         => "32",
+        "yellow"        => "33",
+        "blue"          => "34",
+        "magenta"       => "35",
+        "cyan"          => "36",
+        "light_gray"    => "37",
+        "dark_gray"     => "90",
+        "light_red"     => "91",
+        "light_green"   => "92",
+        "light_yellow"  => "93",
+        "light_blue"    => "94",
+        "light_magenta" => "95",
+        "light_cyan"    => "96",
+        "white"         => "97",
+    ];
+
+    /** @var array */
+    protected $backColors = [
+        "default"       => "49",
+        "black"         => "40",
+        "red"           => "41",
+        "green"         => "42",
+        "yellow"        => "43",
+        "blue"          => "44",
+        "magenta"       => "45",
+        "cyan"          => "46",
+        "light_gray"    => "47",
+        "dark_gray"     => "100",
+        "light_red"     => "101",
+        "light_green"   => "102",
+        "light_yellow"  => "103",
+        "light_blue"    => "104",
+        "light_magenta" => "105",
+        "light_cyan"    => "106",
+        "white"         => "107",
+    ];
+
+    public function cls() {
+        echo "\033[2J";
+    }
 
     /**
      * Write a line ending in a line break
      *
      * @param string $message
-     * @return \Devvoh\Components\Cli
+     * @param bool   $nl
+     *
+     * @return $this
      */
-    public function write($message) {
-        echo $message . PHP_EOL;
+    public function out($message, $nl = true) {
+        echo $message;
+        if ($nl) {
+            $this->nl();
+        }
+        return $this;
+    }
+
+    /**
+     * Set a single color based on color code
+     *
+     * @param int $color
+     *
+     * @return $this
+     */
+    public function setColor($color) {
+        echo "\e[{$color}m";
+        return $this;
+    }
+
+    /**
+     * Set both fore and background colors based on key => code from arrays $foreColors/$backColors
+     *
+     * @param string $fore
+     * @param string $back
+     *
+     * @return $this
+     */
+    public function setColors($fore, $back) {
+        $foreColor = null;
+        $backColor = null;
+        if (isset($this->foreColors[$fore])) {
+            $foreColor = $this->foreColors[$fore];
+        }
+        if (isset($this->backColors[$back])) {
+            $backColor = $this->backColors[$back];
+        }
+        if ($foreColor && $backColor) {
+            $this->setColor($foreColor . ";" . $backColor);
+        } elseif ($foreColor) {
+            $this->setColor($foreColor);
+        } elseif ($backColor) {
+            $this->setColor($backColor);
+        }
         return $this;
     }
 
     /**
      * print_r the $message ending in a line break
      *
-     * @param string $message
-     * @return $this
-     */
-    public function dump($message) {
-        print_r($message);
-        echo PHP_EOL;
-        return $this;
-    }
-
-    /**
-     * Add a line to $this->lines array
-     *
-     * @param string $message
-     * @return $this
-     */
-    public function addLine($message) {
-        $this->lines[] = $message;
-        return $this;
-    }
-
-    /**
-     * Output all lines from $this->lines
+     * @param mixed $data
      *
      * @return $this
      */
-    public function writeLines() {
-        $output = implode($this->lines, PHP_EOL);
-        $this->write($output);
+    public function dump($data) {
+        print_r($data);
+        $this->nl();
         return $this;
     }
 
@@ -75,55 +144,11 @@ class Cli {
     }
 
     /**
-     * Parse $params into array of parameters and values
-     *
-     * @param array $params
-     * @return $this
-     */
-    public function parseParameters(array $params) {
-        // Check for parameters given
-        for ($i = 1; $i < count($params); $i++) {
-            if (substr($params[$i], 0, 1) === '-') {
-                // set the current param as key and the next one as value
-                $key = str_replace('-', '', $params[$i]);
-                $this->parameters[$key] = $params[$i+1];
-                // and skip the value
-                $i++;
-            } else {
-                // Set the parameters as key and true as value
-                $this->parameters[$params[$i]] = true;
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * Return all parameters
-     *
-     * @return array
-     */
-    public function getParameters() {
-        return $this->parameters;
-    }
-
-    /**
-     * Get one specific parameter by key or false
-     *
-     * @param string $key
-     * @return mixed|false
-     */
-    public function getParameter($key) {
-        if (isset($this->parameters[$key])) {
-            return $this->parameters[$key];
-        }
-        return false;
-    }
-
-    /**
      * Ask a yes/no question with a $default option and keep asking until a valid answer has been given
      *
      * @param string $question
-     * @param bool $default
+     * @param bool   $default
+     *
      * @return bool
      */
     public function yesNo($question, $default = true) {
@@ -148,34 +173,36 @@ class Cli {
     }
 
     /**
-     * Show or update progress message, which will replace itself if called again
+     * Return to the beginning of the line
      *
-     * @param string $message
-     * @return $this
+     * @return $this;
      */
-    public function progress($message) {
-        // If lastProgressLength is over 0, this isn't the first progress call
-        if ($this->lastProgressLength > 0) {
-            // Output 70 spaces and then go back 70 characters, clearing the line
-            echo str_repeat(' ', 70) . "\e[70D";
-            // Go back [x] characters with the following weird string
-            echo "\e[" . $this->lastProgressLength . "D";
-        }
-
-        // Set lastProgressLength to new message length
-        $this->lastProgressLength = strlen($message);
-
-        echo $message;
+    public function cr() {
+        echo "\r\033[A";
         return $this;
     }
 
     /**
-     * Resets the progress last length so progress will not try to go back to the start of the line on next call
+     * Clear the line and return to the beginning of the line
      *
-     * @return $this
+     * @return $this;
      */
-    public function resetProgress() {
-        $this->lastProgressLength = 0;
+    public function cll() {
+        $this->cr();
+        echo "\033[K";
+        return $this;
+    }
+
+    /**
+     * Put the cursor on $line/$column
+     *
+     * @param $line
+     * @param $column
+     *
+     * @return $this;
+     */
+    public function put($line, $column) {
+        echo "\033[" . $line . ";" . $column . "H";
         return $this;
     }
 
@@ -183,7 +210,6 @@ class Cli {
      * Clean exit of the program
      */
     public function end() {
-        $this->writeLines();
         exit;
     }
 

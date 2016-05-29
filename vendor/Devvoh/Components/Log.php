@@ -10,25 +10,20 @@ namespace Devvoh\Components;
 
 class Log {
 
-    /**
-     * @var string
-     */
-    protected $path             = 'var/log';
+    /** @var string */
+    protected $path           = 'var/log';
 
-    /**
-     * @var string
-     */
-    protected $defaultLogFile   = 'parable.log';
+    /** @var string */
+    protected $defaultLogFile = 'parable.log';
 
-    /**
-     * @var int
-     */
-    protected $mode             = 0777;
+    /** @var int */
+    protected $mode           = 0777;
 
     /**
      * Sets the mode (octal)
      *
-     * @param $mode
+     * @param int $mode
+     *
      * @return $this
      */
     public function setMode($mode) {
@@ -50,7 +45,8 @@ class Log {
     /**
      * Set the default log file
      *
-     * @param $defaultLogFile
+     * @param string $defaultLogFile
+     *
      * @return $this
      */
     public function setDefaultLogFile($defaultLogFile) {
@@ -70,7 +66,8 @@ class Log {
     /**
      * Set the path to write to
      *
-     * @param $path
+     * @param string $path
+     *
      * @return $this
      */
     public function setPath($path) {
@@ -81,21 +78,21 @@ class Log {
     /**
      * Returns the path, and if it doesn't exist, attempts to create it
      *
-     * @throws \Exception
      * @return string
+     * @throws \Devvoh\Components\Exception
      */
     public function getPath() {
         if (!is_dir($this->path)) {
             // Create directory
             $created = @mkdir($this->path, $this->getMode(), true);
             if (!$created) {
-                throw new \Exception('Could not create log directory: ' . $this->path);
+                throw new \Devvoh\Components\Exception('Could not create log directory: ' . $this->path);
             }
         }
         if (!is_writable($this->path)) {
             $chmod = chmod($this->path, $this->getMode());
             if (!$chmod) {
-                throw new \Exception('Log directory is not writable: ' . $this->path);
+                throw new \Devvoh\Components\Exception('Log directory is not writable: ' . $this->path);
             }
         }
         return $this->path;
@@ -104,11 +101,12 @@ class Log {
     /**
      * Write message to the log file
      *
-     * @param      $message
-     * @param null $logFile
-     * @param bool $showTimezone
+     * @param mixed $message
+     * @param null  $logFile
+     * @param bool  $showTimezone
+     *
      * @return $this
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
     public function write($message, $logFile = null, $showTimezone = false) {
         if (!$logFile) {

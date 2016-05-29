@@ -10,46 +10,35 @@ namespace Devvoh\Components;
 
 class Response {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $contentTypes = [
-        'json'  => 'application/json',
-        'html'  => 'text/html',
-        'xml'   => 'text/xml',
-        'js'    => 'application/javascript',
+        'json' => 'application/json',
+        'html' => 'text/html',
+        'xml'  => 'text/xml',
+        'js'   => 'application/javascript',
     ];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $charset      = 'utf-8';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $contentType  = 'html';
 
-    /**
-     * @var null
-     */
-    protected $content      = null;
-
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $onlyContent  = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $responseSent = false;
 
+    /** @var null|string */
+    protected $content;
+
     /**
-     * Set the response header configured on Response class and send the response immediately, then exit to prevent
-     * any more output.
+     * Set the response header configured on Response class and send the response immediately
      *
      * @param bool $onlyContent
+     *
+     * @return $this
      */
     public function sendResponse($onlyContent = false) {
         if ($this->responseSent) {
@@ -61,6 +50,7 @@ class Response {
         }
         echo $this->content;
         $this->responseSent = true;
+        return $this;
     }
 
     /**
@@ -93,7 +83,8 @@ class Response {
     /**
      * Set the character set
      *
-     * @param $charset
+     * @param string $charset
+     *
      * @return $this
      */
     public function setCharset($charset) {
@@ -104,7 +95,8 @@ class Response {
     /**
      * Set the content type, based on either the short-hand (array key) or the full string (value/in_array)
      *
-     * @param $type
+     * @param string $type
+     *
      * @return $this
      */
     public function setContentType($type) {
@@ -127,9 +119,10 @@ class Response {
     }
 
     /**
-     * Set content from 0.
+     * Set and overwrite content
      *
-     * @param $content
+     * @param string $content
+     *
      * @return $this
      */
     public function setContent($content) {
@@ -140,7 +133,8 @@ class Response {
     /**
      * Send content immediately
      *
-     * @param $content
+     * @param string $content
+     *
      * @return $this
      */
     public function sendContent($content) {
@@ -151,7 +145,8 @@ class Response {
     /**
      * Prepend data to content
      *
-     * @param $content
+     * @param string $content
+     *
      * @return $this
      */
     public function prependContent($content) {
@@ -162,7 +157,8 @@ class Response {
     /**
      * Append data to content
      *
-     * @param $content
+     * @param string $content
+     *
      * @return $this
      */
     public function appendContent($content) {
@@ -174,17 +170,14 @@ class Response {
      * Set json and the correct content type. If onlyContent is true, the output buffer will be cleared and only
      * the content in \Devvoh\Components\Response->content is used for output.
      *
-     * If $data is an array, it's json_encoded. If not, we're going to assume it's json.
+     * @param null|array $data
+     * @param bool       $onlyContent
      *
-     * @param null $data
-     * @param bool|false $onlyContent
      * @return $this
      */
-    public function setJson($data = null, $onlyContent = false) {
+    public function setJson(array $data = null, $onlyContent = false) {
         if ($data) {
-            if (is_array($data)) {
-                $data = json_encode($data, JSON_PRETTY_PRINT);
-            }
+            $data = json_encode($data, JSON_PRETTY_PRINT);
             $this->setContent($data);
         }
         // And set the correct content-type
@@ -196,7 +189,8 @@ class Response {
     /**
      * Sets only content to (bool)$active
      *
-     * @param $active
+     * @param bool $active
+     *
      * @return $this
      */
     public function setOnlyContent($active) {

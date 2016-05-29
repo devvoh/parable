@@ -17,10 +17,13 @@ class DI {
     protected static $relations = [];
 
     /**
-     * @param string        $className
-     * @param null|string   $parentClassName
+     * Get an already instantiated intance or create a new one.
+     *
+     * @param string      $className
+     * @param null|string $parentClassName
+     *
      * @return mixed
-     * @throws \Exception
+     * @throws \Devvoh\Components\Exception
      */
     public static function get($className, $parentClassName = null) {
         // We store the relationship between class & parent to prevent cyclical references
@@ -28,7 +31,7 @@ class DI {
             self::$relations[$className][$parentClassName] = true;
         }
 
-        // And we check for cyclical references to prevent inifinite loops
+        // And we check for cyclical references to prevent infinite loops
         if (
             $parentClassName
             && isset(self::$relations[$parentClassName])
@@ -50,6 +53,7 @@ class DI {
      *
      * @param string      $className
      * @param null|string $parentClassName
+     *
      * @return mixed
      * @throws \Devvoh\Components\Exception
      */

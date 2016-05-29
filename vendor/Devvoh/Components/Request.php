@@ -11,21 +11,21 @@ namespace Devvoh\Components;
 class Request {
 
     /** @var null|string */
-    protected $method       = null;
+    protected $method;
 
     /** @var null|string */
-    protected $userAgent    = null;
+    protected $userAgent;
 
     /** @var null|string */
-    protected $scheme       = null;
+    protected $scheme;
 
     /**
      * Set the method, userAgent & scheme upon load
      */
     public function __construct() {
-        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->method    = $_SERVER['REQUEST_METHOD'];
         $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
-        $this->scheme = $_SERVER['REQUEST_SCHEME'];
+        $this->scheme    = $_SERVER['REQUEST_SCHEME'];
     }
 
     /**
@@ -41,6 +41,7 @@ class Request {
      * Check whether the request method is equal to $method
      *
      * @param string $method
+     *
      * @return bool
      */
     public function isMethod($method) {

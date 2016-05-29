@@ -16,39 +16,29 @@ class Dock {
     /**
      * Dock into a frontend dock event trigger
      *
-     * @param null|string   $event
-     * @param null|callable $closure
-     * @param null|string   $viewFile
-     * @return $this|false
+     * @param string      $event
+     * @param callable    $closure
+     * @param null|string $viewFile
+     *
+     * @return $this
      */
-    public function into($event = null, $closure = null, $viewFile = null) {
-        // Check if all data is given and correct
-        if (!$event || !$closure || !is_callable($closure)) {
-            return false;
-        }
-
-        // All good, add the event & closure to hooks
+    public function into($event, callable $closure, $viewFile = null) {
         $this->docks[$event][] = [
             'closure' => $closure,
             'viewFile' => $viewFile,
         ];
-
         return $this;
     }
 
     /**
      * Trigger $event and run through all hooks referenced, passing along $payload to all $closures
      *
-     * @param null|string $event
+     * @param string     $event
      * @param null|mixed $payload
-     * @return $this|false
+     *
+     * @return $this
      */
-    public function trigger($event = null, &$payload = null) {
-        // Check if all data is given and correct
-        if (!$event || $event === '*') {
-            return false;
-        }
-
+    public function trigger($event, &$payload = null) {
         // Get all global docks
         $globalDocks = [];
         if (isset($this->docks['*']) && count($this->docks['*']) > 0) {
@@ -60,7 +50,7 @@ class Dock {
             // There are no specific hooks, but maybe there's global hooks?
             if (count($globalDocks) === 0) {
                 // There is nothing to do here
-                return false;
+                return $this;
             }
             $docks = $globalDocks;
         } else {
@@ -70,19 +60,12 @@ class Dock {
 
         // All good, let's call those closures
         foreach ($docks as $dock) {
-            if (is_callable($dock['closure'])) {
-                $dock['closure']($payload);
-                // And include the viewFile if we have one. Data should be passed to the viewFile through
-                // outside means, through the session, one of the global variables ($_GET, etc.) or through
-                // Devvoh\Components\GetSet, if it's available.
-                if ($dock['viewFile'] && file_exists($dock['viewFile'])) {
-                    ob_start();
-                    require($dock['viewFile']);
-                    $return = ob_get_clean();
-                    echo $return;
-                }
-            } else {
-                return false;
+            $dock['closure']($payload);
+            if ($dock['viewFile'] && file_exists($dock['viewFile'])) {
+                ob_start();
+                require($dock['viewFile']);
+                $return = ob_get_clean();
+                echo $return;
             }
         }
 

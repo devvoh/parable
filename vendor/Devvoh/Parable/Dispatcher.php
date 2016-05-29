@@ -10,9 +10,6 @@ namespace Devvoh\Parable;
 
 class Dispatcher {
 
-    /** @var null|array */
-    protected $route = null;
-
     /** @var \Devvoh\Parable\App */
     protected $app;
 
@@ -31,8 +28,10 @@ class Dispatcher {
     /** @var \Devvoh\Parable\View */
     protected $view;
 
+    /** @var null|array */
+    protected $route;
+
     /**
-     * Dispatcher constructor.
      * @param \Devvoh\Components\Hook     $hook
      * @param \Devvoh\Components\Response $response
      * @param \Devvoh\Parable\App         $app
@@ -69,6 +68,7 @@ class Dispatcher {
      * Set the route
      *
      * @param array $route
+     *
      * @return $this
      */
     public function setRoute(array $route) {

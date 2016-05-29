@@ -9,5 +9,4 @@
 namespace Devvoh\Components;
 
 class Exception extends \Exception {
-
 }
