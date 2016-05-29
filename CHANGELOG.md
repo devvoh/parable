@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.7.1
+
+__Bugs__
+- null was being passed to Tool->setRoute(), which since very recently requires an array, causing a fatal error instead of a 404. Fixed.
+
 ### 0.7.0
 
 __Note: This version breaks backwards compatibility!__

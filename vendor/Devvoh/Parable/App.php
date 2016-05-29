@@ -229,11 +229,11 @@ class App {
      */
     public function matchRoute() {
         $this->hook->trigger('parable_app_router_match_before');
-        $this->tool->setRoute(
-            $this->router->match()
-        );
+        if ($route = $this->router->match()) {
+            $this->tool->setRoute();
+        };
         $this->hook->trigger('parable_app_router_match_after');
-        return $this->tool->getRoute();
+        return $this->tool->getRoute($route);
     }
 
     /**
