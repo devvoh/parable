@@ -230,7 +230,7 @@ class App {
     public function matchRoute() {
         $this->hook->trigger('parable_app_router_match_before');
         if ($route = $this->router->match()) {
-            $this->tool->setRoute();
+            $this->tool->setRoute($route);
         };
         $this->hook->trigger('parable_app_router_match_after');
         return $this->tool->getRoute($route);

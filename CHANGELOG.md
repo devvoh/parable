@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.7.2
+
+__Bugs__
+- Haste is waste. Fixed properly now. It's a Sunday and I should've had more coffee by now ;)
+
 ### 0.7.1
 
 __Bugs__
