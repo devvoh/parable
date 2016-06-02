@@ -25,25 +25,36 @@ ini_set('display_errors', '1');
 set_exception_handler(function(\Exception $e) {
     ?>
 <pre style="border:1px solid #d00;background:#eee;padding: 0.5rem;">
-    <h3 style="margin: 0;">Uncaught <?=get_class($e);?></h3>
-    in "<strong><?=$e->getFile();?>" on line <?=$e->getLine();?></strong><br />
-    <?=$e->getMessage();?><br />
-    <?=$e->getTraceAsString();?><br />
+<h3 style="margin: 0;">Uncaught <?=get_class($e);?></h3>
+in "<strong><?=$e->getFile();?>" on line <?=$e->getLine();?></strong><br />
+<?=$e->getMessage();?><br />
+<?=$e->getTraceAsString();?><br />
 </pre>
     <?php
 });
 
 /**
- * Register PSR-4 compatible autoloader
+ * Attempt to register composer's autoloader, which will be required for components
  */
-$autoloadPath = BASEDIR . DS . 'vendor' . DS . 'Devvoh' . DS . 'Components' . DS . 'Autoloader.php';
-$diPath = BASEDIR . DS . 'vendor' . DS . 'Devvoh' . DS . 'Components' . DS . 'DI.php';
-require_once($autoloadPath);
-require_once($diPath);
+if (!file_exists(BASEDIR . '/vendor/autoload.php')) {
+    throw new Exception('No autoload found, run "composer install" first to generate it.');
+}
+require_once(BASEDIR . '/vendor/autoload.php');
 
+/**
+ * Load Tool
+ *
+ * @var \Devvoh\Parable\Tool $tool
+ */
+$tool = \Devvoh\Components\DI::get(\Devvoh\Parable\Tool::class);
+
+/**
+ * Register autoloader for the modules
+ *
+ * @var \Devvoh\Components\Autoloader $autoloader
+ */
 $autoloader = \Devvoh\Components\DI::get(\Devvoh\Components\Autoloader::class);
-$autoloader->addLocation(BASEDIR . DS . 'vendor');
-$autoloader->addLocation(BASEDIR . DS . 'app' . DS . 'modules');
+$autoloader->addLocation($tool->getDir('app/modules'));
 $autoloader->register();
 
 /**
