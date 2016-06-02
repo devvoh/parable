@@ -10,6 +10,7 @@ namespace App\Init;
 
 class Hooks {
 
+    /** @var int */
     public $order = 1;
 
     /** @var \Devvoh\Components\Hook */
@@ -30,6 +31,9 @@ class Hooks {
         $this->log  = $log;
     }
 
+    /**
+     * This function is automatically executed when inits are loaded at the end of $app->boot();
+     */
     public function run() {
         // Register global loop to log all triggers
         $this->hook->into('*', function($event) {

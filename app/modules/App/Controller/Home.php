@@ -11,7 +11,6 @@ namespace App\Controller;
 class Home {
 
     public function index() {
-        /** Doesn't need anything if there's just a view */
     }
 
 }

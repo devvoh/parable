@@ -1,6 +1,4 @@
-<?php
-/** @var $this \Devvoh\Parable\App */
-?>
+<?php /** @var $this \Devvoh\Parable\View */ ?>
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -13,7 +11,7 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-        <link rel="icon" type="image/png" href="./images/icon-32.png" />
+        <link rel="icon" type="image/png" href="<?=$this->tool->getUrl('images/icon-32.png');?>" />
 
         <style>
             * {
@@ -48,7 +46,7 @@
                 font-size: 4rem;
             }
             .container aside {
-                font-size: 0.82rem;
+                font-size: 0.8rem;
                 margin-top: -1.3rem;
                 letter-spacing: 3px;
                 margin-left: 3px;

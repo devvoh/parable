@@ -6,15 +6,6 @@
  * @author      Robin de Graaf (hello@devvoh.com)
  */
 
-/**
- * Include Bootstrap.php to enable all functionality.
- *
- * This will set all base values and allow use of all App->methods
- */
 /** @var \Devvoh\Parable\App $app */
-$app = require_once('../vendor/Devvoh/Parable/Bootstrap.php');
-
-/**
- * Dispatch the current route.
- */
+$app = require_once('../vendor/devvoh/parable/Bootstrap.php');
 $app->dispatch();
