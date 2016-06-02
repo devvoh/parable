@@ -12,7 +12,14 @@ Parable isn't by any means production-ready, secure or foolproof. So only try it
 ## Requirements
 
 - PHP 5.4+, PHP 7
+- Composer
 - Sense of adventure
+
+## Installation
+
+Download a release from [here](https://github.com/devvoh/parable/releases). Unpack it wherever you like.
+
+Then run `composer install` and the autoload will be generated. Parable is now ready to use.
 
 ## Documentation & More
 
