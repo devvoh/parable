@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.7.3
+
+__Changes__
+- Using composer's autoload primarily from now on. This is in preparation of making components an actual composer package. This has no effect on 0.7.x projects, but it does require you to have composer.
+
 ### 0.7.2
 
 __Bugs__
