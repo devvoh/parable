@@ -33,7 +33,7 @@ class Auth {
         \Devvoh\Parable\Tool    $tool,
         \Devvoh\Parable\Session $session
     ) {
-        $this->tool     = $tool;
+        $this->tool    = $tool;
         $this->session = $session;
     }
 
@@ -77,6 +77,7 @@ class Auth {
      * Sets whether there's an authenticated user or not
      *
      * @param bool $value
+     *
      * @return $this
      */
     public function setAuthenticated($value = true) {
@@ -97,9 +98,10 @@ class Auth {
      * Set the data for the user currently authenticated
      *
      * @param array $data
+     *
      * @return $this
      */
-    public function setAuthenticationData($data = []) {
+    public function setAuthenticationData(array $data) {
         $this->authenticationData = $data;
         return $this;
     }
@@ -117,6 +119,7 @@ class Auth {
      * Set the authenticated user entity
      *
      * @param \Devvoh\Parable\Entity $user
+     *
      * @return $this
      */
     public function setUser(\Devvoh\Parable\Entity $user) {
@@ -138,6 +141,7 @@ class Auth {
      *
      * @param string $passwordProvided
      * @param string $passwordHash
+     *
      * @return bool
      */
     public function authenticate($passwordProvided, $passwordHash) {

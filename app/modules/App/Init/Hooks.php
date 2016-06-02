@@ -10,6 +10,7 @@ namespace App\Init;
 
 class Hooks {
 
+    /** @var int */
     public $order = 1;
 
     /** @var \Devvoh\Components\Hook */

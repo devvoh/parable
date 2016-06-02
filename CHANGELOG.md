@@ -1,5 +1,15 @@
 # Parable PHP Framework Changelog
 
+### 0.7.2
+
+__Bugs__
+- Haste is waste. Fixed properly now. It's a Sunday and I should've had more coffee by now ;)
+
+### 0.7.1
+
+__Bugs__
+- null was being passed to Tool->setRoute(), which since very recently requires an array, causing a fatal error instead of a 404. Fixed.
+
 ### 0.7.0
 
 __Note: This version breaks backwards compatibility!__
@@ -9,12 +19,14 @@ __Changes__
 - To make the module Routes file simpler, the more framework-y functionality (DI & the module adding) has been moved to a new class - \Devvoh\Parable\Routes. This means yet another backwards incompatible change. I'm on a roll.
 - Comments have been improved significantly. Handy.
 - index.phtml mapped $this to \Devvoh\Parable\App, but it should now map to \Devvoh\Parable\View
+- The magic methods in \Devvoh\Parable\View are gone again. Though they worked fine, they felt out of place and inconsistent with how the rest of Parable now approaches its DI components. They've been replaced with magic properties that do the exact same thing. In a view, you can use $this->tool->method(), etc.
 - set_exception_handler function has been moved up, so it will also catch Autoloader/DI exceptions.
 - Property definitions now no longer explicitly set to null. Order of properties has been made consistent: DI properties > defined properties > undefined properties.
 - Some small fixes where false was being returned where a value was expected. These now return null.
 - Vestigial properties have been removed from App, since the functionality has been moved to Tool.
 - Session management methods have been moved to \Devvoh\Parable\Session and out of \Devvoh\Components\GetSet, as they should be.
 - SessionMessage has lost initSession and gained a DI.
+- Cli has been reworked, now offers cll (clear line), cr (return to beginning of line) as well as colors.
 
 ### 0.6.0
 
@@ -42,6 +54,7 @@ __Changes__
 - Added ->returnOne() and ->returnAll() to Repository, which will return the first result only, preventing the need for either manual current() calls or [0].
 - In Repository, orderBy and limit are now implemented on getQuery, which enables it everywhere.
 - All Cli functionality removed until Cli has been refactored.
+- Training wheels are off. Soft requirement for parameters (returning falls on required parameter null values) is out and hard requirements are in. Also made type hinting more strict. In some cases, it's no longer possible to pass either a string or an array, casting the string to array, it'll always need an array instead.
 
 __Bugfixes__
 - GetSet no longer resets the localResource when using setResource. Not only does this fix a bug where using setResource multiple times would clear it every time, it also makes it possible to use, for example, App::getParam()->setResource('headerJs')->getAll(). This makes Param even more powerful and useful. Param does, however, remember the last set resource, so switching is necessary whenever you want a different resource.

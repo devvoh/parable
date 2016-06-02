@@ -22,7 +22,8 @@ class Log {
     /**
      * Sets the mode (octal)
      *
-     * @param $mode
+     * @param int $mode
+     *
      * @return $this
      */
     public function setMode($mode) {
@@ -44,7 +45,8 @@ class Log {
     /**
      * Set the default log file
      *
-     * @param $defaultLogFile
+     * @param string $defaultLogFile
+     *
      * @return $this
      */
     public function setDefaultLogFile($defaultLogFile) {
@@ -64,7 +66,8 @@ class Log {
     /**
      * Set the path to write to
      *
-     * @param $path
+     * @param string $path
+     *
      * @return $this
      */
     public function setPath($path) {
@@ -98,9 +101,10 @@ class Log {
     /**
      * Write message to the log file
      *
-     * @param      $message
-     * @param null $logFile
-     * @param bool $showTimezone
+     * @param mixed $message
+     * @param null  $logFile
+     * @param bool  $showTimezone
+     *
      * @return $this
      * @throws \Devvoh\Components\Exception
      */

@@ -20,6 +20,7 @@ class Router {
      * Route the path given or simply the current path being looked at
      *
      * @param null|string $path
+     *
      * @return null|array
      */
     public function match($path = null) {
@@ -100,7 +101,8 @@ class Router {
     /**
      * Returns a route by name
      *
-     * @param $name
+     * @param string $name
+     *
      * @return null|array
      */
     public function getRouteByName($name) {
@@ -115,11 +117,12 @@ class Router {
     /**
      * Builds a path by routeName and params
      *
-     * @param       $routeName
-     * @param array $params
+     * @param string $routeName
+     * @param array  $params
+     *
      * @return null|string
      */
-    public function buildRoute($routeName, $params = []) {
+    public function buildRoute($routeName, array $params = []) {
         // Get the route first, and if not found, return null
         $route = $this->getRouteByName($routeName);
         if (!$route) {
@@ -141,6 +144,7 @@ class Router {
 
     /**
      * Return the routes
+     *
      * @return null|array
      */
     public function getRoutes() {
@@ -150,13 +154,11 @@ class Router {
     /**
      * Add an array of routes to the router
      *
-     * @param null $routes
-     * @return $this|false
+     * @param array $routes
+     *
+     * @return $this
      */
-    public function addRoutes($routes = null) {
-        if (!$routes) {
-            return false;
-        }
+    public function addRoutes(array $routes) {
         foreach ($routes as $name => $route) {
             $this->addRoute($name, $route);
         }
@@ -166,12 +168,13 @@ class Router {
     /**
      * Add a single route to the router
      *
-     * @param $name
-     * @param $route
+     * @param string $name
+     * @param array  $route
+     *
      * @return $this
      * @throws \Devvoh\Components\Exception
      */
-    public function addRoute($name, $route) {
+    public function addRoute($name, array $route) {
         if (isset($this->routes[$name])) {
             throw new \Devvoh\Components\Exception('Route already added with name: ' . $name . ' in a different module. Please use unique names.');
         }

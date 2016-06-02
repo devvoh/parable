@@ -44,6 +44,7 @@ class Database {
      * Set the type
      *
      * @param string $type
+     *
      * @return $this
      */
     public function setType($type) {
@@ -64,6 +65,7 @@ class Database {
      * Set the location
      *
      * @param string $location
+     *
      * @return $this
      */
     public function setLocation($location) {
@@ -84,6 +86,7 @@ class Database {
      * Set the username
      *
      * @param string $username
+     *
      * @return $this
      */
     public function setUsername($username) {
@@ -104,6 +107,7 @@ class Database {
      * Set the password
      *
      * @param string $password
+     *
      * @return $this
      */
     public function setPassword($password) {
@@ -124,6 +128,7 @@ class Database {
      * Set the database
      *
      * @param string $database
+     *
      * @return $this
      */
     public function setDatabase($database) {
@@ -135,6 +140,7 @@ class Database {
      * Set whether the table name should be quoted
      *
      * @param bool $quoteAll
+     *
      * @return $this
      */
     public function setQuoteAll($quoteAll) {
@@ -181,6 +187,7 @@ class Database {
      * Sets the instance
      *
      * @param \PDO $instance
+     *
      * @return $this
      */
     public function setInstance(\PDO $instance) {
@@ -192,6 +199,7 @@ class Database {
      * If an instance is available, quote/escape the message through PDO's quote function
      *
      * @param string $string
+     *
      * @return null|string
      */
     public function quote($string) {
@@ -206,6 +214,7 @@ class Database {
      * PDO result object.
      *
      * @param string $query
+     *
      * @return bool|\PDOStatement
      */
     public function query($query) {
@@ -219,10 +228,11 @@ class Database {
      * Use an array to pass multiple config values at the same time
      *
      * @param array $config
+     *
      * @return $this
      * @throws \Devvoh\Components\Exception
      */
-    public function setConfig(array $config = []) {
+    public function setConfig(array $config) {
         foreach ($config as $type => $value) {
             $method = 'set' . ucfirst($type);
             if (method_exists($this, $method)) {

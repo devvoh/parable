@@ -33,7 +33,8 @@ class SessionMessage {
     /**
      * Get all messages or all messages of $type
      *
-     * @param null $type
+     * @param null|string $type
+     *
      * @return array
      */
     public function get($type = null) {
@@ -51,7 +52,8 @@ class SessionMessage {
     /**
      * Get all messages or all messages of $type and then clear those messages
      *
-     * @param null $type
+     * @param null|string $type
+     *
      * @return array
      */
     public function getClear($type = null) {
@@ -63,11 +65,12 @@ class SessionMessage {
     /**
      * Add a message to type notice by default, or to $type instead
      *
-     * @param null   $message
+     * @param string $message
      * @param string $type
+     *
      * @return $this
      */
-    public function add($message = null, $type = 'notice') {
+    public function add($message, $type = 'info') {
         if (!isset($this->messages[$type]) || !is_array($this->messages[$type])) {
             $this->messages[$type] = [];
         }
@@ -81,7 +84,8 @@ class SessionMessage {
     /**
      * Clear all messages or all messages of $type
      *
-     * @param null $type
+     * @param null|string $type
+     *
      * @return $this
      */
     public function clear($type = null) {
@@ -98,7 +102,8 @@ class SessionMessage {
     /**
      * Count all messages or all messages of $type
      *
-     * @param null $type
+     * @param null|string $type
+     *
      * @return int
      */
     public function count($type = null) {

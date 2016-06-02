@@ -31,13 +31,11 @@ class Mailer {
     /**
      * Set the addresses we're sending to
      *
-     * @param  $to
+     * @param array $to
+     *
      * @return $this
      */
-    public function setTo($to) {
-        if (!is_array($to)) {
-            $to = [$to];
-        }
+    public function setTo(array $to) {
         $this->to = $to;
         return $this;
     }
@@ -54,7 +52,8 @@ class Mailer {
     /**
      * Add an address to the addresses we're sending to
      *
-     * @param  $to
+     * @param string $to
+     *
      * @return $this
      */
     public function addTo($to) {
@@ -65,7 +64,8 @@ class Mailer {
     /**
      * Set the subject
      *
-     * @param  $subject
+     * @param string $subject
+     *
      * @return $this
      */
     public function setSubject($subject) {
@@ -85,7 +85,8 @@ class Mailer {
     /**
      * Set the body
      *
-     * @param  $body
+     * @param string $body
+     *
      * @return $this
      */
     public function setBody($body) {
@@ -105,13 +106,11 @@ class Mailer {
     /**
      * Set the headers
      *
-     * @param  $headers
+     * @param array $headers
+     *
      * @return $this
      */
-    public function setHeaders($headers) {
-        if (!is_array($headers)) {
-            $headers = [$headers];
-        }
+    public function setHeaders(array $headers) {
         $this->headers = $headers;
         return $this;
     }
@@ -128,7 +127,8 @@ class Mailer {
     /**
      * Add a header
      *
-     * @param  $header
+     * @param string $header
+     *
      * @return $this
      */
     public function addHeader($header) {
@@ -139,7 +139,8 @@ class Mailer {
     /**
      * Set the address we're sending from
      *
-     * @param  $from
+     * @param string $from
+     *
      * @return $this
      */
     public function setFrom($from) {
@@ -159,7 +160,8 @@ class Mailer {
     /**
      * Set whether we're sending HTML or not
      *
-     * @param  $active
+     * @param bool $active
+     *
      * @return $this
      */
     public function setHTML($active) {

@@ -144,10 +144,11 @@ class Entity {
      * Attempts to use stored mapper array to map fields from the current entity's properties to what is set in the
      * array.
      *
-     * @param $array
+     * @param array $array
+     *
      * @return array
      */
-    public function toMappedArray($array) {
+    public function toMappedArray(array $array) {
         $mappedArray = [];
         foreach ($this->getMapper() as $from => $to) {
             $mappedArray[$to] = $array[$from];
@@ -171,9 +172,10 @@ class Entity {
      * Populates the current entity with the data provided
      *
      * @param array $data
+     *
      * @return $this;
      */
-    public function populate($data = []) {
+    public function populate(array $data) {
         foreach ($data as $property => $value) {
             if (property_exists($this, $property)) {
                 $this->$property = $value;
@@ -185,7 +187,8 @@ class Entity {
     /**
      * Set the tableName
      *
-     * @param $tableName
+     * @param string $tableName
+     *
      * @return $this
      */
     public function setTableName($tableName) {
@@ -205,7 +208,8 @@ class Entity {
     /**
      * Set the tableKey
      *
-     * @param $tableKey
+     * @param string $tableKey
+     *
      * @return $this
      */
     public function setTableKey($tableKey) {
@@ -225,10 +229,11 @@ class Entity {
     /**
      * Set the mapper
      *
-     * @param $mapper
+     * @param array $mapper
+     *
      * @return $this;
      */
-    public function setMapper($mapper) {
+    public function setMapper(array $mapper) {
         $this->mapper = $mapper;
         return $this;
     }
@@ -254,8 +259,9 @@ class Entity {
     /**
      * Validate the entity's values based on the $validator array.
      *
-     * @param bool|true $returnBool
-     * @return array|bool
+     * @param bool $returnBool
+     *
+     * @return array
      */
     public function validate($returnBool = true) {
         $data = $this->toArray();

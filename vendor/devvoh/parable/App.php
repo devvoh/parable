@@ -169,6 +169,8 @@ class App {
 
     /**
      * Dispatch the current route
+     *
+     * @return $this
      */
     public function dispatch() {
         $this->hook->trigger('parable_app_dispatch_before');
@@ -176,7 +178,7 @@ class App {
         $matchedRoute = $this->matchRoute();
         $dispatched = false;
         if ($matchedRoute) {
-            // Create the dispatcher and try to dispatch
+            /** @var \Devvoh\Parable\Dispatcher $dispatcher */
             $dispatcher = \Devvoh\Components\DI::get(\Devvoh\Parable\Dispatcher::class)->setRoute($matchedRoute);
             $dispatched = $dispatcher->dispatch();
         }
@@ -194,10 +196,14 @@ class App {
         $this->response->sendResponse();
         $this->hook->trigger('parable_app_response_sendResponse_after');
         $this->hook->trigger('parable_app_dispatch_after');
+
+        return $this;
     }
 
     /**
      * Load the modules and store their names in $this->modules
+     *
+     * @return $this
      */
     public function loadModules() {
         $this->hook->trigger('parable_app_loadModules_before');
@@ -212,6 +218,8 @@ class App {
             ]);
         }
         $this->hook->trigger('parable_app_loadModules_after');
+
+        return $this;
     }
 
     /**
@@ -221,15 +229,17 @@ class App {
      */
     public function matchRoute() {
         $this->hook->trigger('parable_app_router_match_before');
-        $this->tool->setRoute(
-            $this->router->match()
-        );
+        if ($route = $this->router->match()) {
+            $this->tool->setRoute($route);
+        };
         $this->hook->trigger('parable_app_router_match_after');
-        return $this->tool->getRoute();
+        return $this->tool->getRoute($route);
     }
 
     /**
      * Collect routes and include the files, which will add their routes to the router automatically
+     *
+     * @return $this
      */
     public function collectRoutes() {
         foreach ($this->tool->getModules() as $module) {
@@ -238,6 +248,7 @@ class App {
                 \Devvoh\Components\DI::create($className)->run();
             }
         }
+        return $this;
     }
 
 }

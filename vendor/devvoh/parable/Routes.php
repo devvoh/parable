@@ -31,10 +31,12 @@ class Routes {
     /**
      * Registers the array given and adds the module to them
      *
-     * @param $routes
+     * @param array  $routes
+     * @param string $modulePath
+     *
      * @return $this
      */
-    protected function registerRoutes($routes, $modulePath = null) {
+    protected function registerRoutes(array $routes, $modulePath) {
         // Add module to all routes if we've been given a path
         if ($modulePath) {
             foreach ($routes as &$route) {
@@ -46,4 +48,3 @@ class Routes {
     }
 
 }
-

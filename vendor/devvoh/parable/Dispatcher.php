@@ -68,6 +68,7 @@ class Dispatcher {
      * Set the route
      *
      * @param array $route
+     *
      * @return $this
      */
     public function setRoute(array $route) {

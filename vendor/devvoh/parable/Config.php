@@ -20,7 +20,6 @@ class Config extends \Devvoh\Components\GetSet {
         \Devvoh\Parable\Tool $tool
     ) {
         $this->tool = $tool;
-
         $this->setResource('config');
     }
 
@@ -49,7 +48,8 @@ class Config extends \Devvoh\Components\GetSet {
     /**
      * Return the value in $key as a boolean
      *
-     * @param $key
+     * @param string $key
+     *
      * @return bool
      */
     public function getBool($key) {
