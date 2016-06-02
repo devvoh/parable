@@ -20,7 +20,7 @@ class Tool {
     protected $database;
 
     /** @var string */
-    protected $version     = '0.7.0';
+    protected $version     = '0.7.3';
 
     /** @var array */
     protected $route       = [];
