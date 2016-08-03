@@ -1,0 +1,24 @@
+{
+  "name": "devvoh/parable",
+  "type": "framework",
+  "description": "Parable is a PHP micro framework",
+  "keywords": ["framework", "micro"],
+  "homepage": "http://devvoh.com/parable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Robin de Graaf",
+      "email": "hello@devvoh.com",
+      "homepage": "https://devvoh.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Parable\\": "src/"
+    }
+  },
+  "bin": ["src/parable"]
+}

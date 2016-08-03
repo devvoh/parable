@@ -1,0 +1,128 @@
+<?php
+/**
+ * @package     Parable Framework
+ * @license     MIT
+ * @author      Robin de Graaf <hello@devvoh.com>
+ * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
+ */
+
+namespace Parable\Framework;
+
+class App {
+
+    /** @var \Parable\Filesystem\Path */
+    protected $path;
+
+    /** @var \Parable\Framework\Config */
+    protected $config;
+
+    /** @var \Parable\Framework\Dispatcher */
+    protected $dispatcher;
+
+    /** @var \Parable\Events\Hook */
+    protected $hook;
+
+    /** @var \Parable\Routing\Router */
+    protected $router;
+
+    /** @var \Parable\Http\Request */
+    protected $request;
+
+    /** @var \Parable\Http\Response */
+    protected $response;
+
+    /** @var \Parable\Http\Url */
+    protected $url;
+
+    /** @var \Parable\ORM\Database */
+    protected $database;
+
+    /**
+     * @param \Parable\Filesystem\Path      $path
+     * @param \Parable\Framework\Config     $config
+     * @param \Parable\Framework\Dispatcher $dispatcher
+     * @param \Parable\Events\Hook          $hook
+     * @param \Parable\Routing\Router       $router
+     * @param \Parable\Http\Request         $request
+     * @param \Parable\Http\Response        $response
+     * @param \Parable\Http\Url             $url
+     * @param \Parable\ORM\Database         $database
+     */
+    public function __construct(
+        \Parable\Filesystem\Path      $path,
+        \Parable\Framework\Config     $config,
+        \Parable\Framework\Dispatcher $dispatcher,
+        \Parable\Events\Hook          $hook,
+        \Parable\Routing\Router       $router,
+        \Parable\Http\Request         $request,
+        \Parable\Http\Response        $response,
+        \Parable\Http\Url             $url,
+        \Parable\ORM\Database         $database
+    ) {
+        $this->path       = $path;
+        $this->config     = $config;
+        $this->dispatcher = $dispatcher;
+        $this->hook       = $hook;
+        $this->router     = $router;
+        $this->response   = $response;
+        $this->request    = $request;
+        $this->url        = $url;
+        $this->database   = $database;
+    }
+
+    /**
+     * Do all the setup
+     *
+     * @return $this
+     */
+    public function run() {
+        /* Set the basedir on paths */
+        $this->path->setBasedir(BASEDIR);
+
+        /* Load all known Config files now that we know the baseDir */
+        $this->config->load();
+
+        /* Build the base Url */
+        $this->url->buildBaseurl();
+
+        /* Load the routes */
+        $this->loadRoutes();
+
+        /* Get the current url */
+        $currentUrl = $this->url->getCurrentUrl();
+
+        /* Load the config */
+        if ($this->config->get('database.type')) {
+            $this->database->setConfig($this->config->get('database'));
+        }
+
+        /* And try to match the route */
+        $this->hook->trigger('parable_route_match_before', $currentUrl);
+        $route = $this->router->matchCurrentRoute();
+        $this->hook->trigger('parable_route_match_after', $route);
+        if ($route) {
+            $this->hook->trigger('parable_http_200', $route);
+            $this->dispatcher->dispatch($route);
+        } else {
+            $this->response->setHttpCode(404);
+            $this->hook->trigger('parable_http_404', $currentUrl);
+        }
+
+        $this->hook->trigger('parable_response_send');
+        $this->response->send();
+        return $this;
+    }
+
+    /**
+     * Load the routes
+     *
+     * @return $this
+     */
+    protected function loadRoutes() {
+        foreach (\Parable\DI\Container::get(\Routes::class)->get() as $name => $route) {
+            $this->router->addRoute($name, $route);
+        }
+        return $this;
+    }
+
+}
