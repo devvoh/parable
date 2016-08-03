@@ -1,5 +1,9 @@
 ## Parable PHP Framework
 
+[![Latest Stable Version](https://poser.pugx.org/devvoh/parable/v/stable)](https://packagist.org/packages/devvoh/parable)
+[![Latest Unstable Version](https://poser.pugx.org/devvoh/parable/v/unstable)](https://packagist.org/packages/devvoh/parable)
+[![License](https://poser.pugx.org/devvoh/parable/license)](https://packagist.org/packages/devvoh/parable)
+
 Parable is intended to be a tiny, fast and out-of-your-way PHP framework that just lets you get stuff done. To achieve 
 this, Parable includes only what is needed to create small to medium-sized web applications, but allows any PSR-4 
 compatible library to be added easily for extensibility.
