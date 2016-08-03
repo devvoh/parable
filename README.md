@@ -17,7 +17,7 @@ Parable isn't by any means production-ready, secure or foolproof. So only try it
 
 ## Installation
 
-Parable can be installed by using [http://getcomposer.org/](Composer). Simply run:
+Parable can be installed by using [Composer](http://getcomposer.org/). Simply run:
 
 `composer require devvoh/parable 0.8.*`
 
