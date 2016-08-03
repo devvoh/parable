@@ -1,8 +1,0 @@
-{
-    "autoload": {
-        "psr-4": {
-          "Devvoh\\Components\\": "vendor/devvoh/components/src/",
-          "Devvoh\\Parable\\": "vendor/devvoh/parable/"
-        }
-    }
-}
