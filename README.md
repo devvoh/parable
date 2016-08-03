@@ -17,9 +17,21 @@ Parable isn't by any means production-ready, secure or foolproof. So only try it
 
 ## Installation
 
-Download a release from [here](https://github.com/devvoh/parable/releases). Unpack it wherever you like.
+Parable can be installed by using [http://getcomposer.org/](Composer). Simply run:
 
-Then run `composer install` and the autoload will be generated. Parable is now ready to use.
+`composer require devvoh/parable 0.8.*`
+
+You'll get the latest version this way. If you want to install a specific version, include the version (0.8.0, for example). 
+It is, however, preferred to use the above version notation, since it will also get you updated and fixed versions, but no
+backwards-compatibility breaking changes.
+
+After you've run the above command, you'll have a composer.json and a vendor folder. Parable is in there, but it's not
+quite ready to be used. To initialize Parable's folder structure and files, run the following command:
+
+`vendor/bin/parable init`
+
+Now you're ready! Simply open the (properly installed apache2 & php 5.5+) url it's in in your browser and you should
+see a welcome page.
 
 ## Documentation & More
 
