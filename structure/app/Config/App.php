@@ -27,7 +27,7 @@ class App implements \Parable\Framework\Interfaces\Config {
         return [
             'app' => [
                 'title'    => 'Parable',
-                'version'  => '0.8.0',
+                'version'  => '0.8.1',
             ],
         ];
     }

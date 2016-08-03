@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.8.1
+
+__Changes__
+- README.md now has the new install instructions (through composer and packagist)
+
 ### 0.8.0
 
 __Note: This version is *completely* incompatible with previous versions and is basically a rewrite. I told you not to expect backwards compatibility just yet ;)__
