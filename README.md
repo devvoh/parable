@@ -42,7 +42,9 @@ need as well 'except for these small things', I would love to hear from you to s
 ## Details
 
 Parable probably won't ever be truly done, but the basis that stands at this point will provide a good platform to build out
-from. Perhaps dependency injection, unit tests, documentation, etc. will all make their way into it at some point.
+from. The intent is to add unit testing, documentation and more as time moves on. For now, it's time for me to start
+implementing Parable through projects, to find out where possible issues are left to find. But it's surprisingly
+usable as it stands.
 
 Any questions or constructive feedback? Find me at [devvoh.com](http://devvoh.com) or ask me a question by adding an 
 issue on github.
