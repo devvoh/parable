@@ -26,8 +26,7 @@ class App implements \Parable\Framework\Interfaces\Config {
     public function getValues() {
         return [
             'app' => [
-                'title'    => 'Parable',
-                'version'  => '0.8.1',
+                'title'    => 'Parable'
             ],
         ];
     }
