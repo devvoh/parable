@@ -23,7 +23,7 @@ Parable isn't by any means production-ready, secure or foolproof. So only try it
 
 Parable can be installed by using [Composer](http://getcomposer.org/). Simply run:
 
-`composer require devvoh/parable 0.8.*`
+`composer require devvoh/parable ~0.8.0`
 
 You'll get the latest version this way. If you want to install a specific version, include the version (0.8.0, for example). 
 It is, however, preferred to use the above version notation, since it will also get you updated and fixed versions, but no
