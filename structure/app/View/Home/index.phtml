@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-        <title>Hello from <?=$this->config->get('app.title');?> <?=$this->config->get('app.version');?></title>
+        <title>Hello from <?=$this->config->get('app.title');?> <?=$this->app->getVersion();?></title>
 
         <!-- Raleway font from google fonts -->
         <link href='https://fonts.googleapis.com/css?family=Raleway:100,400' rel='stylesheet' type='text/css'>
@@ -63,7 +63,7 @@
 
             <article class="container">
                 <header>
-                    <?=$this->config->get('app.title');?> <?=$this->config->get('app.version');?>
+                    <?=$this->config->get('app.title');?> <?=$this->app->getVersion();?>
                 </header>
                 <aside>
                     PHP framework by <a href="http://devvoh.com">devvoh</a>

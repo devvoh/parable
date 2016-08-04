@@ -1,5 +1,19 @@
 # Parable PHP Framework Changelog
 
+### 0.8.3
+
+__Changes__
+- Getting all the little details right.
+- Moved Parable version to \Parable\Framework\App, as it should remain available even if the config is changed.
+- Moved Able > Cli.
+- Removed Error folder from mkdir list, as it's no longer included.
+- Added \Parable\Framework\App to View magic properties, so it's available there as well.
+
+### 0.8.2
+
+__Changes__
+- README.md updated
+
 ### 0.8.1
 
 __Changes__
