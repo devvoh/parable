@@ -27,7 +27,11 @@ class Config {
 
     public function getNested(&$data, $keys) {
         foreach ($keys as $key) {
-            $data = &$data[$key];
+            if (isset($data[$key])) {
+                $data = &$data[$key];
+            } else {
+                $data = null;
+            }
         }
         return $data;
     }

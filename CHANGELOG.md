@@ -1,5 +1,16 @@
 # Parable PHP Framework Changelog
 
+### 0.8.4
+
+__Changes__
+- Added Init scripts. Check app/Init/Example.php for details on what you'd use these for.
+- The Dispatcher now uses output buffering. Any content returned from controllers/closures is _appended_ to it.
+- Database now always quotes all. This is due to reserved keywords in both sqlite/mysql. This should not impact any existing scripts.
+
+__Bugfixes__
+- Nested config values (such as 'app.title') now return null if they don't exist, rather than the Config freakin' out.
+- Toolkit now (as originally intended) ignores Cli\App. It was confusing which App class to use. Cli\App should never be available in a web context.
+
 ### 0.8.3
 
 __Changes__
@@ -33,12 +44,12 @@ __Changes__
 
 ### 0.7.2
 
-__Bugs__
+__Bugfixes__
 - Haste is waste. Fixed properly now. It's a Sunday and I should've had more coffee by now ;)
 
 ### 0.7.1
 
-__Bugs__
+__Bugfixes__
 - null was being passed to Tool->setRoute(), which since very recently requires an array, causing a fatal error instead of a 404. Fixed.
 
 ### 0.7.0

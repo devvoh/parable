@@ -39,12 +39,13 @@ class Toolkit {
 
             /*
              * Specifically exclude all non-php files and Bootstrap, since it will attempt to register everything again
-             * and isn't a class anyway. Also exclude anything in the Skeleton folder.
+             * and isn't a class anyway.
              */
             if (
                 $file->getFilename() === 'Bootstrap.php'
                 || $file->getFilename() === 'able.php'
                 || $file->getExtension() !== 'php'
+                || strpos($file->getRealPath(), '/Cli/') !== false
             ) {
                 continue;
             }
