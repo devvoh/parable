@@ -25,22 +25,32 @@ class Config {
         $this->path   = $path;
     }
 
+    /**
+     * @param array $data
+     * @param array $keys
+     *
+     * @return mixed
+     */
     public function getNested(&$data, $keys) {
         foreach ($keys as $key) {
-            if (isset($data[$key])) {
-                $data = &$data[$key];
-            } else {
-                $data = null;
-            }
+            $data = &$data[$key];
         }
         return $data;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
     public function get($key) {
         if (strpos($key, '.') !== false) {
             return $this->getNested($this->config, explode('.', $key));
         }
-        return $this->config[$key];
+        if (isset($this->config[$key])) {
+            return $this->config[$key];
+        }
+        return null;
     }
 
     public function load() {

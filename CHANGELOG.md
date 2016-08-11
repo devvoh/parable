@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.8.5
+
+__Bugfixes__
+- Non-nested config values now _also_ return null if they don't exist, rather than the Config freakin' out. I think I got this.
+
 ### 0.8.4
 
 __Changes__
