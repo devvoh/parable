@@ -13,6 +13,7 @@ namespace Parable\Framework;
  * @property \Parable\Events\Dock          $dock
  * @property \Parable\Events\Hook          $hook
  * @property \Parable\Filesystem\Path      $path
+ * @property \Parable\Framework\App        $app
  * @property \Parable\Framework\Config     $config
  * @property \Parable\Framework\Dispatcher $dispatcher
  * @property \Parable\Framework\Log        $log

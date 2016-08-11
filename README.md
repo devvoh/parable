@@ -15,7 +15,7 @@ Parable isn't by any means production-ready, secure or foolproof. So only try it
 
 ## Requirements
 
-- PHP 5.4+, PHP 7
+- PHP 5.5+, PHP 7
 - Composer
 - Sense of adventure
 
@@ -23,7 +23,7 @@ Parable isn't by any means production-ready, secure or foolproof. So only try it
 
 Parable can be installed by using [Composer](http://getcomposer.org/). Simply run:
 
-`composer require devvoh/parable 0.8.*`
+`composer require devvoh/parable ~0.8.0`
 
 You'll get the latest version this way. If you want to install a specific version, include the version (0.8.0, for example). 
 It is, however, preferred to use the above version notation, since it will also get you updated and fixed versions, but no
@@ -36,6 +36,8 @@ quite ready to be used. To initialize Parable's folder structure and files, run 
 
 Now you're ready! Simply open the (properly installed apache2 & php 5.5+) url it's in in your browser and you should
 see a welcome page.
+
+If you want to use nginx, that's cool too, but you'll have to set up url rewriting rules yourself.
 
 ## Documentation & More
 

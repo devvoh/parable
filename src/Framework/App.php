@@ -37,6 +37,9 @@ class App {
     /** @var \Parable\ORM\Database */
     protected $database;
 
+    /** @var string */
+    protected $version = '0.8.3';
+
     /**
      * @param \Parable\Filesystem\Path      $path
      * @param \Parable\Framework\Config     $config
@@ -123,6 +126,15 @@ class App {
             $this->router->addRoute($name, $route);
         }
         return $this;
+    }
+
+    /**
+     * Return the version number
+     *
+     * @return string
+     */
+    public function getVersion() {
+        return $this->version;
     }
 
 }

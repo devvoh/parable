@@ -6,7 +6,7 @@
  * @copyright   2016, Robin de Graaf, devvoh webdevelopment
  */
 
-namespace Parable\Able;
+namespace Parable\Cli;
 
 class App {
 
@@ -82,7 +82,7 @@ class App {
 
     protected function init() {
         $this->cli
-            ->writeLine('Welcome to Able. We will now initialize your Parable install.')
+            ->writeLine('Welcome to Parable. We will now initialize your Parable install.')
             ->br()
             ->writeLine('After completing this process, you will have an environment based on')
             ->writeLine('Parable, complete with folder structure files to start with.')
@@ -96,7 +96,6 @@ class App {
         mkdir($this->path->getDir('app/Controller', 0644, true));
         mkdir($this->path->getDir('app/Model',      0644, true));
         mkdir($this->path->getDir('app/View',       0644, true));
-        mkdir($this->path->getDir('app/View/Error', 0644, true));
         mkdir($this->path->getDir('app/View/Home',  0644, true));
         mkdir($this->path->getDir('public',         0644, true));
 

@@ -35,6 +35,6 @@ $autoloader->addLocation(BASEDIR . '/app');
 $autoloader->register();
 
 if (PHP_SAPI === 'cli') {
-    return \Parable\DI\Container::get(\Parable\Able\App::class);
+    return \Parable\DI\Container::get(\Parable\Cli\App::class);
 }
 return \Parable\DI\Container::get(\Parable\Framework\App::class);
