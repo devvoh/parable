@@ -26,7 +26,10 @@ class App implements \Parable\Framework\Interfaces\Config {
     public function getValues() {
         return [
             'app' => [
-                'title'    => 'Parable'
+                'title'     => 'Parable'
+            ],
+            'initLocations' => [
+                'app/Init',
             ],
         ];
     }

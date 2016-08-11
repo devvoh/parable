@@ -11,7 +11,7 @@ namespace Parable\ORM;
 class Database {
 
     /** @var bool */
-    protected $quoteAll = false;
+    protected $quoteAll = true;
 
     /** @var null|string */
     protected $type;

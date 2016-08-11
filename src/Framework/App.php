@@ -38,7 +38,7 @@ class App {
     protected $database;
 
     /** @var string */
-    protected $version = '0.8.3';
+    protected $version = '0.8.4';
 
     /**
      * @param \Parable\Filesystem\Path      $path
@@ -99,6 +99,11 @@ class App {
             $this->database->setConfig($this->config->get('database'));
         }
 
+        /* See if there's an init directory defined in the config */
+        if ($this->config->get('initLocations')) {
+            $this->loadInits();
+        }
+
         /* And try to match the route */
         $this->hook->trigger('parable_route_match_before', $currentUrl);
         $route = $this->router->matchCurrentRoute();
@@ -126,6 +131,31 @@ class App {
             $this->router->addRoute($name, $route);
         }
         return $this;
+    }
+
+    protected function loadInits() {
+        $locations = $this->config->get('initLocations');
+
+        if (!is_array($locations)) {
+            return;
+        }
+
+        foreach ($locations as $location) {
+            $directory = $this->path->getDir($location);
+
+            if (!file_exists($directory)) {
+                continue;
+            }
+
+            $dirIterator = new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS);
+            $iteratorIterator = new \RecursiveIteratorIterator($dirIterator);
+
+            foreach ($iteratorIterator as $file) {
+                /** @var \SplFileInfo $file */
+                $className = '\\Init\\' . str_replace('.' . $file->getExtension(), '', $file->getFilename());
+                \Parable\DI\Container::create($className);
+            }
+        }
     }
 
     /**

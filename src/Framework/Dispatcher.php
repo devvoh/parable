@@ -19,30 +19,39 @@ class Dispatcher {
     /** @var \Parable\Framework\View */
     protected $view;
 
+    /** @var \Parable\Http\Response */
+    protected $response;
+
     /**
      * @param \Parable\Events\Hook     $hook
      * @param \Parable\Filesystem\Path $path
      * @param \Parable\Framework\View  $view
+     * @param \Parable\Http\Response   $response
      */
     public function __construct(
         \Parable\Events\Hook     $hook,
         \Parable\Filesystem\Path $path,
-        \Parable\Framework\View  $view
+        \Parable\Framework\View  $view,
+        \Parable\Http\Response   $response
     ) {
-        $this->hook = $hook;
-        $this->path = $path;
-        $this->view = $view;
+        $this->hook     = $hook;
+        $this->path     = $path;
+        $this->view     = $view;
+        $this->response = $response;
     }
 
     /**
      * @param \Parable\Routing\Route $route
      *
-     * @return string
+     * @return $this
      */
     public function dispatch(\Parable\Routing\Route $route) {
         $this->hook->trigger('parable_dispatch_before', $route);
-        $content    = '';
         $controller = null;
+
+        /* Start output buffering and set $content to null */
+        $content = null;
+        $this->response->startOutputBuffer();
 
         /* Call the relevant code */
         if ($route->controller && $route->action) {
@@ -60,7 +69,6 @@ class Dispatcher {
         } else {
             if ($controller) {
                 $reflection = new \ReflectionClass($controller);
-
                 $templateFile = $this->path->getDir('app/View/' . $reflection->getShortName() . '/' . $route->action . '.phtml');
             }
         }
@@ -70,8 +78,17 @@ class Dispatcher {
             $this->view->render();
         }
 
+        /* Get the output buffer content and check if $content holds anything. If so, append it to the $bufferContent */
+        $bufferContent = $this->response->returnOutputBuffer();
+        if ($content) {
+            $bufferContent .= $content;
+        }
+
+        /* And append the content to the response object */
+        $this->response->appendContent($bufferContent);
+
         $this->hook->trigger('parable_dispatch_after', $route);
-        return $content ?: '';
+        return $this;
     }
 
 }
