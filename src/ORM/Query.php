@@ -31,9 +31,6 @@ class Query {
     /** @var array */
     protected $joins    = [];
 
-    /** @var bool */
-    protected $quoteAll = false;
-
     /** @var null|string */
     protected $tableName;
 
@@ -70,32 +67,16 @@ class Query {
      * @return string
      */
     public function getTableName() {
-        $tableName = $this->tableName;
-        if ($this->quoteAll) {
-            $tableName = $this->database->quote($tableName);
-        }
-        return $tableName;
+        return $this->tableName;
     }
 
     /**
-     * Set whether the table name should be quoted
+     * Get the currently set tableName, quoted
      *
-     * @param bool $quoteAll
-     *
-     * @return $this
+     * @return null|string
      */
-    public function setQuoteAll($quoteAll) {
-        $this->quoteAll = (bool)$quoteAll;
-        return $this;
-    }
-
-    /**
-     * Return whether table names should be quoted
-     *
-     * @return bool
-     */
-    public function getQuoteAll() {
-        return $this->quoteAll;
+    public function getQuotedTableName() {
+        return $this->database->quoteIdentifier($this->tableName);
     }
 
     /**
@@ -148,27 +129,29 @@ class Query {
     /**
      * Adds a where condition for relevant queries
      *
-     * @param string     $condition
-     * @param null|mixed $value
+     * @param string $key
+     * @param string $comparator
+     * @param mixed  $value
      *
      * @return $this
      */
-    public function where($condition, $value = null) {
-        $this->where[] = ['condition' => $condition, 'value' => $value];
+    public function where($key, $comparator, $value = null) {
+        $this->where[] = ['key' => $key, 'comparator' => $comparator, 'value' => $value];
         return $this;
     }
 
     /**
      * Adds a simple join clause
      *
-     * @param string     $table
-     * @param string     $condition
-     * @param null|mixed $value
+     * @param string $table
+     * @param string $key
+     * @param string $comparator
+     * @param mixed  $value
      *
      * @return $this
      */
-    public function join($table, $condition, $value = null) {
-        $this->joins[] = ['table' => $table, 'condition' => $condition, 'value' => $value];
+    public function join($table, $key, $comparator, $value = null) {
+        $this->joins[] = ['table' => $table, 'key' => $key, 'comparator' => $comparator, 'value' => $value];
         return $this;
     }
 
@@ -231,6 +214,123 @@ class Query {
     }
 
     /**
+     * Build a condition string from an array of values. Required keys: key, comparator, value.
+     *
+     * Examples: ['id', '=', 1]
+     *           ['id', 'NOT IN', [1, 2, 3, 4]]
+     *
+     * @param $conditionArray
+     *
+     * @return string
+     */
+    protected function buildCondition($conditionArray) {
+        // Check for IN/NOT IN
+        if (in_array(strtolower($conditionArray['comparator']), ['in', 'not in'])) {
+            $values = $conditionArray['value'];
+            $valueArray = [];
+            foreach ($values as $value) {
+                $valueArray[] = $this->database->quote($value);
+            }
+            $conditionArray['value'] = '(' . implode(',', $valueArray) . ')';
+        } else {
+            $conditionArray['value'] = $this->database->quote($conditionArray['value']);
+        }
+
+        // Check for IS/IS NOT
+        if (in_array(strtolower($conditionArray['comparator']), ['is', 'is not'])) {
+            $conditionArray['value'] = 'NULL';
+        }
+
+        $returnArray = [
+            $this->database->quoteIdentifier($conditionArray['key']),
+            $conditionArray['comparator'],
+            $conditionArray['value']
+        ];
+
+        return implode(' ', $returnArray);
+    }
+
+    /**
+     * Build JOIN string if they're available
+     *
+     * @return string
+     */
+    protected function buildJoins() {
+        if (count($this->joins) > 0) {
+            $joins = [];
+            foreach ($this->joins as $join) {
+                $joins[] = "JOIN " . $join['table'] . " ON " . $this->buildCondition($join);
+            }
+            return implode(' ', $joins);
+        }
+        return '';
+    }
+
+    /**
+     * Build WHERE string if they're available
+     *
+     * @return string
+     */
+    protected function buildWheres() {
+        if (count($this->where) > 0) {
+            $wheres = [];
+            foreach ($this->where as $where) {
+                $wheres[] = $this->buildCondition($where);
+            }
+            return "WHERE " . implode(' AND ', $wheres);
+        }
+        return '';
+    }
+
+    /**
+     * Build ORDER BY string if it's available
+     *
+     * @return string
+     */
+    protected function buildOrderBy() {
+        if (count($this->orderBy) > 0) {
+            $orders = [];
+            foreach ($this->orderBy as $orderBy) {
+                $orders[] = $orderBy['key'] . ' ' . $orderBy['direction'];
+            }
+            return "ORDER BY " . implode(', ', $orders);
+        }
+        return '';
+    }
+
+    /**
+     * Build GROUP BY string if it's available
+     *
+     * @return string
+     */
+    protected function buildGroupBy() {
+        if (count($this->groupBy) > 0) {
+            $groups = [];
+            foreach ($this->groupBy as $groupBy) {
+                $groups[] = $groupBy;
+            }
+            return "GROUP BY " . implode(', ', $groups);
+        }
+        return '';
+    }
+
+    /**
+     * Build LIMIT/OFFSET string if it's available
+     *
+     * @return string
+     */
+    protected function buildLimitOffset() {
+        if (is_array($this->limit)) {
+            $limit = "LIMIT " . $this->limit['limit'];
+            if ($this->limit['offset'] !== null) {
+                $limit .= ", " . $this->limit['limit'];
+            }
+            return $limit;
+        }
+        return '';
+    }
+
+    /**
      * Outputs the actual query for use, empty string if invalid/incomplete values given
      *
      * @return string
@@ -245,87 +345,22 @@ class Query {
 
         if ($this->action === 'select') {
 
-            // set select & what needs to be selected
             $query[] = "SELECT " . $this->select;
-            // table
-            $query[] = "FROM " . $this->getTableName();
-
-            // Add the left joins
-            if (count($this->joins) > 0) {
-                $joins = [];
-                foreach ($this->joins as $join) {
-                    $joins[] = "JOIN " . $join['table'];
-                    if ($join['value'] !== null) {
-                        $joins[] = "ON " . str_replace('?', $this->database->quote($join['value']), $join['condition']);
-                    } else {
-                        $joins[] = "ON " . $join['condition'];
-                    }
-                }
-                $query[] = implode(' ', $joins);
-            }
-
-            // now get the where clauses
-            if (count($this->where) > 0) {
-                $wheres = [];
-                foreach ($this->where as $where) {
-                    if ($where['value'] !== null) {
-                        $wheres[] = str_replace('?', $this->database->quote($where['value']), $where['condition']);
-                    } else {
-                        $wheres[] = $where['condition'];
-                    }
-                }
-                $query[] = "WHERE " . implode(' AND ', $wheres);
-            }
-
-            // now get the order(s)
-            if (count($this->orderBy) > 0) {
-                $orders = [];
-                foreach ($this->orderBy as $orderBy) {
-                    $orders[] = $orderBy['key'] . ' ' . $orderBy['direction'];
-                }
-                $query[] = "ORDER BY " . implode(', ', $orders);
-            }
-
-            // now get the group(s)
-            if (count($this->groupBy) > 0) {
-                $groups = [];
-                foreach ($this->groupBy as $groupBy) {
-                    $groups[] = $groupBy;
-                }
-                $query[] = "GROUP BY " . implode(', ', $groups);
-            }
-
-            // and the limit
-            if (is_array($this->limit)) {
-                if ($this->limit['offset'] !== null && $this->limit['limit'] !== null) {
-                    $query[] = "LIMIT " . $this->limit['offset'] . ", " . $this->limit['limit'];
-                } elseif ($this->limit['limit'] !== null) {
-                    $query[] = "LIMIT " . $this->limit['limit'];
-                }
-            }
+            $query[] = "FROM " . $this->getQuotedTableName();
+            $query[] = $this->buildJoins();
+            $query[] = $this->buildWheres();
+            $query[] = $this->buildOrderBy();
+            $query[] = $this->buildGroupBy();
+            $query[] = $this->buildLimitOffset();
 
         } elseif ($this->action === 'delete') {
 
-            // set delete to the proper table
-            $query[] = "DELETE FROM " . $this->getTableName();
-
-            // now get the where clauses
-            if (count($this->where) > 0) {
-                $wheres = [];
-                foreach ($this->where as $where) {
-                    if ($where['value'] !== null) {
-                        $wheres[] = str_replace('?', $this->database->quote($where['value']), $where['condition']);
-                    } else {
-                        $wheres[] = $where['condition'];
-                    }
-                }
-                $query[] = "WHERE " . implode(' AND ', $wheres);
-            }
+            $query[] = "DELETE FROM " . $this->getQuotedTableName();
+            $query[] = $this->buildWheres();
 
         } elseif ($this->action === 'update') {
 
-            // set update to the proper table
-            $query[] = "UPDATE " . $this->getTableName();
+            $query[] = "UPDATE " . $this->getQuotedTableName();
 
             // now get the values
             if (count($this->values) > 0) {
@@ -342,17 +377,18 @@ class Query {
                         } else {
                             $correctValue = $this->database->quote($value);
                         }
-                        if ($this->getQuoteAll()) {
-                            $key = $this->database->quote($key);
-                        }
-                        $values[] = $key . "=" . $correctValue;
+                        // Quote the key
+                        $key = $this->database->quoteIdentifier($key);
+
+                        // Add key & value combo to the array
+                        $values[] = $key . " = " . $correctValue;
                     } else {
                         $tableKey = $key;
                         $tableKeyValue = $value;
                     }
                 }
-                $query[] = "SET " . implode(',', $values);
-                $query[] = "WHERE " . $tableKey . " = " . $this->database->quote($tableKeyValue);
+                $query[] = "SET " . implode(', ', $values);
+                $query[] = "WHERE " . $this->database->quoteIdentifier($tableKey) . " = " . $this->database->quote($tableKeyValue);
             } else {
                 $query = [];
             }
@@ -360,7 +396,7 @@ class Query {
         } elseif ($this->action === 'insert') {
 
             // set insert to the proper table
-            $query[] = "INSERT INTO " . $this->getTableName();
+            $query[] = "INSERT INTO " . $this->getQuotedTableName();
 
             // now get the values
             if (count($this->values) > 0) {
@@ -368,10 +404,8 @@ class Query {
                 $keys = [];
                 $values = [];
                 foreach ($this->values as $key => $value) {
-                    if ($this->getQuoteAll()) {
-                        $key = $this->database->quote($key);
-                    }
-                    $keys[] = $key;
+                    // Quote the key
+                    $keys[] = $this->database->quoteIdentifier($key);
 
                     if ($value === null) {
                         $correctValue = 'NULL';
@@ -381,9 +415,9 @@ class Query {
                     $values[] = $correctValue;
                 }
 
-                $query[] = "(" . implode(',', $keys) . ")";
+                $query[] = "(" . implode(', ', $keys) . ")";
                 $query[] = "VALUES";
-                $query[] = "(" . implode(',', $values) . ")";
+                $query[] = "(" . implode(', ', $values) . ")";
             } else {
                 $query = [];
             }
@@ -395,8 +429,12 @@ class Query {
             return '';
         }
 
+        // Now make it nice.
+        $queryString = implode(' ', $query);
+        $queryString = trim($queryString) . ';';
+
         // Since we got here, we've got a query to output
-        return implode(' ', $query);
+        return $queryString;
     }
 
 }

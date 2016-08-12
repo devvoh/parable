@@ -1,5 +1,24 @@
 # Parable PHP Framework Changelog
 
+### 0.8.6
+
+From time to time, clean-up is needed. This is one of those moments, where an unsexy but necessary overhaul was done for \Parable\ORM\Query.
+
+__Changes__
+- Removed check in `Bootstrap.php` to see if the composer autoload exists. By the time you've gotten to that point, it's almost inevitable.
+- Removed option to disable quoteAll on either `\Parable\ORM\Database` or `\Parable\ORM\Query` level. Sssh, it's better this way.
+- To help in quoting everything correctly, a `quoteIdentifier()` method has been added to `\Parable\ORM\Database`. PDO doesn't offer a way to quote with backticks, so there ya go.
+- `\Parable\ORM\Query` changes:
+    1. Conditions `('id = ?', 1)` have been replaced with key/comparator/value `('id', '=', 1)`. This allows running `quoteIdentifier()` on keys.
+    2. This impacts `where()` and `join()` calls.
+    3. To simplify the class, `buildJoins()`, `buildWheres()`, `buildOrderBy()`, `buildGroupBy()` and `buildLimitOffset()` have been added, which do exactly as they're named.
+    4. The above functions will call `buildCondition($conditionArray)` to build conditions. `buildConditions` now also correctly handles `IN` and `NOT IN` comparators by escaping all values separately. The correct call to add an `IN` where is as follows: `$query->where('id', 'not in', [1,3,5]);`. All other types of comparison are scalar. To use an `IS NULL` or `IS NOT NULL`, do it like this: `$query->where('id', 'IS NOT NULL');`. The `$value` parameter is optional for this reason.
+    5. All queries now nicely end with a `;` character, for copy-pasting reasons.
+- `\Parable\Framework\Repository` now uses the new conditions.
+
+__Bugfixes__
+- In `\Cli\App`, parenthesis were placed wrong and additional mkdir params were being ignored. Kinda surprised it still worked, but at least now it should work even better.
+
 ### 0.8.5
 
 __Bugfixes__
