@@ -87,7 +87,7 @@ class Repository {
      */
     public function getById($id) {
         $query = $this->createQuery();
-        $query->where($this->getModel()->getTableKey() . ' = ?', $id);
+        $query->where($this->getModel()->getTableKey(), '=', $id);
         $result = $this->database->query($query);
 
         $model = null;
@@ -108,8 +108,8 @@ class Repository {
      */
     public function getByConditions(array $conditionsArray) {
         $query = $this->createQuery();
-        foreach ($conditionsArray as $condition => $value) {
-            $query->where($condition, $value);
+        foreach ($conditionsArray as $conditionArray) {
+            $query->where(...$conditionArray);
         }
         $result = $this->database->query($query);
 
@@ -173,14 +173,12 @@ class Repository {
     /**
      * Returns all rows matching specific condition given
      *
-     * @param string $condition
-     * @param string $value
+     * @param array $conditionArray
      *
      * @return \Parable\ORM\Model[]|\Parable\ORM\Model
      */
-    public function getByCondition($condition, $value) {
-        $conditionsArray = [$condition => $value];
-        return $this->getByConditions($conditionsArray);
+    public function getByCondition(array $conditionArray) {
+        return $this->getByConditions([$conditionArray]);
     }
 
     /**

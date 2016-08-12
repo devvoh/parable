@@ -22,9 +22,6 @@ ini_set('display_errors', '1');
 /*
  * Attempt to register composer's autoloader, which will be required for components
  */
-if (!file_exists(BASEDIR . '/vendor/autoload.php')) {
-    throw new \Exception('composer autoload not found, run "composer install" first to generate it.');
-}
 require_once(BASEDIR . '/vendor/autoload.php');
 
 /*

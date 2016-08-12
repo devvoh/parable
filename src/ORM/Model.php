@@ -149,7 +149,7 @@ class Model {
     public function delete() {
         $query = $this->createQuery();
         $query->setAction('delete');
-        $query->where($this->getTableKey() . ' = ?', $this->id);
+        $query->where($this->getTableKey(), '=', $this->id);
         return $this->database->query($query);
     }
 

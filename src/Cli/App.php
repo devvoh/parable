@@ -91,13 +91,13 @@ class App {
             ->waitForKey();
 
         $this->cli->writeLine('Creating folder structure...');
-        mkdir($this->path->getDir('app',            0644, true));
-        mkdir($this->path->getDir('app/Config',     0644, true));
-        mkdir($this->path->getDir('app/Controller', 0644, true));
-        mkdir($this->path->getDir('app/Model',      0644, true));
-        mkdir($this->path->getDir('app/View',       0644, true));
-        mkdir($this->path->getDir('app/View/Home',  0644, true));
-        mkdir($this->path->getDir('public',         0644, true));
+        mkdir($this->path->getDir('app'));
+        mkdir($this->path->getDir('app/Config'));
+        mkdir($this->path->getDir('app/Controller'));
+        mkdir($this->path->getDir('app/Model'));
+        mkdir($this->path->getDir('app/View'));
+        mkdir($this->path->getDir('app/View/Home'));
+        mkdir($this->path->getDir('public'));
 
         $this->cli->writeLine('Copying files...');
         copy($this->path->getDir('vendor/devvoh/parable/structure/.htaccess'),                 $this->path->getDir('.htaccess'));

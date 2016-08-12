@@ -10,9 +10,6 @@ namespace Parable\ORM;
 
 class Database {
 
-    /** @var bool */
-    protected $quoteAll = true;
-
     /** @var null|string */
     protected $type;
 
@@ -137,27 +134,6 @@ class Database {
     }
 
     /**
-     * Set whether the table name should be quoted
-     *
-     * @param bool $quoteAll
-     *
-     * @return $this
-     */
-    public function setQuoteAll($quoteAll) {
-        $this->quoteAll = (bool)$quoteAll;
-        return $this;
-    }
-
-    /**
-     * Return whether table names should be quoted
-     *
-     * @return bool
-     */
-    public function getQuoteAll() {
-        return $this->quoteAll;
-    }
-
-    /**
      * Return instance, if any
      *
      * @return null|\PDO
@@ -169,7 +145,6 @@ class Database {
                 case 'sqlite3':
                     $instance = new \PDO('sqlite:' . $this->getLocation());
                     $this->setInstance($instance);
-                    $this->setQuoteAll(true);
                     break;
                 case 'mysql':
                     if (!$this->getUsername() || !$this->getPassword() || !$this->getDatabase()) {
@@ -177,7 +152,6 @@ class Database {
                     }
                     $instance = new \PDO('mysql:host=' . $this->getLocation() . ';dbname=' . $this->getDatabase(), $this->getUsername(), $this->getPassword());
                     $this->setInstance($instance);
-                    $this->setQuoteAll(false);
             }
         }
         return $this->instance;
@@ -207,6 +181,17 @@ class Database {
             return null;
         }
         return $this->getInstance()->quote($string);
+    }
+
+    /**
+     * Identifiers need to be escaped differently than values, using ` characters. PDO by default does not offer this.
+     *
+     * @param $string
+     *
+     * @return string
+     */
+    public function quoteIdentifier($string) {
+        return '`' . (string)$string . '`';
     }
 
     /**
