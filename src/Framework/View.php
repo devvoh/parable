@@ -10,6 +10,7 @@ namespace Parable\Framework;
 
 /**
  * @property \Parable\Auth\Rights          $rights
+ * @property \Parable\Auth\Authentication  $authentication
  * @property \Parable\Events\Dock          $dock
  * @property \Parable\Events\Hook          $hook
  * @property \Parable\Filesystem\Path      $path
@@ -22,6 +23,7 @@ namespace Parable\Framework;
  * @property \Parable\Http\Request         $request
  * @property \Parable\Http\Response        $response
  * @property \Parable\Http\Url             $url
+ * @property \Parable\Http\SessionMessage  $sessionMessage
  * @property \Parable\Http\Values          $values
  * @property \Parable\Http\Values\Cookie   $cookie
  * @property \Parable\Http\Values\Get      $get

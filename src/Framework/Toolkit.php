@@ -13,16 +13,28 @@ class Toolkit {
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
+    /** @var \Parable\Routing\Router */
+    protected $router;
+
+    /** @var \Parable\Http\Url */
+    protected $url;
+
     /** @var array */
-    protected $resourceMap;
+    protected $resourceMap = [];
 
     /**
      * @param \Parable\Filesystem\Path $path
+     * @param \Parable\Http\Url        $url
+     * @param \Parable\Routing\Router  $router
      */
     public function __construct(
-        \Parable\Filesystem\Path $path
+        \Parable\Filesystem\Path $path,
+        \Parable\Http\Url        $url,
+        \Parable\Routing\Router  $router
     ) {
-        $this->path = $path;
+        $this->path   = $path;
+        $this->url    = $url;
+        $this->router = $router;
     }
 
     /**
@@ -98,6 +110,16 @@ class Toolkit {
 
         $repository->setModel($model);
         return $repository;
+    }
+
+    /**
+     * Redirect directly by using a route name.
+     *
+     * @param $routeName
+     */
+    public function redirectToRoute($routeName) {
+        $route = $this->router->getRouteByName($routeName);
+        $this->url->redirect($route->url);
     }
 
 }

@@ -19,7 +19,7 @@ class Url {
      * @return $this
      */
     public function buildBaseurl() {
-        $url = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
+        $url = str_replace('/public/index.php', '', $_SERVER['SCRIPT_NAME']);
         $this->baseurl = $url;
         return $this;
     }
@@ -50,6 +50,10 @@ class Url {
         return isset($_GET['url']) ? $_GET['url'] : '/';
     }
 
+    public function getCurrentUrlFull() {
+        return $this->getUrl($this->getCurrentUrl());
+    }
+
     /**
      * Redirect to url, adding our own own baseUrl if it's probably a relative path
      *
@@ -63,6 +67,7 @@ class Url {
             $url = $this->getUrl($url);
         }
         header('location: ' . $url);
+        die();
     }
 
 }

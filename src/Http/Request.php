@@ -30,7 +30,7 @@ class Request {
      * @return bool
      */
     public function isMethod($method) {
-        return (bool)$this->method === $method;
+        return $this->method === $method;
     }
 
     /**

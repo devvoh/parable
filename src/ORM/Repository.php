@@ -173,12 +173,14 @@ class Repository {
     /**
      * Returns all rows matching specific condition given
      *
-     * @param array $conditionArray
+     * @param string $key
+     * @param string $comparator
+     * @param mixed  $value
      *
      * @return \Parable\ORM\Model[]|\Parable\ORM\Model
      */
-    public function getByCondition(array $conditionArray) {
-        return $this->getByConditions([$conditionArray]);
+    public function getByCondition($key, $comparator, $value = null) {
+        return $this->getByConditions([[$key, $comparator, $value]]);
     }
 
     /**

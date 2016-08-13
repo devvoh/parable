@@ -1,5 +1,21 @@
 # Parable PHP Framework Changelog
 
+### 0.8.8
+
+By implementing, you find the bugs and shortcomings. This is an update to fix those.
+
+__Changes__
+- `\Parable\Auth\Authentication` has been added and relies on the `\Model\User` class offered in structure. To use Authentication, base your User class on that one.
+- `\Parable\Http\SessionMessage` has been added, which allows for passing messages between sessions.
+- `\Parable\Framework\Toolkit` now has a `redirectToRoute($routeName)` method, which is super handy. Using route names instead of urls allows less breaking if you change a url.
+- `\Parable\Http\Url` now has a `getCurrentUrlFull` method, which will return the current url as a full public url (http(s)://blahblah) rather than just the matchable part (i.e. 'index').
+- `\Parable\ORM\Repository` now accepts `($key, $comparator, $value)` for `getByCondition`, to be in line with `\Parable\ORM\Query`'s where/join parameters. `getByConditions` still expects an array of arrays, which in turn are `[$key, $comparator, $value]`
+
+__Bugfixes__
+- `\Parable\Framework\App` now starts the session.
+- `\Parable\Http\Request` now properly returns on `isMethod`. I was inadvertently inverting a boolean value while trying to cast as bool while already having a bool. Oops!
+- In `\Parable\Http\Url`, after a redirect, we now die to make sure the redirect is honored. 
+
 ### 0.8.7
 
 This is merely a maintenance update, to officially up the minimum supported version of php to 5.6. Since 5.5 went EOL 3 weeks ago, it can't be considered secure anymore. It would be a shame not to be able to use modern php functionality for a version that will no longer receive updates. So 5.6+ it is.

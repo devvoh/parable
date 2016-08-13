@@ -34,6 +34,9 @@ class App {
     /** @var \Parable\Http\Url */
     protected $url;
 
+    /** @var \Parable\Http\Values */
+    protected $values;
+
     /** @var \Parable\ORM\Database */
     protected $database;
 
@@ -49,6 +52,7 @@ class App {
      * @param \Parable\Http\Request         $request
      * @param \Parable\Http\Response        $response
      * @param \Parable\Http\Url             $url
+     * @param \Parable\Http\Values          $values
      * @param \Parable\ORM\Database         $database
      */
     public function __construct(
@@ -60,6 +64,7 @@ class App {
         \Parable\Http\Request         $request,
         \Parable\Http\Response        $response,
         \Parable\Http\Url             $url,
+        \Parable\Http\Values          $values,
         \Parable\ORM\Database         $database
     ) {
         $this->path       = $path;
@@ -70,6 +75,7 @@ class App {
         $this->response   = $response;
         $this->request    = $request;
         $this->url        = $url;
+        $this->values     = $values;
         $this->database   = $database;
     }
 
@@ -79,6 +85,9 @@ class App {
      * @return $this
      */
     public function run() {
+        /* Start the session */
+        $this->values->session->start();
+
         /* Set the basedir on paths */
         $this->path->setBasedir(BASEDIR);
 
