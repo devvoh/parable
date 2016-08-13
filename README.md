@@ -15,7 +15,7 @@ Parable isn't by any means production-ready, secure or foolproof. So only try it
 
 ## Requirements
 
-- PHP 5.5+, PHP 7
+- PHP 5.6, PHP 7
 - Composer
 - Sense of adventure
 
@@ -34,7 +34,7 @@ quite ready to be used. To initialize Parable's folder structure and files, run 
 
 `vendor/bin/parable init`
 
-Now you're ready! Simply open the (properly installed apache2 & php 5.5+) url it's in in your browser and you should
+Now you're ready! Simply open the (properly installed apache2 & php 5.6 or 7) url it's in in your browser and you should
 see a welcome page.
 
 If you want to use nginx, that's cool too, but you'll have to set up url rewriting rules yourself.
