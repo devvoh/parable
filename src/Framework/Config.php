@@ -62,16 +62,14 @@ class Config {
             /** @var \SplFileInfo $file */
             $className = 'Config\\' . str_replace('.php', '', $file->getFilename());
 
-            if ($className === 'App') {
-                continue;
-            }
-
             /** @var \Parable\Framework\Interfaces\Config $configClass */
             $configClass = \Parable\DI\Container::get($className);
-            if ($configClass->getSortOrder() === null) {
-                array_push($configClasses, $configClass);
-            } else {
-                $configClasses[$configClass->getSortOrder()] = $configClass;
+            if ($configClass instanceof \Parable\Framework\Interfaces\Config) {
+                if ($configClass->getSortOrder() === null) {
+                    array_push($configClasses, $configClass);
+                } else {
+                    $configClasses[$configClass->getSortOrder()] = $configClass;
+                }
             }
         }
 

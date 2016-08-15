@@ -13,6 +13,7 @@ __Changes__
 
 __Bugfixes__
 - `\Parable\Framework\App` now starts the session.
+- `\Parable\Framework\Config` now only tries to load Config files that implement the `\Parable\Framework\Interfaces\Config` interface.
 - `\Parable\Http\Request` now properly returns on `isMethod`. I was inadvertently inverting a boolean value while trying to cast as bool while already having a bool. Oops!
 - In `\Parable\Http\Url`, after a redirect, we now die to make sure the redirect is honored. 
 
