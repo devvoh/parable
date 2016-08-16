@@ -30,6 +30,8 @@ namespace Parable\Framework;
  * @property \Parable\Http\Values\Internal $internal
  * @property \Parable\Http\Values\Post     $post
  * @property \Parable\Http\Values\Session  $session
+ * @property \Parable\ORM\Query            $query
+ * @property \Parable\ORM\Database         $database
  * @property \Parable\Routing\Router       $router
  */
 

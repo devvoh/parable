@@ -8,6 +8,8 @@ __Changes__
 - `\Parable\Auth\Authentication` has been added and relies on the `\Model\User` class offered in structure. To use Authentication, base your User class on that one.
 - `\Parable\Http\SessionMessage` has been added, which allows for passing messages between sessions.
 - `\Parable\Framework\Toolkit` now has a `redirectToRoute($routeName)` method, which is super handy. Using route names instead of urls allows less breaking if you change a url.
+- Toolkit also gained `getFullRouteUrlByName($name, $parameters)`, which links through to Router's `getRouteUrlByName`, which eventually calls a Route's `buildUrlWithParameters`. This allows, in views, the use of `$this->toolkit->getFullRouteUrlByName($name, $parameters)`, which will give a full url to the route with the parameters filled in.
+- `\Parable\Framework\View` now offers access to database and query, in case you want to mix responsibilities.
 - `\Parable\Http\Url` now has a `getCurrentUrlFull` method, which will return the current url as a full public url (http(s)://blahblah) rather than just the matchable part (i.e. 'index').
 - `\Parable\ORM\Repository` now accepts `($key, $comparator, $value)` for `getByCondition`, to be in line with `\Parable\ORM\Query`'s where/join parameters. `getByConditions` still expects an array of arrays, which in turn are `[$key, $comparator, $value]`
 

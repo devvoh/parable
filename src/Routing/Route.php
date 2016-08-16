@@ -212,4 +212,22 @@ class Route {
         return $this->values[$key];
     }
 
+    /**
+     * @param array $parameters
+     *
+     * @return string
+     */
+    public function buildUrlWithParameters($parameters = []) {
+        $url = $this->url;
+
+        if (!$this->hasParameters() && !$parameters) {
+            return $url;
+        }
+
+        foreach ($parameters as $key => $value) {
+            $url = str_replace('{' . $key . '}', $value, $url);
+        }
+        return $url;
+    }
+
 }

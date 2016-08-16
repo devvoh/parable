@@ -122,4 +122,14 @@ class Toolkit {
         $this->url->redirect($route->url);
     }
 
+    /**
+     * @param string $name
+     * @param array  $parameters
+     *
+     * @return string
+     */
+    public function getFullRouteUrlByName($name, $parameters = []) {
+        return $this->url->getUrl($this->router->getRouteUrlByName($name, $parameters));
+    }
+
 }

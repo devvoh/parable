@@ -124,4 +124,15 @@ class Router {
         return null;
     }
 
+    /**
+     * @param string $name
+     * @param array  $parameters
+     *
+     * @return string
+     */
+    public function getRouteUrlByName($name, $parameters = []) {
+        $route = $this->getRouteByName($name);
+        return $route->buildUrlWithParameters($parameters);
+    }
+
 }
