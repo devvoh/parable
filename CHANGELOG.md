@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.8.8
+
+__Bugfixes__
+- Weird sudden bug in `structure/public/index.php` that I can't place. Eh. Fixed!
+
 ### 0.8.7
 
 This is merely a maintenance update, to officially up the minimum supported version of php to 5.6. Since 5.5 went EOL 3 weeks ago, it can't be considered secure anymore. It would be a shame not to be able to use modern php functionality for a version that will no longer receive updates. So 5.6+ it is.
