@@ -10,9 +10,6 @@ namespace Parable\Routing;
 
 class Router {
 
-    /** @var \Parable\Routing\Route[] */
-    protected $routes = [];
-
     /** @var \Parable\Http\Request */
     protected $request;
 
@@ -21,6 +18,9 @@ class Router {
 
     /** @var \Parable\Filesystem\Path */
     protected $path;
+
+    /** @var \Parable\Routing\Route[] */
+    protected $routes = [];
 
     /**
      * @param \Parable\Http\Request    $request

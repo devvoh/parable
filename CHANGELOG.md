@@ -1,6 +1,6 @@
 # Parable PHP Framework Changelog
 
-### 0.8.8
+### 0.8.9
 
 By implementing, you find the bugs and shortcomings. This is an update to fix those.
 
@@ -14,10 +14,15 @@ __Changes__
 - `\Parable\ORM\Repository` now accepts `($key, $comparator, $value)` for `getByCondition`, to be in line with `\Parable\ORM\Query`'s where/join parameters. `getByConditions` still expects an array of arrays, which in turn are `[$key, $comparator, $value]`
 
 __Bugfixes__
-- `\Parable\Framework\App` now starts the session.
+- `\Parable\Framework\App` now automatically starts the session.
 - `\Parable\Framework\Config` now only tries to load Config files that implement the `\Parable\Framework\Interfaces\Config` interface.
 - `\Parable\Http\Request` now properly returns on `isMethod`. I was inadvertently inverting a boolean value while trying to cast as bool while already having a bool. Oops!
 - In `\Parable\Http\Url`, after a redirect, we now die to make sure the redirect is honored. 
+
+### 0.8.8
+
+__Bugfixes__
+- Weird sudden bug in `structure/public/index.php` that I can't place. Eh. Fixed!
 
 ### 0.8.7
 
