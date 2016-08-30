@@ -19,6 +19,16 @@ class Response {
     /** @var string */
     protected $content;
 
+    /** @var \Parable\Http\Output\OutputInterface */
+    protected $output;
+
+    /**
+     * By default we're going to set the Html Output type.
+     */
+    public function __construct() {
+        $this->output = new \Parable\Http\Output\Html;
+    }
+
     /**
      * @param int $httpCode
      *
@@ -54,16 +64,28 @@ class Response {
     }
 
     /**
+     * @param Output\OutputInterface $output
+     *
+     * @return $this
+     */
+    public function setOutput(\Parable\Http\Output\OutputInterface $output) {
+        $this->output = $output;
+        return $this;
+    }
+
+    /**
      * Send the response
      *
      * @return $this
      */
     public function send() {
+        $this->output->prepare($this);
+
         header("HTTP/1.1 " . $this->getHttpCode() . " OK");
         header("Content-type: " . $this->getContentType());
 
         echo $this->getContent();
-        return $this;
+        exit();
     }
 
     /**
