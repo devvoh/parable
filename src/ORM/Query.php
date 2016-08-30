@@ -259,7 +259,8 @@ class Query {
         if (count($this->joins) > 0) {
             $joins = [];
             foreach ($this->joins as $join) {
-                $joins[] = "JOIN " . $join['table'] . " ON " . $this->buildCondition($join);
+                $joins[] = "JOIN " . $this->database->quoteIdentifier($join['table']) . " ON ";
+                $joins[] = $this->buildCondition($join);
             }
             return implode(' ', $joins);
         }

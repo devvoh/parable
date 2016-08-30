@@ -1,5 +1,13 @@
 # Parable PHP Framework Changelog
 
+### 0.8.10
+
+__Changes__
+- Output types have been added. By default the `\Parable\Http\Output\Html` class is used, but to set the `Json` Output type, simply call `$response->setOuput(new ...)`, passing a new instance of the appropriate output type.
+
+__Bugfixes__
+- Small bug in join fixed, but also found out joins are inherently broken. Need to find a smart way of adding table names to values and a way of telling `Query` that the value is a key name rather than an actual value.
+
 ### 0.8.9
 
 By implementing, you find the bugs and shortcomings. This is an update to fix those.
