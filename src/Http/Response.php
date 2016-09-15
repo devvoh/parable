@@ -14,13 +14,13 @@ class Response {
     protected $httpCode = 200;
 
     /** @var string */
-    protected $contentType = 'text/html';
-
-    /** @var string */
     protected $content;
 
     /** @var \Parable\Http\Output\OutputInterface */
     protected $output;
+
+    /** @var array */
+    protected $headers = [];
 
     /**
      * By default we're going to set the Html Output type.
@@ -52,15 +52,8 @@ class Response {
      * @return $this
      */
     public function setContentType($contentType) {
-        $this->contentType = $contentType;
+        $this->setHeader('Content-type', $contentType);
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContentType() {
-        return $this->contentType;
     }
 
     /**
@@ -82,7 +75,9 @@ class Response {
         $this->output->prepare($this);
 
         header("HTTP/1.1 " . $this->getHttpCode() . " OK");
-        header("Content-type: " . $this->getContentType());
+        foreach ($this->headers as $key => $value) {
+            header($key . ': ' . $value);
+        }
 
         echo $this->getContent();
         exit();
@@ -142,6 +137,33 @@ class Response {
      */
     public function returnOutputBuffer() {
         return ob_get_clean();
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function setHeader($key, $value) {
+        $this->headers[$key] = $value;
+    }
+
+    /**
+     * @param $key
+     *
+     * @return null
+     */
+    public function getHeader($key) {
+        if (!isset($this->headers[$key])) {
+            return null;
+        }
+        return $this->headers[$key];
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders() {
+        return $this->headers;
     }
 
 }

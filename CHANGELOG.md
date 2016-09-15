@@ -1,5 +1,16 @@
 # Parable PHP Framework Changelog
 
+### 0.8.11
+
+__Changes__
+- `DI\Container` now allows storing a class. This makes it possible to instantiate it, alter it (inject data) and store it for further `DI\Container::get` requests.
+- `revokeAuthentication()` was added to `Auth\Authentication`, so that it's possible to log someone out from outside the class.
+- `Http\Request` now automatically loads the headers of the request. You can get at 'em by using `getHeader($key)` or `getHeaders()`
+- `Http\Response` also received some love, gaining `setHeader($key, $value)`, `getHeader($key)` and `getHeaders()` as well.
+
+__Bugfixes__
+- Dispatcher was looking at the wrong var for a Route's `template` value. Fixed now. Silly mistake.
+
 ### 0.8.10
 
 __Changes__
@@ -23,6 +34,7 @@ __Changes__
 
 __Bugfixes__
 - `\Parable\Framework\App` now automatically starts the session.
+- Shoutout to `coworkers` ;)
 - `\Parable\Framework\Config` now only tries to load Config files that implement the `\Parable\Framework\Interfaces\Config` interface.
 - `\Parable\Http\Request` now properly returns on `isMethod`. I was inadvertently inverting a boolean value while trying to cast as bool while already having a bool. Oops!
 - In `\Parable\Http\Url`, after a redirect, we now die to make sure the redirect is honored. 

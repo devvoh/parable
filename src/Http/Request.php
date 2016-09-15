@@ -13,8 +13,15 @@ class Request {
     /** @var string */
     protected $method;
 
+    /** @var array */
+    protected $headers = [];
+
+    /**
+     * Set some basic information we're going to need.
+     */
     public function __construct() {
         $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->headers = getallheaders() ?: [];
     }
 
     /**
@@ -66,6 +73,25 @@ class Request {
      */
     public function isPatch() {
         return $this->isMethod('PATCH');
+    }
+
+    /**
+     * @param $key
+     *
+     * @return null
+     */
+    public function getHeader($key) {
+        if (!isset($this->headers[$key])) {
+            return null;
+        }
+        return $this->headers[$key];
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders() {
+        return $this->headers;
     }
 
 }
