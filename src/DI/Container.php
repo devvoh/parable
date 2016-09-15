@@ -88,4 +88,13 @@ class Container {
         return (new \ReflectionClass($className))->newInstanceArgs($dependencies);
     }
 
+    /**
+     * Store a class under its className
+     *
+     * @param object $class
+     */
+    public static function store($class) {
+        self::$instances[get_class($class)] = $class;
+    }
+
 }

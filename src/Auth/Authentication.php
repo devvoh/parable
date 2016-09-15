@@ -152,10 +152,18 @@ class Authentication {
                 'data' => $this->authenticationData,
             ]);
         } else {
-            $this->setAuthenticated(false);
-            $this->session->remove('auth');
+            $this->revokeAuthentication();
         }
         return $this->isAuthenticated();
+    }
+
+    /**
+     * Revoke an existing authentication.
+     */
+    public function revokeAuthentication() {
+        $this->user = null;
+        $this->setAuthenticated(false);
+        $this->session->remove('auth');
     }
 
 }

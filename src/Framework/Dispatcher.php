@@ -65,7 +65,7 @@ class Dispatcher {
         /* Try to get the relevant view */
         $templateFile = null;
         if ($route->template) {
-            $templateFile = $this->path->getDir($templateFile);
+            $templateFile = $this->path->getDir($route->template);
         } else {
             if ($controller) {
                 $reflection = new \ReflectionClass($controller);
