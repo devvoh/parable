@@ -1,5 +1,15 @@
 # Parable PHP Framework Changelog
 
+### 0.8.12
+
+__Changes__
+- `Http\Response` has gained a list of HTTP codes with their matching text codes. Setting `404` now properly gives `404 Not found`.
+- `Http\Response\Output` objects now have an `init` and a `prepare`. `init` is called when the Output class is set, and `prepare` just before output is sent to the browser. This allows changing of content type before output.
+
+__Bugs__
+
+- `Http\Response\Output\Html` did not actually implement `\Parable\Http\Output\OutputInterface`, but it wasn't noticed since the setter wasn't used to set it as default. Silly mistake.
+
 ### 0.8.11
 
 __Changes__

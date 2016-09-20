@@ -8,7 +8,7 @@
 
 namespace Parable\Http\Output;
 
-class Html {
+class Html implements \Parable\Http\Output\OutputInterface {
 
     /** @var string */
     protected $contentType = 'text/html';
@@ -16,8 +16,14 @@ class Html {
     /**
      * @inheritdoc
      */
-    public function prepare(\Parable\Http\Response $response) {
+    public function init(\Parable\Http\Response $response) {
         $response->setContentType($this->contentType);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepare(\Parable\Http\Response $response) {
     }
 
 }
