@@ -16,11 +16,21 @@ class Json implements \Parable\Http\Output\OutputInterface {
     /**
      * @inheritdoc
      */
-    public function prepare(\Parable\Http\Response $response) {
+    public function init(\Parable\Http\Response $response) {
         $response->setContentType($this->contentType);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepare(\Parable\Http\Response $response) {
         $content = $response->getContent();
 
-        $response->setContent(json_encode($content));
+        if (!json_decode($content)) {
+            $content = json_encode($content);
+        }
+
+        $response->setContent($content);
     }
 
 }
