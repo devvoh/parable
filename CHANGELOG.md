@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.8.13
+
+__Bugs__
+- `ORM\Query` had a rather well-hidden bug, where offset wasn't actually the offset but the limit value. So a limit/offset of 5,0 would end up being 5,5. And this is why it ain't final, people! :D
+
 ### 0.8.12
 
 __Changes__
@@ -7,7 +12,6 @@ __Changes__
 - `Http\Response\Output` objects now have an `init` and a `prepare`. `init` is called when the Output class is set, and `prepare` just before output is sent to the browser. This allows changing of content type before output.
 
 __Bugs__
-
 - `Http\Response\Output\Html` did not actually implement `\Parable\Http\Output\OutputInterface`, but it wasn't noticed since the setter wasn't used to set it as default. Silly mistake.
 
 ### 0.8.11
