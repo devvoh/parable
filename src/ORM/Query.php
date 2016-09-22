@@ -324,7 +324,7 @@ class Query {
         if (is_array($this->limit)) {
             $limit = "LIMIT " . $this->limit['limit'];
             if ($this->limit['offset'] !== null) {
-                $limit .= ", " . $this->limit['limit'];
+                $limit .= ", " . $this->limit['offset'];
             }
             return $limit;
         }
