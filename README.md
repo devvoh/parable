@@ -39,6 +39,37 @@ see a welcome page.
 
 If you want to use nginx, that's cool too, but you'll have to set up url rewriting rules yourself.
 
+## Getting Started
+
+After you've run `parable init`, you should have a basic structure to work from. The example files show most of what you'll
+need to build something, but one thing that might not be clear is how to configure Parable to work with a database.
+
+The following example config shows a connection with a MySQL database:
+
+    return [
+        'app' => [
+            'title'     => 'example',
+            'version'   => '0.1.0',
+        ],
+        'initLocations' => [
+            'app/Init',
+        ],
+        'database' => [
+            'type'      => 'mysql',
+            'location'  => 'localhost',
+            'username'  => 'username',
+            'password'  => 'password',
+            'database'  => 'database',
+        ],
+    ];
+    
+Now, if you want to keep this out of your git (or other vcs) repository, you can place this in a separate config
+file and exclude it. It's also possible to have the config class return different values based on whether
+you're running dev/test/staging/production.
+
+For an sqlite3 connection, use `'type' => 'sqlite3'`, where `'location'` corresponds to the location of the database
+file on your filesystem.
+
 ## Documentation & More
 
 Documentation is currently non-existent, but I am more than willing and available to answer any questions. I am also very
