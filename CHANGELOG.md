@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.8.14
+
+__Bugs__
+- I guess I never tried offset before, because limit and offset were the wrong way around, hah! And this is why it _really_ ain't final, people! :D
+
 ### 0.8.13
 
 __Bugs__

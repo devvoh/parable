@@ -322,10 +322,11 @@ class Query {
      */
     protected function buildLimitOffset() {
         if (is_array($this->limit)) {
-            $limit = "LIMIT " . $this->limit['limit'];
+            $limit = $this->limit['limit'];
             if ($this->limit['offset'] !== null) {
-                $limit .= ", " . $this->limit['offset'];
+                $limit = $this->limit['offset'] . ',' . $limit;
             }
+            $limit = "LIMIT " . $limit;
             return $limit;
         }
         return '';
