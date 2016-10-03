@@ -1,8 +1,21 @@
 # Parable PHP Framework Changelog
 
+### 0.8.15
+
+__Changes__
+- The Session is still automatically started, but there's a way of disabling this. Check out `app/Config/App.php`. There's a session.autoEnable setting. If you leave it out, it's assumed to be true and the session will be started automatically. If you set it to `false`, no session unless you start it yourself.
+- 4 hooks have been added for you to play with: `parable_session_start_before`, `parable_session_start_after`, `parable_config_load_before` and `parable_config_load_after`. Enjoy! Remember: to figure out all hooks you can work with, just search the codebase for `->trigger`.
+- Models and Repositories now support `is_deleted` for soft-deletes. If your model has an `is_deleted` property, instead of deleting data from the database, an `is_deleted` field in your database's row is flipper from 0 to 1. If you do this and you don't have an `is_deleted` field, expect failure.
+- If you use soft deletes, you can also `$model->undelete()` them. This will restore them to `is_deleted` set to 0.
+- To make working with soft deletes somewhat easier, you can now tell the repository to by default filter using the `is_deleted` field by calling `$repository->setFilterSoftDeletes(true)`.
+- `Http\Url` now gives back the absolute baseurl rather than a relative one. This means it now includes the http method and full domain.
+
+__Bugfixes__
+- `Framework\Config` didn't give a crap whether a file was a php file or not. Now it does, as it should.
+
 ### 0.8.14
 
-__Bugs__
+__Bugfixes__
 - I guess I never tried offset before, because limit and offset were the wrong way around, hah! And this is why it _really_ ain't final, people! :D
 
 ### 0.8.13

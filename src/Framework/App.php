@@ -41,7 +41,7 @@ class App {
     protected $database;
 
     /** @var string */
-    protected $version = '0.8.14';
+    protected $version = '0.8.15';
 
     /**
      * @param \Parable\Filesystem\Path      $path
@@ -85,14 +85,20 @@ class App {
      * @return $this
      */
     public function run() {
-        /* Start the session */
-        $this->values->session->start();
-
         /* Set the basedir on paths */
         $this->path->setBasedir(BASEDIR);
 
         /* Load all known Config files now that we know the baseDir */
+        $this->hook->trigger('parable_config_load_before');
         $this->config->load();
+        $this->hook->trigger('parable_config_load_after', $this->config);
+
+        /* Start the session if session.autoEnable is true */
+        if ($this->config->get('session.autoEnable') !== false) {
+            $this->hook->trigger('parable_session_start_before');
+            $this->values->session->start();
+            $this->hook->trigger('parable_session_start_after', $this->values->session);
+        }
 
         /* Build the base Url */
         $this->url->buildBaseurl();

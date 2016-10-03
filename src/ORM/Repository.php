@@ -28,6 +28,9 @@ class Repository {
     /** @var bool */
     protected $returnOne = false;
 
+    /** @var bool */
+    protected $filterSoftDeletes = false;
+
     /**
      * @param \Parable\ORM\Database $database
      */
@@ -54,6 +57,9 @@ class Repository {
         }
         if (count($this->limit)) {
             $query->limit($this->limit['limit'], $this->limit['offset']);
+        }
+        if ($this->getFilterSoftDeletes() && property_exists($this->getModel(), 'is_deleted')) {
+            $query->where('is_deleted', '=', '0');
         }
         return $query;
     }
@@ -255,5 +261,26 @@ class Repository {
      */
     public function getOnlyCount() {
         return $this->onlyCount;
+    }
+
+    /**
+     * Set whether to filter soft deletes out of all repo-created queries or not
+     *
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setFilterSoftDeletes($value) {
+        $this->filterSoftDeletes = (bool)$value;
+        return $this;
+    }
+
+    /**
+     * Return the current state of filter soft deletes
+     *
+     * @return bool
+     */
+    public function getFilterSoftDeletes() {
+        return $this->filterSoftDeletes;
     }
 }
