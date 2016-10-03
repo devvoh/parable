@@ -142,15 +142,35 @@ class Model {
     }
 
     /**
-     * Deletes the current model from the database
+     * Deletes the current model from the database, or if there's an 'is_deleted' property,
+     * soft-deletes by setting it to 1.
      *
      * @return mixed
      */
     public function delete() {
+        if (property_exists($this, 'is_deleted')) {
+            $this->is_deleted = 1;
+            $this->save();
+            return $this;
+        }
         $query = $this->createQuery();
         $query->setAction('delete');
         $query->where($this->getTableKey(), '=', $this->id);
         return $this->database->query($query);
+    }
+
+    /**
+     * If the current model implements an 'is_deleted' property AND is currently set to
+     * be soft-deleted, undelete it by setting is_deleted to 0.
+     *
+     * @return $this
+     */
+    public function undelete() {
+        if (property_exists($this, 'is_deleted') && $this->is_deleted == 1) {
+            $this->is_deleted = 0;
+            $this->save();
+        }
+        return $this;
     }
 
     /**

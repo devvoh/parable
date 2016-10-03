@@ -60,6 +60,9 @@ class Config {
         $configClasses = [];
         foreach ($iteratorIterator as $file) {
             /** @var \SplFileInfo $file */
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
             $className = 'Config\\' . str_replace('.php', '', $file->getFilename());
 
             /** @var \Parable\Framework\Interfaces\Config $configClass */

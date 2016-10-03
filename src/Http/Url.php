@@ -19,8 +19,10 @@ class Url {
      * @return $this
      */
     public function buildBaseurl() {
+        $domain = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+
         $url = str_replace('/public/index.php', '', $_SERVER['SCRIPT_NAME']);
-        $this->baseurl = $url;
+        $this->baseurl = $domain . '/' . ltrim($url, '/');
         return $this;
     }
 
