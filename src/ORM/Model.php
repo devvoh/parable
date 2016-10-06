@@ -8,8 +8,8 @@
 
 namespace Parable\ORM;
 
-class Model {
-
+class Model
+{
     /** @var \Parable\ORM\Database */
     protected $database;
 
@@ -42,7 +42,8 @@ class Model {
      *
      * @return \Parable\ORM\Query
      */
-    public function createQuery() {
+    public function createQuery()
+    {
         $query = \Parable\ORM\Query::createInstance();
         $query->setTableName($this->getTableName());
         $query->setTableKey($this->getTableKey());
@@ -54,7 +55,8 @@ class Model {
      *
      * @return mixed
      */
-    public function save() {
+    public function save()
+    {
         $array = $this->toArray();
 
         $query = $this->createQuery();
@@ -101,7 +103,8 @@ class Model {
      *
      * @return array
      */
-    public function toArray() {
+    public function toArray()
+    {
         $array = (array)$this;
         // Remove protected values & null values, let the database sort those out
         foreach ($array as $key => &$value) {
@@ -133,7 +136,8 @@ class Model {
      *
      * @return array
      */
-    public function toMappedArray(array $array) {
+    public function toMappedArray(array $array)
+    {
         $mappedArray = [];
         foreach ($this->getMapper() as $from => $to) {
             $mappedArray[$to] = $array[$from];
@@ -142,35 +146,16 @@ class Model {
     }
 
     /**
-     * Deletes the current model from the database, or if there's an 'is_deleted' property,
-     * soft-deletes by setting it to 1.
+     * Deletes the current model from the database
      *
      * @return mixed
      */
-    public function delete() {
-        if (property_exists($this, 'is_deleted')) {
-            $this->is_deleted = 1;
-            $this->save();
-            return $this;
-        }
+    public function delete()
+    {
         $query = $this->createQuery();
         $query->setAction('delete');
         $query->where($this->getTableKey(), '=', $this->id);
         return $this->database->query($query);
-    }
-
-    /**
-     * If the current model implements an 'is_deleted' property AND is currently set to
-     * be soft-deleted, undelete it by setting is_deleted to 0.
-     *
-     * @return $this
-     */
-    public function undelete() {
-        if (property_exists($this, 'is_deleted') && $this->is_deleted == 1) {
-            $this->is_deleted = 0;
-            $this->save();
-        }
-        return $this;
     }
 
     /**
@@ -180,7 +165,8 @@ class Model {
      *
      * @return $this;
      */
-    public function populate(array $data) {
+    public function populate(array $data)
+    {
         foreach ($data as $property => $value) {
             if (property_exists($this, $property)) {
                 $this->$property = $value;
@@ -196,7 +182,8 @@ class Model {
      *
      * @return $this
      */
-    public function setTableName($tableName) {
+    public function setTableName($tableName)
+    {
         $this->tableName = $tableName;
         return $this;
     }
@@ -206,7 +193,8 @@ class Model {
      *
      * @return null|string
      */
-    public function getTableName() {
+    public function getTableName()
+    {
         return $this->tableName;
     }
 
@@ -217,7 +205,8 @@ class Model {
      *
      * @return $this
      */
-    public function setTableKey($tableKey) {
+    public function setTableKey($tableKey)
+    {
         $this->tableKey = $tableKey;
         return $this;
     }
@@ -227,7 +216,8 @@ class Model {
      *
      * @return null|string
      */
-    public function getTableKey() {
+    public function getTableKey()
+    {
         return $this->tableKey;
     }
 
@@ -238,7 +228,8 @@ class Model {
      *
      * @return $this;
      */
-    public function setMapper(array $mapper) {
+    public function setMapper(array $mapper)
+    {
         $this->mapper = $mapper;
         return $this;
     }
@@ -248,7 +239,8 @@ class Model {
      *
      * @return array
      */
-    public function getMapper() {
+    public function getMapper()
+    {
         return $this->mapper;
     }
 
@@ -257,7 +249,8 @@ class Model {
      *
      * @return array
      */
-    public function getExportable() {
+    public function getExportable()
+    {
         return $this->exportable;
     }
 
@@ -266,7 +259,8 @@ class Model {
      *
      * @return array
      */
-    public function exportToArray() {
+    public function exportToArray()
+    {
         $exportable = $this->getExportable();
         $data = $this->toArray();
         $exportData = [];
@@ -275,5 +269,4 @@ class Model {
         }
         return $exportData;
     }
-
 }

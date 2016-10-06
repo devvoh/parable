@@ -35,8 +35,8 @@ namespace Parable\Framework;
  * @property \Parable\Routing\Router       $router
  */
 
-class View {
-
+class View
+{
     /** @var \Parable\Framework\Toolkit */
     protected $toolkit;
 
@@ -69,7 +69,8 @@ class View {
      *
      * @return $this
      */
-    public function setTemplatePath($templatePath) {
+    public function setTemplatePath($templatePath)
+    {
         $this->templatePath = $templatePath;
         return $this;
     }
@@ -79,7 +80,8 @@ class View {
      *
      * @return string
      */
-    public function partial($templatePath) {
+    public function partial($templatePath)
+    {
         $this->response->startOutputBuffer();
         $this->loadTemplatePath($templatePath);
         return $this->response->returnOutputBuffer();
@@ -90,7 +92,8 @@ class View {
      *
      * @return $this
      */
-    public function render() {
+    public function render()
+    {
         $this->loadTemplatePath($this->templatePath);
         return $this;
     }
@@ -102,7 +105,8 @@ class View {
      *
      * @return $this
      */
-    protected function loadTemplatePath($templatePath) {
+    protected function loadTemplatePath($templatePath)
+    {
         if (!file_exists($templatePath)) {
             $templatePath = $this->path->getDir($templatePath);
         }
@@ -119,12 +123,12 @@ class View {
      *
      * @return null|object
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         $mappedProperty = $this->toolkit->getResourceMapping(ucfirst($property));
         if ($mappedProperty) {
             return \Parable\DI\Container::get($mappedProperty);
         }
         return null;
     }
-
 }

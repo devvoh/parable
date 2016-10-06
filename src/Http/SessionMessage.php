@@ -8,8 +8,8 @@
 
 namespace Parable\Http;
 
-class SessionMessage {
-
+class SessionMessage
+{
     /**
      * @var \Parable\Http\Values\Session
      */
@@ -22,6 +22,8 @@ class SessionMessage {
 
     /**
      * Initialize the session object and store all current messages on ourself
+     *
+     * @param Values\Session $session
      */
     public function __construct(
         \Parable\Http\Values\Session $session
@@ -39,7 +41,8 @@ class SessionMessage {
      * @param null $type
      * @return array
      */
-    public function get($type = null) {
+    public function get($type = null)
+    {
         if (!$type) {
             return $this->messages;
         }
@@ -57,7 +60,8 @@ class SessionMessage {
      * @param null $type
      * @return array
      */
-    public function getClear($type = null) {
+    public function getClear($type = null)
+    {
         $messages = $this->get($type);
         $this->clear($type);
         return $messages;
@@ -70,7 +74,8 @@ class SessionMessage {
      * @param string $type
      * @return $this
      */
-    public function add($message = null, $type = 'notice') {
+    public function add($message = null, $type = 'notice')
+    {
         if (!isset($this->messages[$type]) || !is_array($this->messages[$type])) {
             $this->messages[$type] = [];
         }
@@ -87,7 +92,8 @@ class SessionMessage {
      * @param null $type
      * @return $this
      */
-    public function clear($type = null) {
+    public function clear($type = null)
+    {
         if (!$type) {
             $this->messages = [];
         } elseif (isset($this->messages[$type])) {
@@ -104,7 +110,8 @@ class SessionMessage {
      * @param null $type
      * @return int
      */
-    public function count($type = null) {
+    public function count($type = null)
+    {
         if ($type) {
             return count($this->get($type));
         }
@@ -121,9 +128,9 @@ class SessionMessage {
      *
      * @return $this
      */
-    protected function writeToSession() {
+    protected function writeToSession()
+    {
         $this->session->set('messages', $this->messages);
         return $this;
     }
-
 }

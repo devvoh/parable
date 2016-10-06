@@ -8,8 +8,8 @@
 
 namespace Parable\Framework;
 
-class Toolkit {
-
+class Toolkit
+{
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
@@ -42,8 +42,12 @@ class Toolkit {
      *
      * @return $this
      */
-    public function loadResourceMap() {
-        $dirIterator = new \RecursiveDirectoryIterator($this->path->getDir('vendor/devvoh/parable/src'), \RecursiveDirectoryIterator::SKIP_DOTS);
+    public function loadResourceMap()
+    {
+        $dirIterator = new \RecursiveDirectoryIterator(
+            $this->path->getDir('vendor/devvoh/parable/src'),
+            \RecursiveDirectoryIterator::SKIP_DOTS
+        );
         $iteratorIterator = new \RecursiveIteratorIterator($dirIterator);
 
         foreach ($iteratorIterator as $path => $file) {
@@ -53,8 +57,7 @@ class Toolkit {
              * Specifically exclude all non-php files and Bootstrap, since it will attempt to register everything again
              * and isn't a class anyway.
              */
-            if (
-                $file->getFilename() === 'Bootstrap.php'
+            if ($file->getFilename() === 'Bootstrap.php'
                 || $file->getFilename() === 'parable.php'
                 || $file->getExtension() !== 'php'
                 || strpos($file->getRealPath(), '/Cli/') !== false
@@ -85,7 +88,8 @@ class Toolkit {
      *
      * @return null|string
      */
-    public function getResourceMapping($index) {
+    public function getResourceMapping($index)
+    {
         if (!$this->resourceMap) {
             $this->loadResourceMap();
         }
@@ -102,7 +106,9 @@ class Toolkit {
      *
      * @return \Parable\ORM\Repository
      */
-    public function getRepository($modelName) {
+    public function getRepository($modelName)
+    {
+        /** @var \Parable\ORM\Model $model */
         $model = \Parable\DI\Container::create($modelName);
 
         /** @var \Parable\ORM\Repository $repository */
@@ -117,7 +123,8 @@ class Toolkit {
      *
      * @param $routeName
      */
-    public function redirectToRoute($routeName) {
+    public function redirectToRoute($routeName)
+    {
         $route = $this->router->getRouteByName($routeName);
         $this->url->redirect($route->url);
     }
@@ -128,8 +135,8 @@ class Toolkit {
      *
      * @return string
      */
-    public function getFullRouteUrlByName($name, $parameters = []) {
+    public function getFullRouteUrlByName($name, $parameters = [])
+    {
         return $this->url->getUrl($this->router->getRouteUrlByName($name, $parameters));
     }
-
 }

@@ -8,22 +8,24 @@
 
 namespace Config;
 
-class App implements \Parable\Framework\Interfaces\Config {
-
+class App implements \Parable\Framework\Interfaces\Config
+{
     /** @var null|int */
     protected $sortOrder = 0;
 
     /**
      * @return int|null
      */
-    public function getSortOrder() {
+    public function getSortOrder()
+    {
         return $this->sortOrder;
     }
 
     /**
      * @return array
      */
-    public function getValues() {
+    public function getValues()
+    {
         return [
             'app' => [
                 'title'      => 'Parable'
@@ -36,5 +38,4 @@ class App implements \Parable\Framework\Interfaces\Config {
             ],
         ];
     }
-
 }

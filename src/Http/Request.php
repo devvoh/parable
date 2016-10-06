@@ -8,8 +8,8 @@
 
 namespace Parable\Http;
 
-class Request {
-
+class Request
+{
     /** @var string */
     protected $method;
 
@@ -19,7 +19,8 @@ class Request {
     /**
      * Set some basic information we're going to need.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->headers = getallheaders() ?: [];
     }
@@ -27,7 +28,8 @@ class Request {
     /**
      * @return string
      */
-    public function getMethod() {
+    public function getMethod()
+    {
         return $this->method;
     }
 
@@ -36,42 +38,48 @@ class Request {
      *
      * @return bool
      */
-    public function isMethod($method) {
+    public function isMethod($method)
+    {
         return $this->method === $method;
     }
 
     /**
      * @return bool
      */
-    public function isGet() {
+    public function isGet()
+    {
         return $this->isMethod('GET');
     }
 
     /**
      * @return bool
      */
-    public function isPost() {
+    public function isPost()
+    {
         return $this->isMethod('POST');
     }
 
     /**
      * @return bool
      */
-    public function isUpdate() {
+    public function isUpdate()
+    {
         return $this->isMethod('UPDATE');
     }
 
     /**
      * @return bool
      */
-    public function isDelete() {
+    public function isDelete()
+    {
         return $this->isMethod('DELETE');
     }
 
     /**
      * @return bool
      */
-    public function isPatch() {
+    public function isPatch()
+    {
         return $this->isMethod('PATCH');
     }
 
@@ -80,7 +88,8 @@ class Request {
      *
      * @return null
      */
-    public function getHeader($key) {
+    public function getHeader($key)
+    {
         if (!isset($this->headers[$key])) {
             return null;
         }
@@ -90,8 +99,8 @@ class Request {
     /**
      * @return array
      */
-    public function getHeaders() {
+    public function getHeaders()
+    {
         return $this->headers;
     }
-
 }

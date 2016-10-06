@@ -8,8 +8,8 @@
 
 namespace Parable\Events;
 
-class Hook {
-
+class Hook
+{
     /** @var array */
     protected $hooks = [];
 
@@ -21,7 +21,8 @@ class Hook {
      *
      * @return $this
      */
-    public function into($event, callable $callable) {
+    public function into($event, callable $callable)
+    {
         $this->hooks[$event][] = $callable;
         return $this;
     }
@@ -34,7 +35,8 @@ class Hook {
      *
      * @return $this
      */
-    public function trigger($event, &$payload = null) {
+    public function trigger($event, &$payload = null)
+    {
         // Disallow calling a trigger on global docks
         if ($event === '*') {
             return $this;
@@ -65,5 +67,4 @@ class Hook {
         }
         return $this;
     }
-
 }

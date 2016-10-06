@@ -8,8 +8,8 @@
 
 namespace Parable\Routing;
 
-class Router {
-
+class Router
+{
     /** @var \Parable\Http\Request */
     protected $request;
 
@@ -45,7 +45,8 @@ class Router {
      *
      * @return $this
      */
-    public function addRoute($name, array $routeArray) {
+    public function addRoute($name, array $routeArray)
+    {
         $route = new Route($this->request, $routeArray);
         $this->routes[$name] = $route;
         return $this;
@@ -58,7 +59,8 @@ class Router {
      * @return \Parable\Routing\Route
      * @throws \Exception
      */
-    public function getRouteByName($name) {
+    public function getRouteByName($name)
+    {
         if (!isset($this->routes[$name])) {
             throw new \Exception('Route named "' . $name . '" does not exist.');
         }
@@ -70,7 +72,8 @@ class Router {
      *
      * @return \Parable\Routing\Route|null
      */
-    public function matchCurrentRoute() {
+    public function matchCurrentRoute()
+    {
         return $this->matchRoute($this->url->getCurrentUrl());
     }
 
@@ -81,7 +84,8 @@ class Router {
      *
      * @return \Parable\Routing\Route|null
      */
-    public function matchRoute($url) {
+    public function matchRoute($url)
+    {
         $url = '/' . ltrim($url, '/');
         if ($route = $this->matchRouteDirectly($url)) {
             return $route;
@@ -99,7 +103,8 @@ class Router {
      *
      * @return \Parable\Routing\Route|null
      */
-    protected function matchRouteDirectly($url) {
+    protected function matchRouteDirectly($url)
+    {
         foreach ($this->routes as $route) {
             if ($route->matchDirectly($url)) {
                 return $route;
@@ -115,7 +120,8 @@ class Router {
      *
      * @return \Parable\Routing\Route|null
      */
-    protected function matchRouteWithParameters($url) {
+    protected function matchRouteWithParameters($url)
+    {
         foreach ($this->routes as $route) {
             if ($route->matchWithParameters($url)) {
                 return $route;
@@ -130,9 +136,9 @@ class Router {
      *
      * @return string
      */
-    public function getRouteUrlByName($name, $parameters = []) {
+    public function getRouteUrlByName($name, $parameters = [])
+    {
         $route = $this->getRouteByName($name);
         return $route->buildUrlWithParameters($parameters);
     }
-
 }

@@ -8,8 +8,8 @@
 
 namespace Parable\Cli;
 
-class App {
-
+class App
+{
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
@@ -54,7 +54,8 @@ class App {
      *
      * @return $this
      */
-    public function run() {
+    public function run()
+    {
         /* Set the basedir on paths */
         $this->path->setBasedir(BASEDIR);
 
@@ -62,7 +63,8 @@ class App {
         return $this;
     }
 
-    public function setArguments(array $arguments) {
+    public function setArguments(array $arguments)
+    {
         unset($arguments[0]);
         foreach ($arguments as $argument) {
             $this->arguments[] = $argument;
@@ -70,7 +72,8 @@ class App {
         return $this;
     }
 
-    public function parseArguments(array $arguments) {
+    public function parseArguments(array $arguments)
+    {
         $this->setArguments($arguments);
 
         switch ($this->arguments[0]) {
@@ -80,7 +83,8 @@ class App {
         }
     }
 
-    protected function init() {
+    protected function init()
+    {
         $this->cli
             ->writeLine('Welcome to Parable. We will now initialize your Parable install.')
             ->br()
@@ -100,14 +104,37 @@ class App {
         mkdir($this->path->getDir('public'));
 
         $this->cli->writeLine('Copying files...');
-        copy($this->path->getDir('vendor/devvoh/parable/structure/.htaccess'),                 $this->path->getDir('.htaccess'));
-        copy($this->path->getDir('vendor/devvoh/parable/structure/public/.htaccess'),          $this->path->getDir('public/.htaccess'));
-        copy($this->path->getDir('vendor/devvoh/parable/structure/public/index.php'),          $this->path->getDir('public/index.php'));
-        copy($this->path->getDir('vendor/devvoh/parable/structure/app/Routes.php'),            $this->path->getDir('app/Routes.php'));
-        copy($this->path->getDir('vendor/devvoh/parable/structure/app/Config/App.php'),        $this->path->getDir('app/Config/App.php'));
-        copy($this->path->getDir('vendor/devvoh/parable/structure/app/Controller/Home.php'),   $this->path->getDir('app/Controller/Home.php'));
-        copy($this->path->getDir('vendor/devvoh/parable/structure/app/Model/User.php'),        $this->path->getDir('app/Model/User.php'));
-        copy($this->path->getDir('vendor/devvoh/parable/structure/app/View/Home/index.phtml'), $this->path->getDir('app/View/Home/index.phtml'));
+        copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/.htaccess'),
+            $this->path->getDir('.htaccess')
+        );
+        copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/public/.htaccess'),
+            $this->path->getDir('public/.htaccess')
+        );
+        copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/public/index.php'),
+            $this->path->getDir('public/index.php')
+        );
+        copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Routes.php'),
+            $this->path->getDir('app/Routes.php')
+        );
+        copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Config/App.php'),
+            $this->path->getDir('app/Config/App.php')
+        );
+        copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Controller/Home.php'),
+            $this->path->getDir('app/Controller/Home.php')
+        );
+        copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Model/User.php'),
+            $this->path->getDir('app/Model/User.php')
+        );
+        copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/app/View/Home/index.phtml'),
+            $this->path->getDir('app/View/Home/index.phtml')
+        );
     }
-
 }

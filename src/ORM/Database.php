@@ -8,8 +8,8 @@
 
 namespace Parable\ORM;
 
-class Database {
-
+class Database
+{
     /** @var null|string */
     protected $type;
 
@@ -33,7 +33,8 @@ class Database {
      *
      * @return null|string
      */
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
@@ -44,7 +45,8 @@ class Database {
      *
      * @return $this
      */
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
         return $this;
     }
@@ -54,7 +56,8 @@ class Database {
      *
      * @return null|string
      */
-    public function getLocation() {
+    public function getLocation()
+    {
         return $this->location;
     }
 
@@ -65,7 +68,8 @@ class Database {
      *
      * @return $this
      */
-    public function setLocation($location) {
+    public function setLocation($location)
+    {
         $this->location = $location;
         return $this;
     }
@@ -75,7 +79,8 @@ class Database {
      *
      * @return null|string
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 
@@ -86,7 +91,8 @@ class Database {
      *
      * @return $this
      */
-    public function setUsername($username) {
+    public function setUsername($username)
+    {
         $this->username = $username;
         return $this;
     }
@@ -96,7 +102,8 @@ class Database {
      *
      * @return null|string
      */
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
@@ -107,7 +114,8 @@ class Database {
      *
      * @return $this
      */
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password = $password;
         return $this;
     }
@@ -117,7 +125,8 @@ class Database {
      *
      * @return null|string
      */
-    public function getDatabase() {
+    public function getDatabase()
+    {
         return $this->database;
     }
 
@@ -128,7 +137,8 @@ class Database {
      *
      * @return $this
      */
-    public function setDatabase($database) {
+    public function setDatabase($database)
+    {
         $this->database = $database;
         return $this;
     }
@@ -138,7 +148,8 @@ class Database {
      *
      * @return null|\PDO
      */
-    public function getInstance() {
+    public function getInstance()
+    {
         if (!$this->instance && $this->getType() && $this->getLocation()) {
             switch ($this->getType()) {
                 case 'sqlite':
@@ -150,7 +161,11 @@ class Database {
                     if (!$this->getUsername() || !$this->getPassword() || !$this->getDatabase()) {
                         return null;
                     }
-                    $instance = new \PDO('mysql:host=' . $this->getLocation() . ';dbname=' . $this->getDatabase(), $this->getUsername(), $this->getPassword());
+                    $instance = new \PDO(
+                        'mysql:host=' . $this->getLocation() . ';dbname=' . $this->getDatabase(),
+                        $this->getUsername(),
+                        $this->getPassword()
+                    );
                     $this->setInstance($instance);
             }
         }
@@ -164,7 +179,8 @@ class Database {
      *
      * @return $this
      */
-    public function setInstance(\PDO $instance) {
+    public function setInstance(\PDO $instance)
+    {
         $this->instance = $instance;
         return $this;
     }
@@ -176,7 +192,8 @@ class Database {
      *
      * @return null|string
      */
-    public function quote($string) {
+    public function quote($string)
+    {
         if (!$this->getInstance()) {
             return null;
         }
@@ -190,7 +207,8 @@ class Database {
      *
      * @return string
      */
-    public function quoteIdentifier($string) {
+    public function quoteIdentifier($string)
+    {
         return '`' . (string)$string . '`';
     }
 
@@ -202,7 +220,8 @@ class Database {
      *
      * @return bool|\PDOStatement
      */
-    public function query($query) {
+    public function query($query)
+    {
         if (!$this->getInstance()) {
             return false;
         }
@@ -217,7 +236,8 @@ class Database {
      * @return $this
      * @throws \Exception
      */
-    public function setConfig(array $config) {
+    public function setConfig(array $config)
+    {
         foreach ($config as $type => $value) {
             $method = 'set' . ucfirst($type);
             if (method_exists($this, $method)) {
@@ -228,5 +248,4 @@ class Database {
         }
         return $this;
     }
-
 }

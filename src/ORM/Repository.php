@@ -8,8 +8,8 @@
 
 namespace Parable\ORM;
 
-class Repository {
-
+class Repository
+{
     /** @var \Parable\ORM\Database */
     protected $database;
 
@@ -28,9 +28,6 @@ class Repository {
     /** @var bool */
     protected $returnOne = false;
 
-    /** @var bool */
-    protected $filterSoftDeletes = false;
-
     /**
      * @param \Parable\ORM\Database $database
      */
@@ -45,7 +42,8 @@ class Repository {
      *
      * @return \Parable\ORM\Query
      */
-    public function createQuery() {
+    public function createQuery()
+    {
         $query = \Parable\ORM\Query::createInstance();
         $query->setTableName($this->getModel()->getTableName());
         $query->setTableKey($this->getModel()->getTableKey());
@@ -58,9 +56,6 @@ class Repository {
         if (count($this->limit)) {
             $query->limit($this->limit['limit'], $this->limit['offset']);
         }
-        if ($this->getFilterSoftDeletes() && property_exists($this->getModel(), 'is_deleted')) {
-            $query->where('is_deleted', '=', '0');
-        }
         return $query;
     }
 
@@ -69,7 +64,8 @@ class Repository {
      *
      * @return \Parable\ORM\Model[]|\Parable\ORM\Model
      */
-    public function getAll() {
+    public function getAll()
+    {
         $query = $this->createQuery();
         $result = $this->database->query($query);
 
@@ -91,7 +87,8 @@ class Repository {
      *
      * @return null|\Parable\ORM\Model
      */
-    public function getById($id) {
+    public function getById($id)
+    {
         $query = $this->createQuery();
         $query->where($this->getModel()->getTableKey(), '=', $id);
         $result = $this->database->query($query);
@@ -112,7 +109,8 @@ class Repository {
      *
      * @return \Parable\ORM\Model[]|\Parable\ORM\Model
      */
-    public function getByConditions(array $conditionsArray) {
+    public function getByConditions(array $conditionsArray)
+    {
         $query = $this->createQuery();
         foreach ($conditionsArray as $conditionArray) {
             $query->where(...$conditionArray);
@@ -138,7 +136,8 @@ class Repository {
      *
      * @return $this
      */
-    public function orderBy($key, $direction = 'DESC') {
+    public function orderBy($key, $direction = 'DESC')
+    {
         $this->orderBy = ['key' => $key, 'direction' => $direction];
         return $this;
     }
@@ -151,7 +150,8 @@ class Repository {
      *
      * @return $this
      */
-    public function limit($limit, $offset = null) {
+    public function limit($limit, $offset = null)
+    {
         $this->limit = ['limit' => $limit, 'offset' => $offset];
         return $this;
     }
@@ -161,7 +161,8 @@ class Repository {
      *
      * @return $this
      */
-    public function returnOne() {
+    public function returnOne()
+    {
         $this->returnOne = true;
         return $this;
     }
@@ -171,7 +172,8 @@ class Repository {
      *
      * @return $this
      */
-    public function returnAll() {
+    public function returnAll()
+    {
         $this->returnOne = false;
         return $this;
     }
@@ -185,7 +187,8 @@ class Repository {
      *
      * @return \Parable\ORM\Model[]|\Parable\ORM\Model
      */
-    public function getByCondition($key, $comparator, $value = null) {
+    public function getByCondition($key, $comparator, $value = null)
+    {
         return $this->getByConditions([[$key, $comparator, $value]]);
     }
 
@@ -196,7 +199,8 @@ class Repository {
      *
      * @return \Parable\ORM\Model[]|int
      */
-    public function handleResult(array $result) {
+    public function handleResult(array $result)
+    {
         if ($this->getOnlyCount()) {
             foreach ($result[0] as $row) {
                 return (int)$row;
@@ -217,7 +221,8 @@ class Repository {
      *
      * @return null|\Parable\ORM\Model
      */
-    public function createModel() {
+    public function createModel()
+    {
         return clone $this->getModel();
     }
 
@@ -228,7 +233,8 @@ class Repository {
      *
      * @return $this
      */
-    public function setModel($model) {
+    public function setModel(\Parable\ORM\Model $model)
+    {
         $this->model = $model;
         return $this;
     }
@@ -238,7 +244,8 @@ class Repository {
      *
      * @return null|\Parable\ORM\Model
      */
-    public function getModel() {
+    public function getModel()
+    {
         return $this->model;
     }
 
@@ -249,7 +256,8 @@ class Repository {
      *
      * @return $this
      */
-    public function setOnlyCount($value) {
+    public function setOnlyCount($value)
+    {
         $this->onlyCount = (bool)$value;
         return $this;
     }
@@ -259,28 +267,8 @@ class Repository {
      *
      * @return bool
      */
-    public function getOnlyCount() {
+    public function getOnlyCount()
+    {
         return $this->onlyCount;
-    }
-
-    /**
-     * Set whether to filter soft deletes out of all repo-created queries or not
-     *
-     * @param $value
-     *
-     * @return $this
-     */
-    public function setFilterSoftDeletes($value) {
-        $this->filterSoftDeletes = (bool)$value;
-        return $this;
-    }
-
-    /**
-     * Return the current state of filter soft deletes
-     *
-     * @return bool
-     */
-    public function getFilterSoftDeletes() {
-        return $this->filterSoftDeletes;
     }
 }

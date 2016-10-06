@@ -8,8 +8,8 @@
 
 namespace Parable\DI;
 
-class Container {
-
+class Container
+{
     /** @var array */
     protected static $instances = [];
 
@@ -25,15 +25,15 @@ class Container {
      * @return object
      * @throws \Exception
      */
-    public static function get($className, $parentClassName = '') {
+    public static function get($className, $parentClassName = '')
+    {
         // We store the relationship between class & parent to prevent cyclical references
         if ($parentClassName) {
             self::$relations[$className][$parentClassName] = true;
         }
 
         // And we check for cyclical references to prevent infinite loops
-        if (
-            $parentClassName
+        if ($parentClassName
             && isset(self::$relations[$parentClassName])
             && isset(self::$relations[$parentClassName][$className])
         ) {
@@ -58,7 +58,8 @@ class Container {
      * @return object
      * @throws \Exception
      */
-    public static function create($className, $parentClassName = '') {
+    public static function create($className, $parentClassName = '')
+    {
         if (!class_exists($className)) {
             $message = 'Could not create instance of "' . $className . '"';
             if ($parentClassName) {
@@ -93,8 +94,8 @@ class Container {
      *
      * @param object $class
      */
-    public static function store($class) {
+    public static function store($class)
+    {
         self::$instances[get_class($class)] = $class;
     }
-
 }

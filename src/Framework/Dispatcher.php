@@ -8,8 +8,8 @@
 
 namespace Parable\Framework;
 
-class Dispatcher {
-
+class Dispatcher
+{
     /** @var \Parable\Events\Hook */
     protected $hook;
 
@@ -45,7 +45,8 @@ class Dispatcher {
      *
      * @return $this
      */
-    public function dispatch(\Parable\Routing\Route $route) {
+    public function dispatch(\Parable\Routing\Route $route)
+    {
         $this->hook->trigger('parable_dispatch_before', $route);
         $controller = null;
 
@@ -69,7 +70,9 @@ class Dispatcher {
         } else {
             if ($controller) {
                 $reflection = new \ReflectionClass($controller);
-                $templateFile = $this->path->getDir('app/View/' . $reflection->getShortName() . '/' . $route->action . '.phtml');
+                $templateFile = $this->path->getDir(
+                    'app/View/' . $reflection->getShortName() . '/' . $route->action . '.phtml'
+                );
             }
         }
 
@@ -90,5 +93,4 @@ class Dispatcher {
         $this->hook->trigger('parable_dispatch_after', $route);
         return $this;
     }
-
 }

@@ -8,8 +8,8 @@
 
 namespace Parable\Framework;
 
-class Config {
-
+class Config
+{
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
@@ -31,7 +31,8 @@ class Config {
      *
      * @return mixed
      */
-    public function getNested(&$data, $keys) {
+    public function getNested(&$data, $keys)
+    {
         foreach ($keys as $key) {
             $data = &$data[$key];
         }
@@ -43,7 +44,8 @@ class Config {
      *
      * @return mixed
      */
-    public function get($key) {
+    public function get($key)
+    {
         if (strpos($key, '.') !== false) {
             return $this->getNested($this->config, explode('.', $key));
         }
@@ -53,8 +55,12 @@ class Config {
         return null;
     }
 
-    public function load() {
-        $dirIterator = new \RecursiveDirectoryIterator($this->path->getDir('app/Config'), \RecursiveDirectoryIterator::SKIP_DOTS);
+    public function load()
+    {
+        $dirIterator = new \RecursiveDirectoryIterator(
+            $this->path->getDir('app/Config'),
+            \RecursiveDirectoryIterator::SKIP_DOTS
+        );
         $iteratorIterator = new \RecursiveIteratorIterator($dirIterator);
 
         $configClasses = [];
@@ -84,5 +90,4 @@ class Config {
             $this->config = array_merge($this->config, $configClass->getValues());
         }
     }
-
 }

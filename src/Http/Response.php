@@ -8,8 +8,8 @@
 
 namespace Parable\Http;
 
-class Response {
-
+class Response
+{
     /** @var int */
     protected $httpCode = 200;
 
@@ -83,7 +83,8 @@ class Response {
     /**
      * By default we're going to set the Html Output type.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->setOutput(new \Parable\Http\Output\Html);
     }
 
@@ -92,7 +93,8 @@ class Response {
      *
      * @return $this
      */
-    public function setHttpCode($httpCode) {
+    public function setHttpCode($httpCode)
+    {
         $this->httpCode = $httpCode;
         return $this;
     }
@@ -100,14 +102,16 @@ class Response {
     /**
      * @return int
      */
-    public function getHttpCode() {
+    public function getHttpCode()
+    {
         return $this->httpCode;
     }
 
     /**
      * @return string
      */
-    public function getHttpCodeText() {
+    public function getHttpCodeText()
+    {
         return $this->httpCodes[$this->httpCode];
     }
 
@@ -116,7 +120,8 @@ class Response {
      *
      * @return $this
      */
-    public function setContentType($contentType) {
+    public function setContentType($contentType)
+    {
         $this->setHeader('Content-type', $contentType);
         return $this;
     }
@@ -126,7 +131,8 @@ class Response {
      *
      * @return $this
      */
-    public function setOutput(\Parable\Http\Output\OutputInterface $output) {
+    public function setOutput(\Parable\Http\Output\OutputInterface $output)
+    {
         $this->output = $output;
         $this->output->init($this);
         return $this;
@@ -137,7 +143,8 @@ class Response {
      *
      * @return $this
      */
-    public function send() {
+    public function send()
+    {
         $this->output->prepare($this);
 
         header("HTTP/1.1 " . $this->getHttpCode() . " " . $this->getHttpCodeText());
@@ -154,7 +161,8 @@ class Response {
      *
      * @return $this
      */
-    public function setContent($content) {
+    public function setContent($content)
+    {
         $this->content = $content;
         return $this;
     }
@@ -162,7 +170,8 @@ class Response {
     /**
      * @return string
      */
-    public function getContent() {
+    public function getContent()
+    {
         return $this->content;
     }
 
@@ -171,7 +180,8 @@ class Response {
      *
      * @return $this
      */
-    public function appendContent($content) {
+    public function appendContent($content)
+    {
         $this->content .= $content;
         return $this;
     }
@@ -181,7 +191,8 @@ class Response {
      *
      * @return $this
      */
-    public function prependContent($content) {
+    public function prependContent($content)
+    {
         $this->content = $content . $this->content;
         return $this;
     }
@@ -191,7 +202,8 @@ class Response {
      *
      * @return $this
      */
-    public function startOutputBuffer() {
+    public function startOutputBuffer()
+    {
         ob_start();
         return $this;
     }
@@ -201,7 +213,8 @@ class Response {
      *
      * @return string
      */
-    public function returnOutputBuffer() {
+    public function returnOutputBuffer()
+    {
         return ob_get_clean();
     }
 
@@ -209,7 +222,8 @@ class Response {
      * @param $key
      * @param $value
      */
-    public function setHeader($key, $value) {
+    public function setHeader($key, $value)
+    {
         $this->headers[$key] = $value;
     }
 
@@ -218,7 +232,8 @@ class Response {
      *
      * @return null
      */
-    public function getHeader($key) {
+    public function getHeader($key)
+    {
         if (!isset($this->headers[$key])) {
             return null;
         }
@@ -228,8 +243,8 @@ class Response {
     /**
      * @return array
      */
-    public function getHeaders() {
+    public function getHeaders()
+    {
         return $this->headers;
     }
-
 }

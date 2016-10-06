@@ -8,8 +8,8 @@
 
 namespace Parable\Framework;
 
-class Log {
-
+class Log
+{
     /** @var string */
     protected $path             = 'var/log';
 
@@ -26,7 +26,8 @@ class Log {
      *
      * @return $this
      */
-    public function setMode($mode) {
+    public function setMode($mode)
+    {
         if (decoct(octdec($mode)) == $mode) {
             $this->mode = $mode;
         }
@@ -38,7 +39,8 @@ class Log {
      *
      * @return int
      */
-    public function getMode() {
+    public function getMode()
+    {
         return $this->mode;
     }
 
@@ -49,7 +51,8 @@ class Log {
      *
      * @return $this
      */
-    public function setDefaultLogFile($defaultLogFile) {
+    public function setDefaultLogFile($defaultLogFile)
+    {
         $this->defaultLogFile = $defaultLogFile;
         return $this;
     }
@@ -59,7 +62,8 @@ class Log {
      *
      * @return string
      */
-    public function getDefaultLogFile() {
+    public function getDefaultLogFile()
+    {
         return $this->defaultLogFile;
     }
 
@@ -70,7 +74,8 @@ class Log {
      *
      * @return $this
      */
-    public function setPath($path) {
+    public function setPath($path)
+    {
         $this->path = $path;
         return $this;
     }
@@ -81,7 +86,8 @@ class Log {
      * @return string
      * @throws \Exception
      */
-    public function getPath() {
+    public function getPath()
+    {
         if (!is_dir($this->path)) {
             // Create directory
             $created = @mkdir($this->path, $this->getMode(), true);
@@ -108,7 +114,8 @@ class Log {
      * @return $this
      * @throws \Exception
      */
-    public function write($message, $logFile = null, $showTimezone = false) {
+    public function write($message, $logFile = null, $showTimezone = false)
+    {
         if (!$logFile) {
             $logFile = $this->getDefaultLogFile();
         }
@@ -128,5 +135,4 @@ class Log {
 
         return $this;
     }
-
 }

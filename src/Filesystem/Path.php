@@ -8,8 +8,8 @@
 
 namespace Parable\Filesystem;
 
-class Path {
-
+class Path
+{
     /** @var string */
     protected $basedir;
 
@@ -18,7 +18,8 @@ class Path {
      *
      * @return $this
      */
-    public function setBasedir($basedir) {
+    public function setBasedir($basedir)
+    {
         $this->basedir = rtrim($basedir, DS);
         return $this;
     }
@@ -26,7 +27,8 @@ class Path {
     /**
      * @return string
      */
-    public function getBasedir() {
+    public function getBasedir()
+    {
         return $this->basedir;
     }
 
@@ -35,8 +37,8 @@ class Path {
      *
      * @return string
      */
-    public function getDir($dir) {
+    public function getDir($dir)
+    {
         return $this->basedir . DS . ltrim($dir, DS);
     }
-
 }

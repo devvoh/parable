@@ -8,15 +8,16 @@
 
 namespace Parable\Auth;
 
-class Rights {
-
+class Rights
+{
     /** @var array */
     protected $rights = [];
 
     /**
      * Set up the default rights. Custom rights can be added at any point
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->addRight('create');
         $this->addRight('read');
         $this->addRight('update');
@@ -30,7 +31,8 @@ class Rights {
      *
      * @return $this
      */
-    public function addRight($name) {
+    public function addRight($name)
+    {
         $rights = $this->getRights();
         if (count($rights) == 0) {
             $value = 1;
@@ -46,7 +48,8 @@ class Rights {
      *
      * @return array
      */
-    public function getRights() {
+    public function getRights()
+    {
         return $this->rights;
     }
 
@@ -57,7 +60,8 @@ class Rights {
      *
      * @return int|false
      */
-    public function getRight($name) {
+    public function getRight($name)
+    {
         if (!isset($this->rights[$name])) {
             return false;
         }
@@ -72,7 +76,8 @@ class Rights {
      *
      * @return bool
      */
-    public function check($provided, $name) {
+    public function check($provided, $name)
+    {
         $provided = bindec($provided);
         return (bool)($provided & $this->getRight($name));
     }
@@ -86,7 +91,8 @@ class Rights {
      *
      * @return string
      */
-    public function combine($rights) {
+    public function combine($rights)
+    {
         $return = [];
         foreach ($rights as $right) {
             for ($i = 0; $i < strlen($right); $i++) {
@@ -99,5 +105,4 @@ class Rights {
         }
         return implode($return);
     }
-
 }

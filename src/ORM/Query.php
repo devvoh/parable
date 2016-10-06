@@ -8,8 +8,8 @@
 
 namespace Parable\ORM;
 
-class Query {
-
+class Query
+{
     /** @var array */
     protected $where    = [];
 
@@ -56,7 +56,8 @@ class Query {
      *
      * @return $this
      */
-    public function setTableName($tableName) {
+    public function setTableName($tableName)
+    {
         $this->tableName = $tableName;
         return $this;
     }
@@ -66,7 +67,8 @@ class Query {
      *
      * @return string
      */
-    public function getTableName() {
+    public function getTableName()
+    {
         return $this->tableName;
     }
 
@@ -75,7 +77,8 @@ class Query {
      *
      * @return null|string
      */
-    public function getQuotedTableName() {
+    public function getQuotedTableName()
+    {
         return $this->database->quoteIdentifier($this->tableName);
     }
 
@@ -86,7 +89,8 @@ class Query {
      *
      * @return $this
      */
-    public function setTableKey($key) {
+    public function setTableKey($key)
+    {
         $this->tableKey = $key;
         return $this;
     }
@@ -98,7 +102,8 @@ class Query {
      *
      * @return $this
      */
-    public function setAction($action) {
+    public function setAction($action)
+    {
         if (in_array($action, ['select', 'insert', 'delete', 'update'])) {
             $this->action = $action;
         }
@@ -110,7 +115,8 @@ class Query {
      *
      * @return string
      */
-    public function getAction() {
+    public function getAction()
+    {
         return $this->action;
     }
 
@@ -121,7 +127,8 @@ class Query {
      *
      * @return $this
      */
-    public function select($select) {
+    public function select($select)
+    {
         $this->select = $select;
         return $this;
     }
@@ -135,7 +142,8 @@ class Query {
      *
      * @return $this
      */
-    public function where($key, $comparator, $value = null) {
+    public function where($key, $comparator, $value = null)
+    {
         $this->where[] = ['key' => $key, 'comparator' => $comparator, 'value' => $value];
         return $this;
     }
@@ -150,7 +158,8 @@ class Query {
      *
      * @return $this
      */
-    public function join($table, $key, $comparator, $value = null) {
+    public function join($table, $key, $comparator, $value = null)
+    {
         $this->joins[] = ['table' => $table, 'key' => $key, 'comparator' => $comparator, 'value' => $value];
         return $this;
     }
@@ -163,7 +172,8 @@ class Query {
      *
      * @return $this
      */
-    public function addValue($key, $value) {
+    public function addValue($key, $value)
+    {
         $this->values[$key] = $value;
         return $this;
     }
@@ -176,7 +186,8 @@ class Query {
      *
      * @return $this
      */
-    public function orderBy($key, $direction = 'DESC') {
+    public function orderBy($key, $direction = 'DESC')
+    {
         $this->orderBy[] = ['key' => $key, 'direction' => $direction];
         return $this;
     }
@@ -188,7 +199,8 @@ class Query {
      *
      * @return $this
      */
-    public function groupBy($key) {
+    public function groupBy($key)
+    {
         $this->groupBy[] = $key;
         return $this;
     }
@@ -201,7 +213,8 @@ class Query {
      *
      * @return $this
      */
-    public function limit($limit, $offset = null) {
+    public function limit($limit, $offset = null)
+    {
         $this->limit = ['limit' => $limit, 'offset' => $offset];
         return $this;
     }
@@ -209,7 +222,8 @@ class Query {
     /**
      * @return Query
      */
-    public static function createInstance() {
+    public static function createInstance()
+    {
         return \Parable\DI\Container::create(static::class);
     }
 
@@ -223,7 +237,8 @@ class Query {
      *
      * @return string
      */
-    protected function buildCondition($conditionArray) {
+    protected function buildCondition($conditionArray)
+    {
         // Check for IN/NOT IN
         if (in_array(strtolower($conditionArray['comparator']), ['in', 'not in'])) {
             $values = $conditionArray['value'];
@@ -255,7 +270,8 @@ class Query {
      *
      * @return string
      */
-    protected function buildJoins() {
+    protected function buildJoins()
+    {
         if (count($this->joins) > 0) {
             $joins = [];
             foreach ($this->joins as $join) {
@@ -272,7 +288,8 @@ class Query {
      *
      * @return string
      */
-    protected function buildWheres() {
+    protected function buildWheres()
+    {
         if (count($this->where) > 0) {
             $wheres = [];
             foreach ($this->where as $where) {
@@ -288,7 +305,8 @@ class Query {
      *
      * @return string
      */
-    protected function buildOrderBy() {
+    protected function buildOrderBy()
+    {
         if (count($this->orderBy) > 0) {
             $orders = [];
             foreach ($this->orderBy as $orderBy) {
@@ -304,7 +322,8 @@ class Query {
      *
      * @return string
      */
-    protected function buildGroupBy() {
+    protected function buildGroupBy()
+    {
         if (count($this->groupBy) > 0) {
             $groups = [];
             foreach ($this->groupBy as $groupBy) {
@@ -320,7 +339,8 @@ class Query {
      *
      * @return string
      */
-    protected function buildLimitOffset() {
+    protected function buildLimitOffset()
+    {
         if (is_array($this->limit)) {
             $limit = $this->limit['limit'];
             if ($this->limit['offset'] !== null) {
@@ -337,7 +357,8 @@ class Query {
      *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         // If there's no valid PDO instance, we can't quote so no query for you
         if (!$this->database->getInstance()) {
             return '';
@@ -346,7 +367,6 @@ class Query {
         $query = [];
 
         if ($this->action === 'select') {
-
             $query[] = "SELECT " . $this->select;
             $query[] = "FROM " . $this->getQuotedTableName();
             $query[] = $this->buildJoins();
@@ -354,14 +374,10 @@ class Query {
             $query[] = $this->buildOrderBy();
             $query[] = $this->buildGroupBy();
             $query[] = $this->buildLimitOffset();
-
         } elseif ($this->action === 'delete') {
-
             $query[] = "DELETE FROM " . $this->getQuotedTableName();
             $query[] = $this->buildWheres();
-
         } elseif ($this->action === 'update') {
-
             $query[] = "UPDATE " . $this->getQuotedTableName();
 
             // now get the values
@@ -390,19 +406,17 @@ class Query {
                     }
                 }
                 $query[] = "SET " . implode(', ', $values);
-                $query[] = "WHERE " . $this->database->quoteIdentifier($tableKey) . " = " . $this->database->quote($tableKeyValue);
+                $query[] = "WHERE " . $this->database->quoteIdentifier($tableKey);
+                $query[] = " = " . $this->database->quote($tableKeyValue);
             } else {
                 $query = [];
             }
-
         } elseif ($this->action === 'insert') {
-
             // set insert to the proper table
             $query[] = "INSERT INTO " . $this->getQuotedTableName();
 
             // now get the values
             if (count($this->values) > 0) {
-
                 $keys = [];
                 $values = [];
                 foreach ($this->values as $key => $value) {
@@ -423,7 +437,6 @@ class Query {
             } else {
                 $query = [];
             }
-
         }
 
         // and now implode it into a nice string, if possible
@@ -438,5 +451,4 @@ class Query {
         // Since we got here, we've got a query to output
         return $queryString;
     }
-
 }

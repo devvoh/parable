@@ -8,8 +8,8 @@
 
 namespace Parable\Framework;
 
-class App {
-
+class App
+{
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
@@ -41,7 +41,7 @@ class App {
     protected $database;
 
     /** @var string */
-    protected $version = '0.8.15';
+    protected $version = '0.8.16';
 
     /**
      * @param \Parable\Filesystem\Path      $path
@@ -84,7 +84,8 @@ class App {
      *
      * @return $this
      */
-    public function run() {
+    public function run()
+    {
         /* Set the basedir on paths */
         $this->path->setBasedir(BASEDIR);
 
@@ -141,14 +142,16 @@ class App {
      *
      * @return $this
      */
-    protected function loadRoutes() {
+    protected function loadRoutes()
+    {
         foreach (\Parable\DI\Container::get(\Routes::class)->get() as $name => $route) {
             $this->router->addRoute($name, $route);
         }
         return $this;
     }
 
-    protected function loadInits() {
+    protected function loadInits()
+    {
         $locations = $this->config->get('initLocations');
 
         if (!is_array($locations)) {
@@ -167,6 +170,10 @@ class App {
 
             foreach ($iteratorIterator as $file) {
                 /** @var \SplFileInfo $file */
+                if ($file->getExtension() !== 'php') {
+                    continue;
+                }
+
                 $className = '\\Init\\' . str_replace('.' . $file->getExtension(), '', $file->getFilename());
                 \Parable\DI\Container::create($className);
             }
@@ -178,8 +185,8 @@ class App {
      *
      * @return string
      */
-    public function getVersion() {
+    public function getVersion()
+    {
         return $this->version;
     }
-
 }

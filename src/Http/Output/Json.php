@@ -8,22 +8,24 @@
 
 namespace Parable\Http\Output;
 
-class Json implements \Parable\Http\Output\OutputInterface {
-
+class Json implements \Parable\Http\Output\OutputInterface
+{
     /** @var string */
     protected $contentType = 'application/json';
 
     /**
      * @inheritdoc
      */
-    public function init(\Parable\Http\Response $response) {
+    public function init(\Parable\Http\Response $response)
+    {
         $response->setContentType($this->contentType);
     }
 
     /**
      * @inheritdoc
      */
-    public function prepare(\Parable\Http\Response $response) {
+    public function prepare(\Parable\Http\Response $response)
+    {
         $content = $response->getContent();
 
         if (!json_decode($content)) {
@@ -32,5 +34,4 @@ class Json implements \Parable\Http\Output\OutputInterface {
 
         $response->setContent($content);
     }
-
 }

@@ -8,8 +8,8 @@
 
 namespace Parable\Auth;
 
-class Authentication {
-
+class Authentication
+{
     /** @var null|\Model\User */
     protected $user                 = null;
 
@@ -45,7 +45,8 @@ class Authentication {
      *
      * @return bool
      */
-    public function initialize() {
+    public function initialize()
+    {
         if ($this->checkAuthentication()) {
             $data = $this->getAuthenticationData();
             $userId = $data['user_id'];
@@ -66,7 +67,8 @@ class Authentication {
      *
      * @return bool
      */
-    protected function checkAuthentication() {
+    protected function checkAuthentication()
+    {
         $authSession = $this->session->get('auth');
         if ($authSession) {
             $this->setAuthenticated($authSession['authenticated']);
@@ -82,7 +84,8 @@ class Authentication {
      * @param bool $value
      * @return $this
      */
-    public function setAuthenticated($value = true) {
+    public function setAuthenticated($value = true)
+    {
         $this->authenticated = (bool)$value;
         return $this;
     }
@@ -92,7 +95,8 @@ class Authentication {
      *
      * @return bool
      */
-    public function isAuthenticated() {
+    public function isAuthenticated()
+    {
         return $this->authenticated;
     }
 
@@ -102,7 +106,8 @@ class Authentication {
      * @param array $data
      * @return $this
      */
-    public function setAuthenticationData($data = []) {
+    public function setAuthenticationData($data = [])
+    {
         $this->authenticationData = $data;
         return $this;
     }
@@ -112,7 +117,8 @@ class Authentication {
      *
      * @return array
      */
-    public function getAuthenticationData() {
+    public function getAuthenticationData()
+    {
         return $this->authenticationData;
     }
 
@@ -123,7 +129,8 @@ class Authentication {
      *
      * @return $this
      */
-    public function setUser(\Model\User $user) {
+    public function setUser(\Model\User $user)
+    {
         $this->user = $user;
         return $this;
     }
@@ -133,7 +140,8 @@ class Authentication {
      *
      * @return \Model\User|null
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->user;
     }
 
@@ -144,7 +152,8 @@ class Authentication {
      * @param string $passwordHash
      * @return bool
      */
-    public function authenticate($passwordProvided, $passwordHash) {
+    public function authenticate($passwordProvided, $passwordHash)
+    {
         if (password_verify($passwordProvided, $passwordHash)) {
             $this->setAuthenticated(true);
             $this->session->set('auth', [
@@ -160,10 +169,10 @@ class Authentication {
     /**
      * Revoke an existing authentication.
      */
-    public function revokeAuthentication() {
+    public function revokeAuthentication()
+    {
         $this->user = null;
         $this->setAuthenticated(false);
         $this->session->remove('auth');
     }
-
 }

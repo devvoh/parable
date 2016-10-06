@@ -8,8 +8,8 @@
 
 namespace Parable\Routing;
 
-class Route {
-
+class Route
+{
     /** @var array */
     public $methods = [];
 
@@ -74,7 +74,8 @@ class Route {
      *
      * @return $this
      */
-    public function parseUrlParameters() {
+    public function parseUrlParameters()
+    {
         $urlParts = explode('/', $this->url);
         $this->parameters = [];
         foreach ($urlParts as $index => $part) {
@@ -92,7 +93,8 @@ class Route {
      *
      * @return array
      */
-    public function extractParameterValues($url) {
+    public function extractParameterValues($url)
+    {
         $urlParts = explode('/', $url);
         $this->values = [];
         foreach ($this->parameters as $index => $name) {
@@ -109,7 +111,8 @@ class Route {
      *
      * @return string
      */
-    public function injectParameters($url) {
+    public function injectParameters($url)
+    {
         $urlParts = explode('/', $url);
         $parameters = array_flip($this->values);
         foreach ($urlParts as &$part) {
@@ -127,10 +130,9 @@ class Route {
      *
      * @return bool
      */
-    public function matchDirectly($url) {
-        if (
-            !$this->isAcceptedRequestMethod()
-        ) {
+    public function matchDirectly($url)
+    {
+        if (!$this->isAcceptedRequestMethod()) {
             return false;
         }
 
@@ -147,9 +149,9 @@ class Route {
      *
      * @return bool
      */
-    public function matchWithParameters($url) {
-        if (
-            !$this->parameters
+    public function matchWithParameters($url)
+    {
+        if (!$this->parameters
             || !$this->isAcceptedRequestMethod()
             || !$this->isPartCountSame($url)
             || !$this->hasParameters()
@@ -173,7 +175,8 @@ class Route {
      *
      * @return bool
      */
-    public function isAcceptedRequestMethod() {
+    public function isAcceptedRequestMethod()
+    {
         return in_array($this->request->getMethod(), $this->methods);
     }
 
@@ -184,7 +187,8 @@ class Route {
      *
      * @return bool
      */
-    public function isPartCountSame($url) {
+    public function isPartCountSame($url)
+    {
         return count(explode('/', $url)) === count(explode('/', $this->url));
     }
 
@@ -193,7 +197,8 @@ class Route {
      *
      * @return bool
      */
-    public function hasParameters() {
+    public function hasParameters()
+    {
         return mb_strpos($this->url, '{') && mb_strpos($this->url, '}');
     }
 
@@ -205,7 +210,8 @@ class Route {
      * @return mixed
      * @throws \Exception
      */
-    public function getValue($key) {
+    public function getValue($key)
+    {
         if (!isset($this->values[$key])) {
             return null;
         }
@@ -217,7 +223,8 @@ class Route {
      *
      * @return string
      */
-    public function buildUrlWithParameters($parameters = []) {
+    public function buildUrlWithParameters($parameters = [])
+    {
         $url = $this->url;
 
         if (!$this->hasParameters() && !$parameters) {
@@ -229,5 +236,4 @@ class Route {
         }
         return $url;
     }
-
 }

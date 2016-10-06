@@ -6,9 +6,10 @@
  * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
  */
 
-class Routes {
-
-    public function get() {
+class Routes
+{
+    public function get()
+    {
         return [
             'index' => [
                 'methods' => 'GET',
@@ -18,6 +19,4 @@ class Routes {
             ],
         ];
     }
-
 }
-

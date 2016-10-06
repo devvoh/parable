@@ -8,8 +8,8 @@
 
 namespace Parable\Framework;
 
-class Autoloader {
-
+class Autoloader
+{
     /** @var array */
     protected $locations = [];
 
@@ -18,7 +18,8 @@ class Autoloader {
      *
      * @return $this
      */
-    public function register() {
+    public function register()
+    {
         spl_autoload_register([$this, 'load']);
         return $this;
     }
@@ -30,7 +31,8 @@ class Autoloader {
      *
      * @return $this
      */
-    public function addLocation($location) {
+    public function addLocation($location)
+    {
         $this->locations[] = $location;
         return $this;
     }
@@ -40,7 +42,8 @@ class Autoloader {
      *
      * @return array
      */
-    public function getLocations() {
+    public function getLocations()
+    {
         return $this->locations;
     }
 
@@ -51,7 +54,8 @@ class Autoloader {
      *
      * @return bool
      */
-    public function load($class) {
+    public function load($class)
+    {
         $path = str_replace('\\', DS, $class);
         $path = '##replace##/' . trim($path, DS) . '.php';
         $path = str_replace('/', DS, $path);
@@ -65,5 +69,4 @@ class Autoloader {
         }
         return false;
     }
-
 }

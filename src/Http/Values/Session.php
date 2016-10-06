@@ -8,15 +8,16 @@
 
 namespace Parable\Http\Values;
 
-class Session extends \Parable\Http\Values\GetSet {
-
+class Session extends \Parable\Http\Values\GetSet
+{
     /** @var string */
     protected $resource = '_SESSION';
 
     /**
      * @return $this
      */
-    public function start() {
+    public function start()
+    {
         session_start();
         return $this;
     }
@@ -26,7 +27,8 @@ class Session extends \Parable\Http\Values\GetSet {
      *
      * @return $this
      */
-    public function regenerateId($deleteOldSession = false) {
+    public function regenerateId($deleteOldSession = false)
+    {
         session_regenerate_id($deleteOldSession);
         return $this;
     }
@@ -34,9 +36,9 @@ class Session extends \Parable\Http\Values\GetSet {
     /**
      * @return $this
      */
-    public function destroy() {
+    public function destroy()
+    {
         session_destroy();
         return $this;
     }
-
 }

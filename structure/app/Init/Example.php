@@ -8,9 +8,10 @@
 
 namespace Init;
 
-class Example {
-
-    public function __construct() {
+class Example
+{
+    public function __construct()
+    {
         /*
          * Init scripts function very simply: They need to be in Init namespace, their filename should match their
          * classname, and the location of these scripts needs to be set in a Config file, using the root key
@@ -34,5 +35,4 @@ class Example {
          * there's no init scripts available. You can also remove the key from the Config.
          */
     }
-
 }

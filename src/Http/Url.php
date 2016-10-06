@@ -8,8 +8,8 @@
 
 namespace Parable\Http;
 
-class Url {
-
+class Url
+{
     /** @var string */
     protected $baseurl;
 
@@ -18,7 +18,8 @@ class Url {
      *
      * @return $this
      */
-    public function buildBaseurl() {
+    public function buildBaseurl()
+    {
         $domain = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 
         $url = str_replace('/public/index.php', '', $_SERVER['SCRIPT_NAME']);
@@ -29,7 +30,8 @@ class Url {
     /**
      * @return string
      */
-    public function getBaseurl() {
+    public function getBaseurl()
+    {
         if (!$this->baseurl) {
             $this->buildBaseurl();
         }
@@ -41,18 +43,24 @@ class Url {
      *
      * @return string
      */
-    public function getUrl($url = '') {
+    public function getUrl($url = '')
+    {
         return $this->getBaseurl() . '/' . ltrim($url, '/');
     }
 
     /**
      * @return string
      */
-    public function getCurrentUrl() {
+    public function getCurrentUrl()
+    {
         return isset($_GET['url']) ? $_GET['url'] : '/';
     }
 
-    public function getCurrentUrlFull() {
+    /**
+     * @return string
+     */
+    public function getCurrentUrlFull()
+    {
         return $this->getUrl($this->getCurrentUrl());
     }
 
@@ -61,9 +69,9 @@ class Url {
      *
      * @param $url
      */
-    public function redirect($url) {
-        if (
-            strpos($url, 'http://') === false
+    public function redirect($url)
+    {
+        if (strpos($url, 'http://') === false
             && strpos($url, 'https://') === false
         ) {
             $url = $this->getUrl($url);
@@ -71,5 +79,4 @@ class Url {
         header('location: ' . $url);
         die();
     }
-
 }

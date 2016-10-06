@@ -8,8 +8,8 @@
 
 namespace Parable\Http\Values;
 
-class GetSet {
-
+class GetSet
+{
     /** @var null|string */
     protected $resource         = null;
 
@@ -24,7 +24,8 @@ class GetSet {
      *
      * @return null|string
      */
-    public function getResource() {
+    public function getResource()
+    {
         return $this->resource;
     }
 
@@ -33,7 +34,8 @@ class GetSet {
      *
      * @return array|null
      */
-    public function getAll() {
+    public function getAll()
+    {
         if (!$this->getResource()) {
             return null;
         }
@@ -49,7 +51,8 @@ class GetSet {
      * @param string $key
      * @return mixed|null
      */
-    public function get($key) {
+    public function get($key)
+    {
         if (!$this->getResource()) {
             return null;
         }
@@ -75,7 +78,8 @@ class GetSet {
      * @param mixed $value
      * @return $this|false
      */
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         if (!$this->getResource()) {
             return $this;
         }
@@ -95,7 +99,8 @@ class GetSet {
      * @param $values
      * @return $this|bool
      */
-    public function setMany(array $values) {
+    public function setMany(array $values)
+    {
         if (!$this->getResource()) {
             return $this;
         }
@@ -112,7 +117,8 @@ class GetSet {
      * @param array $values
      * @return $this
      */
-    public function setAll(array $values) {
+    public function setAll(array $values)
+    {
         if ($this->useLocalResource) {
             $this->localResource[] = $values;
         } else {
@@ -125,8 +131,8 @@ class GetSet {
      * @param $key
      * @return false|GetSet
      */
-    public function remove($key) {
+    public function remove($key)
+    {
         return $this->set($key, null);
     }
-
 }

@@ -8,8 +8,8 @@
 
 namespace Parable\Framework\Interfaces;
 
-interface Config {
-
+interface Config
+{
     /**
      * Defines what order the class is loaded in, allowing overwriting values in a specific order.
      * If $sortOrder is null, the class will be loaded at the end of the process. So a $sortOrder = null class will
@@ -25,5 +25,4 @@ interface Config {
      * @return array
      */
     public function getValues();
-
 }

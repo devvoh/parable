@@ -8,8 +8,8 @@
 
 namespace Parable\Events;
 
-class Dock {
-
+class Dock
+{
     /** @var array */
     protected $docks = [];
 
@@ -21,7 +21,8 @@ class Dock {
      * @param null|string $viewFile
      * @return $this|false
      */
-    public function into($event, callable $callable, $viewFile = null) {
+    public function into($event, callable $callable, $viewFile = null)
+    {
         $this->docks[$event][] = [
             'callable' => $callable,
             'viewFile' => $viewFile,
@@ -37,7 +38,8 @@ class Dock {
      *
      * @return $this|bool
      */
-    public function trigger($event = null, &$payload = null) {
+    public function trigger($event = null, &$payload = null)
+    {
         // Disallow calling a trigger on global docks
         if ($event === '*') {
             return $this;

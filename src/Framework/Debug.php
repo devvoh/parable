@@ -8,15 +8,16 @@
 
 namespace Parable\Framework;
 
-class Debug {
-
+class Debug
+{
     /**
      * @param $message
      * @param bool $exitCode
      *
      * @return $this
      */
-    public function d($message, $exitCode = false) {
+    public function d($message, $exitCode = false)
+    {
         echo '<pre>';
         var_dump($message);
         echo '</pre>';
@@ -30,7 +31,8 @@ class Debug {
      *
      * @return $this
      */
-    public function p($message, $exitCode = false) {
+    public function p($message, $exitCode = false)
+    {
         echo '<pre>';
         print_r($message);
         echo '</pre>';
@@ -43,11 +45,11 @@ class Debug {
      *
      * @return $this
      */
-    public function endMaybe($exitCode = false) {
+    public function endMaybe($exitCode = false)
+    {
         if ($exitCode !== false) {
             die($exitCode);
         }
         return $this;
     }
-
 }

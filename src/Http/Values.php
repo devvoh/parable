@@ -8,8 +8,8 @@
 
 namespace Parable\Http;
 
-class Values {
-
+class Values
+{
     /** @var \Parable\Http\Values\Get */
     public $get;
 
@@ -26,24 +26,23 @@ class Values {
     public $internal;
 
     /**
-     * @param Values\Get $get
-     * @param Values\Post $post
-     * @param Values\Cookie $cookie
-     * @param Values\Session $session
+     * @param Values\Get      $get
+     * @param Values\Post     $post
+     * @param Values\Cookie   $cookie
+     * @param Values\Session  $session
      * @param Values\Internal $internal
      */
     public function __construct(
-        \Parable\Http\Values\Get $get,
-        \Parable\Http\Values\Post $post,
-        \Parable\Http\Values\Cookie $cookie,
-        \Parable\Http\Values\Session $session,
+        \Parable\Http\Values\Get      $get,
+        \Parable\Http\Values\Post     $post,
+        \Parable\Http\Values\Cookie   $cookie,
+        \Parable\Http\Values\Session  $session,
         \Parable\Http\Values\Internal $internal
     ) {
-        $this->get = $get;
-        $this->post = $post;
-        $this->cookie = $cookie;
-        $this->session = $session;
+        $this->get      = $get;
+        $this->post     = $post;
+        $this->cookie   = $cookie;
+        $this->session  = $session;
         $this->internal = $internal;
     }
-
 }
