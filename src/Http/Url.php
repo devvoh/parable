@@ -45,7 +45,7 @@ class Url
      */
     public function getUrl($url = '')
     {
-        return $this->getBaseurl() . '/' . ltrim($url, '/');
+        return rtrim($this->getBaseurl(), '/') . '/' . ltrim($url, '/');
     }
 
     /**

@@ -1,12 +1,17 @@
 # Parable PHP Framework Changelog
 
+### 0.8.17
+
+__Bugfixes__
+- Additional fix for `Http\Url` absolute baseurls.
+
 ### 0.8.16
 
 __Changes__
 - Practice what you preach: PSR-2 is in. Mostly. `Bootstrap.php` is currently not a-okay with Codesniffer, and neither is the provided `structure/app/Routes`. But I can live with those for now. Changing Routes (specifically) would warrant 0.9 and there's more important stuff to get done!
 - Soft deletes are out again, because that was a step further than I feel Parable needs to go.
 
-__Bugs__
+__Bugfixes__
 - `Framework\App::loadInits()` didn't give a crap whether a file was a php file or not. Now it does, as it should.
 - `Http\Url` got absolute baseurls, but also left in an extraneous `/`. This over-enthusiasm is now fixed.
 
