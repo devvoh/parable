@@ -28,7 +28,7 @@ class Json implements \Parable\Http\Output\OutputInterface
     {
         $content = $response->getContent();
 
-        if (!json_decode($content)) {
+        if (is_array($content) || !json_decode($content)) {
             $content = json_encode($content);
         }
 

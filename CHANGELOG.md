@@ -1,5 +1,13 @@
 # Parable PHP Framework Changelog
 
+### 0.8.18
+
+This one's for all y'all Windows users!
+
+__Bugfixes__
+- `\Http\Output\Json` now checks whether `$content` is an array.
+- `\Filesystem\Path::getDir()` now replaces '/' with DIRECTORY_SEPARATOR, so windows users shouldn't run into issues anymore.
+
 ### 0.8.17
 
 __Bugfixes__

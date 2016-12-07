@@ -23,13 +23,14 @@ ini_set('display_errors', '1');
 /*
  * Attempt to register composer's autoloader, which will be required for components
  */
-require_once(BASEDIR . '/vendor/autoload.php');
+$autoloadPath = BASEDIR . DS . 'vendor' . DS . 'autoload.php';
+require_once($autoloadPath);
 
 /*
  * And load and register the framework's autoloader
  */
 $autoloader = \Parable\DI\Container::get(\Parable\Framework\Autoloader::class);
-$autoloader->addLocation(BASEDIR . '/app');
+$autoloader->addLocation(BASEDIR . DS . 'app');
 $autoloader->register();
 
 if (PHP_SAPI === 'cli') {
