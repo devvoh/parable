@@ -41,7 +41,7 @@ class App
     protected $database;
 
     /** @var string */
-    protected $version = '0.8.18';
+    protected $version = '0.9.0';
 
     /**
      * @param \Parable\Filesystem\Path      $path

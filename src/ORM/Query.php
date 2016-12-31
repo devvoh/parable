@@ -22,8 +22,8 @@ class Query
     /** @var array */
     protected $groupBy  = [];
 
-    /** @var string */
-    protected $select   = '*';
+    /** @var array */
+    protected $select   = ['*'];
 
     /** @var string */
     protected $action   = 'select';
@@ -43,6 +43,15 @@ class Query
     /** @var \Parable\ORM\Database */
     protected $database;
 
+    /** @var array */
+    protected $acceptedValues = ['select', 'insert', 'update', 'delete'];
+
+    /** @var array */
+    protected $nonQuoteStrings = ['*', 'sum', 'max', 'min', 'count', 'avg'];
+
+    /**
+     * @param Database $database
+     */
     public function __construct(
         \Parable\ORM\Database $database
     ) {
@@ -79,7 +88,7 @@ class Query
      */
     public function getQuotedTableName()
     {
-        return $this->database->quoteIdentifier($this->tableName);
+        return $this->quoteIdentifier($this->tableName);
     }
 
     /**
@@ -104,7 +113,7 @@ class Query
      */
     public function setAction($action)
     {
-        if (in_array($action, ['select', 'insert', 'delete', 'update'])) {
+        if (in_array($action, $this->acceptedValues)) {
             $this->action = $action;
         }
         return $this;
@@ -123,11 +132,11 @@ class Query
     /**
      * In case of a select, what we're going to select (default *)
      *
-     * @param string $select
+     * @param array $select
      *
      * @return $this
      */
-    public function select($select)
+    public function select(array $select)
     {
         $this->select = $select;
         return $this;
@@ -244,11 +253,11 @@ class Query
             $values = $conditionArray['value'];
             $valueArray = [];
             foreach ($values as $value) {
-                $valueArray[] = $this->database->quote($value);
+                $valueArray[] = $this->quote($value);
             }
             $conditionArray['value'] = '(' . implode(',', $valueArray) . ')';
         } else {
-            $conditionArray['value'] = $this->database->quote($conditionArray['value']);
+            $conditionArray['value'] = $this->quote($conditionArray['value']);
         }
 
         // Check for IS/IS NOT
@@ -257,12 +266,41 @@ class Query
         }
 
         $returnArray = [
-            $this->database->quoteIdentifier($conditionArray['key']),
+            $this->quoteIdentifier($conditionArray['key']),
             $conditionArray['comparator'],
             $conditionArray['value']
         ];
 
         return implode(' ', $returnArray);
+    }
+
+    /**
+     * @return string
+     */
+    protected function buildSelect()
+    {
+        if (count($this->select) > 0) {
+            $selects = [];
+            foreach ($this->select as $select) {
+                $shouldBeQuoted = true;
+
+                // Check our list of nonQuoteStrings to see if we should quote or not.
+                foreach ($this->nonQuoteStrings as $nonQuoteString) {
+                    if (strpos(strtolower($select), $nonQuoteString) !== false) {
+                        $shouldBeQuoted = false;
+                        break;
+                    }
+                }
+
+                if ($shouldBeQuoted) {
+                    $selects[] = $this->getQuotedTableName() . '.' . $this->quoteIdentifier($select);
+                } else {
+                    $selects[] = $select;
+                }
+            }
+            return implode(', ', $selects);
+        }
+        return '';
     }
 
     /**
@@ -275,7 +313,7 @@ class Query
         if (count($this->joins) > 0) {
             $joins = [];
             foreach ($this->joins as $join) {
-                $joins[] = "JOIN " . $this->database->quoteIdentifier($join['table']) . " ON ";
+                $joins[] = "JOIN " . $this->quoteIdentifier($join['table']) . " ON ";
                 $joins[] = $this->buildCondition($join);
             }
             return implode(' ', $joins);
@@ -353,21 +391,43 @@ class Query
     }
 
     /**
+     * @param string$string
+     *
+     * @return string
+     */
+    protected function quote($string)
+    {
+        if (!$this->database->getInstance()) {
+            $string = str_replace("'", "", $string);
+            return "'{$string}'";
+        }
+        return $this->database->quote($string);
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    protected function quoteIdentifier($string)
+    {
+        if (!$this->database->getInstance()) {
+            return "`{$string}`";
+        }
+        return $this->database->quoteIdentifier($string);
+    }
+
+    /**
      * Outputs the actual query for use, empty string if invalid/incomplete values given
      *
      * @return string
      */
     public function __toString()
     {
-        // If there's no valid PDO instance, we can't quote so no query for you
-        if (!$this->database->getInstance()) {
-            return '';
-        }
-
         $query = [];
 
         if ($this->action === 'select') {
-            $query[] = "SELECT " . $this->select;
+            $query[] = "SELECT " . $this->buildSelect();
             $query[] = "FROM " . $this->getQuotedTableName();
             $query[] = $this->buildJoins();
             $query[] = $this->buildWheres();
@@ -393,10 +453,10 @@ class Query
                         if ($value === null) {
                             $correctValue = 'NULL';
                         } else {
-                            $correctValue = $this->database->quote($value);
+                            $correctValue = $this->quote($value);
                         }
                         // Quote the key
-                        $key = $this->database->quoteIdentifier($key);
+                        $key = $this->quoteIdentifier($key);
 
                         // Add key & value combo to the array
                         $values[] = $key . " = " . $correctValue;
@@ -406,8 +466,8 @@ class Query
                     }
                 }
                 $query[] = "SET " . implode(', ', $values);
-                $query[] = "WHERE " . $this->database->quoteIdentifier($tableKey);
-                $query[] = " = " . $this->database->quote($tableKeyValue);
+                $query[] = "WHERE " . $this->quoteIdentifier($tableKey);
+                $query[] = " = " . $this->quote($tableKeyValue);
             } else {
                 $query = [];
             }
@@ -421,12 +481,12 @@ class Query
                 $values = [];
                 foreach ($this->values as $key => $value) {
                     // Quote the key
-                    $keys[] = $this->database->quoteIdentifier($key);
+                    $keys[] = $this->quoteIdentifier($key);
 
                     if ($value === null) {
                         $correctValue = 'NULL';
                     } else {
-                        $correctValue = $this->database->quote($value);
+                        $correctValue = $this->quote($value);
                     }
                     $values[] = $correctValue;
                 }
