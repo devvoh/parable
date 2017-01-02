@@ -8,9 +8,11 @@
 
 namespace Parable\ORM;
 
+use Devvoh\Components\DI;
+
 class Query
 {
-    /** @var array */
+    /** @var \Parable\ORM\Query\Condition[] */
     protected $where    = [];
 
     /** @var array */
@@ -28,7 +30,7 @@ class Query
     /** @var string */
     protected $action   = 'select';
 
-    /** @var array */
+    /** @var \Parable\ORM\Query\Condition[] */
     protected $joins    = [];
 
     /** @var null|string */
@@ -153,23 +155,42 @@ class Query
      */
     public function where($key, $comparator, $value = null)
     {
-        $this->where[] = ['key' => $key, 'comparator' => $comparator, 'value' => $value];
+        /** @var \Parable\ORM\Query\Condition $condition */
+        $condition = \Parable\DI\Container::create(\Parable\ORM\Query\Condition::class);
+        $condition
+            ->setKey($key)
+            ->setComparator($comparator)
+            ->setValue($value)
+            ->setQuery($this);
+
+        $this->where[] = $condition;
         return $this;
     }
 
     /**
      * Adds a simple join clause
      *
-     * @param string $table
+     * @param string $tableName
      * @param string $key
      * @param string $comparator
      * @param mixed  $value
+     * @param bool   $shouldCompareFields
      *
      * @return $this
      */
-    public function join($table, $key, $comparator, $value = null)
+    public function join($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
     {
-        $this->joins[] = ['table' => $table, 'key' => $key, 'comparator' => $comparator, 'value' => $value];
+        /** @var \Parable\ORM\Query\Condition $condition */
+        $condition = \Parable\DI\Container::create(\Parable\ORM\Query\Condition::class);
+        $condition
+            ->setTableName($tableName)
+            ->setKey($key)
+            ->setComparator($comparator)
+            ->setValue($value)
+            ->setQuery($this)
+            ->setShouldCompareFields($shouldCompareFields);
+
+        $this->joins[] = $condition;
         return $this;
     }
 
@@ -313,8 +334,8 @@ class Query
         if (count($this->joins) > 0) {
             $joins = [];
             foreach ($this->joins as $join) {
-                $joins[] = "JOIN " . $this->quoteIdentifier($join['table']) . " ON ";
-                $joins[] = $this->buildCondition($join);
+                $joins[] = "JOIN " . $this->quoteIdentifier($join->getTableName()) . " ON ";
+                $joins[] = $join->build();
             }
             return implode(' ', $joins);
         }
@@ -331,7 +352,7 @@ class Query
         if (count($this->where) > 0) {
             $wheres = [];
             foreach ($this->where as $where) {
-                $wheres[] = $this->buildCondition($where);
+                $wheres[] = $where->build();
             }
             return "WHERE " . implode(' AND ', $wheres);
         }
@@ -395,7 +416,7 @@ class Query
      *
      * @return string
      */
-    protected function quote($string)
+    public function quote($string)
     {
         if (!$this->database->getInstance()) {
             $string = str_replace("'", "", $string);
@@ -409,7 +430,7 @@ class Query
      *
      * @return string
      */
-    protected function quoteIdentifier($string)
+    public function quoteIdentifier($string)
     {
         if (!$this->database->getInstance()) {
             return "`{$string}`";
