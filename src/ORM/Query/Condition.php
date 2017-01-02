@@ -31,67 +31,117 @@ class Condition
     /** @var bool */
     protected $shouldCompareFields = false;
 
+    /**
+     * @param \Parable\ORM\Query $query
+     *
+     * @return $this
+     */
     public function setQuery(\Parable\ORM\Query $query)
     {
         $this->query = $query;
         return $this;
     }
 
+    /**
+     * @param string $tableName
+     *
+     * @return $this
+     */
     public function setTableName($tableName)
     {
         $this->tableName = $tableName;
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getTableName()
     {
         return $this->tableName;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return $this
+     */
     public function setKey($key)
     {
         $this->key = $key;
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getKey()
     {
         return $this->key;
     }
 
+    /**
+     * @param string $comparator
+     *
+     * @return $this
+     */
     public function setComparator($comparator)
     {
         $this->comparator = $comparator;
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getComparator()
     {
         return $this->comparator;
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
     public function setValue($value)
     {
         $this->value = $value;
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * @param bool $shouldQuoteValues
+     *
+     * @return $this
+     */
     public function setShouldQuoteValues($shouldQuoteValues)
     {
         $this->shouldQuoteValues = (bool)$shouldQuoteValues;
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function shouldQuoteValues()
     {
         return $this->shouldQuoteValues;
     }
 
+    /**
+     * @param bool $shouldCompareFields
+     *
+     * @return $this
+     */
     public function setShouldCompareFields($shouldCompareFields)
     {
         // We need to set shouldQuoteValues to the opposite of shouldCompareFields
@@ -101,21 +151,33 @@ class Condition
         return $this;
     }
 
-    public function shouldCompareFields()
+    /**
+     * @return bool
+     */
+    protected function shouldCompareFields()
     {
         return $this->shouldCompareFields;
     }
 
-    public function isComparatorInNotIn()
+    /**
+     * @return bool
+     */
+    protected function isComparatorInNotIn()
     {
         return in_array(strtolower($this->getComparator()), ['in', 'not in']);
     }
 
-    public function isComparatorIsNotIs()
+    /**
+     * @return bool
+     */
+    protected function isComparatorIsNotIs()
     {
         return in_array(strtolower($this->getComparator()), ['is', 'is not']);
     }
 
+    /**
+     * @return string
+     */
     public function build()
     {
         // Check for IS/IS NOT and set the value to NULL if it is.
