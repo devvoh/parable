@@ -8,8 +8,6 @@
 
 namespace Parable\ORM;
 
-use Devvoh\Components\DI;
-
 class Query
 {
     /** @var \Parable\ORM\Query\Condition[] */
