@@ -1,10 +1,4 @@
 <?php
-/**
- * @package     Parable ORM
- * @license     MIT
- * @author      Robin de Graaf <hello@devvoh.com>
- * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
- */
 
 namespace Parable\ORM;
 

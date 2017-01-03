@@ -1,35 +1,42 @@
 <?php
-/**
- * @package     Parable ORM
- * @license     MIT
- * @author      Robin de Graaf <hello@devvoh.com>
- * @copyright   2015-2016, Robin de Graaf, devvoh webdevelopment
- */
 
 namespace Parable\ORM;
 
 class Query
 {
+    /**
+     * Join types
+     */
+    const JOIN_INNER      = 1;
+    const JOIN_LEFT       = 2;
+    const JOIN_RIGHT      = 3;
+    const JOIN_FULL       = 4;
+
     /** @var \Parable\ORM\Query\Condition[] */
-    protected $where    = [];
+    protected $where      = [];
 
     /** @var array */
-    protected $values   = [];
+    protected $values     = [];
 
     /** @var array */
-    protected $orderBy  = [];
+    protected $orderBy    = [];
 
     /** @var array */
-    protected $groupBy  = [];
+    protected $groupBy    = [];
 
     /** @var array */
-    protected $select   = ['*'];
+    protected $select     = ['*'];
 
     /** @var string */
-    protected $action   = 'select';
+    protected $action     = 'select';
 
-    /** @var \Parable\ORM\Query\Condition[] */
-    protected $joins    = [];
+    /** @var \Parable\ORM\Query\Condition[][] */
+    protected $joins = [
+        self::JOIN_INNER => [],
+        self::JOIN_LEFT  => [],
+        self::JOIN_RIGHT => [],
+        self::JOIN_FULL  => [],
+    ];
 
     /** @var null|string */
     protected $tableName;
@@ -166,8 +173,7 @@ class Query
     }
 
     /**
-     * Adds a simple join clause
-     *
+     * @param int    $type
      * @param string $tableName
      * @param string $key
      * @param string $comparator
@@ -176,8 +182,14 @@ class Query
      *
      * @return $this
      */
-    public function join($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
-    {
+    protected function join(
+        $type,
+        $tableName,
+        $key,
+        $comparator,
+        $value = null,
+        $shouldCompareFields = true
+    ) {
         /** @var \Parable\ORM\Query\Condition $condition */
         $condition = \Parable\DI\Container::create(\Parable\ORM\Query\Condition::class);
         $condition
@@ -188,8 +200,64 @@ class Query
             ->setQuery($this)
             ->setShouldCompareFields($shouldCompareFields);
 
-        $this->joins[] = $condition;
+        $this->joins[$type][] = $condition;
         return $this;
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $key
+     * @param string $comparator
+     * @param mixed  $value
+     * @param bool   $shouldCompareFields
+     *
+     * @return $this
+     */
+    public function innerJoin($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
+    {
+        return $this->join(self::JOIN_INNER, $tableName, $key, $comparator, $value, $shouldCompareFields);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $key
+     * @param string $comparator
+     * @param mixed  $value
+     * @param bool   $shouldCompareFields
+     *
+     * @return $this
+     */
+    public function leftJoin($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
+    {
+        return $this->join(self::JOIN_LEFT, $tableName, $key, $comparator, $value, $shouldCompareFields);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $key
+     * @param string $comparator
+     * @param mixed  $value
+     * @param bool   $shouldCompareFields
+     *
+     * @return $this
+     */
+    public function rightJoin($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
+    {
+        return $this->join(self::JOIN_RIGHT, $tableName, $key, $comparator, $value, $shouldCompareFields);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $key
+     * @param string $comparator
+     * @param mixed  $value
+     * @param bool   $shouldCompareFields
+     *
+     * @return $this
+     */
+    public function fullJoin($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
+    {
+        return $this->join(self::JOIN_FULL, $tableName, $key, $comparator, $value, $shouldCompareFields);
     }
 
     /**
@@ -329,15 +397,27 @@ class Query
      */
     protected function buildJoins()
     {
-        if (count($this->joins) > 0) {
-            $joins = [];
-            foreach ($this->joins as $join) {
-                $joins[] = "JOIN " . $this->quoteIdentifier($join->getTableName()) . " ON ";
-                $joins[] = $join->build();
+        $builtJoins = [];
+        foreach ($this->joins as $type => $joins) {
+            if (count($joins) > 0) {
+                foreach ($joins as $join) {
+                    if ($type == self::JOIN_INNER) {
+                        $builtJoins[] = "INNER JOIN";
+                    } elseif ($type == self::JOIN_LEFT) {
+                        $builtJoins[] = "LEFT JOIN";
+                    } elseif ($type == self::JOIN_RIGHT) {
+                        $builtJoins[] = "RIGHT JOIN";
+                    } elseif ($type == self::JOIN_FULL) {
+                        $builtJoins[] = "FULL JOIN";
+                    }
+
+                    $builtJoins[] = $this->quoteIdentifier($join->getTableName()) . " ON";
+                    $builtJoins[] = $join->build();
+                }
             }
-            return implode(' ', $joins);
         }
-        return '';
+
+        return implode(" ", $builtJoins);
     }
 
     /**

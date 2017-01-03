@@ -1,5 +1,20 @@
 # Parable PHP Framework Changelog
 
+### 0.9.0
+
+__Note: This version might be incompatible with previous versions. If you've ever set specific ->select() values on a Query object, you'll have to rewrite those calls to pass an array of items rather than a comma-separated string.__
+
+It is the intention for the 0.9.x branch to be the last pre-release branch before a 1.0.0 release. For this, the focus is on bug fixes and some refactors that will solve long-standing issues or shortcomings in Parable subsystems. 0.9.x will also see Documentation start taking shape. Development of this branch might be somewhat slower due to this, but it's all about working towards getting out of pre-release. Exciting, if you ask me :)
+
+__Changes__
+- `\ORM\Query` has been upgraded significantly:
+  - It now requires an array with values for select, so they can all be prefixed with the table name and quoted appropriately.
+  - It no longer requires a database connection to build a query, but when no database is present, it does basic quoting instead of real quoting. Only for testing and dev purposes, not for production!
+  - All queries now have their table names added to the field names, to prevent ambiguity in joins. In join-less queries, it can't hurt.
+
+__Bugfixes__
+- Due to the changes in `\ORM\Query`, joins should now work properly. `join()` has been replaced with `innerJoin()`, and `leftJoin()`, `rightJoin()` and `fullJoin()` have been added. 
+
 ### 0.8.18
 
 This one's for all y'all Windows users!
