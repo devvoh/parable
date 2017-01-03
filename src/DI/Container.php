@@ -84,12 +84,16 @@ class Container
     }
 
     /**
-     * Store a class under its className
+     * Store an instance under either the provided $name or its class name.
      *
-     * @param object $class
+     * @param object      $instance
+     * @param string|null $name
      */
-    public static function store($class)
+    public static function store($instance, $name = null)
     {
-        self::$instances[get_class($class)] = $class;
+        if (!$name) {
+            $name = get_class($instance);
+        }
+        self::$instances[$name] = $instance;
     }
 }
