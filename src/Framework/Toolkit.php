@@ -54,7 +54,7 @@ class Toolkit
             if ($file->getFilename() === 'Bootstrap.php'
                 || $file->getFilename() === 'parable.php'
                 || $file->getExtension() !== 'php'
-                || strpos($file->getRealPath(), '/Cli/') !== false
+                || strpos($file->getRealPath(), '/Console/') !== false
             ) {
                 continue;
             }

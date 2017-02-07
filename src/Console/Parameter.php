@@ -45,7 +45,7 @@ class Parameter
 
     public function getCommandName()
     {
-        if (count($this->rawArguments) > 1) {
+        if (count($this->rawArguments) >= 1) {
             return $this->rawArguments[0];
         }
     }

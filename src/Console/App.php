@@ -38,6 +38,10 @@ class App
         $this->output    = $output;
         $this->input     = $input;
         $this->parameter = $parameter;
+
+        set_exception_handler(function(\Exception $e) {
+            $this->output->writeError($e->getMessage());
+        });
     }
 
     /**
@@ -102,6 +106,7 @@ class App
      */
     public function run()
     {
+        $command = null;
         if ($this->defaultCommand && $this->onlyCommand) {
             $command = $this->getCommand($this->defaultCommand);
         } else {
@@ -110,9 +115,11 @@ class App
                 $command = $this->getCommand($this->defaultCommand);
             } elseif ($commandName) {
                 $command = $this->getCommand($commandName);
-            } else {
-                throw new \Parable\Console\Exception('No valid command found.');
             }
+        }
+
+        if (!$command) {
+            throw new \Parable\Console\Exception('No valid command found.');
         }
 
         $callable = $command->getCallable();
