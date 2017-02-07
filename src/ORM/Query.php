@@ -161,7 +161,7 @@ class Query
     public function where($key, $comparator, $value = null)
     {
         /** @var \Parable\ORM\Query\Condition $condition */
-        $condition = \Parable\DI\Container::create(\Parable\ORM\Query\Condition::class);
+        $condition = new \Parable\ORM\Query\Condition();
         $condition
             ->setKey($key)
             ->setComparator($comparator)
@@ -191,7 +191,7 @@ class Query
         $shouldCompareFields = true
     ) {
         /** @var \Parable\ORM\Query\Condition $condition */
-        $condition = \Parable\DI\Container::create(\Parable\ORM\Query\Condition::class);
+        $condition = new \Parable\ORM\Query\Condition();
         $condition
             ->setTableName($tableName)
             ->setKey($key)
