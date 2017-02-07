@@ -11,9 +11,12 @@ __Changes__
   - It now requires an array with values for select, so they can all be prefixed with the table name and quoted appropriately.
   - It no longer requires a database connection to build a query, but when no database is present, it does basic quoting instead of real quoting. Only for testing and dev purposes, not for production!
   - All queries now have their table names added to the field names, to prevent ambiguity in joins. In join-less queries, it can't hurt.
+- `\Cli` has been replaced by `\Console` and everybody rejoiced. See `parable.php` for a simple implementation. It still needs work, but it's a start.
+- `\DI\Container::store` now allows passing a custom name if you want to. This makes it possible to store a specific instance under a specific name (say, an interface name).
 
 __Bugfixes__
-- Due to the changes in `\ORM\Query`, joins should now work properly. `join()` has been replaced with `innerJoin()`, and `leftJoin()`, `rightJoin()` and `fullJoin()` have been added. 
+- Due to the changes in `\ORM\Query`, joins should now work properly. `join()` has been replaced with `innerJoin()`, and `leftJoin()`, `rightJoin()` and `fullJoin()` have been added.
+- `parable.php` was not copying the `Init/Example.php` file, which isn't helpful. Fixed now.
 
 ### 0.8.18
 
