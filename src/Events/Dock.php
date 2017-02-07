@@ -12,14 +12,14 @@ class Dock
      *
      * @param string      $event
      * @param callable    $callable
-     * @param null|string $viewFile
+     * @param null|string $template
      * @return $this|false
      */
-    public function into($event, callable $callable, $viewFile = null)
+    public function into($event, callable $callable, $template = null)
     {
         $this->docks[$event][] = [
             'callable' => $callable,
-            'viewFile' => $viewFile,
+            'viewFile' => $template,
         ];
         return $this;
     }
@@ -61,12 +61,12 @@ class Dock
         // All good, let's call those closures
         foreach ($docks as $dock) {
             $dock['callable']($payload);
-            // And include the viewFile if we have one. Data should be passed to the viewFile through
-            // outside means, through the session, one of the global variables ($_GET, etc.) or through
-            // Devvoh\Components\GetSet, if it's available.
-            if ($dock['viewFile'] && file_exists($dock['viewFile'])) {
+
+            // And include the template if we have one. Data should be passed to the template through
+            // outside means like through the session or \Http\Values or one of its sub-types.
+            if ($dock['template'] && file_exists($dock['template'])) {
                 ob_start();
-                require($dock['viewFile']);
+                require($dock['template']);
                 $return = ob_get_clean();
                 echo $return;
             }
