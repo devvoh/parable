@@ -97,7 +97,7 @@ class Authentication
      *
      * @return $this
      */
-    public function setAuthenticationData(array $data = [])
+    public function setAuthenticationData(array $data)
     {
         $this->authenticationData = $data;
         return $this;
