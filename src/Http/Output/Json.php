@@ -13,6 +13,7 @@ class Json implements \Parable\Http\Output\OutputInterface
     public function init(\Parable\Http\Response $response)
     {
         $response->setContentType($this->contentType);
+        return $this;
     }
 
     /**
@@ -27,5 +28,6 @@ class Json implements \Parable\Http\Output\OutputInterface
         }
 
         $response->setContent($content);
+        return $this;
     }
 }

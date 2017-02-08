@@ -22,6 +22,9 @@ class Parameter
         $this->parseArguments();
     }
 
+    /**
+     * @return $this
+     */
     protected function parseArguments()
     {
         $this->scriptName = array_shift($this->rawArguments);
@@ -36,17 +39,28 @@ class Parameter
                 $this->arguments[] = $argument;
             }
         }
+
+        return $this;
     }
 
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
     protected function trimDashes($string)
     {
         return ltrim($string, '-');
     }
 
+    /**
+     * @return null|string
+     */
     public function getCommandName()
     {
         if (count($this->rawArguments) >= 1) {
             return $this->rawArguments[0];
         }
+        return null;
     }
 }

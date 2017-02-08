@@ -16,15 +16,10 @@ class Toolkit
     /** @var array */
     protected $resourceMap = [];
 
-    /**
-     * @param \Parable\Filesystem\Path $path
-     * @param \Parable\Http\Url        $url
-     * @param \Parable\Routing\Router  $router
-     */
     public function __construct(
         \Parable\Filesystem\Path $path,
-        \Parable\Http\Url        $url,
-        \Parable\Routing\Router  $router
+        \Parable\Http\Url $url,
+        \Parable\Routing\Router $router
     ) {
         $this->path   = $path;
         $this->url    = $url;
@@ -44,9 +39,8 @@ class Toolkit
         );
         $iteratorIterator = new \RecursiveIteratorIterator($dirIterator);
 
+        /** @var \SplFileInfo $file */
         foreach ($iteratorIterator as $path => $file) {
-            /** @var \SplFileInfo $file */
-
             /*
              * Specifically exclude all non-php files and Bootstrap, since it will attempt to register everything again
              * and isn't a class anyway.
@@ -115,7 +109,7 @@ class Toolkit
     /**
      * Redirect directly by using a route name.
      *
-     * @param $routeName
+     * @param string $routeName
      */
     public function redirectToRoute($routeName)
     {
@@ -129,7 +123,7 @@ class Toolkit
      *
      * @return string
      */
-    public function getFullRouteUrlByName($name, $parameters = [])
+    public function getFullRouteUrlByName($name, array $parameters = [])
     {
         return $this->url->getUrl($this->router->getRouteUrlByName($name, $parameters));
     }

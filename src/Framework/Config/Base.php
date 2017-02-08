@@ -1,9 +1,12 @@
 <?php
 
-namespace Parable\Framework\Interfaces;
+namespace Parable\Framework\Config;
 
-interface Config
+abstract class Base
 {
+    /** @var null|int */
+    protected $sortOrder;
+
     /**
      * Defines what order the class is loaded in, allowing overwriting values in a specific order.
      * If $sortOrder is null, the class will be loaded at the end of the process. So a $sortOrder = null class will
@@ -11,12 +14,15 @@ interface Config
      *
      * @return null|int
      */
-    public function getSortOrder();
+    public function getSortOrder()
+    {
+        return $this->sortOrder;
+    }
 
     /**
      * Returns a (multidimensional) array with configuration values
      *
      * @return array
      */
-    public function getValues();
+    abstract public function getValues();
 }

@@ -25,11 +25,6 @@ class App
     /** @var bool */
     protected $onlyCommand = false;
 
-    /**
-     * @param \Parable\Console\Output $output
-     * @param \Parable\Console\Input $input
-     * @param \Parable\Console\Parameter $parameter
-     */
     public function __construct(
         \Parable\Console\Output $output,
         \Parable\Console\Input $input,
@@ -45,7 +40,7 @@ class App
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return $this
      */
@@ -90,7 +85,7 @@ class App
     /**
      * @param string $commandName
      *
-     * @return null
+     * @return null|\Parable\Console\Command
      */
     public function getCommand($commandName)
     {
@@ -102,7 +97,7 @@ class App
 
     /**
      * @return $this
-     * @throws Exception
+     * @throws \Parable\Console\Exception
      */
     public function run()
     {

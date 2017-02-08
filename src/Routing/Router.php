@@ -16,14 +16,9 @@ class Router
     /** @var \Parable\Routing\Route[] */
     protected $routes = [];
 
-    /**
-     * @param \Parable\Http\Request    $request
-     * @param \Parable\Http\Url        $url
-     * @param \Parable\Filesystem\Path $path
-     */
     public function __construct(
-        \Parable\Http\Request    $request,
-        \Parable\Http\Url        $url,
+        \Parable\Http\Request $request,
+        \Parable\Http\Url $url,
         \Parable\Filesystem\Path $path
     ) {
         $this->request = $request;
@@ -50,13 +45,14 @@ class Router
      * Return a route by its name.
      *
      * @param string $name
+     *
      * @return \Parable\Routing\Route
-     * @throws \Exception
+     * @throws \Parable\Routing\Exception
      */
     public function getRouteByName($name)
     {
         if (!isset($this->routes[$name])) {
-            throw new \Exception('Route named "' . $name . '" does not exist.');
+            throw new \Parable\Routing\Exception('Route named "' . $name . '" does not exist.');
         }
         return $this->routes[$name];
     }
@@ -130,7 +126,7 @@ class Router
      *
      * @return string
      */
-    public function getRouteUrlByName($name, $parameters = [])
+    public function getRouteUrlByName($name, array $parameters = [])
     {
         $route = $this->getRouteByName($name);
         return $route->buildUrlWithParameters($parameters);

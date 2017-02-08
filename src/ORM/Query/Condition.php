@@ -17,7 +17,7 @@ class Condition
     protected $comparator = '=';
 
     /** @var mixed */
-    protected $value = null;
+    protected $value;
 
     /** @var bool */
     protected $shouldQuoteValues = true;

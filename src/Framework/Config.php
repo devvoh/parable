@@ -10,13 +10,9 @@ class Config
     /** @var array */
     protected $config = [];
 
-    /**
-     * @param \Parable\Filesystem\Path $path
-     */
-    public function __construct(
-        \Parable\Filesystem\Path $path
-    ) {
-        $this->path   = $path;
+    public function __construct(\Parable\Filesystem\Path $path)
+    {
+        $this->path = $path;
     }
 
     /**
@@ -25,7 +21,7 @@ class Config
      *
      * @return mixed
      */
-    public function getNested(&$data, $keys)
+    public function getNested(array &$data, array $keys)
     {
         foreach ($keys as $key) {
             $data = &$data[$key];
@@ -49,6 +45,9 @@ class Config
         return null;
     }
 
+    /**
+     * @return $this
+     */
     public function load()
     {
         $dirIterator = new \RecursiveDirectoryIterator(
@@ -65,9 +64,9 @@ class Config
             }
             $className = 'Config\\' . str_replace('.php', '', $file->getFilename());
 
-            /** @var \Parable\Framework\Interfaces\Config $configClass */
+            /** @var \Parable\Framework\Config\Base $configClass */
             $configClass = \Parable\DI\Container::get($className);
-            if ($configClass instanceof \Parable\Framework\Interfaces\Config) {
+            if ($configClass instanceof \Parable\Framework\Config\Base) {
                 if ($configClass->getSortOrder() === null) {
                     array_push($configClasses, $configClass);
                 } else {
@@ -83,5 +82,7 @@ class Config
         foreach ($configClasses as $configClass) {
             $this->config = array_merge($this->config, $configClass->getValues());
         }
+
+        return $this;
     }
 }

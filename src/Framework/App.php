@@ -37,29 +37,17 @@ class App
     /** @var string */
     protected $version = '0.9.0';
 
-    /**
-     * @param \Parable\Filesystem\Path      $path
-     * @param \Parable\Framework\Config     $config
-     * @param \Parable\Framework\Dispatcher $dispatcher
-     * @param \Parable\Events\Hook          $hook
-     * @param \Parable\Routing\Router       $router
-     * @param \Parable\Http\Request         $request
-     * @param \Parable\Http\Response        $response
-     * @param \Parable\Http\Url             $url
-     * @param \Parable\Http\Values          $values
-     * @param \Parable\ORM\Database         $database
-     */
     public function __construct(
-        \Parable\Filesystem\Path      $path,
-        \Parable\Framework\Config     $config,
+        \Parable\Filesystem\Path $path,
+        \Parable\Framework\Config $config,
         \Parable\Framework\Dispatcher $dispatcher,
-        \Parable\Events\Hook          $hook,
-        \Parable\Routing\Router       $router,
-        \Parable\Http\Request         $request,
-        \Parable\Http\Response        $response,
-        \Parable\Http\Url             $url,
-        \Parable\Http\Values          $values,
-        \Parable\ORM\Database         $database
+        \Parable\Events\Hook $hook,
+        \Parable\Routing\Router $router,
+        \Parable\Http\Request $request,
+        \Parable\Http\Response $response,
+        \Parable\Http\Url $url,
+        \Parable\Http\Values $values,
+        \Parable\ORM\Database $database
     ) {
         $this->path       = $path;
         $this->config     = $config;
@@ -138,18 +126,23 @@ class App
      */
     protected function loadRoutes()
     {
-        foreach (\Parable\DI\Container::get(\Routes::class)->get() as $name => $route) {
+        foreach (\Parable\DI\Container::get(\Routes\App::class)->get() as $name => $route) {
             $this->router->addRoute($name, $route);
         }
         return $this;
     }
 
+    /**
+     * Create instances of available init files in initLocations.
+     *
+     * @return $this
+     */
     protected function loadInits()
     {
         $locations = $this->config->get('initLocations');
 
         if (!is_array($locations)) {
-            return;
+            return $this;
         }
 
         foreach ($locations as $location) {
@@ -172,6 +165,7 @@ class App
                 \Parable\DI\Container::create($className);
             }
         }
+        return $this;
     }
 
     /**

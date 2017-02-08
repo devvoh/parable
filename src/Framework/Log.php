@@ -5,18 +5,18 @@ namespace Parable\Framework;
 class Log
 {
     /** @var string */
-    protected $path             = 'var/log';
+    protected $path = 'var/log';
 
     /** @var string */
-    protected $defaultLogFile   = 'parable.log';
+    protected $defaultLogFile = 'parable.log';
 
     /** @var int */
-    protected $mode             = 0777;
+    protected $mode = 0777;
 
     /**
      * Sets the mode (octal)
      *
-     * @param $mode
+     * @param int $mode
      *
      * @return $this
      */
@@ -41,7 +41,7 @@ class Log
     /**
      * Set the default log file
      *
-     * @param $defaultLogFile
+     * @param string $defaultLogFile
      *
      * @return $this
      */
@@ -64,7 +64,7 @@ class Log
     /**
      * Set the path to write to
      *
-     * @param $path
+     * @param string $path
      *
      * @return $this
      */
@@ -78,7 +78,7 @@ class Log
      * Returns the path, and if it doesn't exist, attempts to create it
      *
      * @return string
-     * @throws \Exception
+     * @throws \Parable\Framework\Exception
      */
     public function getPath()
     {
@@ -86,13 +86,13 @@ class Log
             // Create directory
             $created = @mkdir($this->path, $this->getMode(), true);
             if (!$created) {
-                throw new \Exception('Could not create log directory: ' . $this->path);
+                throw new \Parable\Framework\Exception('Could not create log directory: ' . $this->path);
             }
         }
         if (!is_writable($this->path)) {
             $chmod = chmod($this->path, $this->getMode());
             if (!$chmod) {
-                throw new \Exception('Log directory is not writable: ' . $this->path);
+                throw new \Parable\Framework\Exception('Log directory is not writable: ' . $this->path);
             }
         }
         return $this->path;
@@ -101,12 +101,11 @@ class Log
     /**
      * Write message to the log file
      *
-     * @param      $message
-     * @param null $logFile
-     * @param bool $showTimezone
+     * @param string      $message
+     * @param null|string $logFile
+     * @param bool        $showTimezone
      *
      * @return $this
-     * @throws \Exception
      */
     public function write($message, $logFile = null, $showTimezone = false)
     {

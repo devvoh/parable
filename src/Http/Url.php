@@ -61,7 +61,7 @@ class Url
     /**
      * Redirect to url, adding our own own baseUrl if it's probably a relative path
      *
-     * @param $url
+     * @param string $url
      */
     public function redirect($url)
     {

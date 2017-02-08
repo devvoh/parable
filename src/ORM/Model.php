@@ -8,7 +8,7 @@ class Model
     protected $database;
 
     /** @var array */
-    protected $mapper     = [];
+    protected $mapper = [];
 
     /** @var array */
     protected $exportable = [];
@@ -22,12 +22,8 @@ class Model
     /** @var null|string */
     protected $tableKey;
 
-    /**
-     * @param \Parable\ORM\Database $database
-     */
-    public function __construct(
-        \Parable\ORM\Database $database
-    ) {
+    public function __construct(\Parable\ORM\Database $database)
+    {
         $this->database = $database;
     }
 

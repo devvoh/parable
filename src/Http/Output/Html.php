@@ -13,6 +13,7 @@ class Html implements \Parable\Http\Output\OutputInterface
     public function init(\Parable\Http\Response $response)
     {
         $response->setContentType($this->contentType);
+        return $this;
     }
 
     /**

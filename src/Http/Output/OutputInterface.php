@@ -8,6 +8,8 @@ interface OutputInterface
      * When the output is initialized, it's possible to set certain things.
      *
      * @param \Parable\Http\Response $response
+     *
+     * @return $this
      */
     public function init(\Parable\Http\Response $response);
 
@@ -15,6 +17,8 @@ interface OutputInterface
      * Prepare the content for output according to the output type.
      *
      * @param \Parable\Http\Response $response
+     *
+     * @return $this
      */
     public function prepare(\Parable\Http\Response $response);
 }

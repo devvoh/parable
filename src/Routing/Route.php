@@ -7,22 +7,22 @@ class Route
     /** @var array */
     public $methods = [];
 
-    /** @var string */
+    /** @var null|string */
     public $name;
 
-    /** @var string */
+    /** @var null|string */
     public $url;
 
-    /** @var string */
+    /** @var null|string */
     public $controller;
 
-    /** @var string */
+    /** @var null|string */
     public $action;
 
-    /** @var callable */
+    /** @var null|callable */
     public $callable;
 
-    /** @var string */
+    /** @var null|string */
     public $template;
 
     /** @var array */
@@ -31,22 +31,14 @@ class Route
     /** @var array */
     public $values = [];
 
-    /** @var \Parable\Http\Request */
+    /** @var null|\Parable\Http\Request */
     protected $request;
 
-    /**
-     * Route constructor.
-     *
-     * @param \Parable\Http\Request $request
-     * @param array                 $data
-     *
-     * @throws \Exception
-     */
     public function __construct(
         \Parable\Http\Request $request,
         array $data
     ) {
-        $this->request    = $request;
+        $this->request = $request;
 
         $this->methods    = explode('|', $data['methods']);
         $this->url        = isset($data['url'])        ? $data['url']        : null;
@@ -56,7 +48,7 @@ class Route
         $this->template   = isset($data['template'])   ? $data['template']   : null;
 
         if (!$this->controller && !$this->action && !$this->callable) {
-            throw new \Exception('Either a controller/action combination or callable is required.');
+            throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
         }
 
         $this->parseUrlParameters();
@@ -83,7 +75,7 @@ class Route
     /**
      * Take $url and get all the values and store them in $this->values.
      *
-     * @param $url
+     * @param string $url
      *
      * @return array
      */
@@ -101,7 +93,7 @@ class Route
      * Take $url and replace the 'values' with the parameters they represent. This gives us a 'corrected' url,
      * which can be directly matched with the route's url.
      *
-     * @param $url
+     * @param string $url
      *
      * @return string
      */
@@ -120,7 +112,7 @@ class Route
     /**
      * Attempt to match $url to this route's url directly.
      *
-     * @param $url
+     * @param string $url
      *
      * @return bool
      */
@@ -202,7 +194,6 @@ class Route
      * @param string $key
      *
      * @return mixed
-     * @throws \Exception
      */
     public function getValue($key)
     {
@@ -217,7 +208,7 @@ class Route
      *
      * @return string
      */
-    public function buildUrlWithParameters($parameters = [])
+    public function buildUrlWithParameters(array $parameters = [])
     {
         $url = $this->url;
 

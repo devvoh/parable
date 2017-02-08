@@ -5,13 +5,13 @@ namespace Parable\Http\Values;
 class GetSet
 {
     /** @var null|string */
-    protected $resource         = null;
+    protected $resource;
 
     /** @var bool*/
     protected $useLocalResource = false;
 
     /** @var array */
-    protected $localResource    = [];
+    protected $localResource = [];
 
     /**
      * Returns the resource type
@@ -26,12 +26,12 @@ class GetSet
     /**
      * Get all from resource if resource set
      *
-     * @return array|null
+     * @return array
      */
     public function getAll()
     {
         if (!$this->getResource()) {
-            return null;
+            return [];
         }
         if ($this->useLocalResource) {
             return $this->localResource;
@@ -43,24 +43,23 @@ class GetSet
      * Get specific value by key if resource set
      *
      * @param string $key
+     *
      * @return mixed|null
      */
     public function get($key)
     {
-        if (!$this->getResource()) {
-            return null;
-        }
+        if ($this->getResource()) {
+            // If local resource, set it as reference
+            if ($this->useLocalResource) {
+                $reference = $this->localResource;
+            } else {
+                $reference = $GLOBALS[$this->getResource()];
+            }
 
-        // If local resource, set it as reference
-        if ($this->useLocalResource) {
-            $reference = $this->localResource;
-        } else {
-            $reference = $GLOBALS[$this->getResource()];
-        }
-
-        // Now check reference and whether the key exists
-        if (isset($reference[$key])) {
-            return $reference[$key];
+            // Now check reference and whether the key exists
+            if (isset($reference[$key])) {
+                return $reference[$key];
+            }
         }
         return null;
     }
@@ -69,20 +68,19 @@ class GetSet
      * Set specific value by key if resource set
      *
      * @param string $key
-     * @param mixed $value
-     * @return $this|false
+     * @param mixed  $value
+     *
+     * @return $this
      */
     public function set($key, $value)
     {
-        if (!$this->getResource()) {
-            return $this;
-        }
-
-        // Decide where to store this key/value pair
-        if ($this->useLocalResource) {
-            $this->localResource[$key] = $value;
-        } else {
-            $GLOBALS[$this->getResource()][$key] = $value;
+        if ($this->getResource()) {
+            // Decide where to store this key/value pair
+            if ($this->useLocalResource) {
+                $this->localResource[$key] = $value;
+            } else {
+                $GLOBALS[$this->getResource()][$key] = $value;
+            }
         }
         return $this;
     }
@@ -90,17 +88,16 @@ class GetSet
     /**
      * Set all key/value pairs in $values if resource is set and $values is an array
      *
-     * @param $values
-     * @return $this|bool
+     * @param array $values
+     *
+     * @return $this
      */
     public function setMany(array $values)
     {
-        if (!$this->getResource()) {
-            return $this;
-        }
-
-        foreach ($values as $key => $value) {
-            $this->set($key, $value);
+        if ($this->getResource()) {
+            foreach ($values as $key => $value) {
+                $this->set($key, $value);
+            }
         }
         return $this;
     }
@@ -109,21 +106,25 @@ class GetSet
      * Set entire array onto the resource
      *
      * @param array $values
+     *
      * @return $this
      */
     public function setAll(array $values)
     {
-        if ($this->useLocalResource) {
-            $this->localResource[] = $values;
-        } else {
-            $GLOBALS[$this->getResource()] = $values;
+        if ($this->getResource()) {
+            if ($this->useLocalResource) {
+                $this->localResource[] = $values;
+            } else {
+                $GLOBALS[$this->getResource()] = $values;
+            }
         }
         return $this;
     }
 
     /**
-     * @param $key
-     * @return false|GetSet
+     * @param string $key
+     *
+     * @return $this
      */
     public function remove($key)
     {

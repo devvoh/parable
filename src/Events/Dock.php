@@ -13,6 +13,7 @@ class Dock
      * @param string      $event
      * @param callable    $callable
      * @param null|string $template
+     *
      * @return $this|false
      */
     public function into($event, callable $callable, $template = null)
@@ -27,8 +28,8 @@ class Dock
     /**
      * Trigger $event and run through all hooks referenced, passing along $payload to all $callables
      *
-     * @param null $event
-     * @param null $payload
+     * @param null|string $event
+     * @param null|mixed  $payload
      *
      * @return $this|bool
      */

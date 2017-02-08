@@ -5,8 +5,8 @@ namespace Parable\Framework;
 class Debug
 {
     /**
-     * @param $message
-     * @param bool $exitCode
+     * @param string   $message
+     * @param bool|int $exitCode
      *
      * @return $this
      */
@@ -20,8 +20,8 @@ class Debug
     }
 
     /**
-     * @param $message
-     * @param bool $exitCode
+     * @param string   $message
+     * @param bool|int $exitCode
      *
      * @return $this
      */
@@ -35,7 +35,7 @@ class Debug
     }
 
     /**
-     * @param bool $exitCode
+     * @param bool|int $exitCode
      *
      * @return $this
      */

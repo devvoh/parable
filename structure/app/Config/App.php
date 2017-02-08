@@ -2,18 +2,10 @@
 
 namespace Config;
 
-class App implements \Parable\Framework\Interfaces\Config
+class App extends \Parable\Framework\Config\Base
 {
     /** @var null|int */
     protected $sortOrder = 0;
-
-    /**
-     * @return int|null
-     */
-    public function getSortOrder()
-    {
-        return $this->sortOrder;
-    }
 
     /**
      * @return array

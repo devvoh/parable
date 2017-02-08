@@ -13,10 +13,16 @@ __Changes__
   - All queries now have their table names added to the field names, to prevent ambiguity in joins. In join-less queries, it can't hurt.
 - `\Cli` has been replaced by `\Console` and everybody rejoiced. See `parable.php` for a simple implementation. It still needs work, but it's a start.
 - `\DI\Container::store` now allows passing a custom name if you want to. This makes it possible to store a specific instance under a specific name (say, an interface name).
+- Config files no longer implement `\Parable\Framework\Interfaces\Config` but extend `\Parable\Framework\Config\Base`. This serves the same purpose but takes away the need to redeclare `getSortOrder` every time.
+- `Routes.php` has been moved to `Routes\App.php` and is now in the namespace `\Routes`. This satisfies PSR-2 requirements and looks nice. Also makes it possible to set up your routes in separate files and order them that way.
+- Package-specific `Exception` classes have been added to `DI`, `Framework`, `ORM` and `Routing`.
+- `array` type hints in method parameters have been consistently added where applicable.
+- Docblock type hints have been improved and, where needed, fixed.
 
 __Bugfixes__
 - Due to the changes in `\ORM\Query`, joins should now work properly. `join()` has been replaced with `innerJoin()`, and `leftJoin()`, `rightJoin()` and `fullJoin()` have been added.
 - `parable.php` was not copying the `Init/Example.php` file, which isn't helpful. Fixed now.
+- There was one reference to `Query::select()` which was still passing a string. This has been altered to pass an array instead.
 
 ### 0.8.18
 

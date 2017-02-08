@@ -28,7 +28,7 @@ class Request
     }
 
     /**
-     * @param $method
+     * @param string $method
      *
      * @return bool
      */
@@ -78,9 +78,9 @@ class Request
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @return null
+     * @return null|string
      */
     public function getHeader($key)
     {

@@ -5,7 +5,7 @@ namespace Parable\Auth;
 class Authentication
 {
     /** @var null|\Model\User */
-    protected $user                 = null;
+    protected $user;
 
     /** @var \Parable\Framework\Toolkit */
     protected $toolkit;
@@ -14,18 +14,13 @@ class Authentication
     protected $session;
 
     /** @var bool */
-    protected $authenticated      = false;
+    protected $authenticated = false;
 
     /** @var array */
     protected $authenticationData = [];
 
-    /**
-     * Auth constructor.
-     * @param \Parable\Framework\Toolkit   $toolkit
-     * @param \Parable\Http\Values\Session $session
-     */
     public function __construct(
-        \Parable\Framework\Toolkit   $toolkit,
+        \Parable\Framework\Toolkit $toolkit,
         \Parable\Http\Values\Session $session
     ) {
         $this->toolkit = $toolkit;
@@ -76,6 +71,7 @@ class Authentication
      * Sets whether there's an authenticated user or not
      *
      * @param bool $value
+     *
      * @return $this
      */
     public function setAuthenticated($value = true)
@@ -98,16 +94,17 @@ class Authentication
      * Set the data for the user currently authenticated
      *
      * @param array $data
+     *
      * @return $this
      */
-    public function setAuthenticationData($data = [])
+    public function setAuthenticationData(array $data = [])
     {
         $this->authenticationData = $data;
         return $this;
     }
 
     /**
-     * Return the authentication data, if any
+     * Return the authentication data
      *
      * @return array
      */
@@ -132,7 +129,7 @@ class Authentication
     /**
      * Return the user entity
      *
-     * @return \Model\User|null
+     * @return null|\Model\User
      */
     public function getUser()
     {
@@ -140,10 +137,11 @@ class Authentication
     }
 
     /**
-     * Check whether the provided password matches the password hash. If so, return true.
+     * Check whether the provided password matches the password hash
      *
      * @param string $passwordProvided
      * @param string $passwordHash
+     *
      * @return bool
      */
     public function authenticate($passwordProvided, $passwordHash)
@@ -161,12 +159,16 @@ class Authentication
     }
 
     /**
-     * Revoke an existing authentication.
+     * Revoke an existing authentication
+     *
+     * @return $this
      */
     public function revokeAuthentication()
     {
         $this->user = null;
         $this->setAuthenticated(false);
         $this->session->remove('auth');
+
+        return $this;
     }
 }

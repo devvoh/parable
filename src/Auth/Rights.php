@@ -8,7 +8,7 @@ class Rights
     protected $rights = [];
 
     /**
-     * Set up the default rights. Custom rights can be added at any point
+     * Set up the default rights. Custom rights can be added at any point.
      */
     public function __construct()
     {
@@ -21,7 +21,7 @@ class Rights
     /**
      * Add a right to the list. The correct value is calculated automatically.
      *
-     * @param $name
+     * @param string $name
      *
      * @return $this
      */
@@ -50,7 +50,7 @@ class Rights
     /**
      * Get a specific right by name
      *
-     * @param $name
+     * @param string $name
      *
      * @return int|false
      */
@@ -65,8 +65,8 @@ class Rights
     /**
      * Check if binary number $provided has the right bit for right $name
      *
-     * @param $provided
-     * @param $name
+     * @param string $provided
+     * @param string $name
      *
      * @return bool
      */
@@ -81,11 +81,11 @@ class Rights
      *
      * Takes an array of binary string values ([00011], [10011], ...])
      *
-     * @param $rights
+     * @param array $rights
      *
      * @return string
      */
-    public function combine($rights)
+    public function combine(array $rights)
     {
         $return = [];
         foreach ($rights as $right) {

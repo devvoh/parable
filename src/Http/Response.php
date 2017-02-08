@@ -7,6 +7,7 @@ class Response
     /** @var int */
     protected $httpCode = 200;
 
+    /** @var array */
     protected $httpCodes = [
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -213,18 +214,21 @@ class Response
     }
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param string $value
+     *
+     * @return $this
      */
     public function setHeader($key, $value)
     {
         $this->headers[$key] = $value;
+        return $this;
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @return null
+     * @return null|string
      */
     public function getHeader($key)
     {

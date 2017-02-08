@@ -16,8 +16,8 @@ class Container
      * @param string $className
      * @param string $parentClassName
      *
-     * @return object
-     * @throws \Exception
+     * @return mixed
+     * @throws \Parable\DI\Exception
      */
     public static function get($className, $parentClassName = '')
     {
@@ -33,7 +33,7 @@ class Container
         ) {
             $message  = 'Cyclical dependency found: ' . $className . ' depends on ' . $parentClassName;
             $message .= ' but is itself a dependency of ' . $parentClassName . '.';
-            throw new \Exception($message);
+            throw new \Parable\DI\Exception($message);
         }
 
         if (!isset(self::$instances[$className])) {
@@ -49,8 +49,8 @@ class Container
      * @param string $className
      * @param string $parentClassName
      *
-     * @return object
-     * @throws \Exception
+     * @return mixed
+     * @throws \Parable\DI\Exception
      */
     public static function create($className, $parentClassName = '')
     {
@@ -59,7 +59,7 @@ class Container
             if ($parentClassName) {
                 $message .= ', required by "' . $parentClassName . '"';
             }
-            throw new \Exception($message);
+            throw new \Parable\DI\Exception($message);
         }
         $reflection = new \ReflectionClass($className);
         /** @var \ReflectionMethod $construct */

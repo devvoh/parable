@@ -197,7 +197,7 @@ class Database
     /**
      * Identifiers need to be escaped differently than values, using ` characters. PDO by default does not offer this.
      *
-     * @param $string
+     * @param string $string
      *
      * @return string
      */
@@ -228,7 +228,7 @@ class Database
      * @param array $config
      *
      * @return $this
-     * @throws \Exception
+     * @throws \Parable\ORM\Exception
      */
     public function setConfig(array $config)
     {
@@ -237,7 +237,7 @@ class Database
             if (method_exists($this, $method)) {
                 $this->$method($value);
             } else {
-                throw new \Exception('Tried to call non-existing method ' . $method . ' on ' . get_class($this));
+                throw new \Parable\ORM\Exception('Tried to call non-existing method ' . $method . ' on ' . get_class($this));
             }
         }
         return $this;

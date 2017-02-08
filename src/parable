@@ -59,6 +59,7 @@ $command->setCallable(function(
         'app/Controller',
         'app/Init',
         'app/Model',
+        'app/Routes',
         'app/View',
         'app/View/Home',
         'public',
@@ -86,8 +87,8 @@ $command->setCallable(function(
         $path->getDir('public/index.php')
     );
     copy(
-        $path->getDir('vendor/devvoh/parable/structure/app/Routes.php'),
-        $path->getDir('app/Routes.php')
+        $path->getDir('vendor/devvoh/parable/structure/app/Routes/App.php'),
+        $path->getDir('app/Routes/App.php')
     );
     copy(
         $path->getDir('vendor/devvoh/parable/structure/app/Config/App.php'),

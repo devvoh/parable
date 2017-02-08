@@ -14,20 +14,16 @@ class Repository
     protected $onlyCount = false;
 
     /** @var array */
-    protected $orderBy   = [];
+    protected $orderBy = [];
 
     /** @var array */
-    protected $limit     = [];
+    protected $limit = [];
 
     /** @var bool */
     protected $returnOne = false;
 
-    /**
-     * @param \Parable\ORM\Database $database
-     */
-    public function __construct(
-        \Parable\ORM\Database $database
-    ) {
+    public function __construct(\Parable\ORM\Database $database)
+    {
         $this->database = $database;
     }
 
@@ -42,7 +38,7 @@ class Repository
         $query->setTableName($this->getModel()->getTableName());
         $query->setTableKey($this->getModel()->getTableKey());
         if ($this->getOnlyCount()) {
-            $query->select('count(*)');
+            $query->select(['count(*)']);
         }
         if (count($this->orderBy)) {
             $query->orderBy($this->orderBy['key'], $this->orderBy['direction']);

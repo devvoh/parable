@@ -16,17 +16,11 @@ class Dispatcher
     /** @var \Parable\Http\Response */
     protected $response;
 
-    /**
-     * @param \Parable\Events\Hook     $hook
-     * @param \Parable\Filesystem\Path $path
-     * @param \Parable\Framework\View  $view
-     * @param \Parable\Http\Response   $response
-     */
     public function __construct(
-        \Parable\Events\Hook     $hook,
+        \Parable\Events\Hook $hook,
         \Parable\Filesystem\Path $path,
-        \Parable\Framework\View  $view,
-        \Parable\Http\Response   $response
+        \Parable\Framework\View $view,
+        \Parable\Http\Response $response
     ) {
         $this->hook     = $hook;
         $this->path     = $path;

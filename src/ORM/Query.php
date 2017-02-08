@@ -4,31 +4,29 @@ namespace Parable\ORM;
 
 class Query
 {
-    /**
-     * Join types
-     */
-    const JOIN_INNER      = 1;
-    const JOIN_LEFT       = 2;
-    const JOIN_RIGHT      = 3;
-    const JOIN_FULL       = 4;
+    /** Join types */
+    const JOIN_INNER = 1;
+    const JOIN_LEFT  = 2;
+    const JOIN_RIGHT = 3;
+    const JOIN_FULL  = 4;
 
     /** @var \Parable\ORM\Query\Condition[] */
-    protected $where      = [];
+    protected $where = [];
 
     /** @var array */
-    protected $values     = [];
+    protected $values = [];
 
     /** @var array */
-    protected $orderBy    = [];
+    protected $orderBy = [];
 
     /** @var array */
-    protected $groupBy    = [];
+    protected $groupBy = [];
 
     /** @var array */
-    protected $select     = ['*'];
+    protected $select = ['*'];
 
     /** @var string */
-    protected $action     = 'select';
+    protected $action = 'select';
 
     /** @var \Parable\ORM\Query\Condition[][] */
     protected $joins = [
@@ -56,12 +54,8 @@ class Query
     /** @var array */
     protected $nonQuoteStrings = ['*', 'sum', 'max', 'min', 'count', 'avg'];
 
-    /**
-     * @param Database $database
-     */
-    public function __construct(
-        \Parable\ORM\Database $database
-    ) {
+    public function __construct(\Parable\ORM\Database $database)
+    {
         $this->database = $database;
     }
 
@@ -316,7 +310,7 @@ class Query
     }
 
     /**
-     * @return Query
+     * @return $this
      */
     public static function createInstance()
     {
@@ -329,11 +323,11 @@ class Query
      * Examples: ['id', '=', 1]
      *           ['id', 'NOT IN', [1, 2, 3, 4]]
      *
-     * @param $conditionArray
+     * @param array $conditionArray
      *
      * @return string
      */
-    protected function buildCondition($conditionArray)
+    protected function buildCondition(array $conditionArray)
     {
         // Check for IN/NOT IN
         if (in_array(strtolower($conditionArray['comparator']), ['in', 'not in'])) {
@@ -490,7 +484,7 @@ class Query
     }
 
     /**
-     * @param string$string
+     * @param string $string
      *
      * @return string
      */

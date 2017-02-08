@@ -3,6 +3,8 @@
 namespace Parable\Framework;
 
 /**
+ * The following magic properties are available in template (.phtml) files through $this->...property
+ *
  * @property \Parable\Auth\Rights          $rights
  * @property \Parable\Auth\Authentication  $authentication
  * @property \Parable\Events\Dock          $dock
@@ -28,7 +30,6 @@ namespace Parable\Framework;
  * @property \Parable\ORM\Database         $database
  * @property \Parable\Routing\Router       $router
  */
-
 class View
 {
     /** @var \Parable\Framework\Toolkit */
@@ -43,11 +44,6 @@ class View
     /** @var string */
     protected $templatePath;
 
-    /**
-     * @param \Parable\Framework\Toolkit $toolkit
-     * @param \Parable\Filesystem\Path   $path
-     * @param \Parable\Http\Response     $response
-     */
     public function __construct(
         \Parable\Framework\Toolkit $toolkit,
         \Parable\Filesystem\Path $path,

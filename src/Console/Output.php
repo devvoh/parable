@@ -4,9 +4,7 @@ namespace Parable\Console;
 
 class Output
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $tags = [
         /* foreground colors */
         'default' => "\e[0m",
@@ -77,7 +75,7 @@ class Output
     }
 
     /**
-     * @param $string
+     * @param string $string
      *
      * @return $this
      */
@@ -88,7 +86,7 @@ class Output
     }
 
     /**
-     * @param $string
+     * @param string $string
      *
      * @return $this
      */
@@ -99,7 +97,7 @@ class Output
     }
 
     /**
-     * @param $string
+     * @param string $string
      *
      * @return $this
      */
@@ -110,7 +108,7 @@ class Output
     }
 
     /**
-     * @param        $string
+     * @param string $string
      * @param string $tag
      *
      * @return $this
@@ -130,7 +128,7 @@ class Output
     }
 
     /**
-     * @param $string
+     * @param string $string
      *
      * @return mixed
      */
