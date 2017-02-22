@@ -106,16 +106,18 @@ class App
             $command = $this->getCommand($this->defaultCommand);
         } else {
             $commandName = $this->parameter->getCommandName();
-            if (!$commandName && $this->defaultCommand) {
+            $command = $this->getCommand($commandName);
+            if ((!$commandName || !$command) && $this->defaultCommand) {
                 $command = $this->getCommand($this->defaultCommand);
-            } elseif ($commandName) {
-                $command = $this->getCommand($commandName);
             }
         }
 
         if (!$command) {
             throw new \Parable\Console\Exception('No valid command found.');
         }
+
+        $this->parameter->setOptions($command->getOptions());
+        $this->parameter->checkOptions();
 
         $callable = $command->getCallable();
         $callable($this->output, $this->input, $this->parameter);

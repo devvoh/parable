@@ -13,6 +13,9 @@ class Command
     /** @var callable */
     protected $callable;
 
+    /** @var array */
+    protected $options = [];
+
     /**
      * @param string $name
      *
@@ -68,5 +71,32 @@ class Command
     public function getCallable()
     {
         return $this->callable;
+    }
+
+    /**
+     * @param string      $name
+     * @param bool        $required
+     * @param bool        $valueRequired
+     * @param mixed|null  $defaultValue
+     *
+     * @return $this
+     */
+    public function addOption($name, $required = false, $valueRequired = false, $defaultValue = null)
+    {
+        $this->options[] = [
+            'name'          => $name,
+            'required'      => $required,
+            'valueRequired' => $valueRequired,
+            'defaultValue'  => $defaultValue,
+        ];
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }

@@ -96,16 +96,18 @@ class Model
     public function toArray()
     {
         $array = (array)$this;
-        // Remove protected values & null values, let the database sort those out
         foreach ($array as $key => &$value) {
+            // Protected values are prefixed with an '*'
             if (strpos($key, '*') !== false) {
                 unset($array[$key]);
                 continue;
             }
-            if ($value === 'null') {
+            // If it's specifically decreed that it's a null value, we leave it in, which will set it to NULL in the db
+            if ($value === \Parable\ORM\Database::NULL_VALUE) {
                 $value = null;
                 continue;
             }
+            // If the value evaluates to regular empty but isn't a 0, we unset it so we don't return it
             if ($value !== 0 && empty($value)) {
                 unset($array[$key]);
                 continue;

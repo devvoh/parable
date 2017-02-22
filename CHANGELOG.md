@@ -1,18 +1,27 @@
 # Parable PHP Framework Changelog
 
+### 0.9.1
+
+__Changes__
+- `\Parable\Console` now supports Options. Check `\Parable\Console\Command::addOption(...)` for how to use it. You can use `\Parable\Console\Parameter::getOption('string')` to get the Option's value. If it doesn't have a value given and no defaultValue, it'll return `true`.
+
+__Bugfixes__
+- `\Parable\ORM\Database` now overwrites __debugInfo so it won't be var_dump'ed/print_r'ed into giving out database credentials.
+- `\Parable\ORM\Database::NULL_VALUE` has been added to set a NULL value that'll actually set a SQL field to NULL. Before the string value 'null' would do this, but that's unfair to all the people who have Null as their last name. Any other empty (but not 0) value will skip the field when saving to the database.
+
 ### 0.9.0
 
-__Note: This version might be incompatible with previous versions. If you've ever set specific ->select() values on a Query object, you'll have to rewrite those calls to pass an array of items rather than a comma-separated string.__
+__Note: This version might be incompatible with previous versions. If you've ever set specific `->select()` values on a `Query` object, you'll have to rewrite those calls to pass an array of items rather than a comma-separated string.__
 
 It is the intention for the 0.9.x branch to be the last pre-release branch before a 1.0.0 release. For this, the focus is on bug fixes and some refactors that will solve long-standing issues or shortcomings in Parable subsystems. 0.9.x will also see Documentation start taking shape. Development of this branch might be somewhat slower due to this, but it's all about working towards getting out of pre-release. Exciting, if you ask me :)
 
 __Changes__
-- `\ORM\Query` has been upgraded significantly:
+- `\Parable\ORM\Query` has been upgraded significantly:
   - It now requires an array with values for select, so they can all be prefixed with the table name and quoted appropriately.
   - It no longer requires a database connection to build a query, but when no database is present, it does basic quoting instead of real quoting. Only for testing and dev purposes, not for production!
   - All queries now have their table names added to the field names, to prevent ambiguity in joins. In join-less queries, it can't hurt.
-- `\Cli` has been replaced by `\Console` and everybody rejoiced. See `parable.php` for a simple implementation. It still needs work, but it's a start.
-- `\DI\Container::store` now allows passing a custom name if you want to. This makes it possible to store a specific instance under a specific name (say, an interface name).
+- `\Parable\Cli` has been replaced by `\Parable\Console` and everybody rejoiced. See `parable.php` for a simple implementation. It still needs work, but it's a start.
+- `\Parable\DI\Container::store` now allows passing a custom name if you want to. This makes it possible to store a specific instance under a specific name (say, an interface name).
 - Config files no longer implement `\Parable\Framework\Interfaces\Config` but extend `\Parable\Framework\Config\Base`. This serves the same purpose but takes away the need to redeclare `getSortOrder` every time.
 - `Routes.php` has been moved to `Routes\App.php` and is now in the namespace `\Routes`. This satisfies PSR-2 requirements and looks nice. Also makes it possible to set up your routes in separate files and order them that way.
 - Package-specific `Exception` classes have been added to `DI`, `Framework`, `ORM` and `Routing`.
@@ -20,22 +29,22 @@ __Changes__
 - Docblock type hints have been improved and, where needed, fixed.
 
 __Bugfixes__
-- Due to the changes in `\ORM\Query`, joins should now work properly. `join()` has been replaced with `innerJoin()`, and `leftJoin()`, `rightJoin()` and `fullJoin()` have been added.
+- Due to the changes in `\Parable\ORM\Query`, joins should now work properly. `join()` has been replaced with `innerJoin()`, and `leftJoin()`, `rightJoin()` and `fullJoin()` have been added.
 - `parable.php` was not copying the `Init/Example.php` file, which isn't helpful. Fixed now.
-- There was one reference to `Query::select()` which was still passing a string. This has been altered to pass an array instead.
+- There was one reference to `\Parable\ORM\Query::select()` which was still passing a string. This has been altered to pass an array instead.
 
 ### 0.8.18
 
 This one's for all y'all Windows users!
 
 __Bugfixes__
-- `\Http\Output\Json` now checks whether `$content` is an array.
-- `\Filesystem\Path::getDir()` now replaces '/' with DIRECTORY_SEPARATOR, so windows users shouldn't run into issues anymore.
+- `\Parable\Http\Output\Json` now checks whether `$content` is an array.
+- `\Parable\Filesystem\Path::getDir()` now replaces '/' with DIRECTORY_SEPARATOR, so windows users shouldn't run into issues anymore.
 
 ### 0.8.17
 
 __Bugfixes__
-- Additional fix for `Http\Url` absolute baseurls.
+- Additional fix for `\Parable\Http\Url` absolute baseurls.
 
 ### 0.8.16
 
@@ -44,8 +53,8 @@ __Changes__
 - Soft deletes are out again, because that was a step further than I feel Parable needs to go.
 
 __Bugfixes__
-- `Framework\App::loadInits()` didn't give a crap whether a file was a php file or not. Now it does, as it should.
-- `Http\Url` got absolute baseurls, but also left in an extraneous `/`. This over-enthusiasm is now fixed.
+- `\Parable\Framework\App::loadInits()` didn't give a crap whether a file was a php file or not. Now it does, as it should.
+- `\Parable\Http\Url` got absolute baseurls, but also left in an extraneous `/`. This over-enthusiasm is now fixed.
 
 ### 0.8.15
 
@@ -55,10 +64,10 @@ __Changes__
 - Models and Repositories now support `is_deleted` for soft-deletes. If your model has an `is_deleted` property, instead of deleting data from the database, an `is_deleted` field in your database's row is flipper from 0 to 1. If you do this and you don't have an `is_deleted` field, expect failure.
 - If you use soft deletes, you can also `$model->undelete()` them. This will restore them to `is_deleted` set to 0.
 - To make working with soft deletes somewhat easier, you can now tell the repository to by default filter using the `is_deleted` field by calling `$repository->setFilterSoftDeletes(true)`.
-- `Http\Url` now gives back the absolute baseurl rather than a relative one. This means it now includes the http method and full domain.
+- `\Parable\Http\Url` now gives back the absolute baseurl rather than a relative one. This means it now includes the http method and full domain.
 
 __Bugfixes__
-- `Framework\Config` didn't give a crap whether a file was a php file or not. Now it does, as it should.
+- `\Parable\Framework\Config` didn't give a crap whether a file was a php file or not. Now it does, as it should.
 
 ### 0.8.14
 
@@ -68,27 +77,27 @@ __Bugfixes__
 ### 0.8.13
 
 __Bugfixes__
-- `ORM\Query` had a rather well-hidden bug, where offset wasn't actually the offset but the limit value. So a limit/offset of 5,0 would end up being 5,5. And this is why it ain't final, people! :D
+- `\Parable\ORM\Query` had a rather well-hidden bug, where offset wasn't actually the offset but the limit value. So a limit/offset of 5,0 would end up being 5,5. And this is why it ain't final, people! :D
 
 ### 0.8.12
 
 __Changes__
-- `Http\Response` has gained a list of HTTP codes with their matching text codes. Setting `404` now properly gives `404 Not found`.
-- `Http\Response\Output` objects now have an `init` and a `prepare`. `init` is called when the Output class is set, and `prepare` just before output is sent to the browser. This allows changing of content type before output.
+- `\Parable\Http\Response` has gained a list of HTTP codes with their matching text codes. Setting `404` now properly gives `404 Not found`.
+- `\Parable\Http\Response\Output` objects now have an `init` and a `prepare`. `init` is called when the Output class is set, and `prepare` just before output is sent to the browser. This allows changing of content type before output.
 
 __Bugfixes__
-- `Http\Response\Output\Html` did not actually implement `\Parable\Http\Output\OutputInterface`, but it wasn't noticed since the setter wasn't used to set it as default. Silly mistake.
+- `\Parable\Http\Response\Output\Html` did not actually implement `\Parable\Http\Output\OutputInterface`, but it wasn't noticed since the setter wasn't used to set it as default. Silly mistake.
 
 ### 0.8.11
 
 __Changes__
-- `DI\Container` now allows storing a class. This makes it possible to instantiate it, alter it (inject data) and store it for further `DI\Container::get` requests.
-- `revokeAuthentication()` was added to `Auth\Authentication`, so that it's possible to log someone out from outside the class.
-- `Http\Request` now automatically loads the headers of the request. You can get at 'em by using `getHeader($key)` or `getHeaders()`
-- `Http\Response` also received some love, gaining `setHeader($key, $value)`, `getHeader($key)` and `getHeaders()` as well.
+- `\Parable\DI\Container` now allows storing a class. This makes it possible to instantiate it, alter it (inject data) and store it for further `\Parable\DI\Container::get` requests.
+- `revokeAuthentication()` was added to `\Parable\Auth\Authentication`, so that it's possible to log someone out from outside the class.
+- `\Parable\Http\Request` now automatically loads the headers of the request. You can get at 'em by using `getHeader($key)` or `getHeaders()`
+- `\Parable\Http\Response` also received some love, gaining `setHeader($key, $value)`, `getHeader($key)` and `getHeaders()` as well.
 
 __Bugfixes__
-- Dispatcher was looking at the wrong var for a Route's `template` value. Fixed now. Silly mistake.
+- `\Parable\Framework\Dispatcher` was looking at the wrong variable for a Route's `template` value. Fixed now. Silly mistake.
 
 ### 0.8.10
 

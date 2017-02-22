@@ -4,6 +4,9 @@ namespace Parable\ORM;
 
 class Database
 {
+    /** Use this to set a value to SQL NULL */
+    const NULL_VALUE = '__parable_null_value__';
+
     /** @var null|string */
     protected $type;
 
@@ -241,5 +244,12 @@ class Database
             }
         }
         return $this;
+    }
+
+    /**
+     * Prevent leaking sensitive information.
+     */
+    public function __debugInfo()
+    {
     }
 }
