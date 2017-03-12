@@ -35,7 +35,7 @@ class App
     protected $database;
 
     /** @var string */
-    protected $version = '0.9.0';
+    protected $version = '0.9.2';
 
     public function __construct(
         \Parable\Filesystem\Path $path,
@@ -90,7 +90,8 @@ class App
         $this->loadRoutes();
 
         /* Get the current url */
-        $currentUrl = $this->url->getCurrentUrl();
+        $currentUrl     = $this->url->getCurrentUrl();
+        $currentFullUrl = $this->url->getCurrentUrlFull();
 
         /* Load the config */
         if ($this->config->get('database.type')) {
@@ -107,11 +108,12 @@ class App
         $route = $this->router->matchCurrentRoute();
         $this->hook->trigger('parable_route_match_after', $route);
         if ($route) {
+            $this->response->setHttpCode(200);
             $this->hook->trigger('parable_http_200', $route);
             $this->dispatcher->dispatch($route);
         } else {
             $this->response->setHttpCode(404);
-            $this->hook->trigger('parable_http_404', $currentUrl);
+            $this->hook->trigger('parable_http_404', $currentFullUrl);
         }
 
         $this->hook->trigger('parable_response_send');

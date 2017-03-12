@@ -4,8 +4,10 @@ namespace Init;
 
 class Example
 {
-    public function __construct()
-    {
+    public function __construct(
+        \Parable\Events\Hook $hook,
+        \Parable\Http\Response $response
+    ) {
         /*
          * Init scripts function very simply: They need to be in Init namespace, their filename should match their
          * classname, and the location of these scripts needs to be set in a Config file, using the root key
@@ -15,7 +17,7 @@ class Example
          * done. Init scripts are the perfect place to hook into events before anything else is done. This allows,
          * for example, the following:
          *
-         * $hook->into('parable_dispatch_before', function() use ($response, $view) {
+         * $hook->into('parable_dispatch_before', function($payload, $trigger) use ($response, $view) {
          *    $response->prependContent($view->partial('app/View/Layout/header.phtml'));
          * });
          *
@@ -27,6 +29,13 @@ class Example
          *
          * If you don't want or plan to use Init scripts, you can safely remove this directory. It won't complain if
          * there's no init scripts available. You can also remove the key from the Config.
+         *
+         * Below is a simple way of hooking into the 404 event.
          */
+
+        $hook->into('parable_http_404', function($trigger, $url) use ($response) {
+            $response->setContent("404 - page '{$url}' could not be found");
+            $response->send();
+        });
     }
 }

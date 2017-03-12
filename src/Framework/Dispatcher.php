@@ -42,13 +42,19 @@ class Dispatcher
         $content = null;
         $this->response->startOutputBuffer();
 
+        /* Build the parameters array */
+        $parameters = [$route];
+        foreach ($route->getValues() as $value) {
+            $parameters[] = $value;
+        }
+
         /* Call the relevant code */
         if ($route->controller && $route->action) {
             $controller = \Parable\DI\Container::get($route->controller);
-            $content = $controller->{$route->action}($route);
+            $content = $controller->{$route->action}(...$parameters);
         } elseif ($route->callable) {
             $call = $route->callable;
-            $content = $call($route);
+            $content = $call(...$parameters);
         }
 
         /* Try to get the relevant view */

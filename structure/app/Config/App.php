@@ -22,6 +22,13 @@ class App extends \Parable\Framework\Config\Base
             'initLocations'  => [
                 'app/Init',
             ],
+            'database' => [
+                'type'     => 'mysql',
+                'location' => 'localhost',
+                'username' => 'username',
+                'password' => 'password',
+                'database' => 'database',
+            ],
         ];
     }
 }

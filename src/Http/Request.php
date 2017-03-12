@@ -56,9 +56,9 @@ class Request
     /**
      * @return bool
      */
-    public function isUpdate()
+    public function isPut()
     {
-        return $this->isMethod('UPDATE');
+        return $this->isMethod('PUT');
     }
 
     /**

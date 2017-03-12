@@ -40,7 +40,7 @@ class Route
     ) {
         $this->request = $request;
 
-        $this->methods    = explode('|', $data['methods']);
+        $this->methods    = $data['methods'];
         $this->url        = isset($data['url'])        ? $data['url']        : null;
         $this->controller = isset($data['controller']) ? $data['controller'] : null;
         $this->action     = isset($data['action'])     ? $data['action']     : null;
@@ -49,6 +49,16 @@ class Route
 
         if (!$this->controller && !$this->action && !$this->callable) {
             throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
+        }
+        if (!is_array($this->methods)) {
+            /*
+             * @deprecated This will be turned into an Exception in the next minor version (if pre-release) or 1.0.0.
+             */
+            if (strpos($this->methods, "|") !== false) {
+                $this->methods = explode("|", $this->methods);
+            } else {
+                $this->methods = [$this->methods];
+            }
         }
 
         $this->parseUrlParameters();
@@ -60,7 +70,7 @@ class Route
      *
      * @return $this
      */
-    public function parseUrlParameters()
+    protected function parseUrlParameters()
     {
         $urlParts = explode('/', $this->url);
         $this->parameters = [];
@@ -79,14 +89,55 @@ class Route
      *
      * @return array
      */
-    public function extractParameterValues($url)
+    protected function extractParameterValues($url)
     {
         $urlParts = explode('/', $url);
         $this->values = [];
         foreach ($this->parameters as $index => $name) {
-            $this->values[$name] = $urlParts[$index];
+            $value = $urlParts[$index];
+
+            $validValue = $this->checkParameterValueType($name, $value);
+            if ($validValue === false) {
+                $this->values = [];
+                break;
+            }
+            $this->values[$name] = $validValue;
         }
         return $this->values;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return mixed|bool
+     */
+    protected function checkParameterValueType($name, $value)
+    {
+        // If there's no : in the name, then it's not typed.
+        if (strpos($name, ':') === false) {
+            return $value;
+        }
+        list($key, $type) = explode(":", $name);
+
+        if (!in_array($type, ["int", "string", "float"])) {
+            return false;
+        }
+
+        if ($type === "int") {
+            if (is_numeric($value) && (int)$value == $value) {
+                return (int)$value;
+            }
+            return false;
+        } elseif ($type === "float") {
+            if (is_numeric($value) && (float)$value == $value) {
+                return (float)$value;
+            }
+            return false;
+        }
+
+        // by default return the string value
+        return $value;
     }
 
     /**
@@ -97,7 +148,7 @@ class Route
      *
      * @return string
      */
-    public function injectParameters($url)
+    protected function injectParameters($url)
     {
         $urlParts = explode('/', $url);
         $parameters = array_flip($this->values);
@@ -201,6 +252,16 @@ class Route
             return null;
         }
         return $this->values[$key];
+    }
+
+    /**
+     * Get all values
+     *
+     * @return array
+     */
+    public function getValues()
+    {
+        return $this->values;
     }
 
     /**

@@ -1,5 +1,20 @@
 # Parable PHP Framework Changelog
 
+### 0.9.2
+
+__Changes__
+- Parameters from a Route are now directly passed into actions. No more getting it from the Route through `getValue()`. See the new `\Controller\Home` example action for how to use it. The first parameter is still the `\Parable\Routing\Route` instance associated with the request.
+- Parameters passed to a Route can now be typecast in the url itself. `{param:int}`, `{param:string}`, `{param:float}`. Other types are, at the moment, all string values.
+- Methods for routes should now be passed as an array. Passing it as a string is allowed for now, but will be removed the next time the version is bumped to either 0.10.0 or 1.0.0, whichever happens first.
+- Many public functions have been turned protected if public access wasn't required or desired.
+- `\Parable\Routing\Route` has gained a `getValues()` method.
+- `\Init\Example` has been expanded, showing a way to hook into the 404 event, as well as that DI is available as usual.
+
+__Bugfixes__
+- HTTP code 200 is now explicitly set on a successful dispatch.
+- The full URL is now passed to the `parable_http_404` hook, rather than just the partial.
+- A bug in a file that's too embarrassing to mention.
+
 ### 0.9.1
 
 __Changes__
