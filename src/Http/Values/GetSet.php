@@ -113,7 +113,7 @@ class GetSet
     {
         if ($this->getResource()) {
             if ($this->useLocalResource) {
-                $this->localResource[] = $values;
+                $this->localResource = $values;
             } else {
                 $GLOBALS[$this->getResource()] = $values;
             }
