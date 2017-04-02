@@ -4,7 +4,7 @@ namespace Parable\Auth;
 
 class Authentication
 {
-    /** @var null|\Model\User */
+    /** @var null|\Model\Users */
     protected $user;
 
     /** @var \Parable\Framework\Toolkit */
@@ -38,8 +38,11 @@ class Authentication
     {
         if ($this->checkAuthentication()) {
             $data = $this->getAuthenticationData();
+            if (!isset($data['user_id'])) {
+                return false;
+            }
             $userId = $data['user_id'];
-            $user = $this->toolkit->getRepository(\Model\User::class)->getById($userId);
+            $user = $this->toolkit->getRepository(\Model\Users::class)->getById($userId);
             if (!$user) {
                 $this->setAuthenticated(false);
                 $this->setAuthenticationData([]);
@@ -49,6 +52,16 @@ class Authentication
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param $password
+     *
+     * @return bool|string
+     */
+    public function generatePasswordHash($password)
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
     /**
@@ -116,11 +129,11 @@ class Authentication
     /**
      * Set the authenticated user entity
      *
-     * @param \Model\User $user
+     * @param \Model\Users $user
      *
      * @return $this
      */
-    public function setUser(\Model\User $user)
+    public function setUser(\Model\Users $user)
     {
         $this->user = $user;
         return $this;
@@ -129,7 +142,7 @@ class Authentication
     /**
      * Return the user entity
      *
-     * @return null|\Model\User
+     * @return null|\Model\Users
      */
     public function getUser()
     {

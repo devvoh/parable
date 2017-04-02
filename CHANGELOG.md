@@ -1,5 +1,19 @@
 # Parable PHP Framework Changelog
 
+### 0.9.4
+
+__Changes__
+- Added `generatePasswordHash()` to `\Parable\Auth\Authentication`.
+
+__Bugfixes__
+- Fixed issue in `\Parable\Auth\Authentication` where without authentication data, a non-existing array key was read. Now that's a reason to say someone isn't validated. This only happened when calling `authenticate` and the password validating correctly.
+- `\Parable\Framework\Dispatcher` can now handle nested namespaced controllers for default template files. So `Controller\Subnamespace\Home` will attempt to load `app/view/Subnamespace/Home/action.phtml`.
+
+### 0.9.3
+
+__Bugfixes__
+- `\Parable\Http\Values\GetSet` incorrectly set the local resource when using `setAll()`.
+
 ### 0.9.2
 
 __Changes__

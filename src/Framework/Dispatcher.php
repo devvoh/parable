@@ -64,8 +64,10 @@ class Dispatcher
         } else {
             if ($controller) {
                 $reflection = new \ReflectionClass($controller);
+                $controllerName = str_replace('\\', '/', $reflection->getName());
+                $controllerName = str_replace('Controller/', '', $controllerName);
                 $templateFile = $this->path->getDir(
-                    'app/View/' . $reflection->getShortName() . '/' . $route->action . '.phtml'
+                    'app/View/' . $controllerName . '/' . $route->action . '.phtml'
                 );
             }
         }
