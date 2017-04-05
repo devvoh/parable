@@ -33,26 +33,19 @@ $command->setCallable(function(
     ]);
 
     for (;;) {
-        $output->write("Do you want to continue? [Y/n] ");
-        $response = strtolower($input->get());
-
-        $continue = false;
-        if (in_array($response, ["y", ""])) {
-            $continue = true;
+        $output->write("Do you want to continue? [y/N] ");
+        if ($input->getYesNo(false)) {
             break;
-        } elseif ($response == "n") {
-            break;
+        } else {
+            $output->writeln(["", "<red>You chose not to continue.</red>", ""]);
+            return;
         }
-    }
-
-    if (!$continue) {
-        $output->writeln(["", "<red>You chose not to continue.</red>", ""]);
-        return;
     }
 
     /** @var \Parable\Filesystem\Path $path */
     $output->newline();
     $output->write('Creating folder structure...');
+
     $dirs = [
         'app',
         'app/Config',

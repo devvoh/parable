@@ -74,6 +74,25 @@ class Command
     }
 
     /**
+     * @param \Parable\Console\Output    $output
+     * @param \Parable\Console\Input     $input
+     * @param \Parable\Console\Parameter $parameter
+     *
+     * @return $this|mixed
+     */
+    public function run(
+        \Parable\Console\Output $output,
+        \Parable\Console\Input $input,
+        \Parable\Console\Parameter $parameter
+    ) {
+        $callable = $this->getCallable();
+        if (is_callable($callable)) {
+            return $callable($output, $input, $parameter);
+        }
+        return $this;
+    }
+
+    /**
      * @param string      $name
      * @param bool        $required
      * @param bool        $valueRequired

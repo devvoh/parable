@@ -1,5 +1,17 @@
 # Parable PHP Framework Changelog
 
+### 0.9.5
+
+__Changes__
+- It should now be easier to build your own Console Commands. You can extend the `\Parable\Console\Command` class and implement `run()`. This will automatically get called. If there's no `run()` defined, the base class will attempt to run the callback if it's defined.
+- `\Parable\Console\App` has gained `getCommands()`, which will help when the `\Parable\Console\Commands\Help` class lands, probably in 0.9.6.
+- `\Parable\Console\Input` has gained `getHidden()`, which hides the characters the user types in. Only works on *nix systems.
+- `\Parable\Console\Input` has gained `getYesNo(bool)`, to ask Y/n or y/N questions. 'Y/n' (passing `true`) will return `true` on either 'y' or an empty string. 'y/N' (passing `false`) will _only_ return `true` on a 'y'.
+- `src/parable` has been updated to use the above logic.
+
+__Bugfixes__
+- `\Parable\Auth\Authentication` was unable to return the user upon authenticating. This was because `initialize()` actually loaded the User model, but was only called on construct. `getUser()` now calls `initialize()` if there's no user set yet.
+
 ### 0.9.4
 
 __Changes__

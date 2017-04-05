@@ -146,6 +146,9 @@ class Authentication
      */
     public function getUser()
     {
+        if (!$this->user) {
+            $this->initialize();
+        }
         return $this->user;
     }
 

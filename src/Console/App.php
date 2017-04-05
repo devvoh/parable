@@ -16,7 +16,7 @@ class App
     /** @var string */
     protected $name;
 
-    /** @var string */
+    /** @var \Parable\Console\Command[] */
     protected $commands = [];
 
     /** @var string */
@@ -96,6 +96,14 @@ class App
     }
 
     /**
+     * @return \Parable\Console\Command[]
+     */
+    public function getCommands()
+    {
+        return $this->commands;
+    }
+
+    /**
      * @return $this
      * @throws \Parable\Console\Exception
      */
@@ -119,8 +127,7 @@ class App
         $this->parameter->setOptions($command->getOptions());
         $this->parameter->checkOptions();
 
-        $callable = $command->getCallable();
-        $callable($this->output, $this->input, $this->parameter);
+        $command->run($this->output, $this->input, $this->parameter);
         return $this;
     }
 }
