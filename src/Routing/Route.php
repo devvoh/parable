@@ -151,10 +151,11 @@ class Route
     protected function injectParameters($url)
     {
         $urlParts = explode('/', $url);
-        $parameters = array_flip($this->values);
-        foreach ($urlParts as &$part) {
-            if (isset($parameters[$part])) {
-                $part = '{' . ltrim($parameters[$part], '{}') . '}';
+
+        foreach ($this->values as $key => $value) {
+            $foundKey = array_search($value, $urlParts);
+            if ($foundKey !== false) {
+                $urlParts[$foundKey] = '{' . ltrim($key, '{}') . '}';
             }
         }
         return implode('/', $urlParts);
@@ -201,6 +202,7 @@ class Route
             return false;
         }
         $correctedUrl = $this->injectParameters($url);
+
         if ($this->matchDirectly($correctedUrl)) {
             return true;
         }

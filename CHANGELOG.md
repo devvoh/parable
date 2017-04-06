@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.9.6
+
+__Bugfixes__
+- `\Parable\Routing\Route` now injects parameters correctly. This fixes a rare bug where a url with `/a/{id}/b/{name}` would fail if both `$id` and `$name` had the same value.
+
 ### 0.9.5
 
 __Changes__
