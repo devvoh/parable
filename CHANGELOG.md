@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.9.7
+
+__Changes__
+- `\Parable\Mail` has been added, a very basic wrapper for the native `mail()` function. For any kind of elaborate mailing, this probably won't suffice. But for simple one-off mail sending, it should work relatively well.
+
 ### 0.9.6
 
 __Bugfixes__
