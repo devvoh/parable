@@ -4,7 +4,10 @@ namespace Parable\Auth;
 
 class Authentication
 {
-    /** @var null|\Model\Users */
+    /** @var string */
+    protected $userClassName = '\Model\User';
+
+    /** @var null|object */
     protected $user;
 
     /** @var \Parable\Framework\Toolkit */
@@ -19,14 +22,15 @@ class Authentication
     /** @var array */
     protected $authenticationData = [];
 
+    /** @var bool */
+    protected $initialized = false;
+
     public function __construct(
         \Parable\Framework\Toolkit $toolkit,
         \Parable\Http\Values\Session $session
     ) {
         $this->toolkit = $toolkit;
         $this->session = $session;
-
-        $this->initialize();
     }
 
     /**
@@ -36,13 +40,18 @@ class Authentication
      */
     public function initialize()
     {
+        // If we've already been initialized, we don't need to re-do the logic again.
+        if ($this->isInitialized()) {
+            return $this->isAuthenticated();
+        }
+
         if ($this->checkAuthentication()) {
             $data = $this->getAuthenticationData();
             if (!isset($data['user_id'])) {
                 return false;
             }
             $userId = $data['user_id'];
-            $user = $this->toolkit->getRepository(\Model\Users::class)->getById($userId);
+            $user = $this->toolkit->getRepository($this->userClassName)->getById($userId);
             if (!$user) {
                 $this->setAuthenticated(false);
                 $this->setAuthenticationData([]);
@@ -94,6 +103,16 @@ class Authentication
     }
 
     /**
+     * Checks whether we've been initialized or not
+     *
+     * @return bool
+     */
+    public function isInitialized()
+    {
+        return $this->initialized;
+    }
+
+    /**
      * Checks whether there's an authenticated user or not
      *
      * @return bool
@@ -127,14 +146,34 @@ class Authentication
     }
 
     /**
-     * Set the authenticated user entity
-     *
-     * @param \Model\Users $user
+     * @param string $className
      *
      * @return $this
+     * @throws \Parable\Auth\Exception
      */
-    public function setUser(\Model\Users $user)
+    public function setUserClassName($className)
     {
+        try {
+            \Parable\DI\Container::create($className);
+        } catch (\Exception $e) {
+            throw new \Parable\Auth\Exception($this->userClassName . ' could not be instantiated.');
+        }
+
+        $this->userClassName = $className;
+        return $this;
+    }
+
+    /**
+     * @param $user
+     *
+     * @return $this
+     * @throws Exception
+     */
+    public function setUser($user)
+    {
+        if (!($user instanceof $this->userClassName)) {
+            throw new \Parable\Auth\Exception('Invalid object provided, type ' . $this->userClassName . ' required.');
+        }
         $this->user = $user;
         return $this;
     }
@@ -142,7 +181,7 @@ class Authentication
     /**
      * Return the user entity
      *
-     * @return null|\Model\Users
+     * @return null
      */
     public function getUser()
     {

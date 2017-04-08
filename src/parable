@@ -18,7 +18,7 @@ $path->setBasedir(BASEDIR);
 
 $command->setName('init');
 $command->setDescription('This command initializes a parable structure.');
-$command->setCallable(function(
+$command->setCallable(function (
     \Parable\Console\Output $output,
     \Parable\Console\Input $input,
     \Parable\Console\Parameter $parameter

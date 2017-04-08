@@ -135,8 +135,7 @@ class Output
     public function parseTags($string)
     {
         foreach ($this->tags as $tag => $code) {
-            if (
-                strpos($string, "<{$tag}>") !== false
+            if (strpos($string, "<{$tag}>") !== false
                 || strpos($string, "</{$tag}>") !== false
             ) {
                 $string = str_replace("<{$tag}>", $code, $string);

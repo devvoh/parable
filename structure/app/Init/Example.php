@@ -32,8 +32,7 @@ class Example
          *
          * Below is a simple way of hooking into the 404 event.
          */
-
-        $hook->into('parable_http_404', function($trigger, $url) use ($response) {
+        $hook->into('parable_http_404', function ($trigger, $url) use ($response) {
             $response->setContent("404 - page '{$url}' could not be found");
             $response->send();
         });

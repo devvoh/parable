@@ -29,6 +29,8 @@ class Input
     }
 
     /**
+     * @param bool $default
+     *
      * @return bool
      */
     public function getYesNo($default = true)

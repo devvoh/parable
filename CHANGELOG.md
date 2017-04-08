@@ -1,5 +1,11 @@
 # Parable PHP Framework Changelog
 
+### 0.9.8
+
+__Changes__
+- `\Parable\Auth\Authentication` no longer demands a `\Model\Users` object, but defaults to `\Model\User` and allows another class to be set.
+- Since the Auth system now has a user-overwritable user class name, it no longer calls `initialize()` in its `__construct()`. Easiest way of both overwriting and initializing the Auth system is by using an `Init\Auth` class to do so.
+
 ### 0.9.7
 
 __Changes__

@@ -86,16 +86,14 @@ class Parameter
     {
         foreach ($this->options as $option) {
             // Check if required option is actually passed
-            if (
-                $option['required']
+            if ($option['required']
                 && !array_key_exists($option['name'], $this->arguments)
             ) {
                 throw new \Parable\Console\Exception("Required option '--{$option['name']}' not provided.");
             }
 
             // Check if non-required but passed option requires a value
-            if (
-                array_key_exists($option['name'], $this->arguments)
+            if (array_key_exists($option['name'], $this->arguments)
                 && $option['valueRequired']
                 && (!$this->arguments[$option['name']] || $this->arguments[$option['name']] == static::PARAMETER_EXISTS)
             ) {
@@ -105,8 +103,7 @@ class Parameter
             }
 
             // Set default value if defaultValue is set and the option is either passed without value or not passed
-            if (
-                $option['defaultValue']
+            if ($option['defaultValue']
                 && (
                     !array_key_exists($option['name'], $this->arguments)
                     || $this->arguments[$option['name']] == static::PARAMETER_EXISTS

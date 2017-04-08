@@ -34,7 +34,7 @@ class App
         $this->input     = $input;
         $this->parameter = $parameter;
 
-        set_exception_handler(function(\Exception $e) {
+        set_exception_handler(function (\Exception $e) {
             $this->output->writeError($e->getMessage());
         });
     }

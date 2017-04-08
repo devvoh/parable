@@ -240,7 +240,9 @@ class Database
             if (method_exists($this, $method)) {
                 $this->$method($value);
             } else {
-                throw new \Parable\ORM\Exception('Tried to call non-existing method ' . $method . ' on ' . get_class($this));
+                throw new \Parable\ORM\Exception(
+                    'Tried to call non-existing method ' . $method . ' on ' . get_class($this)
+                );
             }
         }
         return $this;
