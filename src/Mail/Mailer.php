@@ -15,15 +15,10 @@ class Mailer
 
     /** @var array */
     protected $addresses = [
-        'to'  => [],
-        'cc'  => [],
-        'bcc' => [],
-        'from' => [
-            [
-                'email' => 'noreply@authorly.io',
-                'name'  => 'Authorly',
-            ],
-        ],
+        'to'   => [],
+        'cc'   => [],
+        'bcc'  => [],
+        'from' => [],
     ];
 
     /** @var string */
