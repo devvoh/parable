@@ -70,7 +70,7 @@ class Url
         ) {
             $url = $this->getUrl($url);
         }
-        header('location: ' . $url);
+        header("location: {$url}");
         die();
     }
 }

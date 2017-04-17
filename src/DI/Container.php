@@ -31,8 +31,8 @@ class Container
             && isset(self::$relations[$parentClassName])
             && isset(self::$relations[$parentClassName][$className])
         ) {
-            $message  = 'Cyclical dependency found: ' . $className . ' depends on ' . $parentClassName;
-            $message .= ' but is itself a dependency of ' . $parentClassName . '.';
+            $message  = "Cyclical dependency found: {$className} depends on {$parentClassName}";
+            $message .= " but is itself a dependency of {$parentClassName}.";
             throw new \Parable\DI\Exception($message);
         }
 
@@ -55,9 +55,9 @@ class Container
     public static function create($className, $parentClassName = '')
     {
         if (!class_exists($className)) {
-            $message = 'Could not create instance of "' . $className . '"';
+            $message = "Could not create instance of '{$className}'";
             if ($parentClassName) {
-                $message .= ', required by "' . $parentClassName . '"';
+                $message .= ", required by '{$parentClassName}'";
             }
             throw new \Parable\DI\Exception($message);
         }

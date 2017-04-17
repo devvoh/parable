@@ -1,5 +1,35 @@
 # Parable PHP Framework Changelog
 
+### 0.10.0
+
+Note: Breaks backwards compatibility in some instances, and based on your implementation might require small tweaks or none whatsoever. By reading the following
+changelog carefully it should be trivial to fix any incompatibilities.
+
+__Changes__
+- `\Parable\Auth\Authentication` has been moved to `\Parable\Framework\Authentication`, since it cannot function without packages from `Framework` and `Http`.
+- `\Parable\Auth\Rights` has been moved to `\Parable\Tool\Rights`, since by itself it does not warrent an `Auth` namespace.
+- `\Parable\Mail\Mailer` has also been improved:
+    - The main class been simplified and all template logic has been moved to `\Parable\Framework\Mail\Mailer`, since those require external logic.
+    - `\Parable\Framework\Mail\Mailer` now uses a `GetSet` implementation (`\Parable\Mail\TemplateVariables`) for its template variables and requires a full path for `loadTemplate` calls.
+    - `\Parable\Mail\Mailer` has gained `requiredHeader`, to distinguish between headers it wants to enforce itself and ones set by the dev.
+    - `\Parable\Mail\Mailer` has gained `getSubject()`, `getBody()`, `getHeaders()`, `getRequiredHeaders()`.
+    - `\Parable\Mail\Mailer` has gained `resetMailData()`, `resetRecipients()`, `resetSender()`, `reset()` (resets all but sender).
+- All classes previously using `Routes` as a namespace now use `Routing` to make the namespace more consistently singular.
+- `\Parable\Console` has once again gotten some love:
+  - `\Parable\Console\Command` namespace has been added, with 2 commands: `Help` and `Init`.
+  - It's now possible to add your own commands to the `parable` command, as shown in structure's `\Config\App` (`$config->get('console.commands')`). 
+  - `\Parable\Console\App` is now always available to Commands, by setting it through `setApp()`.
+  - `parable.php` has been moved up one directory.
+- `\Parable\Events` namespace has been changed to `\Parable\Event` for consistency.
+- `\Parable\Http\Values\GetSet` has gained the following methods: `getAllAndReset()`, `getAndRemove($key)`, `reset()` and `count()`.
+
+__Bugfixes__
+- `\Parable\Framework\View` list of `@property` tags updated, since some classes were missing.
+
+__Miscellaneous__
+- Where logical and readable, double-quote {}-style concatenation added.
+- Comments improved in places.
+
 ### 0.9.8
 
 __Changes__

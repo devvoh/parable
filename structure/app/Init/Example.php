@@ -5,7 +5,7 @@ namespace Init;
 class Example
 {
     public function __construct(
-        \Parable\Events\Hook $hook,
+        \Parable\Event\Hook $hook,
         \Parable\Http\Response $response
     ) {
         /*

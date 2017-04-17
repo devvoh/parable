@@ -86,13 +86,13 @@ class Log
             // Create directory
             $created = @mkdir($this->path, $this->getMode(), true);
             if (!$created) {
-                throw new \Parable\Framework\Exception('Could not create log directory: ' . $this->path);
+                throw new \Parable\Framework\Exception("Could not create log directory: {$this->path}");
             }
         }
         if (!is_writable($this->path)) {
             $chmod = chmod($this->path, $this->getMode());
             if (!$chmod) {
-                throw new \Parable\Framework\Exception('Log directory is not writable: ' . $this->path);
+                throw new \Parable\Framework\Exception("Log directory is not writable: {$this->path}");
             }
         }
         return $this->path;
@@ -121,7 +121,7 @@ class Log
         if ($showTimezone) {
             $timeString .= ' ' . $now->getTimezone()->getName();
         }
-        $message = '[' .$timeString . '] ' . $message;
+        $message = "[{$timeString}] {$message}";
 
         // And append it to the log
         file_put_contents($logPath, $message, FILE_APPEND | LOCK_EX);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Parable\Auth;
+namespace Parable\Framework;
 
 class Authentication
 {
@@ -149,14 +149,14 @@ class Authentication
      * @param string $className
      *
      * @return $this
-     * @throws \Parable\Auth\Exception
+     * @throws \Parable\Framework\Exception
      */
     public function setUserClassName($className)
     {
         try {
             \Parable\DI\Container::create($className);
         } catch (\Exception $e) {
-            throw new \Parable\Auth\Exception($this->userClassName . ' could not be instantiated.');
+            throw new \Parable\Framework\Exception($this->userClassName . ' could not be instantiated.');
         }
 
         $this->userClassName = $className;
@@ -172,7 +172,7 @@ class Authentication
     public function setUser($user)
     {
         if (!($user instanceof $this->userClassName)) {
-            throw new \Parable\Auth\Exception('Invalid object provided, type ' . $this->userClassName . ' required.');
+            throw new \Parable\Framework\Exception("Invalid object provided, type {$this->userClassName} required.");
         }
         $this->user = $user;
         return $this;

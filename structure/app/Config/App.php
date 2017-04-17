@@ -29,6 +29,11 @@ class App extends \Parable\Framework\Config\Base
                 'password' => 'password',
                 'database' => 'database',
             ],
+            'console' => [
+                'commands' => [
+                    \Command\HelloWorld::class,
+                ]
+            ]
         ];
     }
 }

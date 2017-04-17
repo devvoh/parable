@@ -65,6 +65,38 @@ class GetSet
     }
 
     /**
+     * @return array
+     */
+    public function getAllAndReset()
+    {
+        $data = $this->getAll();
+        $this->reset();
+        return $data;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    public function getAndRemove($key)
+    {
+        $data = $this->get($key);
+        if ($data) {
+            $this->remove($key);
+        }
+        return $data;
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->getAll());
+    }
+
+    /**
      * Set specific value by key if resource set
      *
      * @param string $key
@@ -128,6 +160,16 @@ class GetSet
      */
     public function remove($key)
     {
-        return $this->set($key, null);
+        $this->set($key, null);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function reset()
+    {
+        $this->setAll([]);
+        return $this;
     }
 }

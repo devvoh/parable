@@ -1,6 +1,6 @@
 <?php
 
-namespace Parable\Framework\Routes;
+namespace Parable\Framework\Routing;
 
 abstract class Base
 {

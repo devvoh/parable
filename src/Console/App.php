@@ -124,6 +124,8 @@ class App
             throw new \Parable\Console\Exception('No valid command found.');
         }
 
+        $command->setApp($this);
+
         $this->parameter->setOptions($command->getOptions());
         $this->parameter->checkOptions();
 

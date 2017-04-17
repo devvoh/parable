@@ -142,9 +142,9 @@ class Response
     {
         $this->output->prepare($this);
 
-        header("HTTP/1.1 " . $this->getHttpCode() . " " . $this->getHttpCodeText());
+        header("HTTP/1.1 {$this->getHttpCode()} {$this->getHttpCodeText()}");
         foreach ($this->headers as $key => $value) {
-            header($key . ': ' . $value);
+            header("{$key}: {$value}");
         }
 
         echo $this->getContent();

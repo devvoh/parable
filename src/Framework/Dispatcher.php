@@ -4,7 +4,7 @@ namespace Parable\Framework;
 
 class Dispatcher
 {
-    /** @var \Parable\Events\Hook */
+    /** @var \Parable\Event\Hook */
     protected $hook;
 
     /** @var \Parable\Filesystem\Path */
@@ -17,7 +17,7 @@ class Dispatcher
     protected $response;
 
     public function __construct(
-        \Parable\Events\Hook $hook,
+        \Parable\Event\Hook $hook,
         \Parable\Filesystem\Path $path,
         \Parable\Framework\View $view,
         \Parable\Http\Response $response
@@ -67,7 +67,7 @@ class Dispatcher
                 $controllerName = str_replace('\\', '/', $reflection->getName());
                 $controllerName = str_replace('Controller/', '', $controllerName);
                 $templateFile = $this->path->getDir(
-                    'app/View/' . $controllerName . '/' . $route->action . '.phtml'
+                    "app/View/{$controllerName}/{$route->action}.phtml"
                 );
             }
         }

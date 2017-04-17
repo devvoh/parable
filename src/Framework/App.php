@@ -13,7 +13,7 @@ class App
     /** @var \Parable\Framework\Dispatcher */
     protected $dispatcher;
 
-    /** @var \Parable\Events\Hook */
+    /** @var \Parable\Event\Hook */
     protected $hook;
 
     /** @var \Parable\Routing\Router */
@@ -35,13 +35,13 @@ class App
     protected $database;
 
     /** @var string */
-    protected $version = '0.9.9';
+    protected $version = '0.10.0';
 
     public function __construct(
         \Parable\Filesystem\Path $path,
         \Parable\Framework\Config $config,
         \Parable\Framework\Dispatcher $dispatcher,
-        \Parable\Events\Hook $hook,
+        \Parable\Event\Hook $hook,
         \Parable\Routing\Router $router,
         \Parable\Http\Request $request,
         \Parable\Http\Response $response,
@@ -128,7 +128,7 @@ class App
      */
     protected function loadRoutes()
     {
-        foreach (\Parable\DI\Container::get(\Routes\App::class)->get() as $name => $route) {
+        foreach (\Parable\DI\Container::get(\Routing\App::class)->get() as $name => $route) {
             $this->router->addRoute($name, $route);
         }
         return $this;

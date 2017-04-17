@@ -20,5 +20,5 @@
       "Parable\\": "src/"
     }
   },
-  "bin": ["src/parable"]
+  "bin": ["parable"]
 }

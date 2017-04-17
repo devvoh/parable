@@ -1,6 +1,6 @@
 <?php
 
-namespace Parable\Events;
+namespace Parable\Event;
 
 class Dock
 {

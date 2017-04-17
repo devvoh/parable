@@ -1,8 +1,8 @@
 <?php
 
-namespace Routes;
+namespace Routing;
 
-class App extends \Parable\Framework\Routes\Base
+class App extends \Parable\Framework\Routing\Base
 {
     public function get()
     {

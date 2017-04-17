@@ -16,6 +16,20 @@ class Command
     /** @var array */
     protected $options = [];
 
+    /** @var \Parable\Console\App */
+    protected $app;
+
+    /**
+     * @param \Parable\Console\App $app
+     *
+     * @return $this
+     */
+    public function setApp(\Parable\Console\App $app)
+    {
+        $this->app = $app;
+        return $this;
+    }
+
     /**
      * @param string $name
      *

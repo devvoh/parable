@@ -1,6 +1,6 @@
 <?php
 
-namespace Parable\Auth;
+namespace Parable\Tool;
 
 class Rights
 {

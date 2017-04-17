@@ -4,15 +4,6 @@ namespace Parable\Mail;
 
 class Mailer
 {
-    /** @var \Parable\Framework\View */
-    protected $view;
-
-    /** @var \Parable\Http\Values\Internal */
-    protected $internal;
-
-    /** @var array */
-    protected $templateVariables = [];
-
     /** @var array */
     protected $addresses = [
         'to'   => [],
@@ -28,16 +19,14 @@ class Mailer
     protected $body;
 
     /** @var array */
+    protected $requiredHeaders = [];
+
+    /** @var array */
     protected $headers = [];
 
-    public function __construct(
-        \Parable\Framework\View $view,
-        \Parable\Http\Values\Internal $internal
-    ) {
-        $this->view     = $view;
-        $this->internal = $internal;
-
-        $this->headers = [
+    public function __construct()
+    {
+        $this->requiredHeaders = [
             "MIME-Version: 1.0",
             "Content-type: text/html; charset=UTF-8",
         ];
@@ -156,6 +145,14 @@ class Mailer
     }
 
     /**
+     * @return string
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
      * @param string $body
      *
      * @return $this
@@ -164,6 +161,33 @@ class Mailer
     {
         $this->body = $body;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param string $header
+     *
+     * @return $this
+     */
+    public function addRequiredHeader($header)
+    {
+        $this->requiredHeaders[] = $header;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequiredHeaders()
+    {
+        return $this->requiredHeaders;
     }
 
     /**
@@ -178,36 +202,11 @@ class Mailer
     }
 
     /**
-     * @param array $data
-     *
-     * @return $this
+     * @return array
      */
-    public function setTemplateVariables(array $data)
+    public function getHeaders()
     {
-        $this->templateVariables = $data;
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function loadTemplate($name)
-    {
-        // Temporarily set the template variables as internal values
-        foreach ($this->templateVariables as $key => $value) {
-            $this->internal->set($key, $value);
-        }
-
-        $content = $this->view->partial("app/View/Email/{$name}.phtml");
-        $this->setBody($content);
-
-        // And remove the values again, to not clutter internal storage
-        foreach ($this->templateVariables as $key => $value) {
-            $this->internal->remove($key);
-        }
-        return $this;
+        return $this->headers;
     }
 
     /**
@@ -243,12 +242,71 @@ class Mailer
         $from = $this->getAddresses('from');
         $this->addHeader("From: {$from}");
 
+        $headers = array_merge($this->requiredHeaders, $this->headers);
+
         mail(
             $to,
             $this->subject,
             $this->body,
             implode("\r\n", $this->headers)
         );
+        return $this;
+    }
+
+    /**
+     * Reset just the subject, body, headers
+     *
+     * @return $this
+     */
+    public function resetMailData()
+    {
+        // Reset the mail values
+        $this->subject           = null;
+        $this->body              = null;
+        $this->headers           = [];
+
+        // And any template variables currently stored
+        $this->removeTemplateVariables();
+        $this->templateVariables = [];
+
+        return $this;
+    }
+
+    /**
+     * Reset all the addresses currently stored to receive
+     * the e-mail.
+     *
+     * @return $this
+     */
+    public function resetRecipients()
+    {
+        $this->addresses['to']   = [];
+        $this->addresses['cc']   = [];
+        $this->addresses['bcc']  = [];
+        return $this;
+    }
+
+    /**
+     * Reset the sender email and name.
+     *
+     * @return $this
+     */
+    public function resetSender()
+    {
+        $this->addresses['from'] = [];
+        return $this;
+    }
+
+    /**
+     * Reset the class so it can be re-used for another, different
+     * e-mail. This resets everything BUT the sender email and name.
+     *
+     * @return $this
+     */
+    public function reset()
+    {
+        $this->resetMailData();
+        $this->resetRecipients();
         return $this;
     }
 }

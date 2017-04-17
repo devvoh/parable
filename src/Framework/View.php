@@ -5,30 +5,33 @@ namespace Parable\Framework;
 /**
  * The following magic properties are available in template (.phtml) files through $this->...property
  *
- * @property \Parable\Auth\Rights          $rights
- * @property \Parable\Auth\Authentication  $authentication
- * @property \Parable\Events\Dock          $dock
- * @property \Parable\Events\Hook          $hook
- * @property \Parable\Filesystem\Path      $path
- * @property \Parable\Framework\App        $app
- * @property \Parable\Framework\Config     $config
- * @property \Parable\Framework\Dispatcher $dispatcher
- * @property \Parable\Framework\Log        $log
- * @property \Parable\Framework\Toolkit    $toolkit
- * @property \Parable\Framework\View       $view
- * @property \Parable\Http\Request         $request
- * @property \Parable\Http\Response        $response
- * @property \Parable\Http\Url             $url
- * @property \Parable\Http\SessionMessage  $sessionMessage
- * @property \Parable\Http\Values          $values
- * @property \Parable\Http\Values\Cookie   $cookie
- * @property \Parable\Http\Values\Get      $get
- * @property \Parable\Http\Values\Internal $internal
- * @property \Parable\Http\Values\Post     $post
- * @property \Parable\Http\Values\Session  $session
- * @property \Parable\ORM\Query            $query
- * @property \Parable\ORM\Database         $database
- * @property \Parable\Routing\Router       $router
+ * @property \Parable\Event\Dock                       $dock
+ * @property \Parable\Event\Hook                       $hook
+ * @property \Parable\Filesystem\Path                  $path
+ * @property \Parable\Framework\App                    $app
+ * @property \Parable\Framework\Authentication         $authentication
+ * @property \Parable\Framework\Config                 $config
+ * @property \Parable\Framework\Debug                  $debug
+ * @property \Parable\Framework\Dispatcher             $dispatcher
+ * @property \Parable\Framework\Log                    $log
+ * @property \Parable\Framework\Toolkit                $toolkit
+ * @property \Parable\Framework\View                   $view
+ * @property \Parable\Framework\Mail\Mailer            $mailer
+ * @property \Parable\Framework\Mail\TemplateVariables $templateVariables
+ * @property \Parable\Http\Request                     $request
+ * @property \Parable\Http\Response                    $response
+ * @property \Parable\Http\SessionMessage              $sessionMessage
+ * @property \Parable\Http\Url                         $url
+ * @property \Parable\Http\Values                      $values
+ * @property \Parable\Http\Values\Cookie               $cookie
+ * @property \Parable\Http\Values\Get                  $get
+ * @property \Parable\Http\Values\Internal             $internal
+ * @property \Parable\Http\Values\Post                 $post
+ * @property \Parable\Http\Values\Session              $session
+ * @property \Parable\ORM\Query                        $query
+ * @property \Parable\ORM\Database                     $database
+ * @property \Parable\Routing\Router                   $router
+ * @property \Parable\Tool\Rights                      $rights
  */
 class View
 {

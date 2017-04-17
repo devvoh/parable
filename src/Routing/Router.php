@@ -52,7 +52,7 @@ class Router
     public function getRouteByName($name)
     {
         if (!isset($this->routes[$name])) {
-            throw new \Parable\Routing\Exception('Route named "' . $name . '" does not exist.');
+            throw new \Parable\Routing\Exception("Route named '{$name}' does not exist.");
         }
         return $this->routes[$name];
     }
