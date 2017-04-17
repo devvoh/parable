@@ -264,11 +264,6 @@ class Mailer
         $this->subject           = null;
         $this->body              = null;
         $this->headers           = [];
-
-        // And any template variables currently stored
-        $this->removeTemplateVariables();
-        $this->templateVariables = [];
-
         return $this;
     }
 

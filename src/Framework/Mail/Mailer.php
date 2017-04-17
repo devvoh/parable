@@ -67,6 +67,19 @@ class Mailer extends \Parable\Mail\Mailer
     }
 
     /**
+     * Override the \Parable\Mail\Mailer's resetMailData to also
+     * remove all templateVariables.
+     *
+     * @return $this
+     */
+    public function resetMailData()
+    {
+        parent::resetMailData();
+        $this->templateVariables->reset();
+        return $this;
+    }
+
+    /**
      * @param string $path
      *
      * @return $this

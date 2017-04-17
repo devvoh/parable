@@ -1,9 +1,14 @@
 # Parable PHP Framework Changelog
 
+### 0.10.2
+
+__Bugfixes__
+- `removeTemplateVariables` logic re-implemented on `\Parable\Framework\Mailer\Mail`'s `resetMailData()`
+
 ### 0.10.1
 
 __Bugfixes__
-- Reference to property `$templateVariables` in `\Parable\Framework\Mailer\Mail` fixed.
+- Reference to property `$templateVariables` in `\Parable\Mailer\Mail` fixed.
 
 ### 0.10.0
 
