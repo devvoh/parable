@@ -7,14 +7,11 @@ class Mailer extends \Parable\Mail\Mailer
     /** @var \Parable\Framework\View */
     protected $view;
 
-    /** @var \Parable\Http\Values\Internal */
-    protected $internal;
+    /** @var \Parable\Framework\Mail\TemplateVariables */
+    protected $templateVariables;
 
     /** @var \Parable\Filesystem\Path */
     protected $path;
-
-    /** @var array */
-    protected $templateVariables = [];
 
     public function __construct(
         \Parable\Framework\View $view,

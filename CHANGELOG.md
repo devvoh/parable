@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.10.1
+
+__Bugfixes__
+- Reference to property `$templateVariables` in `\Parable\Framework\Mailer\Mail` fixed.
+
 ### 0.10.0
 
 Note: Breaks backwards compatibility in some instances, and based on your implementation might require small tweaks or none whatsoever. By reading the following
