@@ -19,18 +19,13 @@ class Mailer
     protected $body;
 
     /** @var array */
-    protected $requiredHeaders = [];
+    protected $requiredHeaders = [
+        "MIME-Version: 1.0",
+        "Content-type: text/html; charset=UTF-8",
+    ];
 
     /** @var array */
     protected $headers = [];
-
-    public function __construct()
-    {
-        $this->requiredHeaders = [
-            "MIME-Version: 1.0",
-            "Content-type: text/html; charset=UTF-8",
-        ];
-    }
 
     /**
      * @param string      $email
@@ -248,7 +243,7 @@ class Mailer
             $to,
             $this->subject,
             $this->body,
-            implode("\r\n", $this->headers)
+            implode("\r\n", $headers)
         );
         return $this;
     }

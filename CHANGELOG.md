@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.10.3
+
+__Bugfixes__
+- `\Parable\Mailer\Mail` was not handling headers properly.
+
 ### 0.10.2
 
 __Bugfixes__
