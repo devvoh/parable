@@ -9,49 +9,49 @@ class ContainerTest extends \Parable\Tests\Base
 
     public function testCreateNewInstance()
     {
-        $diObject = \Parable\DI\Container::create(\Parable\Tests\Classes\Basic::class);
+        $diObject = \Parable\DI\Container::create(\Parable\Tests\TestClasses\Basic::class);
         $this->assertSame("new", $diObject->value);
     }
 
     public function testGetInstanceReturnsSame()
     {
-        $diObjectOriginal = \Parable\DI\Container::get(\Parable\Tests\Classes\Basic::class);
+        $diObjectOriginal = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
         $this->assertSame("new", $diObjectOriginal->value);
 
         $diObjectOriginal->value = "updated";
 
-        $diObject = \Parable\DI\Container::get(\Parable\Tests\Classes\Basic::class);
+        $diObject = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
         $this->assertSame("updated", $diObject->value);
     }
 
     public function testCreateAlwaysGivesNewInstance()
     {
-        $diObjectOriginal = \Parable\DI\Container::get(\Parable\Tests\Classes\Basic::class);
+        $diObjectOriginal = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
         $diObjectOriginal->value = "updated";
 
-        $diObject = \Parable\DI\Container::get(\Parable\Tests\Classes\Basic::class);
+        $diObject = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
         $this->assertSame("updated", $diObject->value);
 
-        $diObject = \Parable\DI\Container::create(\Parable\Tests\Classes\Basic::class);
+        $diObject = \Parable\DI\Container::create(\Parable\Tests\TestClasses\Basic::class);
         $this->assertSame("new", $diObject->value);
     }
 
     public function testDependenciesResolvedProperly()
     {
-        $diObject = \Parable\DI\Container::create(\Parable\Tests\Classes\DependsOnBasic::class);
+        $diObject = \Parable\DI\Container::create(\Parable\Tests\TestClasses\DependsOnBasic::class);
         $this->assertNotNull($diObject->basic);
     }
 
     public function testStoreInstanceIsReturnedProperly()
     {
-        $diObjectOriginal = new \Parable\Tests\Classes\Basic();
+        $diObjectOriginal = new \Parable\Tests\TestClasses\Basic();
         \Parable\DI\Container::store($diObjectOriginal);
 
         $this->assertSame("new", $diObjectOriginal->value);
 
         $diObjectOriginal->value = "stored";
 
-        $diObject = \Parable\DI\Container::get(\Parable\Tests\Classes\Basic::class);
+        $diObject = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
         $this->assertSame("stored", $diObject->value);
     }
 
@@ -67,8 +67,8 @@ class ContainerTest extends \Parable\Tests\Base
     {
         $this->expectException(\Parable\DI\Exception::class);
         $this->expectExceptionMessage(
-            "Cyclical dependency found: Parable\\Tests\\Classes\\CyclicA depends on Parable\\Tests\\Classes\\CyclicB but is itself a dependency of Parable\\Tests\\Classes\\CyclicB."
+            "Cyclical dependency found: Parable\\Tests\\TestClasses\\CyclicA depends on Parable\\Tests\\TestClasses\\CyclicB but is itself a dependency of Parable\\Tests\\TestClasses\\CyclicB."
         );
-        \Parable\DI\Container::create(\Parable\Tests\Classes\CyclicA::class);
+        \Parable\DI\Container::create(\Parable\Tests\TestClasses\CyclicA::class);
     }
 }

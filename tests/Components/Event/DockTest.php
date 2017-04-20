@@ -37,7 +37,7 @@ class DockTest extends \Parable\Tests\Base
 
         $this->dock->into('test_dock_into', function () {
             echo "Hello";
-        }, $this->path->getDir('tests/Templates/dock_test_template.phtml'));
+        }, $this->path->getDir('tests/TestTemplates/dock_test_template.phtml'));
 
         $this->dock->trigger('test_dock_into');
     }

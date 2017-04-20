@@ -1,6 +1,6 @@
 <?php
 
-namespace Parable\Tests\Classes;
+namespace Parable\Tests\TestClasses;
 
 class Basic
 {
