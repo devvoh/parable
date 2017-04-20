@@ -20,7 +20,7 @@ class Dock
     {
         $this->docks[$event][] = [
             'callable' => $callable,
-            'viewFile' => $template,
+            'template' => $template,
         ];
         return $this;
     }
@@ -61,7 +61,7 @@ class Dock
 
         // All good, let's call those closures
         foreach ($docks as $dock) {
-            $dock['callable']($payload);
+            $dock['callable']($event, $payload);
 
             // And include the template if we have one. Data should be passed to the template through
             // outside means like through the session or \Http\Values or one of its sub-types.

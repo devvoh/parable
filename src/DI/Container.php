@@ -54,14 +54,15 @@ class Container
      */
     public static function create($className, $parentClassName = '')
     {
-        if (!class_exists($className)) {
+        try {
+            $reflection = new \ReflectionClass($className);
+        } catch (\Exception $e) {
             $message = "Could not create instance of '{$className}'";
             if ($parentClassName) {
                 $message .= ", required by '{$parentClassName}'";
             }
             throw new \Parable\DI\Exception($message);
         }
-        $reflection = new \ReflectionClass($className);
         /** @var \ReflectionMethod $construct */
         $construct = $reflection->getConstructor();
 

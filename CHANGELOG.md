@@ -1,5 +1,13 @@
 # Parable PHP Framework Changelog
 
+### 0.11.0-dev
+
+__Changes__
+- Added PHPUnit tests! Run `make tests` to run them. Composer is required to make sure the dependencies are up to date.
+
+__Bugfixes__
+- Fixed key mismatch and missing event parameter (as found in `\Parable\Event\Hook`)in `\Parable\Event\Dock`.
+
 ### 0.10.3
 
 __Bugfixes__
