@@ -13,7 +13,7 @@ class HookTest extends \Parable\Tests\Base
 
         $this->hook = $this->di->create(\Parable\Event\Hook::class);
     }
-    public function testIntoAndTriggerBasic()
+    public function testIntoAndTriggerBasicWithStringPayload()
     {
         $this->hook->into('test_hook_into', function ($event, &$string) {
             $this->assertSame('test_hook_into', $event);
@@ -40,5 +40,22 @@ class HookTest extends \Parable\Tests\Base
 
         $this->assertSame("Hello", $object->firstName);
         $this->assertSame("World", $object->lastName);
+    }
+
+    public function testWithArrayPayload()
+    {
+        $array = [
+            'firstName' => "Hello",
+            'lastName'  => null,
+        ];
+
+        $this->hook->into('test_hook_into', function ($event, &$payload) {
+            $payload['lastName'] = "World";
+        });
+
+        $this->hook->trigger('test_hook_into', $array);
+
+        $this->assertSame("Hello", $array['firstName']);
+        $this->assertSame("World", $array['lastName']);
     }
 }

@@ -18,7 +18,7 @@ class DockTest extends \Parable\Tests\Base
         $this->path = $this->di->get(\Parable\Filesystem\Path::class);
     }
 
-    public function testIntoAndTriggerBasic()
+    public function testIntoAndTriggerBasicWithStringPayload()
     {
         $this->dock->into('test_dock_into', function ($event, &$string) {
             $this->assertSame('test_dock_into', $event);
@@ -31,7 +31,7 @@ class DockTest extends \Parable\Tests\Base
         $this->assertSame("Hello, world!", $payload);
     }
 
-    public function testTemplateFileOutput()
+    public function testTemplateFileOutputShownProperly()
     {
         $this->expectOutputString("Hello, world!");
 

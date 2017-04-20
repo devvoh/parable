@@ -7,23 +7,13 @@ class ContainerTest extends \Parable\Tests\Base
     /** @var \stdClass */
     protected $object;
 
-    protected function setUp()
-    {
-        parent::setUp();
-    }
-
-    /**
-     * TODO:
-     * - Test Exceptions
-     */
-
-    public function testCreate()
+    public function testCreateNewInstance()
     {
         $diObject = \Parable\DI\Container::create(\Parable\Tests\Classes\Basic::class);
         $this->assertSame("new", $diObject->value);
     }
 
-    public function testGet()
+    public function testGetInstanceReturnsSame()
     {
         $diObjectOriginal = \Parable\DI\Container::get(\Parable\Tests\Classes\Basic::class);
         $this->assertSame("new", $diObjectOriginal->value);
@@ -46,13 +36,13 @@ class ContainerTest extends \Parable\Tests\Base
         $this->assertSame("new", $diObject->value);
     }
 
-    public function testDependenciesResolved()
+    public function testDependenciesResolvedProperly()
     {
         $diObject = \Parable\DI\Container::create(\Parable\Tests\Classes\DependsOnBasic::class);
         $this->assertNotNull($diObject->basic);
     }
 
-    public function testStore()
+    public function testStoreInstanceIsReturnedProperly()
     {
         $diObjectOriginal = new \Parable\Tests\Classes\Basic();
         \Parable\DI\Container::store($diObjectOriginal);
