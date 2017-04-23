@@ -5,13 +5,13 @@ namespace Parable\Tests\Components\Event;
 class HookTest extends \Parable\Tests\Base
 {
     /** @var \Parable\Event\Hook */
-    protected $dock;
+    protected $hook;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->hook = $this->di->create(\Parable\Event\Hook::class);
+        $this->hook = $this->diProxy->create(\Parable\Event\Hook::class);
     }
     public function testIntoAndTriggerBasicWithStringPayload()
     {

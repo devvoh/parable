@@ -11,7 +11,7 @@ class PathTest extends \Parable\Tests\Base
     {
         parent::setUp();
 
-        $this->path = $this->di->create(\Parable\Filesystem\Path::class);
+        $this->path = $this->diProxy->create(\Parable\Filesystem\Path::class);
     }
 
     public function testSetAndGetBaseDir()

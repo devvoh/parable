@@ -4,14 +4,13 @@ namespace Parable\Tests;
 
 abstract class Base extends \PHPUnit\Framework\TestCase
 {
-    /** @var \Parable\Tests\Di */
-    protected $di;
+    /** @var \Parable\Tests\DiProxy */
+    protected $diProxy;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->di = new \Parable\Tests\Di();
-        $this->getActualOutput();
+        $this->diProxy = new \Parable\Tests\DiProxy();
     }
 }

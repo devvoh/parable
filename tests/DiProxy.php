@@ -2,7 +2,7 @@
 
 namespace Parable\Tests;
 
-class Di
+class DiProxy
 {
     public function get($className, $parentClassName = '')
     {
