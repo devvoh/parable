@@ -11,7 +11,7 @@ class RightsTest extends \Parable\Tests\Base
     {
         parent::setUp();
 
-        $this->rights = $this->diProxy->get(\Parable\Tool\Rights::class);
+        $this->rights = new \Parable\Tool\Rights();
     }
 
     public function testDefaultCRUDRightsAreSetProperly()
@@ -58,6 +58,7 @@ class RightsTest extends \Parable\Tests\Base
 
     public function testCheckRight()
     {
+        $this->rights->addRight('test');
         $this->assertTrue($this->rights->check('10000', 'test'));
         $this->assertTrue($this->rights->check('0000000010000', 'test'));
         $this->assertTrue($this->rights->check(decbin(16), 'test'));

@@ -11,7 +11,7 @@ class HookTest extends \Parable\Tests\Base
     {
         parent::setUp();
 
-        $this->hook = $this->diProxy->create(\Parable\Event\Hook::class);
+        $this->hook = \Parable\DI\Container::create(\Parable\Event\Hook::class);
     }
     public function testIntoAndTriggerBasicWithStringPayload()
     {

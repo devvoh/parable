@@ -28,8 +28,8 @@ class App
     /** @var \Parable\Http\Url */
     protected $url;
 
-    /** @var \Parable\Http\Values */
-    protected $values;
+    /** @var \Parable\Http\Values\Session */
+    protected $session;
 
     /** @var \Parable\ORM\Database */
     protected $database;
@@ -46,7 +46,7 @@ class App
         \Parable\Http\Request $request,
         \Parable\Http\Response $response,
         \Parable\Http\Url $url,
-        \Parable\Http\Values $values,
+        \Parable\Http\Values\Session $session,
         \Parable\ORM\Database $database
     ) {
         $this->path       = $path;
@@ -57,7 +57,7 @@ class App
         $this->response   = $response;
         $this->request    = $request;
         $this->url        = $url;
-        $this->values     = $values;
+        $this->session    = $session;
         $this->database   = $database;
     }
 
@@ -79,8 +79,8 @@ class App
         /* Start the session if session.autoEnable is true */
         if ($this->config->get('session.autoEnable') !== false) {
             $this->hook->trigger('parable_session_start_before');
-            $this->values->session->start();
-            $this->hook->trigger('parable_session_start_after', $this->values->session);
+            $this->session->start();
+            $this->hook->trigger('parable_session_start_after', $this->session);
         }
 
         /* Build the base Url */

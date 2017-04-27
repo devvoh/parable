@@ -14,8 +14,8 @@ class DockTest extends \Parable\Tests\Base
     {
         parent::setUp();
 
-        $this->dock = $this->diProxy->create(\Parable\Event\Dock::class);
-        $this->path = $this->diProxy->get(\Parable\Filesystem\Path::class);
+        $this->dock = \Parable\DI\Container::create(\Parable\Event\Dock::class);
+        $this->path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
     }
 
     public function testIntoAndTriggerBasicWithStringPayload()
