@@ -2,7 +2,7 @@
 
 namespace Parable\Http\Values;
 
-class GetSet
+abstract class GetSet
 {
     /** @var null|string */
     protected $resource;
@@ -160,7 +160,14 @@ class GetSet
      */
     public function remove($key)
     {
-        $this->set($key, null);
+        if ($this->getResource()) {
+            // Decide where to store this key/value pair
+            if ($this->useLocalResource) {
+                unset($this->localResource[$key]);
+            } else {
+                unset($GLOBALS[$this->getResource()][$key]);
+            }
+        }
         return $this;
     }
 

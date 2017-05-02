@@ -22,7 +22,6 @@ namespace Parable\Framework;
  * @property \Parable\Http\Response                    $response
  * @property \Parable\Http\SessionMessage              $sessionMessage
  * @property \Parable\Http\Url                         $url
- * @property \Parable\Http\Values                      $values
  * @property \Parable\Http\Values\Cookie               $cookie
  * @property \Parable\Http\Values\Get                  $get
  * @property \Parable\Http\Values\Internal             $internal

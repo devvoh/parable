@@ -16,7 +16,10 @@ class Request
     public function __construct()
     {
         $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->headers = getallheaders() ?: [];
+
+        if (PHP_SAPI !== "cli") {
+            $this->headers = getallheaders() ?: [];
+        }
     }
 
     /**

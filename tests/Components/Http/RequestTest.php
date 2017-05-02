@@ -15,84 +15,61 @@ class RequestTest extends \Parable\Tests\Base
         $GLOBALS['_SERVER']['REQUEST_METHOD'] = "GET";
 
         $this->request = new \Parable\Http\Request();
+
+        $this->mockProperty($this->request, 'headers', ['testkey' => 'testvalue']);
     }
 
-    /**
-     * @return string
-     */
     public function testGetMethod()
     {
-        die($this->request->getMethod());
+        $this->assertSame("GET", $this->request->getMethod());
     }
 
-    /**
-     * @param string $method
-     *
-     * @return bool
-     */
-    public function testIsMethod($method)
+    public function testIsMethod()
     {
-        return $this->method === $method;
+        $this->assertTrue($this->request->isMethod('GET'));
+        $this->assertfalse($this->request->isMethod('POST'));
+        $this->assertfalse($this->request->isMethod('PUT'));
+        $this->assertfalse($this->request->isMethod('DELETE'));
+        $this->assertfalse($this->request->isMethod('PATCH'));
     }
 
-    /**
-     * @return bool
-     */
     public function testIsGet()
     {
-        return $this->isMethod('GET');
+        $this->assertTrue($this->request->isGet());
     }
 
-    /**
-     * @return bool
-     */
     public function testIsPost()
     {
-        return $this->isMethod('POST');
+        $this->assertFalse($this->request->isPost());
     }
 
-    /**
-     * @return bool
-     */
     public function testIsPut()
     {
-        return $this->isMethod('PUT');
+        $this->assertFalse($this->request->isPut());
     }
 
-    /**
-     * @return bool
-     */
     public function testIsDelete()
     {
-        return $this->isMethod('DELETE');
+        $this->assertFalse($this->request->isDelete());
     }
 
-    /**
-     * @return bool
-     */
     public function testIsPatch()
     {
-        return $this->isMethod('PATCH');
+        $this->assertFalse($this->request->isPatch());
     }
 
-    /**
-     * @param string $key
-     *
-     * @return null|string
-     */
-    public function testGetHeader($key)
+    public function testHeader()
     {
-        if (!isset($this->headers[$key])) {
-            return null;
-        }
-        return $this->headers[$key];
+        $this->assertSame('testvalue', $this->request->getHeader('testkey'));
     }
 
-    /**
-     * @return array
-     */
     public function testGetHeaders()
     {
-        return $this->headers;
+        $this->assertSame(
+            [
+                'testkey' => 'testvalue',
+            ],
+            $this->request->getHeaders()
+        );
     }
 }

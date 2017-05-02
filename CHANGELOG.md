@@ -4,6 +4,8 @@
 
 __Changes__
 - Added PHPUnit tests! Run `make tests` to run them. Composer is required to make sure the dependencies are up to date.
+- `\Parable\Http\Values` class has been removed, as it depends on all individual `Values` subclasses. It was easier to use, but also a heavier hit on performance.
+- `redirect()` has been moved from `\Parable\Http\Url` to `\Parable\Http\Response` and logic to append the baseUrl has been removed.
 
 __Bugfixes__
 - Fixed key mismatch and missing event parameter (as found in `\Parable\Event\Hook`)in `\Parable\Event\Dock`.

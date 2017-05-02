@@ -4,32 +4,46 @@ namespace Parable\Http;
 
 class Url
 {
+    /** @var \Parable\Http\Response */
+    protected $response;
+
+    /** @var \Parable\Http\Values\Get */
+    protected $get;
+
     /** @var string */
-    protected $baseurl;
+    protected $baseUrl;
+
+    public function __construct(
+        \Parable\Http\Response $response,
+        \Parable\Http\Values\Get $get
+    ) {
+        $this->response = $response;
+        $this->get      = $get;
+    }
 
     /**
-     * Initialize the correct baseurl
+     * Initialize the correct baseUrl
      *
      * @return $this
      */
-    public function buildBaseurl()
+    public function buildBaseUrl()
     {
         $domain = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 
         $url = str_replace('/public/index.php', '', $_SERVER['SCRIPT_NAME']);
-        $this->baseurl = $domain . '/' . ltrim($url, '/');
+        $this->baseUrl = $domain . '/' . ltrim($url, '/');
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getBaseurl()
+    public function getBaseUrl()
     {
-        if (!$this->baseurl) {
-            $this->buildBaseurl();
+        if (!$this->baseUrl) {
+            $this->buildBaseUrl();
         }
-        return $this->baseurl;
+        return $this->baseUrl;
     }
 
     /**
@@ -39,7 +53,7 @@ class Url
      */
     public function getUrl($url = '')
     {
-        return rtrim($this->getBaseurl(), '/') . '/' . ltrim($url, '/');
+        return rtrim($this->getBaseUrl(), '/') . '/' . ltrim($url, '/');
     }
 
     /**
@@ -47,7 +61,10 @@ class Url
      */
     public function getCurrentUrl()
     {
-        return isset($_GET['url']) ? $_GET['url'] : '/';
+        if ($this->get->get('url')) {
+            return $this->get->get('url');
+        }
+        return '/';
     }
 
     /**
@@ -56,21 +73,5 @@ class Url
     public function getCurrentUrlFull()
     {
         return $this->getUrl($this->getCurrentUrl());
-    }
-
-    /**
-     * Redirect to url, adding our own own baseUrl if it's probably a relative path
-     *
-     * @param string $url
-     */
-    public function redirect($url)
-    {
-        if (strpos($url, 'http://') === false
-            && strpos($url, 'https://') === false
-        ) {
-            $url = $this->getUrl($url);
-        }
-        header("location: {$url}");
-        die();
     }
 }
