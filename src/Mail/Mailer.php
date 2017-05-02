@@ -75,7 +75,7 @@ class Mailer
      * @return string
      * @throws \Parable\Mail\Exception
      */
-    protected function getAddresses($type)
+    public function getAddresses($type)
     {
         if (!isset($this->addresses[$type])) {
             throw new \Parable\Mail\Exception('Only to, cc, bcc addresses are allowed.');
@@ -205,7 +205,7 @@ class Mailer
     }
 
     /**
-     * @return $this
+     * @return bool
      * @throws \Parable\Mail\Exception
      */
     public function send()
@@ -239,13 +239,30 @@ class Mailer
 
         $headers = array_merge($this->requiredHeaders, $this->headers);
 
-        mail(
+        return $this->sendMail(
             $to,
             $this->subject,
             $this->body,
             implode("\r\n", $headers)
         );
-        return $this;
+    }
+
+    /**
+     * @param string $to
+     * @param string $subject
+     * @param string $body
+     * @param string $headers
+     *
+     * @return bool
+     */
+    protected function sendMail($to, $subject, $body, $headers)
+    {
+        return mail(
+            $to,
+            $this->subject,
+            $this->body,
+            implode("\r\n", $headers)
+        );
     }
 
     /**
