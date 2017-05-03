@@ -7,6 +7,10 @@ class Database
     /** Use this to set a value to SQL NULL */
     const NULL_VALUE = '__parable_null_value__';
 
+    /** Types supported */
+    const TYPE_SQLITE = 'sqlite';
+    const TYPE_MYSQL  = 'mysql';
+
     /** @var null|string */
     protected $type;
 
@@ -149,12 +153,11 @@ class Database
     {
         if (!$this->instance && $this->getType() && $this->getLocation()) {
             switch ($this->getType()) {
-                case 'sqlite':
-                case 'sqlite3':
+                case static::TYPE_SQLITE:
                     $instance = new \PDO('sqlite:' . $this->getLocation());
                     $this->setInstance($instance);
                     break;
-                case 'mysql':
+                case static::TYPE_MYSQL:
                     if (!$this->getUsername() || !$this->getPassword() || !$this->getDatabase()) {
                         return null;
                     }

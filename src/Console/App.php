@@ -65,6 +65,7 @@ class App
      */
     public function addCommand(\Parable\Console\Command $command)
     {
+        $command->prepare($this, $this->output, $this->input, $this->parameter);
         $this->commands[$command->getName()] = $command;
         return $this;
     }
@@ -123,8 +124,6 @@ class App
         if (!$command) {
             throw new \Parable\Console\Exception('No valid command found.');
         }
-
-        $command->setApp($this);
 
         $this->parameter->setOptions($command->getOptions());
         $this->parameter->checkOptions();

@@ -146,7 +146,7 @@ class Model
     {
         $query = $this->createQuery();
         $query->setAction('delete');
-        $query->where($this->getTableKey(), '=', $this->id);
+        $query->where($query->buildAndSet([$this->getTableKey(), '=', $this->id]));
         return $this->database->query($query);
     }
 
@@ -256,8 +256,10 @@ class Model
         $exportable = $this->getExportable();
         $data = $this->toArray();
         $exportData = [];
-        foreach ($exportable as $key) {
-            $exportData[$key] = $data[$key];
+        foreach ($data as $key => $value) {
+            if (in_array($key, $this->exportable)) {
+                $exportData[$key] = $data[$key];
+            }
         }
         return $exportData;
     }

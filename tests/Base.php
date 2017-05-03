@@ -23,7 +23,7 @@ abstract class Base extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Makes the $propertyName publically accessible.
+     * Makes the $propertyName publicly accessible.
      *
      * @param object $object
      * @param string $propertyName
@@ -34,6 +34,19 @@ abstract class Base extends \PHPUnit\Framework\TestCase
 
         $property = $reflectionClass->getProperty($propertyName);
         $property->setAccessible(true);
+    }
+
+    /**
+     * Make all propertNames passed publicly accessible.
+     *
+     * @param object   $object
+     * @param string[] $propertyNames
+     */
+    public function liberateProperties($object, array $propertyNames)
+    {
+        foreach ($propertyNames as $propertyName) {
+            $this->liberateProperty($object, $propertyName);
+        }
     }
 
     /**

@@ -11,6 +11,9 @@ class Condition
     protected $tableName;
 
     /** @var string */
+    protected $secondaryTableName;
+
+    /** @var string */
     protected $key;
 
     /** @var string */
@@ -33,6 +36,8 @@ class Condition
     public function setQuery(\Parable\ORM\Query $query)
     {
         $this->query = $query;
+
+        $this->setTableName($query->getTableName());
         return $this;
     }
 
@@ -53,6 +58,25 @@ class Condition
     public function getTableName()
     {
         return $this->tableName;
+    }
+
+    /**
+     * @param string $secondaryTableName
+     *
+     * @return $this
+     */
+    public function setSecondaryTableName($secondaryTableName)
+    {
+        $this->secondaryTableName = $secondaryTableName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecondaryTableName()
+    {
+        return $this->secondaryTableName;
     }
 
     /**
@@ -210,8 +234,14 @@ class Condition
             $value = $this->getValue();
         }
 
+        $tableName = $this->getTableName();
+        if ($this->getSecondaryTableName()) {
+            $tableName = $this->getSecondaryTableName();
+        }
+        $tableName = $this->query->quoteIdentifier($tableName);
+
         $returnArray = [
-            $this->query->quoteIdentifier($this->getTableName()) . '.' . $this->query->quoteIdentifier($this->getKey()),
+            $tableName . '.' . $this->query->quoteIdentifier($this->getKey()),
             $this->getComparator(),
             $value,
         ];

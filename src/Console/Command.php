@@ -19,16 +19,14 @@ class Command
     /** @var \Parable\Console\App */
     protected $app;
 
-    /**
-     * @param \Parable\Console\App $app
-     *
-     * @return $this
-     */
-    public function setApp(\Parable\Console\App $app)
-    {
-        $this->app = $app;
-        return $this;
-    }
+    /** @var \Parable\Console\Output */
+    protected $output;
+
+    /** @var \Parable\Console\Input */
+    protected $input;
+
+    /** @var \Parable\Console\Parameter */
+    protected $parameter;
 
     /**
      * @param string $name
@@ -88,20 +86,33 @@ class Command
     }
 
     /**
+     * @param \Parable\Console\App       $app
      * @param \Parable\Console\Output    $output
      * @param \Parable\Console\Input     $input
      * @param \Parable\Console\Parameter $parameter
      *
      * @return $this|mixed
      */
-    public function run(
+    public function prepare(
+        \Parable\Console\App $app,
         \Parable\Console\Output $output,
         \Parable\Console\Input $input,
         \Parable\Console\Parameter $parameter
     ) {
+        $this->app       = $app;
+        $this->output    = $output;
+        $this->input     = $input;
+        $this->parameter = $parameter;
+    }
+
+    /**
+     * @return $this|mixed
+     */
+    public function run()
+    {
         $callable = $this->getCallable();
         if (is_callable($callable)) {
-            return $callable($output, $input, $parameter);
+            return $callable();
         }
         return $this;
     }

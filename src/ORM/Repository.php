@@ -80,7 +80,9 @@ class Repository
     public function getById($id)
     {
         $query = $this->createQuery();
-        $query->where($this->getModel()->getTableKey(), '=', $id);
+        $query->where(
+            $query->buildAndSet([$this->getModel()->getTableKey(), '=', $id])
+        );
         $result = $this->database->query($query);
 
         $model = null;
@@ -95,16 +97,14 @@ class Repository
     /**
      * Returns all rows matching all conditions passed
      *
-     * @param array $conditionsArray
+     * @param array $conditionSets
      *
      * @return \Parable\ORM\Model[]|\Parable\ORM\Model
      */
-    public function getByConditions(array $conditionsArray)
+    public function getByConditions(array $conditionSets)
     {
         $query = $this->createQuery();
-        foreach ($conditionsArray as $conditionArray) {
-            $query->where(...$conditionArray);
-        }
+        $query->whereMany($conditionSets);
         $result = $this->database->query($query);
 
         $entities = [];

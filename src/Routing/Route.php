@@ -38,7 +38,7 @@ class Route
         \Parable\Http\Request $request,
         array $data
     ) {
-        $this->request = $request;
+        $this->request    = $request;
 
         $this->methods    = $data['methods'];
         $this->url        = isset($data['url'])        ? $data['url']        : null;

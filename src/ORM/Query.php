@@ -2,6 +2,8 @@
 
 namespace Parable\ORM;
 
+use Parable\ORM\Query\Condition;
+
 class Query
 {
     /** Join types */
@@ -9,6 +11,10 @@ class Query
     const JOIN_LEFT  = 2;
     const JOIN_RIGHT = 3;
     const JOIN_FULL  = 4;
+
+    /** Where types */
+    const WHERE_AND  = 1;
+    const WHERE_OR   = 2;
 
     /** @var \Parable\ORM\Query\Condition[] */
     protected $where = [];
@@ -53,6 +59,9 @@ class Query
 
     /** @var array */
     protected $nonQuoteStrings = ['*', 'sum', 'max', 'min', 'count', 'avg'];
+
+    /** @var bool */
+    protected $prettyQuery = false;
 
     public function __construct(\Parable\ORM\Database $database)
     {
@@ -144,26 +153,43 @@ class Query
     }
 
     /**
-     * Adds a where condition for relevant queries
-     *
-     * @param string $key
-     * @param string $comparator
-     * @param mixed  $value
-     *
+     * @param \Parable\ORM\Query\ConditionSet $set
      * @return $this
      */
-    public function where($key, $comparator, $value = null)
+    public function where(\Parable\ORM\Query\ConditionSet $set)
     {
-        /** @var \Parable\ORM\Query\Condition $condition */
-        $condition = new \Parable\ORM\Query\Condition();
-        $condition
-            ->setKey($key)
-            ->setComparator($comparator)
-            ->setValue($value)
-            ->setQuery($this);
-
-        $this->where[] = $condition;
+        $this->where[] = $set;
         return $this;
+    }
+
+    /**
+     * @param \Parable\ORM\Query\ConditionSet[] $sets
+     */
+    public function whereMany(array $sets)
+    {
+        foreach ($sets as $set) {
+            $this->where($set);
+        }
+    }
+
+    /**
+     * @param \Parable\ORM\Query\Condition[] $conditions
+     *
+     * @return \Parable\ORM\Query\Condition\AndSet
+     */
+    public function buildAndSet(array $conditions)
+    {
+        return new Query\Condition\AndSet($this, $conditions);
+    }
+
+    /**
+     * @param \Parable\ORM\Query\Condition[] $conditions
+     *
+     * @return \Parable\ORM\Query\Condition\OrSet
+     */
+    public function buildOrSet(array $conditions)
+    {
+        return new Query\Condition\OrSet($this, $conditions);
     }
 
     /**
@@ -187,7 +213,8 @@ class Query
         /** @var \Parable\ORM\Query\Condition $condition */
         $condition = new \Parable\ORM\Query\Condition();
         $condition
-            ->setTableName($tableName)
+            ->setTableName($this->getTableName())
+            ->setSecondaryTableName($tableName)
             ->setKey($key)
             ->setComparator($comparator)
             ->setValue($value)
@@ -318,44 +345,6 @@ class Query
     }
 
     /**
-     * Build a condition string from an array of values. Required keys: key, comparator, value.
-     *
-     * Examples: ['id', '=', 1]
-     *           ['id', 'NOT IN', [1, 2, 3, 4]]
-     *
-     * @param array $conditionArray
-     *
-     * @return string
-     */
-    protected function buildCondition(array $conditionArray)
-    {
-        // Check for IN/NOT IN
-        if (in_array(strtolower($conditionArray['comparator']), ['in', 'not in'])) {
-            $values = $conditionArray['value'];
-            $valueArray = [];
-            foreach ($values as $value) {
-                $valueArray[] = $this->quote($value);
-            }
-            $conditionArray['value'] = '(' . implode(',', $valueArray) . ')';
-        } else {
-            $conditionArray['value'] = $this->quote($conditionArray['value']);
-        }
-
-        // Check for IS/IS NOT
-        if (in_array(strtolower($conditionArray['comparator']), ['is', 'is not'])) {
-            $conditionArray['value'] = 'NULL';
-        }
-
-        $returnArray = [
-            $this->quoteIdentifier($conditionArray['key']),
-            $conditionArray['comparator'],
-            $conditionArray['value']
-        ];
-
-        return implode(' ', $returnArray);
-    }
-
-    /**
      * @return string
      */
     protected function buildSelect()
@@ -405,8 +394,11 @@ class Query
                         $builtJoins[] = "FULL JOIN";
                     }
 
-                    $builtJoins[] = $this->quoteIdentifier($join->getTableName()) . " ON";
-                    $builtJoins[] = $join->build();
+                    $builtJoins[] = $this->quoteIdentifier($join->getSecondaryTableName()) . " ON";
+
+                    // Use a ConditionSet to build the joins
+                    $conditionSet = new Query\Condition\AndSet($this, [$join]);
+                    $builtJoins[] = $conditionSet->buildWithoutParentheses();
                 }
             }
         }
@@ -422,11 +414,9 @@ class Query
     protected function buildWheres()
     {
         if (count($this->where) > 0) {
-            $wheres = [];
-            foreach ($this->where as $where) {
-                $wheres[] = $where->build();
-            }
-            return "WHERE " . implode(' AND ', $wheres);
+            // Use a ConditionSet to build the wheres
+            $conditionSet = new Query\Condition\AndSet($this, $this->where);
+            return "WHERE {$conditionSet->buildWithoutParentheses()}";
         }
         return '';
     }
@@ -511,6 +501,17 @@ class Query
     }
 
     /**
+     * @param bool $bool
+     *
+     * @return $this
+     */
+    public function setPrettyQuery($bool)
+    {
+        $this->prettyQuery = (bool)$bool;
+        return $this;
+    }
+
+    /**
      * Outputs the actual query for use, empty string if invalid/incomplete values given
      *
      * @return string
@@ -518,6 +519,11 @@ class Query
     public function __toString()
     {
         $query = [];
+
+        $pretty = "";
+        if ($this->prettyQuery) {
+            $pretty = "\n";
+        }
 
         if ($this->action === 'select') {
             $query[] = "SELECT " . $this->buildSelect();
@@ -598,7 +604,7 @@ class Query
         }
 
         // Now make it nice.
-        $queryString = implode(' ', $query);
+        $queryString = implode(" {$pretty}", $query);
         $queryString = trim($queryString) . ';';
 
         // Since we got here, we've got a query to output
