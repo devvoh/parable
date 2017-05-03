@@ -12,10 +12,6 @@ class Query
     const JOIN_RIGHT = 3;
     const JOIN_FULL  = 4;
 
-    /** Where types */
-    const WHERE_AND  = 1;
-    const WHERE_OR   = 2;
-
     /** @var \Parable\ORM\Query\Condition[] */
     protected $where = [];
 
