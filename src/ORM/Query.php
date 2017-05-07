@@ -12,6 +12,10 @@ class Query
     const JOIN_RIGHT = 3;
     const JOIN_FULL  = 4;
 
+    /** Order by types */
+    const ORDER_ASC  = 'ASC';
+    const ORDER_DESC = 'DESC';
+
     /** @var \Parable\ORM\Query\Condition[] */
     protected $where = [];
 
@@ -299,7 +303,7 @@ class Query
      *
      * @return $this
      */
-    public function orderBy($key, $direction = 'DESC')
+    public function orderBy($key, $direction = self::ORDER_ASC)
     {
         $this->orderBy[] = ['key' => $key, 'direction' => $direction];
         return $this;

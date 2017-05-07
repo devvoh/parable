@@ -33,6 +33,9 @@ class Output
         'info'    => "\e[0;30m\e[43m",
     ];
 
+    /** @var int */
+    protected $lineLength = 0;
+
     /**
      * @param string $string
      *

@@ -11,6 +11,9 @@ class Database
     const TYPE_SQLITE = 'sqlite';
     const TYPE_MYSQL  = 'mysql';
 
+    /** SQLite-specific location */
+    const LOCATION_SQLITE_MEMORY = ':memory:';
+
     /** @var null|string */
     protected $type;
 

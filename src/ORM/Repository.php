@@ -37,7 +37,7 @@ class Repository
         $query = \Parable\ORM\Query::createInstance();
         $query->setTableName($this->getModel()->getTableName());
         $query->setTableKey($this->getModel()->getTableKey());
-        if ($this->getOnlyCount()) {
+        if ($this->onlyCount) {
             $query->select(['count(*)']);
         }
         if (count($this->orderBy)) {
@@ -64,7 +64,7 @@ class Repository
             $result = $result->fetchAll(\PDO::FETCH_ASSOC);
             $entities = $this->handleResult($result);
         }
-        if ($this->returnOne) {
+        if ($this->returnOne && is_array($entities)) {
             return current($entities);
         }
         return $entities;
@@ -95,13 +95,49 @@ class Repository
     }
 
     /**
+     * Returns all rows matching specific condition parameters given
+     *
+     * @param string     $key
+     * @param string     $comparator
+     * @param mixed|null $value
+     * @param string     $andOr
+     *
+     * @return \Parable\ORM\Model[]|\Parable\ORM\Model
+     * @throws \Parable\ORM\Exception
+     */
+    public function getByCondition($key, $comparator, $value = null, $andOr = \Parable\ORM\Query\ConditionSet::SET_AND)
+    {
+        $query = $this->createQuery();
+        if ($andOr === \Parable\ORM\Query\ConditionSet::SET_AND) {
+            $conditionSet = $query->buildAndSet([$key, $comparator, $value]);
+        } elseif ($andOr === \Parable\ORM\Query\ConditionSet::SET_OR) {
+            $conditionSet = $query->buildOrSet([$key, $comparator, $value]);
+        } else {
+            throw new \Parable\ORM\Exception('Invalid andOr type given.');
+        }
+        return $this->getByConditionSet($conditionSet);
+    }
+
+    /**
+     * Returns all rows matching specific conditionSet passed
+     *
+     * @param \Parable\ORM\Query\ConditionSet $conditionSet
+     *
+     * @return \Parable\ORM\Model[]|\Parable\ORM\Model
+     */
+    public function getByConditionSet(\Parable\ORM\Query\ConditionSet $conditionSet)
+    {
+        return $this->getByConditionSets([$conditionSet]);
+    }
+
+    /**
      * Returns all rows matching all conditions passed
      *
      * @param array $conditionSets
      *
      * @return \Parable\ORM\Model[]|\Parable\ORM\Model
      */
-    public function getByConditions(array $conditionSets)
+    public function getByConditionSets(array $conditionSets)
     {
         $query = $this->createQuery();
         $query->whereMany($conditionSets);
@@ -112,7 +148,7 @@ class Repository
             $result = $result->fetchAll(\PDO::FETCH_ASSOC);
             $entities = $this->handleResult($result);
         }
-        if ($this->returnOne) {
+        if ($this->returnOne && is_array($entities)) {
             return current($entities);
         }
         return $entities;
@@ -122,11 +158,11 @@ class Repository
      * Allow multiple orders by $key in $direction
      *
      * @param string $key
-     * @param string $direction
+     * @param string $direction ASC by default
      *
      * @return $this
      */
-    public function orderBy($key, $direction = 'DESC')
+    public function orderBy($key, $direction = \Parable\ORM\Query::ORDER_ASC)
     {
         $this->orderBy = ['key' => $key, 'direction' => $direction];
         return $this;
@@ -169,55 +205,18 @@ class Repository
     }
 
     /**
-     * Returns all rows matching specific condition given
-     *
-     * @param string $key
-     * @param string $comparator
-     * @param mixed  $value
-     *
-     * @return \Parable\ORM\Model[]|\Parable\ORM\Model
-     */
-    public function getByCondition($key, $comparator, $value = null)
-    {
-        return $this->getByConditions([[$key, $comparator, $value]]);
-    }
-
-    /**
-     * Handle the result of one of the get functions
-     *
-     * @param array $result
-     *
-     * @return \Parable\ORM\Model[]|int
-     */
-    public function handleResult(array $result)
-    {
-        if ($this->getOnlyCount()) {
-            foreach ($result[0] as $row) {
-                return (int)$row;
-            }
-        }
-
-        $entities = [];
-        foreach ($result as $row) {
-            $model = clone $this->getModel();
-            $model->populate($row);
-            $entities[] = $model;
-        }
-        return $entities;
-    }
-
-    /**
-     * Returns a fresh clone of the stored Model
+     * Returns a fresh clone of the stored Model, with no values set
      *
      * @return null|\Parable\ORM\Model
      */
     public function createModel()
     {
-        return clone $this->getModel();
+        $clone = clone $this->getModel();
+        return $clone->reset();
     }
 
     /**
-     * Set an model on the repository. Its values don't matter, it'll just be used for configuration purposes.
+     * Set an model on the repository. Reset it so there's no unwanted values stored on it.
      *
      * @param \Parable\ORM\Model $model
      *
@@ -225,7 +224,7 @@ class Repository
      */
     public function setModel(\Parable\ORM\Model $model)
     {
-        $this->model = $model;
+        $this->model = $model->reset();
         return $this;
     }
 
@@ -246,19 +245,33 @@ class Repository
      *
      * @return $this
      */
-    public function setOnlyCount($value)
+    public function onlyCount($value = true)
     {
         $this->onlyCount = (bool)$value;
         return $this;
     }
 
     /**
-     * Return the onlyCount value
+     * Handle the result of one of the get functions
      *
-     * @return bool
+     * @param array $result
+     *
+     * @return \Parable\ORM\Model[]|int
      */
-    public function getOnlyCount()
+    protected function handleResult(array $result)
     {
-        return $this->onlyCount;
+        if ($this->onlyCount) {
+            foreach ($result[0] as $row) {
+                return (int)$row;
+            }
+        }
+
+        $entities = [];
+        foreach ($result as $row) {
+            $model = clone $this->getModel();
+            $model->populate($row);
+            $entities[] = $model;
+        }
+        return $entities;
     }
 }

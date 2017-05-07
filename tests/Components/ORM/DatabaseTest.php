@@ -15,11 +15,11 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
         $user = current($this->database->query('select * from user')->fetchAll());
         $this->assertSame(
             [
-                "id" => '1',
-                "username" => "parable",
-                "password" => "plaintextpasswordsarebad",
-                "email" => "parable@test.dev",
-                "created_at" => "2017-01-01 10:00:00",
+                "id"         => '1',
+                "username"   => "parable",
+                "password"   => "plaintextpasswordsarebad",
+                "email"      => "parable@test.dev",
+                "created_at" => "2016-01-01 10:00:00",
                 "updated_at" => null,
             ],
             $user

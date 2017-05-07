@@ -26,7 +26,7 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
     {
         $now = (new \DateTime())->format('Y-m-d H:i:s');
 
-        $this->model->username   = 'second user';
+        $this->model->username   = 'new user';
         $this->model->password   = 'password';
         $this->model->email      = 'email@test.dev';
         $this->model->created_at = $now;
@@ -34,10 +34,9 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
         $this->model->save();
 
         $users = $this->database->query($this->model->createQuery())->fetchAll();
-        $this->assertCount(2, $users);
+        $this->assertCount(4, $users);
 
-        $this->assertSame('parable', $users[0]['username']);
-        $this->assertSame('second user', $users[1]['username']);
+        $this->assertSame('new user', $users[3]['username']);
     }
 
     public function testPopulateAndSaveExisting()
@@ -60,10 +59,12 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
     public function testDelete()
     {
         $result = $this->database->query($this->model->createQuery())->fetchAll();
-        $this->assertNotEmpty($result);
+        $this->assertCount(3, $result);
 
-        $this->model->id = 1;
-        $this->model->delete();
+        foreach ($result as $user) {
+            $this->model->id = $user['id'];
+            $this->model->delete();
+        }
 
         $result = $this->database->query($this->model->createQuery())->fetchAll();
         $this->assertEmpty($result);

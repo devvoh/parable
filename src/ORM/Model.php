@@ -161,7 +161,7 @@ class Model
     {
         foreach ($data as $property => $value) {
             if (property_exists($this, $property)) {
-                $this->$property = $value;
+                $this->$property = $this->guessValueType($value);
             }
         }
         return $this;
@@ -247,6 +247,23 @@ class Model
     }
 
     /**
+     * Attempts to guess the value type. Will return int, float or string.
+     *
+     * @param string $value
+     *
+     * @return int|float|string
+     */
+    public function guessValueType($value)
+    {
+        if (is_numeric($value) && (int)$value == $value) {
+            return (int)$value;
+        } elseif (is_numeric($value) && (float)$value == $value) {
+            return (float)$value;
+        }
+        return $value;
+    }
+
+    /**
      * Export to array, which will exclude unexportable keys
      *
      * @return array
@@ -262,5 +279,22 @@ class Model
             }
         }
         return $exportData;
+    }
+
+    /**
+     * Reset all public properties to null
+     *
+     * @return $this
+     */
+    public function reset()
+    {
+        $array = (array)$this;
+        foreach ($array as $key => $value) {
+            // Protected values are prefixed with an '*'
+            if (strpos($key, '*') == false) {
+                $this->{$key} = null;
+            }
+        }
+        return $this;
     }
 }

@@ -4,7 +4,9 @@ namespace Parable\ORM\Query;
 
 abstract class ConditionSet
 {
-    const TYPE = 'AND';
+    /** Types of sets */
+    const SET_AND = 'AND';
+    const SET_OR  = 'OR';
 
     /** @var \Parable\ORM\Query */
     protected $query;
