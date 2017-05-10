@@ -42,14 +42,14 @@ class Query
         self::JOIN_FULL  => [],
     ];
 
+    /** @var null|int */
+    protected $limitOffset = [];
+
     /** @var null|string */
     protected $tableName;
 
     /** @var null|string */
     protected $tableKey;
-
-    /** @var null|int */
-    protected $limit;
 
     /** @var \Parable\ORM\Database */
     protected $database;
@@ -59,9 +59,6 @@ class Query
 
     /** @var array */
     protected $nonQuoteStrings = ['*', 'sum', 'max', 'min', 'count', 'avg'];
-
-    /** @var bool */
-    protected $prettyQuery = false;
 
     public function __construct(\Parable\ORM\Database $database)
     {
@@ -115,17 +112,28 @@ class Query
     }
 
     /**
+     * @return null|string
+     */
+    public function getTableKey()
+    {
+        return $this->tableKey;
+    }
+
+    /**
      * Set the type of query we're going to do
      *
      * @param string $action
      *
      * @return $this
+     * @throws \Parable\ORM\Exception
      */
     public function setAction($action)
     {
-        if (in_array($action, $this->acceptedValues)) {
-            $this->action = $action;
+        if (!in_array($action, $this->acceptedValues)) {
+            $validString = implode(', ', $this->acceptedValues);
+            throw new \Parable\ORM\Exception("Invalid action set, only {$validString} are allowed.");
         }
+        $this->action = $action;
         return $this;
     }
 
@@ -298,50 +306,77 @@ class Query
     /**
      * Sets the order for select queries
      *
-     * @param string $key
-     * @param string $direction
+     * @param string      $key
+     * @param string      $direction
+     * @param null|string $tableName
      *
      * @return $this
      */
-    public function orderBy($key, $direction = self::ORDER_ASC)
+    public function orderBy($key, $direction = self::ORDER_ASC, $tableName = null)
     {
-        $this->orderBy[] = ['key' => $key, 'direction' => $direction];
+        if (!$tableName) {
+            $tableName = $this->getTableName();
+        }
+        $this->orderBy[] = ['key' => $key, 'direction' => $direction, 'tableName' => $tableName];
         return $this;
     }
 
     /**
      * Sets the group by for select queries
      *
-     * @param string $key
+     * @param string      $key
+     * @param null|string $tableName
      *
      * @return $this
      */
-    public function groupBy($key)
+    public function groupBy($key, $tableName = null)
     {
-        $this->groupBy[] = $key;
+        if (!$tableName) {
+            $tableName = $this->getTableName();
+        }
+        $this->groupBy[] = ['key' => $key, 'tableName' => $tableName];
         return $this;
     }
 
     /**
-     * Sets the limit
+     * Sets the limitOffset
      *
      * @param int      $limit
      * @param null|int $offset
      *
      * @return $this
      */
-    public function limit($limit, $offset = null)
+    public function limitOffset($limit, $offset = null)
     {
-        $this->limit = ['limit' => $limit, 'offset' => $offset];
+        $this->limitOffset = ['limit' => $limit, 'offset' => $offset];
         return $this;
     }
 
     /**
-     * @return $this
+     * @param string $string
+     *
+     * @return string
      */
-    public static function createInstance()
+    public function quote($string)
     {
-        return \Parable\DI\Container::create(static::class);
+        if (!$this->database->getInstance()) {
+            $string = str_replace("'", "", $string);
+            return "'{$string}'";
+        }
+        return $this->database->quote($string);
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    public function quoteIdentifier($string)
+    {
+        if (!$this->database->getInstance()) {
+            return "`{$string}`";
+        }
+        return $this->database->quoteIdentifier($string);
     }
 
     /**
@@ -431,7 +466,8 @@ class Query
         if (count($this->orderBy) > 0) {
             $orders = [];
             foreach ($this->orderBy as $orderBy) {
-                $orders[] = $orderBy['key'] . ' ' . $orderBy['direction'];
+                $key = $this->quoteIdentifier($orderBy["tableName"]) . "." . $this->quote($orderBy["key"]);
+                $orders[] = $key . ' ' . $orderBy['direction'];
             }
             return "ORDER BY " . implode(', ', $orders);
         }
@@ -448,6 +484,7 @@ class Query
         if (count($this->groupBy) > 0) {
             $groups = [];
             foreach ($this->groupBy as $groupBy) {
+                $groupBy = $this->quoteIdentifier($groupBy["tableName"]) . "." . $this->quote($groupBy["key"]);
                 $groups[] = $groupBy;
             }
             return "GROUP BY " . implode(', ', $groups);
@@ -462,53 +499,27 @@ class Query
      */
     protected function buildLimitOffset()
     {
-        if (is_array($this->limit)) {
-            $limit = $this->limit['limit'];
-            if ($this->limit['offset'] !== null) {
-                $limit = $this->limit['offset'] . ',' . $limit;
-            }
-            $limit = "LIMIT " . $limit;
-            return $limit;
+        if (empty($this->limitOffset)) {
+            return "";
         }
-        return '';
+
+        if ($this->limitOffset["limit"] && $this->limitOffset["offset"]) {
+            $limitOffset = $this->limitOffset['offset'] . ',' . $this->limitOffset['limit'];
+        } elseif ($this->limitOffset["limit"]) {
+            $limitOffset = $this->limitOffset["limit"];
+        } elseif ($this->limitOffset["offset"]) {
+            $limitOffset = $this->limitOffset["offset"];
+        }
+
+        return "LIMIT " . $limitOffset;
     }
 
     /**
-     * @param string $string
-     *
-     * @return string
-     */
-    public function quote($string)
-    {
-        if (!$this->database->getInstance()) {
-            $string = str_replace("'", "", $string);
-            return "'{$string}'";
-        }
-        return $this->database->quote($string);
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return string
-     */
-    public function quoteIdentifier($string)
-    {
-        if (!$this->database->getInstance()) {
-            return "`{$string}`";
-        }
-        return $this->database->quoteIdentifier($string);
-    }
-
-    /**
-     * @param bool $bool
-     *
      * @return $this
      */
-    public function setPrettyQuery($bool)
+    public static function createInstance()
     {
-        $this->prettyQuery = (bool)$bool;
-        return $this;
+        return \Parable\DI\Container::create(static::class);
     }
 
     /**
@@ -520,18 +531,13 @@ class Query
     {
         $query = [];
 
-        $pretty = "";
-        if ($this->prettyQuery) {
-            $pretty = "\n";
-        }
-
         if ($this->action === 'select') {
             $query[] = "SELECT " . $this->buildSelect();
             $query[] = "FROM " . $this->getQuotedTableName();
             $query[] = $this->buildJoins();
             $query[] = $this->buildWheres();
-            $query[] = $this->buildOrderBy();
             $query[] = $this->buildGroupBy();
+            $query[] = $this->buildOrderBy();
             $query[] = $this->buildLimitOffset();
         } elseif ($this->action === 'delete') {
             $query[] = "DELETE FROM " . $this->getQuotedTableName();
@@ -603,8 +609,15 @@ class Query
             return '';
         }
 
+        // Clean up any empty lines we're not going to want in the string, to prevent double/triple spaces
+        foreach ($query as $key => $queryPart) {
+            if (empty($queryPart)) {
+                unset($query[$key]);
+            }
+        }
+
         // Now make it nice.
-        $queryString = implode(" {$pretty}", $query);
+        $queryString = implode(" ", $query);
         $queryString = trim($queryString) . ';';
 
         // Since we got here, we've got a query to output

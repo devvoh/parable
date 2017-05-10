@@ -194,17 +194,28 @@ class Condition
     }
 
     /**
+     * @return $this
+     */
+    protected function uppercaseComparator()
+    {
+        $this->setComparator(strtoupper($this->getComparator()));
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function build()
     {
         // Check for IS/IS NOT and set the value to NULL if it is.
-        if ($this->isComparatorIsNotIs() && is_array($this->getValue())) {
+        if ($this->isComparatorIsNotIs()) {
+            $this->uppercaseComparator();
             $this->setValue('NULL');
         }
 
         // Check for IN/NOT IN and build a nice comma-separated list.
         if (!$this->isComparatorIsNotIs() && $this->isComparatorInNotIn() && is_array($this->getValue())) {
+            $this->uppercaseComparator();
             $values = $this->getValue();
             $valueArray = [];
             foreach ($values as $value) {

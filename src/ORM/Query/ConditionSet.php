@@ -60,7 +60,7 @@ abstract class ConditionSet
 
         $string = implode($glue, $builtConditions);
         if ($withParentheses) {
-            $string = " ({$string}) ";
+            $string = "({$string})";
         }
 
         return $string;

@@ -17,7 +17,7 @@ class Repository
     protected $orderBy = [];
 
     /** @var array */
-    protected $limit = [];
+    protected $limitOffset = [];
 
     /** @var bool */
     protected $returnOne = false;
@@ -43,8 +43,8 @@ class Repository
         if (count($this->orderBy)) {
             $query->orderBy($this->orderBy['key'], $this->orderBy['direction']);
         }
-        if (count($this->limit)) {
-            $query->limit($this->limit['limit'], $this->limit['offset']);
+        if (count($this->limitOffset)) {
+            $query->limitOffset($this->limitOffset['limit'], $this->limitOffset['offset']);
         }
         return $query;
     }
@@ -169,16 +169,16 @@ class Repository
     }
 
     /**
-     * Sets the limit
+     * Sets the limitOffset
      *
      * @param int      $limit
      * @param null|int $offset
      *
      * @return $this
      */
-    public function limit($limit, $offset = null)
+    public function limitOffset($limit, $offset = null)
     {
-        $this->limit = ['limit' => $limit, 'offset' => $offset];
+        $this->limitOffset = ['limit' => $limit, 'offset' => $offset];
         return $this;
     }
 

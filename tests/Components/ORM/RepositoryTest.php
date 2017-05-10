@@ -170,17 +170,17 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
         $this->assertSame($result[2]->id, 3);
     }
 
-    public function testLimitAndOffset()
+    public function testLimitOffset()
     {
-        $result = $this->repository->limit(1)->getAll();
+        $result = $this->repository->limitOffset(1)->getAll();
 
         $this->assertSame($result[0]->id, 1);
 
-        $result = $this->repository->limit(1, 1)->getAll();
+        $result = $this->repository->limitOffset(1, 1)->getAll();
 
         $this->assertSame($result[0]->id, 2);
 
-        $result = $this->repository->limit(1, 2)->getAll();
+        $result = $this->repository->limitOffset(1, 2)->getAll();
 
         $this->assertSame($result[0]->id, 3);
     }

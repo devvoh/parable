@@ -26,6 +26,14 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
         );
     }
 
+    public function testDatabaseFakesQuotesIfNotConnected()
+    {
+        /** @var \Parable\ORM\Database $database */
+        $database = \Parable\DI\Container::get(\Parable\ORM\Database::class);
+        $this->assertSame("'test'", $database->quote('test'));
+        $this->assertSame("`test`", $database->quoteIdentifier('test'));
+    }
+
     protected function tearDown()
     {
         parent::tearDown();
