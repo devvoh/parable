@@ -258,7 +258,7 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
         $this->assertInstanceOf(\Parable\ORM\Query::class, $instance);
     }
 
-    public function testRidiculoslyComplexQuery()
+    public function testRidiculouslyComplexQuery()
     {
         $this->query->setTableName('complex');
         $this->query->setTableKey('id');
