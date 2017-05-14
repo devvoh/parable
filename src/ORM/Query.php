@@ -222,7 +222,7 @@ class Query
         $condition = new \Parable\ORM\Query\Condition();
         $condition
             ->setTableName($this->getTableName())
-            ->setSecondaryTableName($tableName)
+            ->setJoinTableName($tableName)
             ->setKey($key)
             ->setComparator($comparator)
             ->setValue($value)
@@ -429,7 +429,7 @@ class Query
                         $builtJoins[] = "FULL JOIN";
                     }
 
-                    $builtJoins[] = $this->quoteIdentifier($join->getSecondaryTableName()) . " ON";
+                    $builtJoins[] = $this->quoteIdentifier($join->getJoinTableName()) . " ON";
 
                     // Use a ConditionSet to build the joins
                     $conditionSet = new Query\Condition\AndSet($this, [$join]);

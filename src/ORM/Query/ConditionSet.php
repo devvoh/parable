@@ -4,6 +4,9 @@ namespace Parable\ORM\Query;
 
 abstract class ConditionSet
 {
+    /** Default is AND */
+    const TYPE = self::SET_AND;
+
     /** Types of sets */
     const SET_AND = 'AND';
     const SET_OR  = 'OR';
@@ -49,11 +52,15 @@ abstract class ConditionSet
      *
      * @return string
      */
-    public function build($withParentheses = true)
+    protected function build($withParentheses)
     {
         $builtConditions = [];
         foreach ($this->conditions as $condition) {
-            $builtConditions[] = $condition->build();
+            if ($condition instanceof \Parable\ORM\Query\ConditionSet) {
+                $builtConditions[] = $condition->buildWithParentheses();
+            } else {
+                $builtConditions[] = $condition->build();
+            }
         }
 
         $glue = ' ' . static::TYPE . ' ';
@@ -66,8 +73,19 @@ abstract class ConditionSet
         return $string;
     }
 
+    /**
+     * @return string
+     */
     public function buildWithoutParentheses()
     {
         return $this->build(false);
+    }
+
+    /**
+     * @return string
+     */
+    public function buildWithParentheses()
+    {
+        return $this->build(true);
     }
 }

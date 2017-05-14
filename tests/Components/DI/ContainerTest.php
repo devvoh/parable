@@ -58,9 +58,9 @@ class ContainerTest extends \Parable\Tests\Base
     public function testExceptionOnInvalidClass()
     {
         $this->expectException(\Parable\DI\Exception::class);
-        $this->expectExceptionMessage("Could not create instance of 'This test no existy'");
+        $this->expectExceptionMessage("Could not create instance of 'This class does not exist'");
 
-        \Parable\DI\Container::create("This test no existy");
+        \Parable\DI\Container::create("This class does not exist");
     }
 
     public function testExceptionOnCyclicalDependency()

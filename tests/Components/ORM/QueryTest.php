@@ -82,7 +82,7 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
     {
         $this->query->where($this->query->buildAndSet([
             ['id', '=', 1],
-            ['active', 'is not', 'null'],
+            ['active', 'is not null'],
         ]));
 
         $this->assertSame(
@@ -96,11 +96,11 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
         $this->query->whereMany([
             $this->query->buildAndSet([
                 ['id', '=', 1],
-                ['active', 'is not', 'null'],
+                ['active', 'is not null'],
             ]),
             $this->query->buildAndSet([
                 ['other_id', '=', 1],
-                ['inactive', 'is', 'null'],
+                ['inactive', 'is null'],
             ]),
         ]);
 
@@ -113,8 +113,8 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
     {
         $this->query->where($this->query->buildAndSet([
             ['id', '=', 1],
-            ['active', 'is not', 'null'],
-            ['active', 'is', 'null'],
+            ['active', 'is not null'],
+            ['active', 'is null'],
             ['active', 'in', ['option1', 'option2']],
             ['active', 'not in', ['option1', 'option2']],
         ]));
@@ -265,10 +265,10 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
 
         $this->query->where($this->query->buildAndSet([
             ['id', '=', 1],
-            ['active', 'is not', 'null'],
+            ['active', 'is not null'],
             $this->query->buildOrSet([
                 ['id', '!=', 1],
-                ['active', 'is', 'null'],
+                ['active', 'is null'],
                 ['created_at', 'in', ['option1', 'option2']],
             ])
         ]));

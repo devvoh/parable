@@ -11,4 +11,12 @@
         <ini name="display_errors" value="stdout" />
         <ini name="error_log" value="/dev/null" />
     </php>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src/</directory>
+            <exclude>
+                <file>../src/Framework/Bootstrap.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>
