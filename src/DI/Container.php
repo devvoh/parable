@@ -44,7 +44,7 @@ class Container
     }
 
     /**
-     * Instantiate a class and fulfill its dependency requirements
+     * Instantiate a class and fulfill its dependency requirements, getting dependencies rather than creating.
      *
      * @param string $className
      * @param string $parentClassName
@@ -53,6 +53,35 @@ class Container
      * @throws \Parable\DI\Exception
      */
     public static function create($className, $parentClassName = '')
+    {
+        return static::createInstance($className, $parentClassName, false);
+    }
+
+    /**
+     * Instantiate a class and fulfill its dependency requirements, making sure ALL dependencies are created as well.
+     *
+     * @param string $className
+     * @param string $parentClassName
+     *
+     * @return mixed
+     * @throws \Parable\DI\Exception
+     */
+    public static function createAll($className, $parentClassName = '')
+    {
+        return static::createInstance($className, $parentClassName, true);
+    }
+
+    /**
+     * Instantiate a class and fulfill its dependency requirements
+     *
+     * @param string $className
+     * @param string $parentClassName
+     * @param bool   $createAll
+     *
+     * @return mixed
+     * @throws \Parable\DI\Exception
+     */
+    protected static function createInstance($className, $parentClassName = '', $createAll = false)
     {
         try {
             $reflection = new \ReflectionClass($className);
@@ -80,7 +109,11 @@ class Container
             if ($parameter->getClass()) {
                 $subClassName = $parameter->getClass()->name;
             }
-            $dependencies[] = self::get($subClassName, $className);
+            if ($createAll) {
+                $dependencies[] = self::create($subClassName, $className, $createAll);
+            } else {
+                $dependencies[] = self::get($subClassName, $className);
+            }
         }
         return (new \ReflectionClass($className))->newInstanceArgs($dependencies);
     }

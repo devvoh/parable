@@ -36,6 +36,18 @@ class ContainerTest extends \Parable\Tests\Base
         $this->assertSame("new", $diObject->value);
     }
 
+    public function testCreateAllAlwaysGivesAllNewInstances()
+    {
+        $diObjectOriginal = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
+        $diObjectOriginal->value = "updated";
+
+        $diObject = \Parable\DI\Container::create(\Parable\Tests\TestClasses\DependsOnBasic::class);
+        $this->assertSame("updated", $diObject->basic->value);
+
+        $diObject = \Parable\DI\Container::createAll(\Parable\Tests\TestClasses\DependsOnBasic::class);
+        $this->assertSame("new", $diObject->basic->value);
+    }
+
     public function testDependenciesResolvedProperly()
     {
         $diObject = \Parable\DI\Container::create(\Parable\Tests\TestClasses\DependsOnBasic::class);

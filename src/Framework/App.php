@@ -68,9 +68,6 @@ class App
      */
     public function run()
     {
-        /* Set the basedir on paths */
-        $this->path->setBasedir(BASEDIR);
-
         /* Load all known Config files now that we know the baseDir */
         $this->hook->trigger('parable_config_load_before');
         $this->config->load();

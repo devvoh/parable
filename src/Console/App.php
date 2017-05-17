@@ -23,7 +23,7 @@ class App
     protected $defaultCommand;
 
     /** @var bool */
-    protected $onlyCommand = false;
+    protected $defaultCommandOnly = false;
 
     public function __construct(
         \Parable\Console\Output $output,
@@ -72,14 +72,14 @@ class App
 
     /**
      * @param string $commandName
-     * @param bool   $onlyCommand
+     * @param bool   $defaultCommandOnly
      *
      * @return $this
      */
-    public function setDefaultCommand($commandName, $onlyCommand = false)
+    public function setDefaultCommand($commandName, $defaultCommandOnly = false)
     {
-        $this->defaultCommand = $commandName;
-        $this->onlyCommand = $onlyCommand;
+        $this->defaultCommand     = $commandName;
+        $this->defaultCommandOnly = $defaultCommandOnly;
         return $this;
     }
 
@@ -105,21 +105,25 @@ class App
     }
 
     /**
-     * @return $this
+     * @return mixed
      * @throws \Parable\Console\Exception
      */
     public function run()
     {
-        $command = null;
-        if ($this->defaultCommand && $this->onlyCommand) {
-            $command = $this->getCommand($this->defaultCommand);
-        } else {
+        $defaultCommand = null;
+        $command        = null;
+        if ($this->defaultCommand) {
+            $defaultCommand = $this->getCommand($this->defaultCommand);
+        }
+        if (!$this->defaultCommandOnly) {
             $commandName = $this->parameter->getCommandName();
-            $command = $this->getCommand($commandName);
-            if ((!$commandName || !$command) && $this->defaultCommand) {
-                $command = $this->getCommand($this->defaultCommand);
+            if ($commandName) {
+                $command = $this->getCommand($commandName);
             }
         }
+
+        // Use $command or $defaultCommand, since they're mutually exclusive
+        $command = $command ?: $defaultCommand;
 
         if (!$command) {
             throw new \Parable\Console\Exception('No valid command found.');
@@ -128,7 +132,6 @@ class App
         $this->parameter->setOptions($command->getOptions());
         $this->parameter->checkOptions();
 
-        $command->run($this->output, $this->input, $this->parameter);
-        return $this;
+        return $command->run();
     }
 }

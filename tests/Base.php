@@ -61,4 +61,15 @@ abstract class Base extends \PHPUnit\Framework\TestCase
         ob_clean();
         return $content;
     }
+
+    /**
+     * @return array
+     */
+    public function dpTrueFalse()
+    {
+        return [
+            [true],
+            [false],
+        ];
+    }
 }

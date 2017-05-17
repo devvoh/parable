@@ -112,7 +112,7 @@ class Command
     {
         $callable = $this->getCallable();
         if (is_callable($callable)) {
-            return $callable();
+            return $callable($this->app, $this->output, $this->input, $this->parameter);
         }
         return $this;
     }
@@ -127,7 +127,7 @@ class Command
      */
     public function addOption($name, $required = false, $valueRequired = false, $defaultValue = null)
     {
-        $this->options[] = [
+        $this->options[$name] = [
             'name'          => $name,
             'required'      => $required,
             'valueRequired' => $valueRequired,
