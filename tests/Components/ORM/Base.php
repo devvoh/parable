@@ -14,12 +14,10 @@ class Base extends \Parable\Tests\Base
     {
         parent::setUp();
 
+        $this->skipIfSqliteNotAvailable();
+
         $this->database = \Parable\DI\Container::get(\Parable\ORM\Database::class);
         $this->path     = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
-
-        if (!extension_loaded('sqlite3')) {
-            $this->markTestSkipped('sqlite3 is not available');
-        }
 
         $this->database->setType(\Parable\ORM\Database::TYPE_SQLITE);
         $this->database->setLocation(\Parable\ORM\Database::LOCATION_SQLITE_MEMORY);
@@ -28,9 +26,18 @@ class Base extends \Parable\Tests\Base
         $this->database->getInstance()->exec($sql);
     }
 
+    protected function skipIfSqliteNotAvailable()
+    {
+        if (!extension_loaded('sqlite33')) {
+            $this->markTestSkipped('sqlite3 is not available');
+        }
+    }
+
     protected function tearDown()
     {
         parent::tearDown();
+
+        $this->skipIfSqliteNotAvailable();
 
         $sql = file_get_contents($this->path->getDir('tests/db/test-teardown.sql'));
         $this->database->getInstance()->exec($sql);
