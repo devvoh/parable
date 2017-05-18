@@ -28,7 +28,7 @@ class Base extends \Parable\Tests\Base
 
     protected function skipIfSqliteNotAvailable()
     {
-        if (!extension_loaded('sqlite33')) {
+        if (!extension_loaded('sqlite3')) {
             $this->markTestSkipped('sqlite3 is not available');
         }
     }
