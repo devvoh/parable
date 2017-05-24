@@ -44,6 +44,9 @@ class Output
     public function write($string)
     {
         $string = $this->parseTags($string);
+
+        $this->lineLength += strlen($string);
+
         echo $string;
         return $this;
     }
@@ -73,6 +76,8 @@ class Output
      */
     public function newline($count = 1)
     {
+        $this->lineLength = 0;
+
         echo str_repeat(PHP_EOL, $count);
         return $this;
     }

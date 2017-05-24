@@ -40,11 +40,14 @@ class Repository
         if ($this->onlyCount) {
             $query->select(['count(*)']);
         }
-        if (count($this->orderBy)) {
+        if (!empty($this->orderBy)) {
             $query->orderBy($this->orderBy['key'], $this->orderBy['direction']);
         }
-        if (count($this->limitOffset)) {
+        if (!empty($this->limitOffset)) {
             $query->limitOffset($this->limitOffset['limit'], $this->limitOffset['offset']);
+        }
+        if ($this->returnOne) {
+            $query->limitOffset(1);
         }
         return $query;
     }
