@@ -1,8 +1,8 @@
 dependencies:
-	composer install --quiet \
+	composer install \
 		--no-interaction \
 		--no-plugins \
 		--no-scripts
 
 tests: dependencies
-	vendor/bin/phpunit --configuration ./tests/phpunit.xml tests --verbose
+	vendor/bin/phpunit tests --verbose

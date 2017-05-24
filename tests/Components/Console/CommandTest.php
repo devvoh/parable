@@ -60,4 +60,34 @@ class CommandTest extends \Parable\Tests\Base
             $this->command->getOptions()
         );
     }
+
+    public function testPrepareAcceptsAndPassesInstancesToCallbackProperly()
+    {
+        $this->command->prepare(
+            \Parable\DI\Container::create(\Parable\Console\App::class),
+            \Parable\DI\Container::create(\Parable\Console\Output::class),
+            \Parable\DI\Container::create(\Parable\Console\Input::class),
+            \Parable\DI\Container::create(\Parable\Console\Parameter::class)
+        );
+        $this->command->setCallable(function ($app, $output, $input, $parameter) {
+            return [$app, $output, $input, $parameter];
+        });
+
+        $instances = $this->command->run();
+
+        $this->assertInstanceOf(\Parable\Console\App::class, $instances[0]);
+        $this->assertInstanceOf(\Parable\Console\Output::class, $instances[1]);
+        $this->assertInstanceOf(\Parable\Console\Input::class, $instances[2]);
+        $this->assertInstanceOf(\Parable\Console\Parameter::class, $instances[3]);
+    }
+
+    public function testExtendingCommandClassWorks()
+    {
+        $command = new \Parable\Tests\TestClasses\Command();
+
+        $this->assertSame('testcommand', $command->getName());
+        $this->assertSame('This is a test command.', $command->getDescription());
+        $this->assertNull($command->getCallable());
+        $this->assertSame('OK', $command->run());
+    }
 }

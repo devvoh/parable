@@ -4,7 +4,7 @@
          backupStaticAttributes="false"
          beStrictAboutTestsThatDoNotTestAnything="true"
          beStrictAboutOutputDuringTests="true"
-         bootstrap="./Bootstrap.php"
+         bootstrap="./tests/Bootstrap.php"
          colors="true">
     <php>
         <ini name="memory_limit" value="1024M" />
@@ -13,9 +13,9 @@
     </php>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">../src/</directory>
+            <directory suffix=".php">./src/</directory>
             <exclude>
-                <file>../src/Framework/Bootstrap.php</file>
+                <file>./src/Framework/Bootstrap.php</file>
             </exclude>
         </whitelist>
     </filter>

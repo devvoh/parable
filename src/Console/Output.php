@@ -98,7 +98,7 @@ class Output
      *
      * @return $this
      */
-    public function cursorBack($characters = 1)
+    public function cursorBackward($characters = 1)
     {
         $this->write("\e[{$characters}D");
         return $this;
@@ -127,15 +127,6 @@ class Output
     }
 
     /**
-     * @return $this
-     */
-    public function cls()
-    {
-        $this->write("\ec");
-        return $this;
-    }
-
-    /**
      * @param int $line
      * @param int $column
      *
@@ -145,6 +136,23 @@ class Output
     {
         $this->write("\e[{$line};{$column}H");
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function cls()
+    {
+        $this->write("\ec");
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLineLength()
+    {
+        return $this->lineLength;
     }
 
     /**
