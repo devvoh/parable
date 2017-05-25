@@ -31,6 +31,24 @@ class DockTest extends \Parable\Tests\Base
         $this->assertSame("Hello, world!", $payload);
     }
 
+    public function testTriggerCanTriggerMultipleHooks()
+    {
+        $this->dock->into('test_dock_into', function ($event, &$string) {
+            $string .= '1';
+        });
+        $this->dock->into('test_dock_into', function ($event, &$string) {
+            $string .= '2';
+        });
+        $this->dock->into('test_dock_into', function ($event, &$string) {
+            $string .= '3!';
+        });
+
+        $payload = 'Testing... ';
+        $this->dock->trigger('test_dock_into', $payload);
+
+        $this->assertSame('Testing... 123!', $payload);
+    }
+
     public function testTemplateFileOutputShownProperly()
     {
         $this->expectOutputString("Hello, world!");

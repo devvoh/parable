@@ -86,42 +86,10 @@ class Command
     }
 
     /**
-     * @param \Parable\Console\App       $app
-     * @param \Parable\Console\Output    $output
-     * @param \Parable\Console\Input     $input
-     * @param \Parable\Console\Parameter $parameter
-     *
-     * @return $this|mixed
-     */
-    public function prepare(
-        \Parable\Console\App $app,
-        \Parable\Console\Output $output,
-        \Parable\Console\Input $input,
-        \Parable\Console\Parameter $parameter
-    ) {
-        $this->app       = $app;
-        $this->output    = $output;
-        $this->input     = $input;
-        $this->parameter = $parameter;
-    }
-
-    /**
-     * @return $this|mixed
-     */
-    public function run()
-    {
-        $callable = $this->getCallable();
-        if (is_callable($callable)) {
-            return $callable($this->app, $this->output, $this->input, $this->parameter);
-        }
-        return $this;
-    }
-
-    /**
-     * @param string      $name
-     * @param bool        $required
-     * @param bool        $valueRequired
-     * @param mixed|null  $defaultValue
+     * @param string $name
+     * @param bool   $required
+     * @param bool   $valueRequired
+     * @param mixed  $defaultValue
      *
      * @return $this
      */
@@ -142,5 +110,54 @@ class Command
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @param \Parable\Console\App       $app
+     * @param \Parable\Console\Output    $output
+     * @param \Parable\Console\Input     $input
+     * @param \Parable\Console\Parameter $parameter
+     *
+     * @return $this
+     */
+    public function prepare(
+        \Parable\Console\App $app,
+        \Parable\Console\Output $output,
+        \Parable\Console\Input $input,
+        \Parable\Console\Parameter $parameter
+    ) {
+        $this->app       = $app;
+        $this->output    = $output;
+        $this->input     = $input;
+        $this->parameter = $parameter;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function run()
+    {
+        $callable = $this->getCallable();
+        if (is_callable($callable)) {
+            return $callable($this->app, $this->output, $this->input, $this->parameter);
+        }
+        return false;
+    }
+
+    /**
+     * @param \Parable\Console\Command $command
+     * @param array                    $arguments
+     * @return mixed
+     */
+    protected function runCommand(\Parable\Console\Command $command, array $arguments = [])
+    {
+        $parameter = new \Parable\Console\Parameter();
+        $parameter->setArguments($arguments);
+
+        $command->prepare($this->app, $this->output, $this->input, $parameter);
+
+        return $command->run();
     }
 }

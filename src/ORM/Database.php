@@ -194,11 +194,12 @@ class Database
      * @param string $string
      *
      * @return null|string
+     * @throws \Parable\ORM\Exception
      */
     public function quote($string)
     {
         if (!$this->getInstance()) {
-            return null;
+            throw new \Parable\ORM\Exception("Can't quote value without a database instance.");
         }
         return $this->getInstance()->quote($string);
     }
@@ -221,12 +222,13 @@ class Database
      *
      * @param string $query
      *
-     * @return bool|\PDOStatement
+     * @return \PDOStatement
+     * @throws \Parable\ORM\Exception
      */
     public function query($query)
     {
         if (!$this->getInstance()) {
-            return false;
+            throw new \Parable\ORM\Exception("Can't run query without a database instance.");
         }
         return $this->getInstance()->query($query, \PDO::FETCH_ASSOC);
     }

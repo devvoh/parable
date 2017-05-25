@@ -353,6 +353,8 @@ class Query
     }
 
     /**
+     * Quote the string properly if a database instance is available, otherwise fudge it for debugging purposes.
+     *
      * @param string $string
      *
      * @return string
@@ -503,6 +505,7 @@ class Query
             return "";
         }
 
+        $limitOffset = "";
         if ($this->limitOffset["limit"] && $this->limitOffset["offset"]) {
             $limitOffset = $this->limitOffset['offset'] . ',' . $this->limitOffset['limit'];
         } elseif ($this->limitOffset["limit"]) {

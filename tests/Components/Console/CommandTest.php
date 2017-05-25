@@ -90,4 +90,18 @@ class CommandTest extends \Parable\Tests\Base
         $this->assertNull($command->getCallable());
         $this->assertSame('OK', $command->run());
     }
+
+    public function testCommandCanCallOtherCommand()
+    {
+        $command = new \Parable\Tests\TestClasses\CommandCallsCommand();
+        $command->prepare(
+            \Parable\DI\Container::create(\Parable\Console\App::class),
+            \Parable\DI\Container::create(\Parable\Console\Output::class),
+            \Parable\DI\Container::create(\Parable\Console\Input::class),
+            \Parable\DI\Container::create(\Parable\Console\Parameter::class)
+        );
+
+        $this->assertSame('calling-command', $command->getName());
+        $this->assertSame('Command returned: OK', $command->run());
+    }
 }
