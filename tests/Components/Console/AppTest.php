@@ -157,4 +157,17 @@ class AppTest extends \Parable\Tests\Base
 
         $this->assertSame('default value is here!', $app->run());
     }
+
+    public function testThrowsExceptionWhenRanWithoutCommand()
+    {
+        $this->expectExceptionMessage("No valid commands found.");
+        $this->expectException(\Parable\Console\Exception::class);
+
+        $app = new \Parable\Console\App(
+            new \Parable\Console\Output(),
+            new \Parable\Console\Input(),
+            new \Parable\Console\Parameter()
+        );
+        $app->run();
+    }
 }

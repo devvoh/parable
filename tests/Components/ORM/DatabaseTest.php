@@ -56,7 +56,7 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
 
     public function testGetInstanceReturnsWorkingPDOInstance()
     {
-        $this->assertInstanceOf(\PDO::class, $this->database->getInstance());
+        $this->assertInstanceOf(\Parable\ORM\Database\PDOSQLite::class, $this->database->getInstance());
     }
 
     public function testQuoteIdentifierUsesBackwardTicksRegardlessOfInstance()
@@ -92,6 +92,87 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
         $this->expectException(\Parable\ORM\Exception::class);
         $this->expectExceptionMessage("Can't run query without a database instance.");
         $database->query("select * from `user`");
+    }
+
+    public function testSetConfig()
+    {
+        $this->database->setConfig(['username' => 'test']);
+        $this->assertSame('test', $this->database->getUsername());
+    }
+
+    public function testSetConfigThrowsExceptionOnNonExistingKeys()
+    {
+        $this->expectException(\Parable\ORM\Exception::class);
+        $this->expectExceptionMessage("Tried to set non-existing config value 'stuff' on Parable\ORM\Database");
+
+        $this->database->setConfig(['stuff' => 'yay']);
+    }
+
+    public function testDebugInfoReturnsNothing()
+    {
+        $debugInfo = print_r($this->database, true);
+        $debugInfo = str_replace(PHP_EOL, "", $debugInfo);
+
+        $this->assertSame("Parable\ORM\Database Object()", $debugInfo);
+    }
+
+    public function testGetInstanceWithMySQL()
+    {
+        $database = $this->createPartialMock(\Parable\ORM\Database::class, ['createPDOMySQL']);
+
+        $database
+            ->method('createPDOMySQL')
+            ->withAnyParameters()
+            ->willReturn(new \Parable\Tests\TestClasses\FakePDOMySQL());
+
+        // Make sure there's no instance
+        $this->assertNull($database->getInstance());
+
+        $database->setConfig([
+            'type' => \Parable\ORM\Database::TYPE_MYSQL,
+            'location' => 'localhost',
+            'username' => 'username',
+            'password' => 'password',
+            'database' => 'database',
+        ]);
+
+        $this->assertInstanceOf(\Parable\ORM\Database\PDOMySQL::class, $database->getInstance());
+    }
+
+    public function testGetInstanceWithMySQLReturnsNullWithoutUsername()
+    {
+        $database = new \Parable\ORM\Database();
+        $database->setConfig([
+            'type' => \Parable\ORM\Database::TYPE_MYSQL,
+            'location' => 'localhost',
+            'password' => 'password',
+            'database' => 'database',
+        ]);
+        $this->assertNull($database->getInstance());
+    }
+
+    public function testGetInstanceWithMySQLReturnsNullWithoutPassword()
+    {
+        $database = new \Parable\ORM\Database();
+        $database->setConfig([
+            'type' => \Parable\ORM\Database::TYPE_MYSQL,
+            'location' => 'localhost',
+            'username' => 'username',
+            'database' => 'database',
+        ]);
+        $this->assertNull($database->getInstance());
+    }
+
+    public function testGetInstanceWithMySQLReturnsNullWithoutDatabase()
+    {
+        $database = new \Parable\ORM\Database();
+        $database->setConfig([
+            'type' => \Parable\ORM\Database::TYPE_MYSQL,
+            'location' => 'localhost',
+            'username' => 'username',
+            'password' => 'password',
+        ]);
+        $this->assertNull($database->getInstance());
     }
 
     protected function tearDown()

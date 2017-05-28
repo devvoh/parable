@@ -104,4 +104,10 @@ class CommandTest extends \Parable\Tests\Base
         $this->assertSame('calling-command', $command->getName());
         $this->assertSame('Command returned: OK', $command->run());
     }
+
+    public function testCommandRunWithoutCallableReturnsFalse()
+    {
+        $command = new \Parable\Console\Command();
+        $this->assertFalse($command->run());
+    }
 }

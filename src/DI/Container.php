@@ -106,11 +106,12 @@ class Container
         $dependencies = [];
         foreach ($parameters as $parameter) {
             $subClassName = $parameter->name;
-            if ($parameter->getClass()) {
+            try {
                 $subClassName = $parameter->getClass()->name;
+            } catch (\ReflectionException $e) {
             }
             if ($createAll) {
-                $dependencies[] = self::create($subClassName, $className, $createAll);
+                $dependencies[] = self::create($subClassName, $className);
             } else {
                 $dependencies[] = self::get($subClassName, $className);
             }

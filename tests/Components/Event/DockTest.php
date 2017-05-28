@@ -18,11 +18,44 @@ class DockTest extends \Parable\Tests\Base
         $this->path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
     }
 
+    public function testTriggerWithoutAnythingReturnsDock()
+    {
+        $this->assertSame($this->dock, $this->dock->trigger('event_that_does_not_exist'));
+    }
+
+    public function testTriggerGlobalReturnsDock()
+    {
+        $this->assertSame($this->dock, $this->dock->trigger('*'));
+    }
+
+    public function testIntoAddsCallableAndTemplate()
+    {
+        $this->dock->into('test_dock_into', function ($event, &$payload) {
+        }, $this->path->getDir('tests/TestTemplates/dock_test_template.phtml'));
+
+        $docks = $this->liberateProperty($this->dock, 'docks');
+        $this->assertCount(1, $docks);
+        $this->assertArrayHasKey('test_dock_into', $docks);
+
+        $testDock = $docks['test_dock_into'][0];
+
+        $this->assertArrayHasKey('callable', $testDock);
+        $this->assertArrayHasKey('template', $testDock);
+
+        $callable = $testDock['callable'];
+        $template = $testDock['template'];
+
+        $this->assertNotEmpty($callable);
+        $this->assertNotEmpty($template);
+
+        $this->assertTrue(is_callable($callable));
+    }
+
     public function testIntoAndTriggerBasicWithStringPayload()
     {
-        $this->dock->into('test_dock_into', function ($event, &$string) {
+        $this->dock->into('test_dock_into', function ($event, &$payload) {
             $this->assertSame('test_dock_into', $event);
-            $string .= ", world!";
+            $payload .= ", world!";
         });
 
         $payload = "Hello";
@@ -33,20 +66,34 @@ class DockTest extends \Parable\Tests\Base
 
     public function testTriggerCanTriggerMultipleHooks()
     {
-        $this->dock->into('test_dock_into', function ($event, &$string) {
-            $string .= '1';
+        $this->dock->into('test_dock_into', function ($event, &$payload) {
+            $payload .= '1';
         });
-        $this->dock->into('test_dock_into', function ($event, &$string) {
-            $string .= '2';
+        $this->dock->into('test_dock_into', function ($event, &$payload) {
+            $payload .= '2';
         });
-        $this->dock->into('test_dock_into', function ($event, &$string) {
-            $string .= '3!';
+        $this->dock->into('test_dock_into', function ($event, &$payload) {
+            $payload .= '3!';
         });
 
         $payload = 'Testing... ';
         $this->dock->trigger('test_dock_into', $payload);
 
         $this->assertSame('Testing... 123!', $payload);
+    }
+
+    public function testGlobalIntoRespondsToAllTriggers()
+    {
+        $this->dock->into('*', function ($event, &$payload) {
+            $payload .= ".{$event}";
+        });
+
+        $payload = "Triggering";
+        $this->dock->trigger('random_1', $payload);
+        $this->dock->trigger('random_2', $payload);
+        $this->dock->trigger('random_3', $payload);
+
+        $this->assertSame('Triggering.random_1.random_2.random_3', $payload);
     }
 
     public function testTemplateFileOutputShownProperly()

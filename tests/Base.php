@@ -27,6 +27,8 @@ abstract class Base extends \PHPUnit\Framework\TestCase
      *
      * @param object $object
      * @param string $propertyName
+     *
+     * @return mixed
      */
     public function liberateProperty($object, $propertyName)
     {
@@ -34,6 +36,8 @@ abstract class Base extends \PHPUnit\Framework\TestCase
 
         $property = $reflectionClass->getProperty($propertyName);
         $property->setAccessible(true);
+
+        return $property->getValue($object);
     }
 
     /**

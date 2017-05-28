@@ -58,6 +58,30 @@ class MailerTest extends \Parable\Tests\Base
         $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddresses('bcc'));
     }
 
+    public function testThrowsExceptionWhenInvalidTypePassedToGetAddresses()
+    {
+        $this->expectExceptionMessage("Only to, cc, bcc addresses are allowed.");
+        $this->expectException(\Parable\Mail\Exception::class);
+
+        $this->mailer->getAddresses('la-dee-dah');
+    }
+
+    public function testThrowsExceptionAddAddressWithInvalidEmailAddress()
+    {
+        $this->expectExceptionMessage("Email provided is invalid: la-dee-dah");
+        $this->expectException(\Parable\Mail\Exception::class);
+
+        $this->mailer->addTo('la-dee-dah');
+    }
+
+    public function testThrowsExceptionSetFromWithInvalidEmailAddress()
+    {
+        $this->expectExceptionMessage("Email provided is invalid: la-dee-dah");
+        $this->expectException(\Parable\Mail\Exception::class);
+
+        $this->mailer->setFrom('la-dee-dah');
+    }
+
     public function testSetSubject()
     {
         $this->mailer->setSubject('this is a subject');
@@ -76,6 +100,19 @@ class MailerTest extends \Parable\Tests\Base
             [
                 "MIME-Version: 1.0",
                 "Content-type: text/html; charset=UTF-8",
+            ],
+            $this->mailer->getRequiredHeaders()
+        );
+    }
+
+    public function testAddRequiredHeader()
+    {
+        $this->mailer->addRequiredHeader('test: value');
+        $this->assertSame(
+            [
+                "MIME-Version: 1.0",
+                "Content-type: text/html; charset=UTF-8",
+                "test: value",
             ],
             $this->mailer->getRequiredHeaders()
         );
@@ -126,6 +163,32 @@ class MailerTest extends \Parable\Tests\Base
         $this->assertEmpty($this->mailer->getAddresses('bcc'));
         $this->assertEmpty($this->mailer->getHeaders());
         $this->assertEmpty($this->mailer->getHeaders());
+    }
+
+    public function testSendThrowsExceptionWithMissingToAddress()
+    {
+        $this->expectException(\Parable\Mail\Exception::class);
+        $this->expectExceptionMessage("No to addresses provided.");
+        $this->mailer->send();
+    }
+
+    public function testSendThrowsExceptionWithMissingSubject()
+    {
+        $this->expectException(\Parable\Mail\Exception::class);
+        $this->expectExceptionMessage("No subject provided.");
+
+        $this->mailer->addTo('test@test.dev');
+        $this->mailer->send();
+    }
+
+    public function testSendThrowsExceptionWithMissingBody()
+    {
+        $this->expectException(\Parable\Mail\Exception::class);
+        $this->expectExceptionMessage("No body provided.");
+
+        $this->mailer->addTo('test@test.dev');
+        $this->mailer->setSubject('subject');
+        $this->mailer->send();
     }
 
     public function testSend()

@@ -42,6 +42,11 @@ class ParameterTest extends \Parable\Tests\Base
         $this->assertSame('command-to-run', $this->parameter->getCommandName());
     }
 
+    public function testGetInvalidOptionReturnsNull()
+    {
+        $this->assertNull($this->parameter->getOption('la-dee-dah'));
+    }
+
     public function testCommandNameIsNullIfNotGiven()
     {
         $this->parameter->setArguments([

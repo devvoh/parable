@@ -152,4 +152,10 @@ class GetSetTest extends \Parable\Tests\Base
             $this->getSet->getAll()
         );
     }
+
+    public function testGetAllReturnsEmptyArrayIfNoResourceSet()
+    {
+        $getset = new \Parable\Tests\TestClasses\TestGetSetNoResource();
+        $this->assertSame([], $getset->getAll());
+    }
 }

@@ -151,11 +151,13 @@ class Response
         $this->output->prepare($this);
 
         if (!headers_sent()) {
+            // @codeCoverageIgnoreStart
             header("HTTP/1.1 {$this->getHttpCode()} {$this->getHttpCodeText()}");
             header("Content-type: {$this->getContentType()}");
             foreach ($this->getHeaders() as $key => $value) {
                 header("{$key}: {$value}");
             }
+            // @codeCoverageIgnoreEnd
         }
 
         echo $this->getContent();
@@ -164,6 +166,8 @@ class Response
 
     /**
      * @param int $exitCode
+     *
+     * @codeCoverageIgnore
      */
     public function terminate($exitCode = 0)
     {
@@ -275,6 +279,8 @@ class Response
 
     /**
      * @param string $url
+     *
+     * @codeCoverageIgnore
      */
     public function redirect($url)
     {

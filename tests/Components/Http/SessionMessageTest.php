@@ -59,6 +59,18 @@ class SessionMessageTest extends \Parable\Tests\Base
         $this->assertCount(0, $messages);
     }
 
+    public function testClear()
+    {
+        $this->sessionMessage->add('to be cleared', 'notice');
+        $this->sessionMessage->add('also cleared', 'alert');
+
+        $this->sessionMessage->clear();
+
+        // Should now be empty
+        $messages = $this->sessionMessage->get();
+        $this->assertCount(0, $messages);
+    }
+
     public function testCountAllAndType()
     {
         $this->sessionMessage->add('Test message to be cleared.', 'test');

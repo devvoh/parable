@@ -26,6 +26,13 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
         $this->assertSame("`test`", $this->query->quoteIdentifier('test'));
     }
 
+    public function testQuoteAndQuoteIdentifierWithoutInstance()
+    {
+        $query = new \Parable\ORM\Query(new \Parable\ORM\Database());
+        $this->assertSame("'test'", $query->quote('test'));
+        $this->assertSame("`test`", $query->quoteIdentifier('test'));
+    }
+
     public function testSetAndGetAndGetQuotedTableName()
     {
         $this->query->setTableName('sometable');
@@ -166,8 +173,9 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
         $this->query->setAction('insert');
         $this->query->addValue('name', 'test');
         $this->query->addValue('active', 1);
+        $this->query->addValue('thing', null);
 
-        $this->assertSame("INSERT INTO `user` (`name`, `active`) VALUES ('test', '1');", (string)$this->query);
+        $this->assertSame("INSERT INTO `user` (`name`, `active`, `thing`) VALUES ('test', '1', NULL);", (string)$this->query);
     }
 
     public function testUpdate()
@@ -179,8 +187,34 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
         $this->query->addValue('id', '3');
         $this->query->addValue('name', 'test');
         $this->query->addValue('active', 1);
+        $this->query->addValue('thing', null);
 
-        $this->assertSame("UPDATE `user` SET `name` = 'test', `active` = '1' WHERE `id`  = '3';", (string)$this->query);
+        $this->assertSame("UPDATE `user` SET `name` = 'test', `active` = '1', `thing` = NULL WHERE `user`.`id`  = '3';", (string)$this->query);
+    }
+
+    public function testSelectGivesEmptyStringOnNoSelect()
+    {
+        $this->query->setAction('select');
+        $this->query->select([]);
+        $this->assertEmpty((string)$this->query);
+    }
+
+    public function testInsertGivesEmptyStringOnNoValues()
+    {
+        $this->query->setAction('insert');
+        $this->assertEmpty((string)$this->query);
+    }
+
+    public function testUpdateGivesEmptyStringOnNoValues()
+    {
+        $this->query->setAction('update');
+        $this->assertEmpty((string)$this->query);
+    }
+
+    public function testDeleteGivesEmptyStringOnNoWheres()
+    {
+        $this->query->setAction('delete');
+        $this->assertEmpty((string)$this->query);
     }
 
     /**

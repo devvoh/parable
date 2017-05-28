@@ -37,4 +37,17 @@ class GetTest extends \Parable\Tests\Base
             $_GET
         );
     }
+
+    public function testSetAndRemove()
+    {
+        $this->getSet->reset();
+
+        $this->getSet->set('test', 'value');
+
+        $this->assertSame('value', $this->getSet->get('test'));
+
+        $this->getSet->remove('test');
+
+        $this->assertNull($this->getSet->get('test'));
+    }
 }

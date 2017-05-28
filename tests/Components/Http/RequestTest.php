@@ -58,9 +58,14 @@ class RequestTest extends \Parable\Tests\Base
         $this->assertFalse($this->request->isPatch());
     }
 
-    public function testHeader()
+    public function testGetHeader()
     {
         $this->assertSame('testvalue', $this->request->getHeader('testkey'));
+    }
+
+    public function testGetHeaderReturnsNullOnNonExistingKey()
+    {
+        $this->assertNull($this->request->getHeader('blabla'));
     }
 
     public function testGetHeaders()

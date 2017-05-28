@@ -80,10 +80,29 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
      * @param int    $id
      * @param string $username
      */
-    public function testGetByCondition($id, $username)
+    public function testGetByConditionDefaultAnd($id, $username)
     {
         $userResult = $this->repository->getByCondition('id', '=', $id);
         $this->assertSame($username, $userResult[0]->username);
+    }
+
+    /**
+     * @dataProvider dpUserIdsAndUsernames
+     *
+     * @param int    $id
+     * @param string $username
+     */
+    public function testGetByConditionOr($id, $username)
+    {
+        $userResult = $this->repository->getByCondition('id', '=', $id, \Parable\ORM\Query\ConditionSet::SET_OR);
+        $this->assertSame($username, $userResult[0]->username);
+    }
+
+    public function testGetByConditionThrowsExceptionOnInvalidAndOrType()
+    {
+        $this->expectExceptionMessage("Invalid andOr type given.");
+        $this->expectException(\Parable\ORM\Exception::class);
+        $userResult = $this->repository->getByCondition('id', '=', 1, 'maybe');
     }
 
     /**

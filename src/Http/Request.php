@@ -18,7 +18,9 @@ class Request
         $this->method = $_SERVER['REQUEST_METHOD'];
 
         if (PHP_SAPI !== "cli") {
+            // @codeCoverageIgnoreStart
             $this->headers = getallheaders() ?: [];
+            // @codeCoverageIgnoreEnd
         }
     }
 

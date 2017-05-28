@@ -75,6 +75,16 @@ class ContainerTest extends \Parable\Tests\Base
         \Parable\DI\Container::create("This class does not exist");
     }
 
+    public function testExceptionOnInvalidClassAsADependency()
+    {
+        $this->expectException(\Parable\DI\Exception::class);
+        $this->expectExceptionMessage(
+            "Could not create instance of 'thing', required by 'Parable\Tests\TestClasses\InvalidDI'"
+        );
+
+        \Parable\DI\Container::create(\Parable\Tests\TestClasses\InvalidDI::class);
+    }
+
     public function testExceptionOnCyclicalDependency()
     {
         $this->expectException(\Parable\DI\Exception::class);

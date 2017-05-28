@@ -126,7 +126,7 @@ class App
         $command = $command ?: $defaultCommand;
 
         if (!$command) {
-            throw new \Parable\Console\Exception('No valid command found.');
+            throw new \Parable\Console\Exception('No valid commands found.');
         }
 
         $this->parameter->setOptions($command->getOptions());

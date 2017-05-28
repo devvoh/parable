@@ -31,6 +31,9 @@ class Route
     /** @var array */
     public $values = [];
 
+    /** @var array */
+    public $cleanValues = [];
+
     /** @var null|\Parable\Http\Request */
     protected $request;
 
@@ -40,7 +43,7 @@ class Route
     ) {
         $this->request    = $request;
 
-        $this->methods    = $data['methods'];
+        $this->methods    = isset($data['methods'])    ? $data['methods']    : null;
         $this->url        = isset($data['url'])        ? $data['url']        : null;
         $this->controller = isset($data['controller']) ? $data['controller'] : null;
         $this->action     = isset($data['action'])     ? $data['action']     : null;
@@ -51,14 +54,7 @@ class Route
             throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
         }
         if (!is_array($this->methods)) {
-            /*
-             * @deprecated This will be turned into an Exception in the next minor version (if pre-release) or 1.0.0.
-             */
-            if (strpos($this->methods, "|") !== false) {
-                $this->methods = explode("|", $this->methods);
-            } else {
-                $this->methods = [$this->methods];
-            }
+            throw new \Parable\Routing\Exception('Methods are required and must be passed as an array.');
         }
 
         $this->parseUrlParameters();
@@ -101,8 +97,10 @@ class Route
                 $this->values = [];
                 break;
             }
+
             $this->values[$name] = $validValue;
         }
+        $this->cleanValues();
         return $this->values;
     }
 
@@ -120,15 +118,10 @@ class Route
         }
         list($key, $type) = explode(":", $name);
 
-        if (!in_array($type, ["int", "string", "float"])) {
-            return false;
-        }
-
         if ($type === "int") {
             if (is_numeric($value) && (int)$value == $value) {
                 return (int)$value;
             }
-            return false;
         } elseif ($type === "float") {
             if (is_numeric($value) && (float)$value == $value) {
                 return (float)$value;
@@ -136,8 +129,20 @@ class Route
             return false;
         }
 
-        // by default return the string value
-        return $value;
+        // It IS typed, but we don't know the type
+        return false;
+    }
+
+    protected function removeParameterValueTypeFromName($name)
+    {
+        // If there's no : in the name, then it's not typed.
+        if (strpos($name, ':') === false) {
+            return $name;
+        }
+        list($key, $type) = explode(":", $name);
+
+        // All good, so return just the key
+        return $key;
     }
 
     /**
@@ -242,6 +247,19 @@ class Route
     }
 
     /**
+     * @return $this
+     */
+    protected function cleanValues()
+    {
+        foreach ($this->values as $key => $value) {
+            $key = $this->removeParameterValueTypeFromName($key);
+            $this->cleanValues[$key] = $value;
+        }
+        return $this;
+    }
+
+
+    /**
      * Get a value, if it exists.
      *
      * @param string $key
@@ -250,10 +268,10 @@ class Route
      */
     public function getValue($key)
     {
-        if (!isset($this->values[$key])) {
+        if (!isset($this->cleanValues[$key])) {
             return null;
         }
-        return $this->values[$key];
+        return $this->cleanValues[$key];
     }
 
     /**
@@ -263,7 +281,7 @@ class Route
      */
     public function getValues()
     {
-        return $this->values;
+        return $this->cleanValues;
     }
 
     /**

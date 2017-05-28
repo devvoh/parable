@@ -38,6 +38,12 @@ class UrlTest extends \Parable\Tests\Base
         $this->assertSame('this/was/requested', $this->url->getCurrentUrl());
     }
 
+    public function testGetCurrentUrlReturnsEmptyUrlIfNoUrlKnown()
+    {
+        unset($GLOBALS['_GET']['url']);
+        $this->assertSame('/', $this->url->getCurrentUrl());
+    }
+
     public function testGetCurrentUrlFull()
     {
         $this->assertSame('http://www.test.dev/test/this/was/requested', $this->url->getCurrentUrlFull());

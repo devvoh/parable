@@ -386,28 +386,25 @@ class Query
      */
     protected function buildSelect()
     {
-        if (count($this->select) > 0) {
-            $selects = [];
-            foreach ($this->select as $select) {
-                $shouldBeQuoted = true;
+        $selects = [];
+        foreach ($this->select as $select) {
+            $shouldBeQuoted = true;
 
-                // Check our list of nonQuoteStrings to see if we should quote or not.
-                foreach ($this->nonQuoteStrings as $nonQuoteString) {
-                    if (strpos(strtolower($select), $nonQuoteString) !== false) {
-                        $shouldBeQuoted = false;
-                        break;
-                    }
-                }
-
-                if ($shouldBeQuoted) {
-                    $selects[] = $this->getQuotedTableName() . '.' . $this->quoteIdentifier($select);
-                } else {
-                    $selects[] = $select;
+            // Check our list of nonQuoteStrings to see if we should quote or not.
+            foreach ($this->nonQuoteStrings as $nonQuoteString) {
+                if (strpos(strtolower($select), $nonQuoteString) !== false) {
+                    $shouldBeQuoted = false;
+                    break;
                 }
             }
-            return implode(', ', $selects);
+
+            if ($shouldBeQuoted) {
+                $selects[] = $this->getQuotedTableName() . '.' . $this->quoteIdentifier($select);
+            } else {
+                $selects[] = $select;
+            }
         }
-        return '';
+        return implode(', ', $selects);
     }
 
     /**
@@ -440,6 +437,10 @@ class Query
             }
         }
 
+        if (count($builtJoins) === 0) {
+            return '';
+        }
+
         return implode(" ", $builtJoins);
     }
 
@@ -450,12 +451,13 @@ class Query
      */
     protected function buildWheres()
     {
-        if (count($this->where) > 0) {
-            // Use a ConditionSet to build the wheres
-            $conditionSet = new Query\Condition\AndSet($this, $this->where);
-            return "WHERE {$conditionSet->buildWithoutParentheses()}";
+        if (count($this->where) === 0) {
+            return '';
         }
-        return '';
+
+        // Use a ConditionSet to build the wheres
+        $conditionSet = new Query\Condition\AndSet($this, $this->where);
+        return "WHERE {$conditionSet->buildWithoutParentheses()}";
     }
 
     /**
@@ -465,15 +467,16 @@ class Query
      */
     protected function buildOrderBy()
     {
-        if (count($this->orderBy) > 0) {
-            $orders = [];
-            foreach ($this->orderBy as $orderBy) {
-                $key = $this->quoteIdentifier($orderBy["tableName"]) . "." . $this->quote($orderBy["key"]);
-                $orders[] = $key . ' ' . $orderBy['direction'];
-            }
-            return "ORDER BY " . implode(', ', $orders);
+        if (count($this->orderBy) === 0) {
+            return '';
         }
-        return '';
+
+        $orders = [];
+        foreach ($this->orderBy as $orderBy) {
+            $key = $this->quoteIdentifier($orderBy["tableName"]) . "." . $this->quote($orderBy["key"]);
+            $orders[] = $key . ' ' . $orderBy['direction'];
+        }
+        return "ORDER BY " . implode(', ', $orders);
     }
 
     /**
@@ -483,15 +486,16 @@ class Query
      */
     protected function buildGroupBy()
     {
-        if (count($this->groupBy) > 0) {
-            $groups = [];
-            foreach ($this->groupBy as $groupBy) {
-                $groupBy = $this->quoteIdentifier($groupBy["tableName"]) . "." . $this->quote($groupBy["key"]);
-                $groups[] = $groupBy;
-            }
-            return "GROUP BY " . implode(', ', $groups);
+        if (count($this->groupBy) === 0) {
+            return '';
         }
-        return '';
+
+        $groups = [];
+        foreach ($this->groupBy as $groupBy) {
+            $groupBy = $this->quoteIdentifier($groupBy["tableName"]) . "." . $this->quote($groupBy["key"]);
+            $groups[] = $groupBy;
+        }
+        return "GROUP BY " . implode(', ', $groups);
     }
 
     /**
@@ -502,7 +506,7 @@ class Query
     protected function buildLimitOffset()
     {
         if (empty($this->limitOffset)) {
-            return "";
+            return '';
         }
 
         $limitOffset = "";
@@ -535,6 +539,11 @@ class Query
         $query = [];
 
         if ($this->action === 'select') {
+            // Without select values there's no update
+            if (count($this->select) == 0) {
+                return '';
+            }
+
             $query[] = "SELECT " . $this->buildSelect();
             $query[] = "FROM " . $this->getQuotedTableName();
             $query[] = $this->buildJoins();
@@ -543,74 +552,76 @@ class Query
             $query[] = $this->buildOrderBy();
             $query[] = $this->buildLimitOffset();
         } elseif ($this->action === 'delete') {
+            // Without wheres there's no update
+            if (count($this->where) == 0) {
+                return '';
+            }
+
             $query[] = "DELETE FROM " . $this->getQuotedTableName();
             $query[] = $this->buildWheres();
         } elseif ($this->action === 'update') {
+            // Without values there's no update
+            if (count($this->values) == 0) {
+                return '';
+            }
+
             $query[] = "UPDATE " . $this->getQuotedTableName();
 
-            // now get the values
-            if (count($this->values) > 0) {
-                // Set the table values to defaults
-                $tableKey = 'id';
-                $tableKeyValue = null;
+            // Set the table values to defaults
+            $tableKey = 'id';
+            $tableKeyValue = null;
 
-                $values = [];
-                foreach ($this->values as $key => $value) {
-                    // skip id, since we'll use that as a where condition
-                    if ($key !== $this->tableKey) {
-                        if ($value === null) {
-                            $correctValue = 'NULL';
-                        } else {
-                            $correctValue = $this->quote($value);
-                        }
-                        // Quote the key
-                        $key = $this->quoteIdentifier($key);
-
-                        // Add key & value combo to the array
-                        $values[] = $key . " = " . $correctValue;
-                    } else {
-                        $tableKey = $key;
-                        $tableKeyValue = $value;
-                    }
-                }
-                $query[] = "SET " . implode(', ', $values);
-                $query[] = "WHERE " . $this->quoteIdentifier($tableKey);
-                $query[] = " = " . $this->quote($tableKeyValue);
-            } else {
-                $query = [];
-            }
-        } elseif ($this->action === 'insert') {
-            // set insert to the proper table
-            $query[] = "INSERT INTO " . $this->getQuotedTableName();
-
-            // now get the values
-            if (count($this->values) > 0) {
-                $keys = [];
-                $values = [];
-                foreach ($this->values as $key => $value) {
-                    // Quote the key
-                    $keys[] = $this->quoteIdentifier($key);
-
+            $values = [];
+            foreach ($this->values as $key => $value) {
+                // skip id, since we'll use that as a where condition
+                if ($key !== $this->tableKey) {
                     if ($value === null) {
                         $correctValue = 'NULL';
                     } else {
                         $correctValue = $this->quote($value);
                     }
-                    $values[] = $correctValue;
+                    // Quote the key
+                    $key =  $this->quoteIdentifier($key);
+
+                    // Add key & value combo to the array
+                    $values[] = $key . " = " . $correctValue;
+                } else {
+                    $tableKey = $key;
+                    $tableKeyValue = $value;
                 }
-
-                $query[] = "(" . implode(', ', $keys) . ")";
-                $query[] = "VALUES";
-                $query[] = "(" . implode(', ', $values) . ")";
-            } else {
-                $query = [];
             }
+            $query[] = "SET " . implode(', ', $values);
+            $query[] = "WHERE " . $this->getQuotedTableName() . '.' . $this->quoteIdentifier($tableKey);
+            $query[] = " = " . $this->quote($tableKeyValue);
+        } elseif ($this->action === 'insert') {
+            // Without values there's no insert
+            if (count($this->values) == 0) {
+                return '';
+            }
+
+            // set insert to the proper table
+            $query[] = "INSERT INTO " . $this->getQuotedTableName();
+
+            // now get the values
+            $keys = [];
+            $values = [];
+            foreach ($this->values as $key => $value) {
+                // Quote the key
+                $keys[] = $this->quoteIdentifier($key);
+
+                if ($value === null) {
+                    $correctValue = 'NULL';
+                } else {
+                    $correctValue = $this->quote($value);
+                }
+                $values[] = $correctValue;
+            }
+
+            $query[] = "(" . implode(', ', $keys) . ")";
+            $query[] = "VALUES";
+            $query[] = "(" . implode(', ', $values) . ")";
         }
 
-        // and now implode it into a nice string, if possible
-        if (count($query) == 0) {
-            return '';
-        }
 
         // Clean up any empty lines we're not going to want in the string, to prevent double/triple spaces
         foreach ($query as $key => $queryPart) {

@@ -57,9 +57,6 @@ class Mailer
      */
     protected function addAddress($type, $email, $name = null)
     {
-        if (!isset($this->addresses[$type])) {
-            throw new \Parable\Mail\Exception('Only to, cc, bcc addresses are allowed.');
-        }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new \Parable\Mail\Exception("Email provided is invalid: {$email}");
         }
@@ -254,6 +251,8 @@ class Mailer
      * @param string $headers
      *
      * @return bool
+     *
+     * @codeCoverageIgnore
      */
     protected function sendMail($to, $subject, $body, $headers)
     {

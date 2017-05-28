@@ -72,6 +72,22 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame("yo1yo2yo3", $this->response->getContent());
     }
 
+    public function testAppendAndPrependArrayContent()
+    {
+        $this->response->setContent(['array2']);
+        $this->response->appendContent('array3');
+        $this->response->prependContent('array1');
+
+        $this->assertSame(
+            [
+                0 => 'array1',
+                1 => 'array2',
+                2 => 'array3',
+            ],
+            $this->response->getContent()
+        );
+    }
+
     public function testSend()
     {
         $this->response->setContent("This is content.");
@@ -108,6 +124,11 @@ class ResponseTest extends \Parable\Tests\Base
         );
 
         $this->assertSame("yo1", $this->response->getHeader("header1"));
+    }
+
+    public function testGetInvalidHeaderReturnsNull()
+    {
+        $this->assertNull($this->response->getHeader('la-dee-dah'));
     }
 
     public function testRedirect()

@@ -72,13 +72,24 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
 
     public function testModelToArray()
     {
-        $this->model->username = 'testuser';
-        $this->model->password = 'password';
+        $this->model->username  = 'testuser';
+        $this->model->password  = 'password';
+        // NULL_VALUE will keep it in the array but set it concretely to null, both on the model's array output
+        // and the database queries run with it
+        $this->model->email     = \Parable\ORM\Database::NULL_VALUE;
+        // Just null keeps it from doing anything, since empty values (other than int 0) are ignored. This prevents
+        // queries from attempting to write NULL for every value that's not specifically set. This allows for
+        // minimally-populated models to be saved.
+        $this->model->create_at = null;
 
-        $modelArray = $this->model->toArray();
-
-        $this->assertSame('testuser', $modelArray['username']);
-        $this->assertSame('password', $modelArray['password']);
+        $this->assertSame(
+            [
+                'username' => 'testuser',
+                'password' => 'password',
+                'email'    => null,
+            ],
+            $this->model->toArray()
+        );
     }
 
     public function testModelToMappedArray()
@@ -106,5 +117,32 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
 
         $this->assertSame('testuser', $modelArray['username']);
         $this->assertArrayNotHasKey('password', $modelArray);
+    }
+
+    public function testSetTableKey()
+    {
+        $this->model->setTableKey('key');
+        $this->assertSame('key', $this->model->getTableKey());
+    }
+
+    public function testSetTableName()
+    {
+        $this->model->setTableName('tableName');
+        $this->assertSame('tableName', $this->model->getTableName());
+    }
+
+    public function testGuessValueType()
+    {
+        $this->assertTrue(is_string($this->model->guessValueType("nope")));
+        $this->assertFalse(is_float($this->model->guessValueType("nope")));
+        $this->assertFalse(is_int($this->model->guessValueType("nope")));
+
+        $this->assertTrue(is_int($this->model->guessValueType("1")));
+        $this->assertFalse(is_float($this->model->guessValueType("1")));
+        $this->assertFalse(is_string($this->model->guessValueType("1")));
+
+        $this->assertTrue(is_float($this->model->guessValueType("1.23")));
+        $this->assertFalse(is_int($this->model->guessValueType("1.23")));
+        $this->assertFalse(is_string($this->model->guessValueType("1.23")));
     }
 }

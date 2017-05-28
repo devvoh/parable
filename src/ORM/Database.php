@@ -157,14 +157,14 @@ class Database
         if (!$this->instance && $this->getType() && $this->getLocation()) {
             switch ($this->getType()) {
                 case static::TYPE_SQLITE:
-                    $instance = new \PDO('sqlite:' . $this->getLocation());
+                    $instance = $this->createPDOSQLite('sqlite:' . $this->getLocation());
                     $this->setInstance($instance);
                     break;
                 case static::TYPE_MYSQL:
                     if (!$this->getUsername() || !$this->getPassword() || !$this->getDatabase()) {
                         return null;
                     }
-                    $instance = new \PDO(
+                    $instance = $this->createPDOMySQL(
                         'mysql:host=' . $this->getLocation() . ';dbname=' . $this->getDatabase(),
                         $this->getUsername(),
                         $this->getPassword()
@@ -173,6 +173,30 @@ class Database
             }
         }
         return $this->instance;
+    }
+
+    /**
+     * @param string $dsn
+     *
+     * @return \Parable\ORM\Database\PDOSQLite
+     */
+    protected function createPDOSQLite($dsn)
+    {
+        return new \Parable\ORM\Database\PDOSQLite($dsn);
+    }
+
+    /**
+     * @param string $dsn
+     * @param string $username
+     * @param string $password
+     *
+     * @return \Parable\ORM\Database\PDOMySQL
+     *
+     * @codeCoverageIgnore
+     */
+    protected function createPDOMySQL($dsn, $username, $password)
+    {
+        return new \Parable\ORM\Database\PDOMySQL($dsn, $username, $password);
     }
 
     /**
@@ -249,7 +273,7 @@ class Database
                 $this->$method($value);
             } else {
                 throw new \Parable\ORM\Exception(
-                    'Tried to call non-existing method ' . $method . ' on ' . get_class($this)
+                    "Tried to set non-existing config value '{$type}' on " . get_class($this)
                 );
             }
         }
