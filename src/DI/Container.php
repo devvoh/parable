@@ -21,6 +21,8 @@ class Container
      */
     public static function get($className, $parentClassName = '')
     {
+        $className = self::cleanName($className);
+
         // We store the relationship between class & parent to prevent cyclical references
         if ($parentClassName) {
             self::$relations[$className][$parentClassName] = true;
@@ -36,8 +38,8 @@ class Container
             throw new \Parable\DI\Exception($message);
         }
 
-        if (!isset(self::$instances[$className])) {
-            self::$instances[$className] = self::create($className, $parentClassName);
+        if (!self::isStored($className)) {
+            self::store(self::create($className, $parentClassName));
         }
 
         return self::$instances[$className];
@@ -83,6 +85,8 @@ class Container
      */
     protected static function createInstance($className, $parentClassName = '', $createAll = false)
     {
+        $className = self::cleanName($className);
+
         try {
             $reflection = new \ReflectionClass($className);
         } catch (\Exception $e) {
@@ -116,7 +120,7 @@ class Container
                 $dependencies[] = self::get($subClassName, $className);
             }
         }
-        return (new \ReflectionClass($className))->newInstanceArgs($dependencies);
+        return new $className(...$dependencies);
     }
 
     /**
@@ -130,6 +134,65 @@ class Container
         if (!$name) {
             $name = get_class($instance);
         }
+        $name = self::cleanName($name);
         self::$instances[$name] = $instance;
     }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public static function isStored($name)
+    {
+        return isset(self::$instances[$name]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function cleanName($name)
+    {
+        if (substr($name, 0, 1) == "\\") {
+            $name = ltrim($name, "\\");
+        }
+        return $name;
+    }
+
+    /**
+     * If the $name exists, unset it
+     *
+     * @param string $name
+     */
+    public static function clear($name)
+    {
+        if (self::isStored($name)) {
+            unset(self::$instances[$name]);
+        }
+    }
+
+    /**
+     * Remove all stored instances but KEEP the passed instance names
+     *
+     * @param array $keepInstanceNames
+     */
+    public static function clearExceptPassed(array $keepInstanceNames)
+    {
+        foreach (self::$instances as $name => $instance) {
+            if (!in_array($name, $keepInstanceNames)) {
+                self::clear($name);
+            }
+        }
+    }
+
+    /**
+     * Remove all stored instances
+     */
+    public static function clearAll()
+    {
+        self::clearExceptPassed([]);
+    }
+
 }

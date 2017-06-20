@@ -2,7 +2,7 @@
 
 namespace Parable\Tests\Components\Console;
 
-class AppTest extends \Parable\Tests\Base
+class AppqTest extends \Parable\Tests\Base
 {
     /** @var \Parable\Console\App */
     protected $app;
@@ -20,6 +20,8 @@ class AppTest extends \Parable\Tests\Base
     {
         parent::setUp();
 
+        $_SERVER["argv"] = [];
+
         $this->app = \Parable\DI\Container::get(\Parable\Console\App::class);
 
         $this->command1 = new \Parable\Console\Command();
@@ -36,6 +38,8 @@ class AppTest extends \Parable\Tests\Base
         });
         $this->app->addCommand($this->command2);
 
+        $this->app->setDefaultCommand('test1');
+
         $this->commandReturnOptionValue = new \Parable\Console\Command();
         $this->commandReturnOptionValue->setName('returnOptionValue');
         $this->commandReturnOptionValue->setCallable(function (
@@ -46,7 +50,8 @@ class AppTest extends \Parable\Tests\Base
         ) {
             return $parameter->getOption('option');
         });
-        $this->app->addCommand($this->command2);
+
+        $this->app->addCommand($this->commandReturnOptionValue);
     }
 
     public function testAppSetGetName()
@@ -77,6 +82,18 @@ class AppTest extends \Parable\Tests\Base
 
         $this->assertSame('test2', $commands['test2']->getName());
         $this->assertSame('OK2', $commands['test2']->run());
+    }
+
+    public function testAppGetCommandsWithoutCommandsReturnsEmptyArray()
+    {
+        $app = \Parable\DI\Container::create(\Parable\Console\App::class);
+        $this->assertSame([], $app->getCommands());
+    }
+
+    public function testAppGetNonExistingCommandReturnsNull()
+    {
+        $app = \Parable\DI\Container::create(\Parable\Console\App::class);
+        $this->assertNull($app->getCommand('nope'));
     }
 
     public function testSetDefaultCommandRunsDefaultCommand()
@@ -112,6 +129,7 @@ class AppTest extends \Parable\Tests\Base
 
         // Now make the option optional, but the value required
         $command->addOption('option', true);
+
         $this->app->run();
     }
 

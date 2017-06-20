@@ -20,7 +20,7 @@ class App
     protected $commands = [];
 
     /** @var string */
-    protected $defaultCommand;
+    public $defaultCommand;
 
     /** @var bool */
     protected $defaultCommandOnly = false;

@@ -119,15 +119,22 @@ class App
     }
 
     /**
-     * Load the routes
+     * Load the routes from \Routing\App
      *
      * @return $this
      */
     protected function loadRoutes()
     {
-        foreach (\Parable\DI\Container::get(\Routing\App::class)->get() as $name => $route) {
-            $this->router->addRoute($name, $route);
+        try {
+            $routing = \Parable\DI\Container::get(\Routing\App::class);
+
+            foreach ($routing->get() as $name => $route) {
+                $this->router->addRoute($name, $route);
+            }
+        } catch (\Parable\DI\Exception $e) {
+            // Let it slip through
         }
+
         return $this;
     }
 
@@ -135,20 +142,18 @@ class App
      * Create instances of available init files in initLocations.
      *
      * @return $this
+     *
+     * @throws \Parable\Framework\Exception
      */
     protected function loadInits()
     {
         $locations = $this->config->get('initLocations');
 
-        if (!is_array($locations)) {
-            return $this;
-        }
-
         foreach ($locations as $location) {
             $directory = $this->path->getDir($location);
 
             if (!file_exists($directory)) {
-                continue;
+                throw new \Parable\Framework\Exception("initLocation does not exist: '{$directory}");
             }
 
             $dirIterator = new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -157,7 +162,9 @@ class App
             foreach ($iteratorIterator as $file) {
                 /** @var \SplFileInfo $file */
                 if ($file->getExtension() !== 'php') {
+                    // @codeCoverageIgnoreStart
                     continue;
+                    // @codeCoverageIgnoreEnd
                 }
 
                 $className = '\\Init\\' . str_replace('.' . $file->getExtension(), '', $file->getFilename());

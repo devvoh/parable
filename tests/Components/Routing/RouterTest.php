@@ -14,7 +14,7 @@ class RouterTest extends \Parable\Tests\Base
         // Since the Router depends on \Parable\Http\Request, which depends on some $_SERVER values, we set them
         $GLOBALS['_SERVER']['REQUEST_METHOD'] = "GET";
 
-        $this->router = \Parable\DI\Container::get(\Parable\Routing\Router::class);
+        $this->router = \Parable\DI\Container::create(\Parable\Routing\Router::class);
 
         $this->router->addRoute('simple', [
             'methods' => ['GET'],

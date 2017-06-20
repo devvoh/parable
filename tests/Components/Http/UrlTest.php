@@ -20,7 +20,7 @@ class UrlTest extends \Parable\Tests\Base
             'url' => 'this/was/requested',
         ];
 
-        $this->url = \Parable\DI\Container::get(\Parable\Http\Url::class);
+        $this->url = \Parable\DI\Container::createAll(\Parable\Http\Url::class);
     }
 
     public function testGetBaseUrl()

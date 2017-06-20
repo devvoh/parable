@@ -46,7 +46,7 @@ class Router
      *
      * @param string $name
      *
-     * @return \Parable\Routing\Route
+     * @return \Parable\Routing\Route|null
      * @throws \Parable\Routing\Exception
      */
     public function getRouteByName($name)

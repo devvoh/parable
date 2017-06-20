@@ -13,6 +13,13 @@ class ContainerTest extends \Parable\Tests\Base
         $this->assertSame("new", $diObject->value);
     }
 
+    public function testDIDoesNotCareAboutPrefixedOrUnprefixedClassNames()
+    {
+        $diObject1 = \Parable\DI\Container::get("Parable\Tests\TestClasses\Basic");
+        $diObject2 = \Parable\DI\Container::get("\Parable\Tests\TestClasses\Basic");
+        $this->assertSame($diObject1, $diObject2);
+    }
+
     public function testGetInstanceReturnsSame()
     {
         $diObjectOriginal = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
@@ -52,6 +59,7 @@ class ContainerTest extends \Parable\Tests\Base
     {
         $diObject = \Parable\DI\Container::create(\Parable\Tests\TestClasses\DependsOnBasic::class);
         $this->assertNotNull($diObject->basic);
+        $this->assertInstanceOf(\Parable\Tests\TestClasses\Basic::class, $diObject->basic);
     }
 
     public function testStoreInstanceIsReturnedProperly()
@@ -65,6 +73,24 @@ class ContainerTest extends \Parable\Tests\Base
 
         $diObject = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
         $this->assertSame("stored", $diObject->value);
+    }
+
+    public function testStoreInstanceIsReturnedProperlyUntilCleared()
+    {
+        $diObjectOriginal = new \Parable\Tests\TestClasses\Basic();
+        \Parable\DI\Container::store($diObjectOriginal);
+
+        $this->assertSame("new", $diObjectOriginal->value);
+
+        $diObjectOriginal->value = "stored";
+
+        $diObject = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
+        $this->assertSame("stored", $diObject->value);
+
+        \Parable\DI\Container::clear(\Parable\Tests\TestClasses\Basic::class);
+
+        $diObject = \Parable\DI\Container::get(\Parable\Tests\TestClasses\Basic::class);
+        $this->assertSame("new", $diObject->value);
     }
 
     public function testExceptionOnInvalidClass()
@@ -92,5 +118,28 @@ class ContainerTest extends \Parable\Tests\Base
             "Cyclical dependency found: Parable\\Tests\\TestClasses\\CyclicA depends on Parable\\Tests\\TestClasses\\CyclicB but is itself a dependency of Parable\\Tests\\TestClasses\\CyclicB."
         );
         \Parable\DI\Container::create(\Parable\Tests\TestClasses\CyclicA::class);
+    }
+
+    public function testClearAllActuallyClearsAll()
+    {
+        // Path is the only thing stored in DI that needs to remain, so let's use that.
+        $path_original = clone \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
+
+        $path_get      = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
+        $path_create   = \Parable\DI\Container::create(\Parable\Filesystem\Path::class);
+
+        $this->assertSame($path_original->getBaseDir(), $path_get->getBaseDir());
+        $this->assertNotSame($path_original->getBaseDir(), $path_create->getBaseDir());
+
+        \Parable\DI\Container::clearAll();
+
+        $path_get      = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
+        $path_create   = \Parable\DI\Container::create(\Parable\Filesystem\Path::class);
+
+        $this->assertSame($path_get->getBaseDir(), $path_create->getBaseDir());
+        $this->assertNotSame($path_original->getBaseDir(), $path_get->getBaseDir());
+
+        // And now that we've tested it, we need to put Path back for the remainder of the tests
+        \Parable\DI\Container::store($path_original);
     }
 }

@@ -18,8 +18,6 @@ class Mailer extends \Parable\Mail\Mailer
         \Parable\Framework\Mail\TemplateVariables $templateVariables,
         \Parable\Filesystem\Path $path
     ) {
-        parent::__construct();
-
         $this->view              = $view;
         $this->templateVariables = $templateVariables;
         $this->path              = $path;

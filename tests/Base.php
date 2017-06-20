@@ -76,4 +76,11 @@ abstract class Base extends \PHPUnit\Framework\TestCase
             [false],
         ];
     }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        \Parable\DI\Container::clearExceptPassed([\Parable\Filesystem\Path::class]);
+    }
 }

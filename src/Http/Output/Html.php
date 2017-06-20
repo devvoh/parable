@@ -21,7 +21,7 @@ class Html implements \Parable\Http\Output\OutputInterface
      */
     public function prepare(\Parable\Http\Response $response)
     {
-        if (!is_string($response->getContent())) {
+        if (!is_string($response->getContent()) && !is_null($response->getContent())) {
             throw new \Parable\Http\Exception('Can only work with string content');
         }
     }

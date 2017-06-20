@@ -11,9 +11,7 @@ namespace Parable\Framework;
  * @property \Parable\Framework\App                    $app
  * @property \Parable\Framework\Authentication         $authentication
  * @property \Parable\Framework\Config                 $config
- * @property \Parable\Framework\Debug                  $debug
  * @property \Parable\Framework\Dispatcher             $dispatcher
- * @property \Parable\Framework\Log                    $log
  * @property \Parable\Framework\Toolkit                $toolkit
  * @property \Parable\Framework\View                   $view
  * @property \Parable\Framework\Mail\Mailer            $mailer
@@ -27,6 +25,7 @@ namespace Parable\Framework;
  * @property \Parable\Http\Values\Internal             $internal
  * @property \Parable\Http\Values\Post                 $post
  * @property \Parable\Http\Values\Session              $session
+ * @property \Parable\Log\Logger                       $logger
  * @property \Parable\ORM\Query                        $query
  * @property \Parable\ORM\Database                     $database
  * @property \Parable\Routing\Router                   $router
@@ -46,6 +45,9 @@ class View
     /** @var string */
     protected $templatePath;
 
+    /** @var array */
+    protected $magicProperties = [];
+
     public function __construct(
         \Parable\Framework\Toolkit $toolkit,
         \Parable\Filesystem\Path $path,
@@ -54,6 +56,25 @@ class View
         $this->toolkit  = $toolkit;
         $this->path     = $path;
         $this->response = $response;
+
+        $this->initializeMagicProperties();
+    }
+
+    protected function initializeMagicProperties()
+    {
+        $reflection = new \ReflectionClass(static::class);
+        $magicPropertiesBlock = explode(PHP_EOL, $reflection->getDocComment());
+
+        foreach ($magicPropertiesBlock as $magicPropertiesLine) {
+            if (substr($magicPropertiesLine, 0, 4) !== " * @") {
+                continue;
+            }
+
+            $partsString = trim(str_replace("* @property", "", $magicPropertiesLine));
+            $parts       = explode('$', $partsString);
+
+            $this->magicProperties[trim($parts[1])] = trim($parts[0]);
+        }
     }
 
     /**
@@ -117,9 +138,8 @@ class View
      */
     public function __get($property)
     {
-        $mappedProperty = $this->toolkit->getResourceMapping(ucfirst($property));
-        if ($mappedProperty) {
-            return \Parable\DI\Container::get($mappedProperty);
+        if (isset($this->magicProperties[$property])) {
+            return \Parable\DI\Container::get($this->magicProperties[$property]);
         }
         return null;
     }

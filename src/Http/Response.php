@@ -7,6 +7,9 @@ class Response
     /** @var int */
     protected $httpCode = 200;
 
+    /** @var int */
+    protected $outputBufferLevel = 0;
+
     /** @var array */
     protected $httpCodes = [
         100 => "Continue",
@@ -78,6 +81,9 @@ class Response
     /** @var array */
     protected $headers = [];
 
+    /** @var bool */
+    protected $shouldTerminate = true;
+
     /**
      * By default we're going to set the Html Output type.
      */
@@ -148,6 +154,11 @@ class Response
      */
     public function send()
     {
+        if ($this->isOutputBufferingEnabled()) {
+            $content = $this->returnAllOutputBuffers();
+            $this->content = $content . $this->content;
+        }
+
         $this->output->prepare($this);
 
         if (!headers_sent()) {
@@ -162,16 +173,6 @@ class Response
 
         echo $this->getContent();
         $this->terminate();
-    }
-
-    /**
-     * @param int $exitCode
-     *
-     * @codeCoverageIgnore
-     */
-    public function terminate($exitCode = 0)
-    {
-        exit($exitCode);
     }
 
     /**
@@ -224,24 +225,56 @@ class Response
     }
 
     /**
-     * Start the output buffer
+     * Start a new output buffer, upping the internal outputBufferLevel
      *
      * @return $this
      */
     public function startOutputBuffer()
     {
         ob_start();
+        $this->outputBufferLevel++;
         return $this;
     }
 
     /**
-     * Return and end the current output buffer
+     * Return and end the current output buffer if output buffering was started with startOutputBuffer()
      *
      * @return string
      */
     public function returnOutputBuffer()
     {
+        if (!$this->isOutputBufferingEnabled()) {
+            return "";
+        }
+
+        $this->outputBufferLevel--;
         return ob_get_clean();
+    }
+
+    /**
+     * Return all open output buffering levels started by Parable
+     *
+     * @return string
+     */
+    public function returnAllOutputBuffers()
+    {
+        if (!$this->isOutputBufferingEnabled()) {
+            return "";
+        }
+
+        $content = "";
+        while ($this->isOutputBufferingEnabled()) {
+            $content .= $this->returnOutputBuffer();
+        }
+        return $content;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutputBufferingEnabled()
+    {
+        return $this->outputBufferLevel > 0;
     }
 
     /**
@@ -279,12 +312,45 @@ class Response
 
     /**
      * @param string $url
-     *
-     * @codeCoverageIgnore
      */
     public function redirect($url)
     {
-        header("location: {$url}");
+        if (!headers_sent()) {
+            // @codeCoverageIgnoreStart
+            header("location: {$url}");
+            // @codeCoverageIgnoreEnd
+        }
         $this->terminate();
+    }
+
+    /**
+     * @param bool $shouldTerminate
+     *
+     * @return $this
+     */
+    public function setShouldTerminate($shouldTerminate)
+    {
+        $this->shouldTerminate = (bool)$shouldTerminate;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldTerminate()
+    {
+        return $this->shouldTerminate;
+    }
+
+    /**
+     * @param int $exitCode
+     */
+    public function terminate($exitCode = 0)
+    {
+        if ($this->shouldTerminate()) {
+            // @codeCoverageIgnoreStart
+            exit($exitCode);
+            // @codeCoverageIgnoreEnd
+        }
     }
 }

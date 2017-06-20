@@ -12,7 +12,9 @@ class Session extends \Parable\Http\Values\GetSet
      */
     public function start()
     {
-        session_start();
+        if (!headers_sent()) {
+            session_start();
+        }
         return $this;
     }
 

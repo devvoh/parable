@@ -7,12 +7,19 @@ class ResponseTest extends \Parable\Tests\Base
     /** @var \Parable\Http\Response */
     protected $response;
 
+    /** @var \Parable\Http\Response|\PHPUnit_Framework_MockObject_MockObject */
+    protected $responseMock;
+
     protected function setUp()
     {
         parent::setUp();
 
-        $this->response = $this->createPartialMock(\Parable\Http\Response::class, ['terminate', 'redirect']);
-        $this->response->__construct();
+        $this->responseMock = $this->createPartialMock(\Parable\Http\Response::class, ['terminate']);
+        $this->responseMock->__construct();
+
+        // Response should not actually terminate
+        $this->response = \Parable\DI\Container::createAll(\Parable\Http\Response::class);
+        $this->response->setShouldTerminate(false);
     }
 
     public function testGetHttpCode()
@@ -98,6 +105,22 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame("This is content.", $content);
     }
 
+    public function testSendClosesOutputbuffer()
+    {
+        $this->response->startOutputBuffer();
+        echo "1... ";
+
+        $this->response->setContent("This is content.");
+
+        echo "2... ";
+
+        $this->response->send();
+
+        $content = $this->getActualOutputAndClean();
+
+        $this->assertSame("1... 2... This is content.", $content);
+    }
+
     public function testOutputBuffering()
     {
         $this->response->startOutputBuffer();
@@ -105,6 +128,29 @@ class ResponseTest extends \Parable\Tests\Base
         $this->response->returnOutputBuffer();
 
         $this->assertSame(null, $this->response->getContent());
+    }
+
+    public function testReturnOutputBufferReturnsEmptyStringIfNotStarted()
+    {
+        $this->assertSame("", $this->response->returnOutputBuffer());
+    }
+
+    public function testReturnAllOutputBufferReturnsEmptyStringIfNotStarted()
+    {
+        $this->assertSame("", $this->response->returnAllOutputBuffers());
+    }
+
+    public function testOutputBufferingChecking()
+    {
+        $this->assertFalse($this->response->isOutputBufferingEnabled());
+
+        $this->response->startOutputBuffer();
+
+        $this->assertTrue($this->response->isOutputBufferingEnabled());
+
+        $this->response->returnOutputBuffer();
+
+        $this->assertFalse($this->response->isOutputBufferingEnabled());
     }
 
     public function testSetGetHeader()
@@ -133,13 +179,8 @@ class ResponseTest extends \Parable\Tests\Base
 
     public function testRedirect()
     {
-        $this->response
-            ->method('redirect')
-            ->withAnyParameters()
-            ->willReturnCallback(function () {
-                $arguments = func_get_args();
-                $this->assertSame('http://www.test.dev/redirected', $arguments[0]);
-            });
-        $this->response->redirect('http://www.test.dev/redirected');
+        // The only way to test this is to see if terminate is called
+        $this->responseMock->expects($this->once())->method('terminate');
+        $this->responseMock->redirect('http://www.test.dev/redirected');
     }
 }

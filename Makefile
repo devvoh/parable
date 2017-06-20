@@ -5,4 +5,8 @@ dependencies:
 		--no-scripts
 
 tests: dependencies
-	vendor/bin/phpunit tests --verbose
+	vendor/bin/phpunit --verbose tests
+
+coverage: dependencies
+	rm -rf ./coverage
+	vendor/bin/phpunit --coverage-html ./coverage tests

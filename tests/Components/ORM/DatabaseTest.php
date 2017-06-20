@@ -174,12 +174,4 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
         ]);
         $this->assertNull($database->getInstance());
     }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $sql = file_get_contents($this->path->getDir('tests/db/test-teardown.sql'));
-        $this->database->getInstance()->exec($sql);
-    }
 }
