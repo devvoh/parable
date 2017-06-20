@@ -1,14 +1,41 @@
 # Parable PHP Framework Changelog
 
-### 0.11.0-dev
+### 0.11.0
 
-__Changes__
-- Added PHPUnit tests! Run `make tests` to run them. Composer is required to make sure the dependencies are up to date.
-- `\Parable\Http\Values` class has been removed, as it depends on all individual `Values` subclasses. It was easier to use, but also a heavier hit on performance.
-- `redirect()` has been moved from `\Parable\Http\Url` to `\Parable\Http\Response` and logic to append the baseUrl has been removed.
+Hey, look! Tests! With 100% code coverage, too! Run `make tests` to run them (which will attempt to `composer install` for needed libraries and then run the tests). Run `make coverage` to run the tests AND generate the HTML coverage report in `./coverage`.
 
-__Bugfixes__
-- Fixed key mismatch and missing event parameter (as found in `\Parable\Event\Hook`)in `\Parable\Event\Dock`.
+With tests, every nook and cranny of the code was looked at, evaluated and where needed, checked, fixed, removed or added to. This changelog will be huge.
+
+__Changes & Bugfixes__
+- `\Parable\Console`
+  - `App::run()` now returns what the `Command` returns instead of itself.
+  - `Command::getOptions()` has been added.
+  - `Command::prepare(...)` now sets up the dependencies rather than them being passed to `run()`, and `App` is now also passed and available in a Command's scope.
+  - `Command::runCommand(Command, args)` has been added, allowing Command chaining, passing the arguments/options yourself.
+  - `Command\Help` has been improved to support externally added Commands.
+  - `Output` has gained cursor movement in the forms of `cursorForward(n)`, `cursorBackward(n)`, `cursorUp(n)`, `cursorDown(n)`, `cursurPlace(x,y)`
+  - `Output::cls` was added, allowing you to clear the screen.
+  - `Output::clearLine` will remove whatever was written to the screen _without_ a newline after it. This allows you to re-use the same line for multiple outputs without scrolling the screen.
+  - `Parameter` has been improved greatly and is more reliable now. Also supports `getOptions()` and `reset()` now.
+- `\Parable\DI`
+  - `Container` now cleans names, so whether you pass a class with or without a prefixed `\`, `Container` will see it as the same class.
+  - `Container::isStored(name)` was added, so it's possible to check if an instance with that name is already available.
+  - `Container::createAll(name)` has been added, which allows a create with _all new dependencies_. Use this for a completely new instance.
+  - `Container` has gained some clearing functions: `clear(name)` clears only that class, `clearExceptPassed([name])` clears all but those classes, and `clearAll()` clears all.
+- `\Parable\Dock`
+  - An array key should have been `template` but was being stored as `viewFile`, an old term.
+  - The event wasn't being passed to the callable like in Hook.
+- `\Parable\Filesystem\Path`
+  - When a passed path to `getDir(path)` exists, we just return it. If it doesn't, we prepend the `basedir`.
+- `\Parable\Framework`
+  - `App` now depends on `Parable\Http\Values\Session` instead of `\Parable\Http\Values`, because the load is way higher for that one.
+  - `App::loadRoutes()` now throws an Exception when invalid routes are found.
+  - `App::loadInits()` now throws an Exception when invalid initLocations are found.
+  - `Authentication` has in general been refactored to take out all the kinks in the cable.
+  - `Authentication::getUserClassName()` can now be used to get the class name `Authentication` is set to use.
+  - `Config::addConfig(config)`
+  - `Config::addConfigs([]configs])`
+  - `Debug` has been removed.
 
 ### 0.10.3
 
