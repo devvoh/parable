@@ -116,7 +116,7 @@ class Route
         if (strpos($name, ':') === false) {
             return $value;
         }
-        list($key, $type) = explode(":", $name);
+        list(, $type) = explode(":", $name);
 
         if ($type === "int") {
             if (is_numeric($value) && (int)$value == $value) {
@@ -139,7 +139,7 @@ class Route
         if (strpos($name, ':') === false) {
             return $name;
         }
-        list($key, $type) = explode(":", $name);
+        list($key) = explode(":", $name);
 
         // All good, so return just the key
         return $key;

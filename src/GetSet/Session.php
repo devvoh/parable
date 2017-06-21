@@ -1,8 +1,8 @@
 <?php
 
-namespace Parable\Http\Values;
+namespace Parable\GetSet;
 
-class Session extends \Parable\Http\Values\GetSet
+class Session extends \Parable\GetSet\Base
 {
     /** @var string */
     protected $resource = '_SESSION';

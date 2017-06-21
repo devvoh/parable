@@ -1,6 +1,6 @@
 <?php
 
-namespace Parable\Tests\Components\Http\Values;
+namespace Parable\Tests\Components\GetSet;
 
 class GetSetTest extends \Parable\Tests\Base
 {

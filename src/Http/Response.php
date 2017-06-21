@@ -149,8 +149,6 @@ class Response
 
     /**
      * Send the response
-     *
-     * @return $this
      */
     public function send()
     {

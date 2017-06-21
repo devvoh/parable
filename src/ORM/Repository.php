@@ -263,10 +263,8 @@ class Repository
      */
     protected function handleResult(array $result)
     {
-        if ($this->onlyCount) {
-            foreach ($result[0] as $row) {
-                return (int)$row;
-            }
+        if ($this->onlyCount && isset($result[0]) && is_array($result[0])) {
+            return (int)current($result[0]);
         }
 
         $entities = [];

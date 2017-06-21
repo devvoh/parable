@@ -7,7 +7,7 @@ class AuthenticationTest extends \Parable\Tests\Components\Framework\Base
     /** @var \Parable\Framework\Authentication */
     protected $authentication;
 
-    /** @var \Parable\Http\Values\Session */
+    /** @var \Parable\GetSet\Session */
     protected $session;
 
     /** @var \Parable\Tests\TestClasses\Model */
@@ -18,7 +18,7 @@ class AuthenticationTest extends \Parable\Tests\Components\Framework\Base
         parent::setUp();
 
         $this->authentication = \Parable\DI\Container::get(\Parable\Framework\Authentication::class);
-        $this->session        = \Parable\DI\Container::get(\Parable\Http\Values\Session::class);
+        $this->session        = \Parable\DI\Container::get(\Parable\GetSet\Session::class);
 
         $this->user = \Parable\DI\Container::create(\Parable\Tests\TestClasses\Model::class);
         $this->user->username = "test";

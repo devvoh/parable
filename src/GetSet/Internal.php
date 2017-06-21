@@ -1,8 +1,8 @@
 <?php
 
-namespace Parable\Http\Values;
+namespace Parable\GetSet;
 
-class Internal extends \Parable\Http\Values\GetSet
+class Internal extends \Parable\GetSet\Base
 {
     /** @var string */
     protected $resource = 'internal';

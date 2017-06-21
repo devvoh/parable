@@ -258,8 +258,8 @@ class Mailer
     {
         return mail(
             $to,
-            $this->subject,
-            $this->body,
+            $subject,
+            $body,
             implode("\r\n", $headers)
         );
     }

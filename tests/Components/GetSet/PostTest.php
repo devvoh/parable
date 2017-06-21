@@ -1,17 +1,17 @@
 <?php
 
-namespace Parable\Tests\Components\Http\Values;
+namespace Parable\Tests\Components\GetSet;
 
 class PostTest extends \Parable\Tests\Base
 {
-    /** @var \Parable\Http\Values\Post */
+    /** @var \Parable\GetSet\Post */
     protected $getSet;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->getSet = new \Parable\Http\Values\Post();
+        $this->getSet = new \Parable\GetSet\Post();
     }
 
     public function testGetResource()

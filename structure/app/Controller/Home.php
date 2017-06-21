@@ -18,8 +18,8 @@ class Home
      */
     public function test(\Parable\Routing\Route $route, $id, $name)
     {
-        /** @var \Parable\Http\Values\Internal $internal */
-        $internal = \Parable\DI\Container::get(\Parable\Http\Values\Internal::class);
+        /** @var \Parable\GetSet\Internal $internal */
+        $internal = \Parable\DI\Container::get(\Parable\GetSet\Internal::class);
         $internal->set('id', $id);
         $internal->set('name', $name);
     }

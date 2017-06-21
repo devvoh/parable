@@ -270,7 +270,6 @@ class Model
      */
     public function exportToArray()
     {
-        $exportable = $this->getExportable();
         $data = $this->toArray();
         $exportData = [];
         foreach ($data as $key => $value) {

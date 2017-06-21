@@ -13,7 +13,7 @@ class Authentication
     /** @var \Parable\Framework\Toolkit */
     protected $toolkit;
 
-    /** @var \Parable\Http\Values\Session */
+    /** @var \Parable\GetSet\Session */
     protected $session;
 
     /** @var bool */
@@ -24,7 +24,7 @@ class Authentication
 
     public function __construct(
         \Parable\Framework\Toolkit $toolkit,
-        \Parable\Http\Values\Session $session
+        \Parable\GetSet\Session $session
     ) {
         $this->toolkit = $toolkit;
         $this->session = $session;

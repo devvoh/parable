@@ -28,7 +28,7 @@ __Changes & Bugfixes__
 - `\Parable\Filesystem\Path`
   - When a passed path to `getDir(path)` exists, we just return it. If it doesn't, we prepend the `basedir`.
 - `\Parable\Framework`
-  - `App` now depends on `Parable\Http\Values\Session` instead of `\Parable\Http\Values`, because the load is way higher for that one.
+  - `App` now depends on `Parable\GetSet\Session` instead of `\Parable\Http\Values`, which was removed.
   - `App::loadRoutes()` now throws an Exception when invalid routes are found.
   - `App::loadInits()` now throws an Exception when invalid initLocations are found.
   - `Authentication` has in general been refactored to take out all the kinks in the cable.

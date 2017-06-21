@@ -1,17 +1,17 @@
 <?php
 
-namespace Parable\Tests\Components\Http\Values;
+namespace Parable\Tests\Components\GetSet;
 
 class CookieTest extends \Parable\Tests\Base
 {
-    /** @var \Parable\Http\Values\Cookie */
+    /** @var \Parable\GetSet\Cookie */
     protected $getSet;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->getSet = new \Parable\Http\Values\Cookie();
+        $this->getSet = new \Parable\GetSet\Cookie();
     }
 
     public function testGetResource()

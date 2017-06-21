@@ -28,7 +28,7 @@ class App
     /** @var \Parable\Http\Url */
     protected $url;
 
-    /** @var \Parable\Http\Values\Session */
+    /** @var \Parable\GetSet\Session */
     protected $session;
 
     /** @var \Parable\ORM\Database */
@@ -46,7 +46,7 @@ class App
         \Parable\Http\Request $request,
         \Parable\Http\Response $response,
         \Parable\Http\Url $url,
-        \Parable\Http\Values\Session $session,
+        \Parable\GetSet\Session $session,
         \Parable\ORM\Database $database
     ) {
         $this->path       = $path;

@@ -2,8 +2,6 @@
 
 namespace Parable\ORM;
 
-use Parable\ORM\Query\Condition;
-
 class Query
 {
     /** Join types */

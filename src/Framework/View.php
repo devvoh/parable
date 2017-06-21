@@ -18,13 +18,16 @@ namespace Parable\Framework;
  * @property \Parable\Framework\Mail\TemplateVariables $templateVariables
  * @property \Parable\Http\Request                     $request
  * @property \Parable\Http\Response                    $response
- * @property \Parable\Http\SessionMessage              $sessionMessage
  * @property \Parable\Http\Url                         $url
- * @property \Parable\Http\Values\Cookie               $cookie
- * @property \Parable\Http\Values\Get                  $get
- * @property \Parable\Http\Values\Internal             $internal
- * @property \Parable\Http\Values\Post                 $post
- * @property \Parable\Http\Values\Session              $session
+ * @property \Parable\GetSet\Cookie                    $cookie
+ * @property \Parable\GetSet\Env                       $env
+ * @property \Parable\GetSet\Files                     $files
+ * @property \Parable\GetSet\Get                       $get
+ * @property \Parable\GetSet\Internal                  $internal
+ * @property \Parable\GetSet\Post                      $post
+ * @property \Parable\GetSet\Server                    $server
+ * @property \Parable\GetSet\Session                   $session
+ * @property \Parable\GetSet\SessionMessage            $sessionMessage
  * @property \Parable\Log\Logger                       $logger
  * @property \Parable\ORM\Query                        $query
  * @property \Parable\ORM\Database                     $database
@@ -66,7 +69,7 @@ class View
         $magicPropertiesBlock = explode(PHP_EOL, $reflection->getDocComment());
 
         foreach ($magicPropertiesBlock as $magicPropertiesLine) {
-            if (substr($magicPropertiesLine, 0, 4) !== " * @") {
+            if (strpos($magicPropertiesLine, "@property") === false) {
                 continue;
             }
 

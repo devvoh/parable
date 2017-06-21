@@ -1,17 +1,17 @@
 <?php
 
-namespace Parable\Tests\Components\Http\Values;
+namespace Parable\Tests\Components\GetSet;
 
 class InternalTest extends \Parable\Tests\Base
 {
-    /** @var \Parable\Http\Values\Internal */
+    /** @var \Parable\GetSet\Internal */
     protected $getSet;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->getSet = new \Parable\Http\Values\Internal();
+        $this->getSet = new \Parable\GetSet\Internal();
     }
 
     public function testGetResource()

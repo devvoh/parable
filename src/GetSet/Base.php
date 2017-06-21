@@ -1,8 +1,8 @@
 <?php
 
-namespace Parable\Http\Values;
+namespace Parable\GetSet;
 
-abstract class GetSet
+abstract class Base
 {
     /** @var null|string */
     protected $resource;

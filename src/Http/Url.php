@@ -7,7 +7,7 @@ class Url
     /** @var \Parable\Http\Response */
     protected $response;
 
-    /** @var \Parable\Http\Values\Get */
+    /** @var \Parable\GetSet\Get */
     protected $get;
 
     /** @var string */
@@ -15,7 +15,7 @@ class Url
 
     public function __construct(
         \Parable\Http\Response $response,
-        \Parable\Http\Values\Get $get
+        \Parable\GetSet\Get $get
     ) {
         $this->response = $response;
         $this->get      = $get;

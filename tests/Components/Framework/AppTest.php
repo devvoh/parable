@@ -249,7 +249,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             \Parable\DI\Container::get(\Parable\Http\Request::class),
             \Parable\DI\Container::get(\Parable\Http\Response::class),
             \Parable\DI\Container::get(\Parable\Http\Url::class),
-            \Parable\DI\Container::get(\Parable\Http\Values\Session::class),
+            \Parable\DI\Container::get(\Parable\GetSet\Session::class),
             \Parable\DI\Container::get(\Parable\ORM\Database::class)
         );
     }

@@ -115,6 +115,8 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
 
         $modelArray = $this->model->exportToArray();
 
+        $this->assertSame(['username', 'email'], $this->model->getExportable());
+
         $this->assertSame('testuser', $modelArray['username']);
         $this->assertArrayNotHasKey('password', $modelArray);
     }

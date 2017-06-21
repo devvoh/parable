@@ -1,22 +1,22 @@
 <?php
 
-namespace Parable\Http;
+namespace Parable\GetSet;
 
 class SessionMessage
 {
-    /** @var null|\Parable\Http\Values\Session */
-    protected $session = null;
+    const SESSION_KEY = "parable_session_messages";
+
+    /** @var \Parable\GetSet\Session */
+    protected $session;
 
     /** @var array */
     protected $messages = [];
 
-    public function __construct(\Parable\Http\Values\Session $session)
+    public function __construct(\Parable\GetSet\Session $session)
     {
         $this->session = $session;
 
-        if (is_array($this->session->get('messages'))) {
-            $this->messages = $this->session->get('messages');
-        }
+        $this->readFromSession();
     }
 
     /**
@@ -113,13 +113,26 @@ class SessionMessage
     }
 
     /**
-     * Write messages stored on ourself to the session
+     * Read messages stored in the session and load them into SessionMessage
+     *
+     * @return $this
+     */
+    protected function readFromSession()
+    {
+        if (is_array($this->session->get(self::SESSION_KEY))) {
+            $this->messages = $this->session->get(self::SESSION_KEY);
+        }
+        return $this;
+    }
+
+    /**
+     * Write messages stored on SessionMessage to the session
      *
      * @return $this
      */
     protected function writeToSession()
     {
-        $this->session->set('messages', $this->messages);
+        $this->session->set(self::SESSION_KEY, $this->messages);
         return $this;
     }
 }

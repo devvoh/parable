@@ -10,7 +10,7 @@ class DispatcherTest extends \Parable\Tests\Components\Framework\Base
     /** @var \Parable\Event\Hook */
     protected $hook;
 
-    /** @var \Parable\Http\Values\Internal */
+    /** @var \Parable\GetSet\Internal */
     protected $internal;
 
     protected function setUp()
@@ -19,7 +19,7 @@ class DispatcherTest extends \Parable\Tests\Components\Framework\Base
 
         $this->dispatcher = \Parable\DI\Container::create(\Parable\Framework\Dispatcher::class);
         $this->hook       = \Parable\DI\Container::get(\Parable\Event\Hook::class);
-        $this->internal   = \Parable\DI\Container::get(\Parable\Http\Values\Internal::class);
+        $this->internal   = \Parable\DI\Container::get(\Parable\GetSet\Internal::class);
 
         $internal = $this->internal;
 
