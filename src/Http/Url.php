@@ -7,18 +7,13 @@ class Url
     /** @var \Parable\Http\Response */
     protected $response;
 
-    /** @var \Parable\GetSet\Get */
-    protected $get;
-
     /** @var string */
     protected $baseUrl;
 
     public function __construct(
-        \Parable\Http\Response $response,
-        \Parable\GetSet\Get $get
+        \Parable\Http\Response $response
     ) {
         $this->response = $response;
-        $this->get      = $get;
     }
 
     /**
@@ -54,24 +49,5 @@ class Url
     public function getUrl($url = '')
     {
         return rtrim($this->getBaseUrl(), '/') . '/' . ltrim($url, '/');
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrentUrl()
-    {
-        if ($this->get->get('url')) {
-            return $this->get->get('url');
-        }
-        return '/';
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrentUrlFull()
-    {
-        return $this->getUrl($this->getCurrentUrl());
     }
 }

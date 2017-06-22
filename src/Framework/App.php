@@ -13,6 +13,9 @@ class App
     /** @var \Parable\Framework\Dispatcher */
     protected $dispatcher;
 
+    /** @var \Parable\Framework\Toolkit */
+    protected $toolkit;
+
     /** @var \Parable\Event\Hook */
     protected $hook;
 
@@ -41,6 +44,7 @@ class App
         \Parable\Filesystem\Path $path,
         \Parable\Framework\Config $config,
         \Parable\Framework\Dispatcher $dispatcher,
+        \Parable\Framework\Toolkit $toolkit,
         \Parable\Event\Hook $hook,
         \Parable\Routing\Router $router,
         \Parable\Http\Request $request,
@@ -52,6 +56,7 @@ class App
         $this->path       = $path;
         $this->config     = $config;
         $this->dispatcher = $dispatcher;
+        $this->toolkit    = $toolkit;
         $this->hook       = $hook;
         $this->router     = $router;
         $this->response   = $response;
@@ -87,8 +92,8 @@ class App
         $this->loadRoutes();
 
         /* Get the current url */
-        $currentUrl     = $this->url->getCurrentUrl();
-        $currentFullUrl = $this->url->getCurrentUrlFull();
+        $currentUrl     = $this->toolkit->getCurrentUrl();
+        $currentFullUrl = $this->toolkit->getCurrentUrlFull();
 
         /* Load the config */
         if ($this->config->get('database.type')) {
@@ -102,7 +107,7 @@ class App
 
         /* And try to match the route */
         $this->hook->trigger('parable_route_match_before', $currentUrl);
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl($this->toolkit->getCurrentUrl());
         $this->hook->trigger('parable_route_match_after', $route);
         if ($route) {
             $this->response->setHttpCode(200);

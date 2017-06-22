@@ -1,11 +1,11 @@
 <?php
 
-namespace Parable\Console\Command;
+namespace Parable\Framework\Command;
 
-class Init extends \Parable\Console\Command
+class InitParable extends \Parable\Console\Command
 {
     /** @var string */
-    protected $name = 'init';
+    protected $name = 'init-parable';
 
     /** @var string */
     protected $description = 'This command initializes a parable structure.';

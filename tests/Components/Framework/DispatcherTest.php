@@ -33,15 +33,13 @@ class DispatcherTest extends \Parable\Tests\Components\Framework\Base
 
     public function testDispatchRoute()
     {
-        $route = new \Parable\Routing\Route(
-            new \Parable\Http\Request(),
-            [
-                'methods' => ['GET'],
-                'url' => '/',
-                'controller' => \Controller\Home::class,
-                'action' => 'index',
-            ]
-        );
+        $route = new \Parable\Routing\Route();
+        $route->setData([
+            'methods' => ['GET'],
+            'url' => '/',
+            'controller' => \Controller\Home::class,
+            'action' => 'index',
+        ]);
 
         $this->assertSame($this->dispatcher, $this->dispatcher->dispatch($route));
 

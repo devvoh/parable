@@ -28,7 +28,9 @@ class ToolkitTest extends \Parable\Tests\Components\Framework\Base
             'controller' => \Parable\Tests\TestClasses\Controller::class,
             'action' => 'simple',
         ]);
-
+        $GLOBALS['_GET'] = [
+            'url' => 'this/was/requested',
+        ];
         $this->toolkit = \Parable\DI\Container::create(\Parable\Framework\Toolkit::class);
     }
 
@@ -53,5 +55,21 @@ class ToolkitTest extends \Parable\Tests\Components\Framework\Base
         $routeUrl = $this->toolkit->getFullRouteUrlByName("simple");
 
         $this->assertSame("http://www.test.dev/test/", $routeUrl);
+    }
+
+    public function testGetCurrentUrl()
+    {
+        $this->assertSame('this/was/requested', $this->toolkit->getCurrentUrl());
+    }
+
+    public function testGetCurrentUrlReturnsEmptyUrlIfNoUrlKnown()
+    {
+        unset($GLOBALS['_GET']['url']);
+        $this->assertSame('/', $this->toolkit->getCurrentUrl());
+    }
+
+    public function testGetCurrentUrlFull()
+    {
+        $this->assertSame('http://www.test.dev/test/this/was/requested', $this->toolkit->getCurrentUrlFull());
     }
 }

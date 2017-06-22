@@ -77,7 +77,7 @@ class RouterTest extends \Parable\Tests\Base
             'callable' => function () {
             },
         ]);
-        $this->assertInstanceOf(\Parable\Routing\Route::class, $this->router->matchRoute('/easy'));
+        $this->assertInstanceOf(\Parable\Routing\Route::class, $this->router->matchUrl('/easy'));
 
         // Now re-add as a POST-only route
         $this->router->addRoute('callable', [
@@ -86,7 +86,7 @@ class RouterTest extends \Parable\Tests\Base
             'callable' => function () {
             },
         ]);
-        $this->assertNull($this->router->matchRoute('/easy'));
+        $this->assertNull($this->router->matchUrl('/easy'));
     }
 
     public function testRouteAddedAndGetRouteByName()
@@ -107,11 +107,9 @@ class RouterTest extends \Parable\Tests\Base
         $this->assertNull($this->router->getRouteByName('la-dee-dah'));
     }
 
-    public function testMatchCurrentRouteSimple()
+    public function testMatchUrlSimple()
     {
-        $_GET['url'] = '/';
-
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/');
 
         $this->assertNotNull($route);
 
@@ -126,11 +124,9 @@ class RouterTest extends \Parable\Tests\Base
         $this->assertFalse($route->hasParameters());
     }
 
-    public function testMatchCurrentRouteComplex()
+    public function testmatchUrlComplex()
     {
-        $_GET['url'] = '/complex/id-value/name-value';
-
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/complex/id-value/name-value');
 
         $this->assertNotNull($route);
 
@@ -153,11 +149,9 @@ class RouterTest extends \Parable\Tests\Base
         );
     }
 
-    public function testMatchCurrentRouteComplexTyped()
+    public function testmatchUrlComplexTyped()
     {
-        $_GET['url'] = '/complextyped/1/1.45';
-
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/complextyped/1/1.45');
 
         $this->assertNotNull($route);
 
@@ -180,11 +174,9 @@ class RouterTest extends \Parable\Tests\Base
         );
     }
 
-    public function testMatchCurrentRouteCallable()
+    public function testmatchUrlCallable()
     {
-        $_GET['url'] = '/callable/stuff';
-
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/callable/stuff');
 
         $this->assertNotNull($route);
 
@@ -222,20 +214,17 @@ class RouterTest extends \Parable\Tests\Base
         ]);
 
         // With an int value we're fine
-        $_GET['url'] = '/int/1';
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/int/1');
 
         $this->assertSame(1, $route->getValue('int'));
 
         // But with a string value it should fail
-        $_GET['url'] = '/int/string';
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/int/string');
 
         $this->assertNull($route);
 
         // Same for float
-        $_GET['url'] = '/int/1.45';
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/int/1.45');
 
         $this->assertNull($route);
     }
@@ -250,28 +239,24 @@ class RouterTest extends \Parable\Tests\Base
         ]);
 
         // With an float value we're fine
-        $_GET['url'] = '/float/1.23';
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/float/1.23');
 
         $this->assertSame(1.23, $route->getValue('float'));
 
         // With an int value we're fine, because it CAN be represented as a float
-        $_GET['url'] = '/float/1';
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/float/1');
 
         $this->assertSame(1.0, $route->getValue('float'));
 
         // But with a string value it should fail
-        $_GET['url'] = '/float/string';
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/float/string');
 
         $this->assertNull($route);
     }
 
     public function testMatchNonExistingRoute()
     {
-        $_GET['url'] = '/non-existent';
-        $this->assertNull($this->router->matchCurrentRoute());
+        $this->assertNull($this->router->matchUrl('/non-existent'));
     }
 
     public function testGetRouteUrlByName()
@@ -293,8 +278,7 @@ class RouterTest extends \Parable\Tests\Base
 
     public function testRouteReturnsNullOnNonExistingValueKey()
     {
-        $_GET['url'] = '/';
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/');
 
         $this->assertInstanceOf(\Parable\Routing\Route::class, $route);
 
@@ -303,8 +287,7 @@ class RouterTest extends \Parable\Tests\Base
 
     public function testRouteBuildUrlWithoutParameters()
     {
-        $_GET['url'] = '/';
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl('/');
 
         $this->assertInstanceOf(\Parable\Routing\Route::class, $route);
 

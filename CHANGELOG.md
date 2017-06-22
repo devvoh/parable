@@ -33,9 +33,14 @@ __Changes & Bugfixes__
   - `App::loadInits()` now throws an Exception when invalid initLocations are found.
   - `Authentication` has in general been refactored to take out all the kinks in the cable.
   - `Authentication::getUserClassName()` can now be used to get the class name `Authentication` is set to use.
-  - `Config::addConfig(config)`
-  - `Config::addConfigs([]configs])`
-  - `Debug` has been removed.
+  - `Config::addConfig(config)` has been added, so dynamically-decided Config objects can be added to the global Config.
+  - `Config::addConfigs([configs])` does the same for an array of Config objects.
+  - `Debug` has been removed. Never used it, and never heard of anyone who did.
+  - `Dispatcher` now only tries to prepend the output buffer content when there's actually an output buffer started on `\Http\Response`
+  - `Log` has been removed in favor of `\Parable\Logger`.
+  - `Toolkit` has been culled, removing the resource mapping system.
+  - `View` used to use resource mapping (see `Toolkit`), but now uses Reflection on its class doc block to read out and interpret the magic properties instead. This is faster *and* easier to maintain.
+  - _UNFINISHED_
 
 ### 0.10.3
 

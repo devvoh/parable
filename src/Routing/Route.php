@@ -34,15 +34,13 @@ class Route
     /** @var array */
     public $cleanValues = [];
 
-    /** @var null|\Parable\Http\Request */
-    protected $request;
-
-    public function __construct(
-        \Parable\Http\Request $request,
-        array $data
-    ) {
-        $this->request    = $request;
-
+    /**
+     * @param array $data
+     *
+     * @throws \Parable\Routing\Exception
+     */
+    public function setData(array $data)
+    {
         $this->methods    = isset($data['methods'])    ? $data['methods']    : null;
         $this->url        = isset($data['url'])        ? $data['url']        : null;
         $this->controller = isset($data['controller']) ? $data['controller'] : null;
@@ -221,7 +219,7 @@ class Route
      */
     public function isAcceptedRequestMethod()
     {
-        return in_array($this->request->getMethod(), $this->methods);
+        return in_array($_SERVER['REQUEST_METHOD'], $this->methods);
     }
 
     /**

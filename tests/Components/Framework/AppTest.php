@@ -244,6 +244,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             $this->mockPath,
             $config,
             $this->mockDispatcher,
+            \Parable\DI\Container::get(\Parable\Framework\Toolkit::class),
             \Parable\DI\Container::get(\Parable\Event\Hook::class),
             $this->mockRouter,
             \Parable\DI\Container::get(\Parable\Http\Request::class),

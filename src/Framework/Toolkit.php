@@ -7,6 +7,9 @@ class Toolkit
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
+    /** @var \Parable\Filesystem\Get */
+    protected $get;
+
     /** @var \Parable\Http\Response */
     protected $response;
 
@@ -18,11 +21,13 @@ class Toolkit
 
     public function __construct(
         \Parable\Filesystem\Path $path,
+        \Parable\GetSet\Get $get,
         \Parable\Http\Response $response,
         \Parable\Http\Url $url,
         \Parable\Routing\Router $router
     ) {
         $this->path     = $path;
+        $this->get      = $get;
         $this->response = $response;
         $this->url      = $url;
         $this->router   = $router;
@@ -71,5 +76,24 @@ class Toolkit
     public function getFullRouteUrlByName($name, array $parameters = [])
     {
         return $this->url->getUrl($this->router->getRouteUrlByName($name, $parameters));
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentUrl()
+    {
+        if ($this->get->get('url')) {
+            return $this->get->get('url');
+        }
+        return '/';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentUrlFull()
+    {
+        return $this->url->getUrl($this->getCurrentUrl());
     }
 }

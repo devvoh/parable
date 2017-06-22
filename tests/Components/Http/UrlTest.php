@@ -32,20 +32,4 @@ class UrlTest extends \Parable\Tests\Base
     {
         $this->assertSame('http://www.test.dev/test/stuff/goes/here', $this->url->getUrl('stuff/goes/here'));
     }
-
-    public function testGetCurrentUrl()
-    {
-        $this->assertSame('this/was/requested', $this->url->getCurrentUrl());
-    }
-
-    public function testGetCurrentUrlReturnsEmptyUrlIfNoUrlKnown()
-    {
-        unset($GLOBALS['_GET']['url']);
-        $this->assertSame('/', $this->url->getCurrentUrl());
-    }
-
-    public function testGetCurrentUrlFull()
-    {
-        $this->assertSame('http://www.test.dev/test/this/was/requested', $this->url->getCurrentUrlFull());
-    }
 }
