@@ -1,17 +1,17 @@
 <?php
 
-namespace Parable\Tests\Components\Tool;
+namespace Parable\Tests\Components\Rights;
 
 class RightsTest extends \Parable\Tests\Base
 {
-    /** @var \Parable\Tool\Rights */
+    /** @var \Parable\Rights\Rights */
     protected $rights;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->rights = new \Parable\Tool\Rights();
+        $this->rights = new \Parable\Rights\Rights();
     }
 
     public function testDefaultCRUDRightsAreSetProperly()

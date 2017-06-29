@@ -32,7 +32,7 @@ namespace Parable\Framework;
  * @property \Parable\ORM\Query                        $query
  * @property \Parable\ORM\Database                     $database
  * @property \Parable\Routing\Router                   $router
- * @property \Parable\Tool\Rights                      $rights
+ * @property \Parable\Rights\Rights                    $rights
  */
 class View
 {
