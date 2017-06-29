@@ -32,3 +32,5 @@ TODO
 And that seems to be it!
 
 Then inspect the code and make sure PSR-2 is properly followed.
+
+OH! And enable Travis and fix the inevitable issues that arise from that! :D
