@@ -6,41 +6,17 @@ Hey, look! Tests! With 100% code coverage, too! Run `make tests` to run them (wh
 
 With tests, every nook and cranny of the code was looked at, evaluated and where needed, checked, fixed, removed or added to. This changelog will be huge.
 
-__Changes & Bugfixes__
-- `\Parable\Console`
-  - `App::run()` now returns what the `Command` returns instead of itself.
-  - `Command::getOptions()` has been added.
-  - `Command::prepare(...)` now sets up the dependencies rather than them being passed to `run()`, and `App` is now also passed and available in a Command's scope.
-  - `Command::runCommand(Command, args)` has been added, allowing Command chaining, passing the arguments/options yourself.
-  - `Command\Help` has been improved to support externally added Commands.
-  - `Output` has gained cursor movement in the forms of `cursorForward(n)`, `cursorBackward(n)`, `cursorUp(n)`, `cursorDown(n)`, `cursurPlace(x,y)`
-  - `Output::cls` was added, allowing you to clear the screen.
-  - `Output::clearLine` will remove whatever was written to the screen _without_ a newline after it. This allows you to re-use the same line for multiple outputs without scrolling the screen.
-  - `Parameter` has been improved greatly and is more reliable now. Also supports `getOptions()` and `reset()` now.
-- `\Parable\DI`
-  - `Container` now cleans names, so whether you pass a class with or without a prefixed `\`, `Container` will see it as the same class.
-  - `Container::isStored(name)` was added, so it's possible to check if an instance with that name is already available.
-  - `Container::createAll(name)` has been added, which allows a create with _all new dependencies_. Use this for a completely new instance.
-  - `Container` has gained some clearing functions: `clear(name)` clears only that class, `clearExceptPassed([name])` clears all but those classes, and `clearAll()` clears all.
-- `\Parable\Dock`
-  - An array key should have been `template` but was being stored as `viewFile`, an old term.
-  - The event wasn't being passed to the callable like in Hook.
-- `\Parable\Filesystem\Path`
-  - When a passed path to `getDir(path)` exists, we just return it. If it doesn't, we prepend the `basedir`.
-- `\Parable\Framework`
-  - `App` now depends on `Parable\GetSet\Session` instead of `\Parable\Http\Values`, which was removed.
-  - `App::loadRoutes()` now throws an Exception when invalid routes are found.
-  - `App::loadInits()` now throws an Exception when invalid initLocations are found.
-  - `Authentication` has in general been refactored to take out all the kinks in the cable.
-  - `Authentication::getUserClassName()` can now be used to get the class name `Authentication` is set to use.
-  - `Config::addConfig(config)` has been added, so dynamically-decided Config objects can be added to the global Config.
-  - `Config::addConfigs([configs])` does the same for an array of Config objects.
-  - `Debug` has been removed. Never used it, and never heard of anyone who did.
-  - `Dispatcher` now only tries to prepend the output buffer content when there's actually an output buffer started on `\Http\Response`
-  - `Log` has been removed in favor of `\Parable\Logger`.
-  - `Toolkit` has been culled, removing the resource mapping system.
-  - `View` used to use resource mapping (see `Toolkit`), but now uses Reflection on its class doc block to read out and interpret the magic properties instead. This is faster *and* easier to maintain.
-  - _UNFINISHED_
+This release also pulls out all interdependencies except for `Framework` still depending on other Components.
+
+There's so many changes that it'll take a fly's lifetime to jot them all down, and it's just not worth it.
+
+If you're upgrading from 0.10, I wish you all the luck, though in most cases the errors will show you the way.
+
+__Changes__
+- Many things.
+
+__Bugfixes__
+- Much more.
 
 ### 0.10.3
 
