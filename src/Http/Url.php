@@ -4,8 +4,17 @@ namespace Parable\Http;
 
 class Url
 {
+    /** @var \Parable\Http\Request */
+    protected $request;
+
     /** @var string */
     protected $baseUrl;
+
+    public function __construct(
+        \Parable\Http\Request $request
+    ) {
+        $this->request = $request;
+    }
 
     /**
      * Initialize the correct baseUrl
@@ -14,7 +23,7 @@ class Url
      */
     public function buildBaseUrl()
     {
-        $domain = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+        $domain = $this->request->getScheme() . '://' . $_SERVER['HTTP_HOST'];
 
         $url = str_replace('/public/index.php', '', $_SERVER['SCRIPT_NAME']);
         $this->baseUrl = $domain . '/' . ltrim($url, '/');

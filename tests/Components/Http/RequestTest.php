@@ -77,4 +77,42 @@ class RequestTest extends \Parable\Tests\Base
             $this->request->getHeaders()
         );
     }
+
+    /**
+     * @dataProvider dpRequestScheme
+     * @param $scheme
+     */
+    public function testGetSchemeWithAllPossibilities($scheme)
+    {
+        $_SERVER = [];
+        $this->assertSame("http", $this->request->getScheme());
+
+        $_SERVER = ['REQUEST_SCHEME' => $scheme];
+        $this->assertSame($scheme, $this->request->getScheme());
+
+        $_SERVER = ['REDIRECT_REQUEST_SCHEME' => $scheme];
+        $this->assertSame($scheme, $this->request->getScheme());
+
+        $_SERVER = ['HTTP_X_FORWARDED_PROTO' => $scheme];
+        $this->assertSame($scheme, $this->request->getScheme());
+
+        $_SERVER = ['HTTPS' => ($scheme == 'http' ? 'off' : 'on')];
+        $this->assertSame($scheme, $this->request->getScheme());
+
+        $_SERVER = ['SERVER_PORT' => ($scheme == 'http' ? 80 : 443)];
+        $this->assertSame($scheme, $this->request->getScheme());
+
+        unset($_SERVER['SERVER_PORT']);
+
+        $this->assertEmpty($_SERVER);
+        $this->assertSame("http", $this->request->getScheme());
+    }
+
+    public function dpRequestScheme()
+    {
+        return [
+            ['http'],
+            ['https'],
+        ];
+    }
 }

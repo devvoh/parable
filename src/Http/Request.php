@@ -102,4 +102,34 @@ class Request
     {
         return $this->headers;
     }
+
+    /**
+     * This is surprisingly annoying due to unreliable
+     * availability of $_SERVER values.
+     *
+     * @return string
+     */
+    public function getScheme()
+    {
+        if (isset($_SERVER["REQUEST_SCHEME"])) {
+            // Apache 2.4+
+            return $_SERVER["REQUEST_SCHEME"];
+        }
+        if (isset($_SERVER["REDIRECT_REQUEST_SCHEME"])) {
+            return $_SERVER["REDIRECT_REQUEST_SCHEME"];
+        }
+        if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
+            // Sometimes available in proxied requests
+            return $_SERVER["HTTP_X_FORWARDED_PROTO"];
+        }
+        if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off") {
+            // Old-style but compatible with IIS
+            return "https";
+        }
+        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) {
+            // Hacky but this is our last attempt, so why not
+            return "https";
+        }
+        return "http";
+    }
 }

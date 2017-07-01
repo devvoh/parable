@@ -13,6 +13,7 @@ class UrlTest extends \Parable\Tests\Base
 
         $GLOBALS['_SERVER'] = [
             'REQUEST_SCHEME' => 'http',
+            'REQUEST_METHOD' => 'GET',
             'HTTP_HOST'      => 'www.test.dev',
             'SCRIPT_NAME'    => '/test/public/index.php',
         ];
