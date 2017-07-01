@@ -35,7 +35,7 @@ class App
     protected $database;
 
     /** @var string */
-    protected $version = '0.11.0';
+    protected $version = '0.11.1';
 
     public function __construct(
         \Parable\Filesystem\Path $path,

@@ -1,5 +1,12 @@
 # Parable PHP Framework Changelog
 
+### 0.11.1
+
+Well, that was fast!
+
+__Bugfixes__
+- Fixed a bug in `\Parable\Http\Url`, where it was directly looking at `$_SERVER['REQUEST_SCHEME']`, which isn't always available. Added `\Parable\Http\Request::getScheme` to try out multiple options to figure it out instead.
+
 ### 0.11.0
 
 Hey, look! Tests! With 100% code coverage, too! Run `make tests` to run them (which will attempt to `composer install` for needed libraries and then run the tests). Run `make coverage` to run the tests AND generate the HTML coverage report in `./coverage`.
