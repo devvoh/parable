@@ -11,27 +11,28 @@ namespace Parable\Framework;
  * @property \Parable\Framework\App                    $app
  * @property \Parable\Framework\Authentication         $authentication
  * @property \Parable\Framework\Config                 $config
- * @property \Parable\Framework\Debug                  $debug
  * @property \Parable\Framework\Dispatcher             $dispatcher
- * @property \Parable\Framework\Log                    $log
  * @property \Parable\Framework\Toolkit                $toolkit
  * @property \Parable\Framework\View                   $view
  * @property \Parable\Framework\Mail\Mailer            $mailer
  * @property \Parable\Framework\Mail\TemplateVariables $templateVariables
  * @property \Parable\Http\Request                     $request
  * @property \Parable\Http\Response                    $response
- * @property \Parable\Http\SessionMessage              $sessionMessage
  * @property \Parable\Http\Url                         $url
- * @property \Parable\Http\Values                      $values
- * @property \Parable\Http\Values\Cookie               $cookie
- * @property \Parable\Http\Values\Get                  $get
- * @property \Parable\Http\Values\Internal             $internal
- * @property \Parable\Http\Values\Post                 $post
- * @property \Parable\Http\Values\Session              $session
+ * @property \Parable\GetSet\Cookie                    $cookie
+ * @property \Parable\GetSet\Env                       $env
+ * @property \Parable\GetSet\Files                     $files
+ * @property \Parable\GetSet\Get                       $get
+ * @property \Parable\GetSet\Internal                  $internal
+ * @property \Parable\GetSet\Post                      $post
+ * @property \Parable\GetSet\Server                    $server
+ * @property \Parable\GetSet\Session                   $session
+ * @property \Parable\GetSet\SessionMessage            $sessionMessage
+ * @property \Parable\Log\Logger                       $logger
  * @property \Parable\ORM\Query                        $query
  * @property \Parable\ORM\Database                     $database
  * @property \Parable\Routing\Router                   $router
- * @property \Parable\Tool\Rights                      $rights
+ * @property \Parable\Rights\Rights                    $rights
  */
 class View
 {
@@ -47,14 +48,34 @@ class View
     /** @var string */
     protected $templatePath;
 
+    /** @var array */
+    protected $magicProperties = [];
+
     public function __construct(
-        \Parable\Framework\Toolkit $toolkit,
         \Parable\Filesystem\Path $path,
         \Parable\Http\Response $response
     ) {
-        $this->toolkit  = $toolkit;
         $this->path     = $path;
         $this->response = $response;
+
+        $this->initializeMagicProperties();
+    }
+
+    protected function initializeMagicProperties()
+    {
+        $reflection = new \ReflectionClass(static::class);
+        $magicPropertiesBlock = explode(PHP_EOL, $reflection->getDocComment());
+
+        foreach ($magicPropertiesBlock as $magicPropertiesLine) {
+            if (strpos($magicPropertiesLine, "@property") === false) {
+                continue;
+            }
+
+            $partsString = trim(str_replace("* @property", "", $magicPropertiesLine));
+            $parts       = explode('$', $partsString);
+
+            $this->magicProperties[trim($parts[1])] = trim($parts[0]);
+        }
     }
 
     /**
@@ -118,9 +139,8 @@ class View
      */
     public function __get($property)
     {
-        $mappedProperty = $this->toolkit->getResourceMapping(ucfirst($property));
-        if ($mappedProperty) {
-            return \Parable\DI\Container::get($mappedProperty);
+        if (isset($this->magicProperties[$property])) {
+            return \Parable\DI\Container::get($this->magicProperties[$property]);
         }
         return null;
     }

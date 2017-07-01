@@ -22,8 +22,9 @@ class Model
     /** @var null|string */
     protected $tableKey;
 
-    public function __construct(\Parable\ORM\Database $database)
-    {
+    public function __construct(
+        \Parable\ORM\Database $database
+    ) {
         $this->database = $database;
     }
 
@@ -89,55 +90,6 @@ class Model
     }
 
     /**
-     * Generates an array of the current model, without the protected values
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        $array = (array)$this;
-        foreach ($array as $key => &$value) {
-            // Protected values are prefixed with an '*'
-            if (strpos($key, '*') !== false) {
-                unset($array[$key]);
-                continue;
-            }
-            // If it's specifically decreed that it's a null value, we leave it in, which will set it to NULL in the db
-            if ($value === \Parable\ORM\Database::NULL_VALUE) {
-                $value = null;
-                continue;
-            }
-            // If the value evaluates to regular empty but isn't a 0, we unset it so we don't return it
-            if ($value !== 0 && empty($value)) {
-                unset($array[$key]);
-                continue;
-            }
-        }
-        // If there's a mapper set, also map the array around
-        if ($this->getMapper()) {
-            $array = $this->toMappedArray($array);
-        }
-        return $array;
-    }
-
-    /**
-     * Attempts to use stored mapper array to map fields from the current model's properties to what is set in the
-     * array.
-     *
-     * @param array $array
-     *
-     * @return array
-     */
-    public function toMappedArray(array $array)
-    {
-        $mappedArray = [];
-        foreach ($this->getMapper() as $from => $to) {
-            $mappedArray[$to] = $array[$from];
-        }
-        return $mappedArray;
-    }
-
-    /**
      * Deletes the current model from the database
      *
      * @return mixed
@@ -146,7 +98,7 @@ class Model
     {
         $query = $this->createQuery();
         $query->setAction('delete');
-        $query->where($this->getTableKey(), '=', $this->id);
+        $query->where($query->buildAndSet([$this->getTableKey(), '=', $this->id]));
         return $this->database->query($query);
     }
 
@@ -161,7 +113,7 @@ class Model
     {
         foreach ($data as $property => $value) {
             if (property_exists($this, $property)) {
-                $this->$property = $value;
+                $this->$property = $this->guessValueType($value);
             }
         }
         return $this;
@@ -247,18 +199,102 @@ class Model
     }
 
     /**
+     * Attempts to guess the value type. Will return int, float or string.
+     *
+     * @param string $value
+     *
+     * @return int|float|string
+     */
+    public function guessValueType($value)
+    {
+        if (is_numeric($value) && (int)$value == $value) {
+            return (int)$value;
+        } elseif (is_numeric($value) && (float)$value == $value) {
+            return (float)$value;
+        }
+        return $value;
+    }
+
+    /**
+     * Generates an array of the current model, without the protected values
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $array = (array)$this;
+        foreach ($array as $key => &$value) {
+            // Protected values are prefixed with an '*'
+            if (strpos($key, '*') !== false) {
+                unset($array[$key]);
+                continue;
+            }
+            // If it's specifically decreed that it's a null value, we leave it in, which will set it to NULL in the db
+            if ($value === \Parable\ORM\Database::NULL_VALUE) {
+                $value = null;
+                continue;
+            }
+            // If the value evaluates to regular empty but isn't a 0, we unset it so we don't return it
+            if ($value !== 0 && empty($value)) {
+                unset($array[$key]);
+                continue;
+            }
+        }
+        // If there's a mapper set, also map the array around
+        if ($this->getMapper()) {
+            $array = $this->toMappedArray($array);
+        }
+        return $array;
+    }
+
+    /**
+     * Attempts to use stored mapper array to map fields from the current model's properties to what is set in the
+     * array.
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    public function toMappedArray(array $array)
+    {
+        $mappedArray = [];
+        foreach ($this->getMapper() as $from => $to) {
+            $mappedArray[$to] = $array[$from];
+        }
+        return $mappedArray;
+    }
+
+    /**
      * Export to array, which will exclude unexportable keys
      *
      * @return array
      */
     public function exportToArray()
     {
-        $exportable = $this->getExportable();
         $data = $this->toArray();
         $exportData = [];
-        foreach ($exportable as $key) {
-            $exportData[$key] = $data[$key];
+        foreach ($data as $key => $value) {
+            if (in_array($key, $this->exportable)) {
+                $exportData[$key] = $data[$key];
+            }
         }
         return $exportData;
+    }
+
+    /**
+     * Reset all public properties to null
+     *
+     * @return $this
+     */
+    public function reset()
+    {
+        $array = (array)$this;
+        foreach ($array as $key => $value) {
+            // Protected values are prefixed with an '*'
+            if (strpos($key, '*') == false) {
+                $this->{$key} = null;
+            }
+        }
+        return $this;
     }
 }

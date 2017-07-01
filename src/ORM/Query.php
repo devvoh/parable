@@ -10,8 +10,15 @@ class Query
     const JOIN_RIGHT = 3;
     const JOIN_FULL  = 4;
 
+    /** Order by types */
+    const ORDER_ASC  = 'ASC';
+    const ORDER_DESC = 'DESC';
+
     /** @var \Parable\ORM\Query\Condition[] */
     protected $where = [];
+
+    /** @var \Parable\ORM\Query\Condition[] */
+    protected $having = [];
 
     /** @var array */
     protected $values = [];
@@ -36,14 +43,14 @@ class Query
         self::JOIN_FULL  => [],
     ];
 
+    /** @var null|int */
+    protected $limitOffset = [];
+
     /** @var null|string */
     protected $tableName;
 
     /** @var null|string */
     protected $tableKey;
-
-    /** @var null|int */
-    protected $limit;
 
     /** @var \Parable\ORM\Database */
     protected $database;
@@ -54,8 +61,9 @@ class Query
     /** @var array */
     protected $nonQuoteStrings = ['*', 'sum', 'max', 'min', 'count', 'avg'];
 
-    public function __construct(\Parable\ORM\Database $database)
-    {
+    public function __construct(
+        \Parable\ORM\Database $database
+    ) {
         $this->database = $database;
     }
 
@@ -106,17 +114,28 @@ class Query
     }
 
     /**
+     * @return null|string
+     */
+    public function getTableKey()
+    {
+        return $this->tableKey;
+    }
+
+    /**
      * Set the type of query we're going to do
      *
      * @param string $action
      *
      * @return $this
+     * @throws \Parable\ORM\Exception
      */
     public function setAction($action)
     {
-        if (in_array($action, $this->acceptedValues)) {
-            $this->action = $action;
+        if (!in_array($action, $this->acceptedValues)) {
+            $acceptedValuesString = implode(', ', $this->acceptedValues);
+            throw new \Parable\ORM\Exception("Invalid action set, only {$acceptedValuesString} are allowed.");
         }
+        $this->action = $action;
         return $this;
     }
 
@@ -144,26 +163,64 @@ class Query
     }
 
     /**
-     * Adds a where condition for relevant queries
-     *
-     * @param string $key
-     * @param string $comparator
-     * @param mixed  $value
+     * @param \Parable\ORM\Query\ConditionSet $set
+     * @return $this
+     */
+    public function where(\Parable\ORM\Query\ConditionSet $set)
+    {
+        $this->where[] = $set;
+        return $this;
+    }
+
+    /**
+     * @param \Parable\ORM\Query\ConditionSet[] $sets
+     */
+    public function whereMany(array $sets)
+    {
+        foreach ($sets as $set) {
+            $this->where($set);
+        }
+    }
+
+    /**
+     * @param \Parable\ORM\Query\ConditionSet $set
      *
      * @return $this
      */
-    public function where($key, $comparator, $value = null)
+    public function having(\Parable\ORM\Query\ConditionSet $set)
     {
-        /** @var \Parable\ORM\Query\Condition $condition */
-        $condition = new \Parable\ORM\Query\Condition();
-        $condition
-            ->setKey($key)
-            ->setComparator($comparator)
-            ->setValue($value)
-            ->setQuery($this);
-
-        $this->where[] = $condition;
+        $this->having[] = $set;
         return $this;
+    }
+
+    /**
+     * @param \Parable\ORM\Query\ConditionSet[] $sets
+     */
+    public function havingMany(array $sets)
+    {
+        foreach ($sets as $set) {
+            $this->having($set);
+        }
+    }
+
+    /**
+     * @param \Parable\ORM\Query\Condition[] $conditions
+     *
+     * @return \Parable\ORM\Query\Condition\AndSet
+     */
+    public function buildAndSet(array $conditions)
+    {
+        return new Query\Condition\AndSet($this, $conditions);
+    }
+
+    /**
+     * @param \Parable\ORM\Query\Condition[] $conditions
+     *
+     * @return \Parable\ORM\Query\Condition\OrSet
+     */
+    public function buildOrSet(array $conditions)
+    {
+        return new Query\Condition\OrSet($this, $conditions);
     }
 
     /**
@@ -187,7 +244,8 @@ class Query
         /** @var \Parable\ORM\Query\Condition $condition */
         $condition = new \Parable\ORM\Query\Condition();
         $condition
-            ->setTableName($tableName)
+            ->setTableName($this->getTableName())
+            ->setJoinTableName($tableName)
             ->setKey($key)
             ->setComparator($comparator)
             ->setValue($value)
@@ -271,219 +329,55 @@ class Query
     /**
      * Sets the order for select queries
      *
-     * @param string $key
-     * @param string $direction
+     * @param string      $key
+     * @param string      $direction
+     * @param null|string $tableName
      *
      * @return $this
      */
-    public function orderBy($key, $direction = 'DESC')
+    public function orderBy($key, $direction = self::ORDER_ASC, $tableName = null)
     {
-        $this->orderBy[] = ['key' => $key, 'direction' => $direction];
+        if (!$tableName) {
+            $tableName = $this->getTableName();
+        }
+        $this->orderBy[] = ['key' => $key, 'direction' => $direction, 'tableName' => $tableName];
         return $this;
     }
 
     /**
      * Sets the group by for select queries
      *
-     * @param string $key
+     * @param string      $key
+     * @param null|string $tableName
      *
      * @return $this
      */
-    public function groupBy($key)
+    public function groupBy($key, $tableName = null)
     {
-        $this->groupBy[] = $key;
+        if (!$tableName) {
+            $tableName = $this->getTableName();
+        }
+        $this->groupBy[] = ['key' => $key, 'tableName' => $tableName];
         return $this;
     }
 
     /**
-     * Sets the limit
+     * Sets the limitOffset
      *
      * @param int      $limit
      * @param null|int $offset
      *
      * @return $this
      */
-    public function limit($limit, $offset = null)
+    public function limitOffset($limit, $offset = null)
     {
-        $this->limit = ['limit' => $limit, 'offset' => $offset];
+        $this->limitOffset = ['limit' => $limit, 'offset' => $offset];
         return $this;
     }
 
     /**
-     * @return $this
-     */
-    public static function createInstance()
-    {
-        return \Parable\DI\Container::create(static::class);
-    }
-
-    /**
-     * Build a condition string from an array of values. Required keys: key, comparator, value.
+     * Quote the string properly if a database instance is available, otherwise fudge it for debugging purposes.
      *
-     * Examples: ['id', '=', 1]
-     *           ['id', 'NOT IN', [1, 2, 3, 4]]
-     *
-     * @param array $conditionArray
-     *
-     * @return string
-     */
-    protected function buildCondition(array $conditionArray)
-    {
-        // Check for IN/NOT IN
-        if (in_array(strtolower($conditionArray['comparator']), ['in', 'not in'])) {
-            $values = $conditionArray['value'];
-            $valueArray = [];
-            foreach ($values as $value) {
-                $valueArray[] = $this->quote($value);
-            }
-            $conditionArray['value'] = '(' . implode(',', $valueArray) . ')';
-        } else {
-            $conditionArray['value'] = $this->quote($conditionArray['value']);
-        }
-
-        // Check for IS/IS NOT
-        if (in_array(strtolower($conditionArray['comparator']), ['is', 'is not'])) {
-            $conditionArray['value'] = 'NULL';
-        }
-
-        $returnArray = [
-            $this->quoteIdentifier($conditionArray['key']),
-            $conditionArray['comparator'],
-            $conditionArray['value']
-        ];
-
-        return implode(' ', $returnArray);
-    }
-
-    /**
-     * @return string
-     */
-    protected function buildSelect()
-    {
-        if (count($this->select) > 0) {
-            $selects = [];
-            foreach ($this->select as $select) {
-                $shouldBeQuoted = true;
-
-                // Check our list of nonQuoteStrings to see if we should quote or not.
-                foreach ($this->nonQuoteStrings as $nonQuoteString) {
-                    if (strpos(strtolower($select), $nonQuoteString) !== false) {
-                        $shouldBeQuoted = false;
-                        break;
-                    }
-                }
-
-                if ($shouldBeQuoted) {
-                    $selects[] = $this->getQuotedTableName() . '.' . $this->quoteIdentifier($select);
-                } else {
-                    $selects[] = $select;
-                }
-            }
-            return implode(', ', $selects);
-        }
-        return '';
-    }
-
-    /**
-     * Build JOIN string if they're available
-     *
-     * @return string
-     */
-    protected function buildJoins()
-    {
-        $builtJoins = [];
-        foreach ($this->joins as $type => $joins) {
-            if (count($joins) > 0) {
-                foreach ($joins as $join) {
-                    if ($type == self::JOIN_INNER) {
-                        $builtJoins[] = "INNER JOIN";
-                    } elseif ($type == self::JOIN_LEFT) {
-                        $builtJoins[] = "LEFT JOIN";
-                    } elseif ($type == self::JOIN_RIGHT) {
-                        $builtJoins[] = "RIGHT JOIN";
-                    } elseif ($type == self::JOIN_FULL) {
-                        $builtJoins[] = "FULL JOIN";
-                    }
-
-                    $builtJoins[] = $this->quoteIdentifier($join->getTableName()) . " ON";
-                    $builtJoins[] = $join->build();
-                }
-            }
-        }
-
-        return implode(" ", $builtJoins);
-    }
-
-    /**
-     * Build WHERE string if they're available
-     *
-     * @return string
-     */
-    protected function buildWheres()
-    {
-        if (count($this->where) > 0) {
-            $wheres = [];
-            foreach ($this->where as $where) {
-                $wheres[] = $where->build();
-            }
-            return "WHERE " . implode(' AND ', $wheres);
-        }
-        return '';
-    }
-
-    /**
-     * Build ORDER BY string if it's available
-     *
-     * @return string
-     */
-    protected function buildOrderBy()
-    {
-        if (count($this->orderBy) > 0) {
-            $orders = [];
-            foreach ($this->orderBy as $orderBy) {
-                $orders[] = $orderBy['key'] . ' ' . $orderBy['direction'];
-            }
-            return "ORDER BY " . implode(', ', $orders);
-        }
-        return '';
-    }
-
-    /**
-     * Build GROUP BY string if it's available
-     *
-     * @return string
-     */
-    protected function buildGroupBy()
-    {
-        if (count($this->groupBy) > 0) {
-            $groups = [];
-            foreach ($this->groupBy as $groupBy) {
-                $groups[] = $groupBy;
-            }
-            return "GROUP BY " . implode(', ', $groups);
-        }
-        return '';
-    }
-
-    /**
-     * Build LIMIT/OFFSET string if it's available
-     *
-     * @return string
-     */
-    protected function buildLimitOffset()
-    {
-        if (is_array($this->limit)) {
-            $limit = $this->limit['limit'];
-            if ($this->limit['offset'] !== null) {
-                $limit = $this->limit['offset'] . ',' . $limit;
-            }
-            $limit = "LIMIT " . $limit;
-            return $limit;
-        }
-        return '';
-    }
-
-    /**
      * @param string $string
      *
      * @return string
@@ -511,6 +405,166 @@ class Query
     }
 
     /**
+     * @return string
+     */
+    protected function buildSelect()
+    {
+        $selects = [];
+        foreach ($this->select as $select) {
+            $shouldBeQuoted = true;
+
+            // Check our list of nonQuoteStrings to see if we should quote or not.
+            foreach ($this->nonQuoteStrings as $nonQuoteString) {
+                if (strpos(strtolower($select), $nonQuoteString) !== false) {
+                    $shouldBeQuoted = false;
+                    break;
+                }
+            }
+
+            if ($shouldBeQuoted) {
+                $selects[] = $this->getQuotedTableName() . '.' . $this->quoteIdentifier($select);
+            } else {
+                $selects[] = $select;
+            }
+        }
+        return implode(', ', $selects);
+    }
+
+    /**
+     * Build JOIN string if they're available
+     *
+     * @return string
+     */
+    protected function buildJoins()
+    {
+        $builtJoins = [];
+        foreach ($this->joins as $type => $joins) {
+            if (count($joins) > 0) {
+                foreach ($joins as $join) {
+                    if ($type == self::JOIN_INNER) {
+                        $builtJoins[] = "INNER JOIN";
+                    } elseif ($type == self::JOIN_LEFT) {
+                        $builtJoins[] = "LEFT JOIN";
+                    } elseif ($type == self::JOIN_RIGHT) {
+                        $builtJoins[] = "RIGHT JOIN";
+                    } elseif ($type == self::JOIN_FULL) {
+                        $builtJoins[] = "FULL JOIN";
+                    }
+
+                    $builtJoins[] = $this->quoteIdentifier($join->getJoinTableName()) . " ON";
+
+                    // Use a ConditionSet to build the joins
+                    $conditionSet = new Query\Condition\AndSet($this, [$join]);
+                    $builtJoins[] = $conditionSet->buildWithoutParentheses();
+                }
+            }
+        }
+
+        return implode(" ", $builtJoins);
+    }
+
+    /**
+     * Build WHERE string if they're available
+     *
+     * @return string
+     */
+    protected function buildWheres()
+    {
+        if (count($this->where) === 0) {
+            return '';
+        }
+
+        // Use a ConditionSet to build the wheres
+        $conditionSet = new Query\Condition\AndSet($this, $this->where);
+        return "WHERE {$conditionSet->buildWithoutParentheses()}";
+    }
+
+    /**
+     * Build HAVING string if they're available
+     *
+     * @return string
+     */
+    protected function buildHaving()
+    {
+        if (count($this->having) === 0) {
+            return '';
+        }
+
+        // Use a ConditionSet to build the having clause
+        $conditionSet = new Query\Condition\AndSet($this, $this->having);
+        return "HAVING {$conditionSet->buildWithoutParentheses()}";
+    }
+
+    /**
+     * Build ORDER BY string if it's available
+     *
+     * @return string
+     */
+    protected function buildOrderBy()
+    {
+        if (count($this->orderBy) === 0) {
+            return '';
+        }
+
+        $orders = [];
+        foreach ($this->orderBy as $orderBy) {
+            $key = $this->quoteIdentifier($orderBy["tableName"]) . "." . $this->quote($orderBy["key"]);
+            $orders[] = $key . ' ' . $orderBy['direction'];
+        }
+        return "ORDER BY " . implode(', ', $orders);
+    }
+
+    /**
+     * Build GROUP BY string if it's available
+     *
+     * @return string
+     */
+    protected function buildGroupBy()
+    {
+        if (count($this->groupBy) === 0) {
+            return '';
+        }
+
+        $groups = [];
+        foreach ($this->groupBy as $groupBy) {
+            $groupBy = $this->quoteIdentifier($groupBy["tableName"]) . "." . $this->quote($groupBy["key"]);
+            $groups[] = $groupBy;
+        }
+        return "GROUP BY " . implode(', ', $groups);
+    }
+
+    /**
+     * Build LIMIT/OFFSET string if it's available
+     *
+     * @return string
+     */
+    protected function buildLimitOffset()
+    {
+        if (empty($this->limitOffset)) {
+            return '';
+        }
+
+        $limitOffset = "";
+        if ($this->limitOffset["limit"] && $this->limitOffset["offset"]) {
+            $limitOffset = $this->limitOffset['offset'] . ',' . $this->limitOffset['limit'];
+        } elseif ($this->limitOffset["limit"]) {
+            $limitOffset = $this->limitOffset["limit"];
+        } elseif ($this->limitOffset["offset"]) {
+            $limitOffset = $this->limitOffset["offset"];
+        }
+
+        return "LIMIT " . $limitOffset;
+    }
+
+    /**
+     * @return $this
+     */
+    public static function createInstance()
+    {
+        return \Parable\DI\Container::create(static::class);
+    }
+
+    /**
      * Outputs the actual query for use, empty string if invalid/incomplete values given
      *
      * @return string
@@ -520,85 +574,96 @@ class Query
         $query = [];
 
         if ($this->action === 'select') {
+            if (count($this->select) == 0) {
+                return '';
+            }
+
             $query[] = "SELECT " . $this->buildSelect();
             $query[] = "FROM " . $this->getQuotedTableName();
             $query[] = $this->buildJoins();
             $query[] = $this->buildWheres();
-            $query[] = $this->buildOrderBy();
             $query[] = $this->buildGroupBy();
+            $query[] = $this->buildHaving();
+            $query[] = $this->buildOrderBy();
             $query[] = $this->buildLimitOffset();
         } elseif ($this->action === 'delete') {
+            if (count($this->where) == 0) {
+                return '';
+            }
+
             $query[] = "DELETE FROM " . $this->getQuotedTableName();
             $query[] = $this->buildWheres();
         } elseif ($this->action === 'update') {
+            if (count($this->values) == 0) {
+                return '';
+            }
+
             $query[] = "UPDATE " . $this->getQuotedTableName();
 
-            // now get the values
-            if (count($this->values) > 0) {
-                // Set the table values to defaults
-                $tableKey = 'id';
-                $tableKeyValue = null;
+            // Set the table values to defaults
+            $tableKey = 'id';
+            $tableKeyValue = null;
 
-                $values = [];
-                foreach ($this->values as $key => $value) {
-                    // skip id, since we'll use that as a where condition
-                    if ($key !== $this->tableKey) {
-                        if ($value === null) {
-                            $correctValue = 'NULL';
-                        } else {
-                            $correctValue = $this->quote($value);
-                        }
-                        // Quote the key
-                        $key = $this->quoteIdentifier($key);
-
-                        // Add key & value combo to the array
-                        $values[] = $key . " = " . $correctValue;
-                    } else {
-                        $tableKey = $key;
-                        $tableKeyValue = $value;
-                    }
-                }
-                $query[] = "SET " . implode(', ', $values);
-                $query[] = "WHERE " . $this->quoteIdentifier($tableKey);
-                $query[] = " = " . $this->quote($tableKeyValue);
-            } else {
-                $query = [];
-            }
-        } elseif ($this->action === 'insert') {
-            // set insert to the proper table
-            $query[] = "INSERT INTO " . $this->getQuotedTableName();
-
-            // now get the values
-            if (count($this->values) > 0) {
-                $keys = [];
-                $values = [];
-                foreach ($this->values as $key => $value) {
-                    // Quote the key
-                    $keys[] = $this->quoteIdentifier($key);
-
+            $values = [];
+            foreach ($this->values as $key => $value) {
+                // skip id, since we'll use that as a where condition
+                if ($key !== $this->tableKey) {
                     if ($value === null) {
                         $correctValue = 'NULL';
                     } else {
                         $correctValue = $this->quote($value);
                     }
-                    $values[] = $correctValue;
-                }
+                    // Quote the key
+                    $key =  $this->quoteIdentifier($key);
 
-                $query[] = "(" . implode(', ', $keys) . ")";
-                $query[] = "VALUES";
-                $query[] = "(" . implode(', ', $values) . ")";
-            } else {
-                $query = [];
+                    // Add key & value combo to the array
+                    $values[] = $key . " = " . $correctValue;
+                } else {
+                    $tableKey = $key;
+                    $tableKeyValue = $value;
+                }
+            }
+            $query[] = "SET " . implode(', ', $values);
+            $query[] = "WHERE " . $this->getQuotedTableName() . '.' . $this->quoteIdentifier($tableKey);
+            $query[] = " = " . $this->quote($tableKeyValue);
+        } elseif ($this->action === 'insert') {
+            if (count($this->values) == 0) {
+                return '';
+            }
+
+            // set insert to the proper table
+            $query[] = "INSERT INTO " . $this->getQuotedTableName();
+
+            // now get the values
+            $keys = [];
+            $values = [];
+            foreach ($this->values as $key => $value) {
+                // Quote the key
+                $keys[] = $this->quoteIdentifier($key);
+
+                if ($value === null) {
+                    $correctValue = 'NULL';
+                } else {
+                    $correctValue = $this->quote($value);
+                }
+                $values[] = $correctValue;
+            }
+
+            $query[] = "(" . implode(', ', $keys) . ")";
+            $query[] = "VALUES";
+            $query[] = "(" . implode(', ', $values) . ")";
+        }
+
+
+        // Clean up any empty lines we're not going to want in the string, to prevent double/triple spaces
+        foreach ($query as $key => $queryPart) {
+            if (empty($queryPart)) {
+                unset($query[$key]);
             }
         }
 
-        // and now implode it into a nice string, if possible
-        if (count($query) == 0) {
-            return '';
-        }
-
         // Now make it nice.
-        $queryString = implode(' ', $query);
+        $queryString = implode(" ", $query);
         $queryString = trim($queryString) . ';';
 
         // Since we got here, we've got a query to output

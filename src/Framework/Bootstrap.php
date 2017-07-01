@@ -26,6 +26,13 @@ $autoloader = \Parable\DI\Container::get(\Parable\Framework\Autoloader::class);
 $autoloader->addLocation(BASEDIR . DS . 'app');
 $autoloader->register();
 
+/*
+ * Set the BASEDIR on Path
+ */
+/** @var \Parable\Filesystem\Path $path */
+$path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
+$path->setBasedir(BASEDIR);
+
 if (PHP_SAPI === 'cli') {
     return \Parable\DI\Container::get(\Parable\Console\App::class);
 }

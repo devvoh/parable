@@ -7,6 +7,13 @@ class Database
     /** Use this to set a value to SQL NULL */
     const NULL_VALUE = '__parable_null_value__';
 
+    /** Types supported */
+    const TYPE_SQLITE = 'sqlite';
+    const TYPE_MYSQL  = 'mysql';
+
+    /** SQLite-specific location */
+    const LOCATION_SQLITE_MEMORY = ':memory:';
+
     /** @var null|string */
     protected $type;
 
@@ -141,32 +148,63 @@ class Database
     }
 
     /**
-     * Return instance, if any
-     *
      * @return null|\PDO
+     * @throws \Parable\ORM\Exception
      */
     public function getInstance()
     {
         if (!$this->instance && $this->getType() && $this->getLocation()) {
             switch ($this->getType()) {
-                case 'sqlite':
-                case 'sqlite3':
-                    $instance = new \PDO('sqlite:' . $this->getLocation());
+                case static::TYPE_SQLITE:
+                    $instance = $this->createPDOSQLite(
+                        $this->getLocation()
+                    );
                     $this->setInstance($instance);
                     break;
-                case 'mysql':
+                case static::TYPE_MYSQL:
                     if (!$this->getUsername() || !$this->getPassword() || !$this->getDatabase()) {
                         return null;
                     }
-                    $instance = new \PDO(
-                        'mysql:host=' . $this->getLocation() . ';dbname=' . $this->getDatabase(),
+                    $instance = $this->createPDOMySQL(
+                        $this->getLocation(),
+                        $this->getDatabase(),
                         $this->getUsername(),
                         $this->getPassword()
                     );
                     $this->setInstance($instance);
+                    break;
+                default:
+                    throw new \Parable\ORM\Exception("Database type was invalid: {$this->getType()}");
             }
         }
         return $this->instance;
+    }
+
+    /**
+     * @param string $location
+     *
+     * @return \Parable\ORM\Database\PDOSQLite
+     */
+    protected function createPDOSQLite($location)
+    {
+        $dsn = 'sqlite:' . $location;
+        return new \Parable\ORM\Database\PDOSQLite($dsn);
+    }
+
+    /**
+     * @param string $location
+     * @param string $database
+     * @param string $username
+     * @param string $password
+     *
+     * @return \Parable\ORM\Database\PDOMySQL
+     *
+     * @codeCoverageIgnore
+     */
+    protected function createPDOMySQL($location, $database, $username, $password)
+    {
+        $dsn = 'mysql:host=' . $location . ';dbname=' . $database;
+        return new \Parable\ORM\Database\PDOMySQL($dsn, $username, $password);
     }
 
     /**
@@ -188,11 +226,12 @@ class Database
      * @param string $string
      *
      * @return null|string
+     * @throws \Parable\ORM\Exception
      */
     public function quote($string)
     {
         if (!$this->getInstance()) {
-            return null;
+            throw new \Parable\ORM\Exception("Can't quote value without a database instance.");
         }
         return $this->getInstance()->quote($string);
     }
@@ -215,12 +254,13 @@ class Database
      *
      * @param string $query
      *
-     * @return bool|\PDOStatement
+     * @return \PDOStatement
+     * @throws \Parable\ORM\Exception
      */
     public function query($query)
     {
         if (!$this->getInstance()) {
-            return false;
+            throw new \Parable\ORM\Exception("Can't run query without a database instance.");
         }
         return $this->getInstance()->query($query, \PDO::FETCH_ASSOC);
     }
@@ -241,7 +281,7 @@ class Database
                 $this->$method($value);
             } else {
                 throw new \Parable\ORM\Exception(
-                    'Tried to call non-existing method ' . $method . ' on ' . get_class($this)
+                    "Tried to set non-existing config value '{$type}' on " . get_class($this)
                 );
             }
         }

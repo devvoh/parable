@@ -1,5 +1,6 @@
 ## Parable PHP Framework
 
+[![Build Status](https://travis-ci.org/devvoh/parable.svg?branch=master)](https://travis-ci.org/devvoh/parable)
 [![Latest Stable Version](https://poser.pugx.org/devvoh/parable/v/stable)](https://packagist.org/packages/devvoh/parable)
 [![Latest Unstable Version](https://poser.pugx.org/devvoh/parable/v/unstable)](https://packagist.org/packages/devvoh/parable)
 [![License](https://poser.pugx.org/devvoh/parable/license)](https://packagist.org/packages/devvoh/parable)

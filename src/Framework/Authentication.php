@@ -13,7 +13,7 @@ class Authentication
     /** @var \Parable\Framework\Toolkit */
     protected $toolkit;
 
-    /** @var \Parable\Http\Values\Session */
+    /** @var \Parable\GetSet\Session */
     protected $session;
 
     /** @var bool */
@@ -22,12 +22,9 @@ class Authentication
     /** @var array */
     protected $authenticationData = [];
 
-    /** @var bool */
-    protected $initialized = false;
-
     public function __construct(
         \Parable\Framework\Toolkit $toolkit,
-        \Parable\Http\Values\Session $session
+        \Parable\GetSet\Session $session
     ) {
         $this->toolkit = $toolkit;
         $this->session = $session;
@@ -40,18 +37,13 @@ class Authentication
      */
     public function initialize()
     {
-        // If we've already been initialized, we don't need to re-do the logic again.
-        if ($this->isInitialized()) {
-            return $this->isAuthenticated();
-        }
-
         if ($this->checkAuthentication()) {
             $data = $this->getAuthenticationData();
             if (!isset($data['user_id'])) {
                 return false;
             }
-            $userId = $data['user_id'];
-            $user = $this->toolkit->getRepository($this->userClassName)->getById($userId);
+
+            $user = $this->toolkit->getRepository($this->userClassName)->getById($data['user_id']);
             if (!$user) {
                 $this->setAuthenticated(false);
                 $this->setAuthenticationData([]);
@@ -82,8 +74,18 @@ class Authentication
     {
         $authSession = $this->session->get('auth');
         if ($authSession) {
-            $this->setAuthenticated($authSession['authenticated']);
-            $this->setAuthenticationData($authSession['data']);
+            if (isset($authSession['authenticated'])) {
+                $this->setAuthenticated($authSession['authenticated']);
+            } else {
+                $this->setAuthenticated(false);
+            }
+
+            if (isset($authSession['data'])) {
+                $this->setAuthenticationData($authSession['data']);
+            } else {
+                $this->setAuthenticationData([]);
+            }
+
             return true;
         }
         return false;
@@ -100,16 +102,6 @@ class Authentication
     {
         $this->authenticated = (bool)$value;
         return $this;
-    }
-
-    /**
-     * Checks whether we've been initialized or not
-     *
-     * @return bool
-     */
-    public function isInitialized()
-    {
-        return $this->initialized;
     }
 
     /**
@@ -156,7 +148,7 @@ class Authentication
         try {
             \Parable\DI\Container::create($className);
         } catch (\Exception $e) {
-            throw new \Parable\Framework\Exception($this->userClassName . ' could not be instantiated.');
+            throw new \Parable\Framework\Exception("Class '{$className}' could not be instantiated.");
         }
 
         $this->userClassName = $className;
@@ -164,10 +156,18 @@ class Authentication
     }
 
     /**
+     * @return string
+     */
+    public function getUserClassName()
+    {
+        return $this->userClassName;
+    }
+
+    /**
      * @param $user
      *
      * @return $this
-     * @throws Exception
+     * @throws \Parable\Framework\Exception
      */
     public function setUser($user)
     {
@@ -179,15 +179,12 @@ class Authentication
     }
 
     /**
-     * Return the user entity
+     * Return the user entity, if exists
      *
      * @return null
      */
     public function getUser()
     {
-        if (!$this->user) {
-            $this->initialize();
-        }
         return $this->user;
     }
 
@@ -203,6 +200,10 @@ class Authentication
     {
         if (password_verify($passwordProvided, $passwordHash)) {
             $this->setAuthenticated(true);
+
+            if ($this->getUser()) {
+                $this->setAuthenticationData(['user_id' => $this->user->id]);
+            }
             $this->session->set('auth', [
                 'authenticated' => true,
                 'data' => $this->authenticationData,
@@ -220,7 +221,6 @@ class Authentication
      */
     public function revokeAuthentication()
     {
-        $this->user = null;
         $this->setAuthenticated(false);
         $this->session->remove('auth');
 

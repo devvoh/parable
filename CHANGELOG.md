@@ -1,5 +1,23 @@
 # Parable PHP Framework Changelog
 
+### 0.11.0
+
+Hey, look! Tests! With 100% code coverage, too! Run `make tests` to run them (which will attempt to `composer install` for needed libraries and then run the tests). Run `make coverage` to run the tests AND generate the HTML coverage report in `./coverage`.
+
+With tests, every nook and cranny of the code was looked at, evaluated and where needed, checked, fixed, removed or added to. This changelog will be huge.
+
+This release also pulls out all interdependencies except for `Framework` still depending on other Components.
+
+There's so many changes that it'll take a fly's lifetime to jot them all down, and it's just not worth it.
+
+If you're upgrading from 0.10, I wish you all the luck, though in most cases the errors will show you the way.
+
+__Changes__
+- Many things.
+
+__Bugfixes__
+- Much more.
+
 ### 0.10.3
 
 __Bugfixes__

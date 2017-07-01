@@ -4,87 +4,28 @@ namespace Parable\Framework;
 
 class Toolkit
 {
-    /** @var \Parable\Filesystem\Path */
-    protected $path;
+    /** @var \Parable\GetSet\Get */
+    protected $get;
 
-    /** @var \Parable\Routing\Router */
-    protected $router;
+    /** @var \Parable\Http\Response */
+    protected $response;
 
     /** @var \Parable\Http\Url */
     protected $url;
 
-    /** @var array */
-    protected $resourceMap = [];
+    /** @var \Parable\Routing\Router */
+    protected $router;
 
     public function __construct(
-        \Parable\Filesystem\Path $path,
+        \Parable\GetSet\Get $get,
+        \Parable\Http\Response $response,
         \Parable\Http\Url $url,
         \Parable\Routing\Router $router
     ) {
-        $this->path   = $path;
-        $this->url    = $url;
-        $this->router = $router;
-    }
-
-    /**
-     * Load the resource map
-     *
-     * @return $this
-     */
-    public function loadResourceMap()
-    {
-        $dirIterator = new \RecursiveDirectoryIterator(
-            $this->path->getDir('vendor/devvoh/parable/src'),
-            \RecursiveDirectoryIterator::SKIP_DOTS
-        );
-        $iteratorIterator = new \RecursiveIteratorIterator($dirIterator);
-
-        /** @var \SplFileInfo $file */
-        foreach ($iteratorIterator as $path => $file) {
-            /*
-             * Specifically exclude all non-php files and Bootstrap, since it will attempt to register everything again
-             * and isn't a class anyway.
-             */
-            if ($file->getFilename() === 'Bootstrap.php'
-                || $file->getFilename() === 'parable.php'
-                || $file->getExtension() !== 'php'
-                || strpos($file->getRealPath(), '/Console/') !== false
-            ) {
-                continue;
-            }
-
-            $className = str_replace('.' . $file->getExtension(), '', $file->getFilename());
-
-            $fullClassName = str_replace($this->path->getDir('vendor/devvoh/parable/src'), '', $file->getRealPath());
-            $fullClassName = str_replace('.' . $file->getExtension(), '', $fullClassName);
-            $fullClassName = str_replace('/', '\\', 'Parable' . $fullClassName);
-
-            $reflectionClass = new \ReflectionClass($fullClassName);
-            if (!$reflectionClass->isInstantiable()) {
-                continue;
-            }
-
-            $this->resourceMap[$className] = $fullClassName;
-        }
-        return $this;
-    }
-
-    /**
-     * Return a mapping
-     *
-     * @param string $index
-     *
-     * @return null|string
-     */
-    public function getResourceMapping($index)
-    {
-        if (!$this->resourceMap) {
-            $this->loadResourceMap();
-        }
-        if (isset($this->resourceMap[$index])) {
-            return $this->resourceMap[$index];
-        }
-        return null;
+        $this->get      = $get;
+        $this->response = $response;
+        $this->url      = $url;
+        $this->router   = $router;
     }
 
     /**
@@ -110,11 +51,15 @@ class Toolkit
      * Redirect directly by using a route name.
      *
      * @param string $routeName
+     * @throws \Parable\Framework\Exception
      */
     public function redirectToRoute($routeName)
     {
         $route = $this->router->getRouteByName($routeName);
-        $this->url->redirect($route->url);
+        if (!$route) {
+            throw new \Parable\Framework\Exception("Can't redirect to route, '{$routeName}'' does not exist.");
+        }
+        $this->response->redirect($route->url);
     }
 
     /**
@@ -126,5 +71,24 @@ class Toolkit
     public function getFullRouteUrlByName($name, array $parameters = [])
     {
         return $this->url->getUrl($this->router->getRouteUrlByName($name, $parameters));
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentUrl()
+    {
+        if ($this->get->get('url')) {
+            return $this->get->get('url');
+        }
+        return '/';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentUrlFull()
+    {
+        return $this->url->getUrl($this->getCurrentUrl());
     }
 }

@@ -31,16 +31,17 @@ class Route
     /** @var array */
     public $values = [];
 
-    /** @var null|\Parable\Http\Request */
-    protected $request;
+    /** @var array */
+    public $cleanValues = [];
 
-    public function __construct(
-        \Parable\Http\Request $request,
-        array $data
-    ) {
-        $this->request = $request;
-
-        $this->methods    = $data['methods'];
+    /**
+     * @param array $data
+     *
+     * @throws \Parable\Routing\Exception
+     */
+    public function setData(array $data)
+    {
+        $this->methods    = isset($data['methods'])    ? $data['methods']    : [];
         $this->url        = isset($data['url'])        ? $data['url']        : null;
         $this->controller = isset($data['controller']) ? $data['controller'] : null;
         $this->action     = isset($data['action'])     ? $data['action']     : null;
@@ -50,15 +51,8 @@ class Route
         if (!$this->controller && !$this->action && !$this->callable) {
             throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
         }
-        if (!is_array($this->methods)) {
-            /*
-             * @deprecated This will be turned into an Exception in the next minor version (if pre-release) or 1.0.0.
-             */
-            if (strpos($this->methods, "|") !== false) {
-                $this->methods = explode("|", $this->methods);
-            } else {
-                $this->methods = [$this->methods];
-            }
+        if (empty($this->methods) || !is_array($data['methods'])) {
+            throw new \Parable\Routing\Exception('Methods are required and must be passed as an array.');
         }
 
         $this->parseUrlParameters();
@@ -96,13 +90,15 @@ class Route
         foreach ($this->parameters as $index => $name) {
             $value = $urlParts[$index];
 
-            $validValue = $this->checkParameterValueType($name, $value);
+            $validValue = $this->checkAndApplyParameterValueType($name, $value);
             if ($validValue === false) {
                 $this->values = [];
                 break;
             }
+
             $this->values[$name] = $validValue;
         }
+        $this->cleanValues();
         return $this->values;
     }
 
@@ -112,32 +108,37 @@ class Route
      *
      * @return mixed|bool
      */
-    protected function checkParameterValueType($name, $value)
+    protected function checkAndApplyParameterValueType($name, $value)
     {
         // If there's no : in the name, then it's not typed.
         if (strpos($name, ':') === false) {
             return $value;
         }
-        list($key, $type) = explode(":", $name);
-
-        if (!in_array($type, ["int", "string", "float"])) {
-            return false;
-        }
+        list(, $type) = explode(":", $name);
 
         if ($type === "int") {
             if (is_numeric($value) && (int)$value == $value) {
                 return (int)$value;
             }
-            return false;
         } elseif ($type === "float") {
             if (is_numeric($value) && (float)$value == $value) {
                 return (float)$value;
             }
-            return false;
         }
 
-        // by default return the string value
-        return $value;
+        return false;
+    }
+
+    protected function removeParameterValueTypeFromName($name)
+    {
+        // If there's no : in the name, then it's not typed.
+        if (strpos($name, ':') === false) {
+            return $name;
+        }
+        list($key) = explode(":", $name);
+
+        // All good, so return just the key
+        return $key;
     }
 
     /**
@@ -216,7 +217,7 @@ class Route
      */
     public function isAcceptedRequestMethod()
     {
-        return in_array($this->request->getMethod(), $this->methods);
+        return in_array($_SERVER['REQUEST_METHOD'], $this->methods);
     }
 
     /**
@@ -242,6 +243,19 @@ class Route
     }
 
     /**
+     * @return $this
+     */
+    protected function cleanValues()
+    {
+        foreach ($this->values as $key => $value) {
+            $key = $this->removeParameterValueTypeFromName($key);
+            $this->cleanValues[$key] = $value;
+        }
+        return $this;
+    }
+
+
+    /**
      * Get a value, if it exists.
      *
      * @param string $key
@@ -250,10 +264,10 @@ class Route
      */
     public function getValue($key)
     {
-        if (!isset($this->values[$key])) {
+        if (!isset($this->cleanValues[$key])) {
             return null;
         }
-        return $this->values[$key];
+        return $this->cleanValues[$key];
     }
 
     /**
@@ -263,7 +277,7 @@ class Route
      */
     public function getValues()
     {
-        return $this->values;
+        return $this->cleanValues;
     }
 
     /**

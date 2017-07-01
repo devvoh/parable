@@ -78,13 +78,10 @@ class Dispatcher
         }
 
         /* Get the output buffer content and check if $content holds anything. If so, append it to the $bufferContent */
-        $bufferContent = $this->response->returnOutputBuffer();
-        if ($content) {
-            $bufferContent .= $content;
-        }
+        $content = $this->response->returnOutputBuffer() . $content;
 
         /* And append the content to the response object */
-        $this->response->appendContent($bufferContent);
+        $this->response->appendContent($content);
 
         $this->hook->trigger('parable_dispatch_after', $route);
         return $this;

@@ -19,16 +19,14 @@ class Command
     /** @var \Parable\Console\App */
     protected $app;
 
-    /**
-     * @param \Parable\Console\App $app
-     *
-     * @return $this
-     */
-    public function setApp(\Parable\Console\App $app)
-    {
-        $this->app = $app;
-        return $this;
-    }
+    /** @var \Parable\Console\Output */
+    protected $output;
+
+    /** @var \Parable\Console\Input */
+    protected $input;
+
+    /** @var \Parable\Console\Parameter */
+    protected $parameter;
 
     /**
      * @param string $name
@@ -88,35 +86,16 @@ class Command
     }
 
     /**
-     * @param \Parable\Console\Output    $output
-     * @param \Parable\Console\Input     $input
-     * @param \Parable\Console\Parameter $parameter
-     *
-     * @return $this|mixed
-     */
-    public function run(
-        \Parable\Console\Output $output,
-        \Parable\Console\Input $input,
-        \Parable\Console\Parameter $parameter
-    ) {
-        $callable = $this->getCallable();
-        if (is_callable($callable)) {
-            return $callable($output, $input, $parameter);
-        }
-        return $this;
-    }
-
-    /**
-     * @param string      $name
-     * @param bool        $required
-     * @param bool        $valueRequired
-     * @param mixed|null  $defaultValue
+     * @param string $name
+     * @param bool   $required
+     * @param bool   $valueRequired
+     * @param mixed  $defaultValue
      *
      * @return $this
      */
     public function addOption($name, $required = false, $valueRequired = false, $defaultValue = null)
     {
-        $this->options[] = [
+        $this->options[$name] = [
             'name'          => $name,
             'required'      => $required,
             'valueRequired' => $valueRequired,
@@ -131,5 +110,54 @@ class Command
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @param \Parable\Console\App       $app
+     * @param \Parable\Console\Output    $output
+     * @param \Parable\Console\Input     $input
+     * @param \Parable\Console\Parameter $parameter
+     *
+     * @return $this
+     */
+    public function prepare(
+        \Parable\Console\App $app,
+        \Parable\Console\Output $output,
+        \Parable\Console\Input $input,
+        \Parable\Console\Parameter $parameter
+    ) {
+        $this->app       = $app;
+        $this->output    = $output;
+        $this->input     = $input;
+        $this->parameter = $parameter;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function run()
+    {
+        $callable = $this->getCallable();
+        if (is_callable($callable)) {
+            return $callable($this->app, $this->output, $this->input, $this->parameter);
+        }
+        return false;
+    }
+
+    /**
+     * @param \Parable\Console\Command $command
+     * @param array                    $arguments
+     * @return mixed
+     */
+    protected function runCommand(\Parable\Console\Command $command, array $arguments = [])
+    {
+        $parameter = new \Parable\Console\Parameter();
+        $parameter->setArguments($arguments);
+
+        $command->prepare($this->app, $this->output, $this->input, $parameter);
+
+        return $command->run();
     }
 }

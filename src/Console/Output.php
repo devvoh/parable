@@ -33,6 +33,9 @@ class Output
         'info'    => "\e[0;30m\e[43m",
     ];
 
+    /** @var int */
+    protected $lineLength = 0;
+
     /**
      * @param string $string
      *
@@ -41,6 +44,9 @@ class Output
     public function write($string)
     {
         $string = $this->parseTags($string);
+
+        $this->lineLength += strlen($string);
+
         echo $string;
         return $this;
     }
@@ -70,7 +76,98 @@ class Output
      */
     public function newline($count = 1)
     {
+        $this->lineLength = 0;
+
         echo str_repeat(PHP_EOL, $count);
+        return $this;
+    }
+
+    /**
+     * @param int $characters
+     *
+     * @return $this
+     */
+    public function cursorForward($characters = 1)
+    {
+        $this->write("\e[{$characters}C");
+        return $this;
+    }
+
+    /**
+     * @param int $characters
+     *
+     * @return $this
+     */
+    public function cursorBackward($characters = 1)
+    {
+        $this->write("\e[{$characters}D");
+        return $this;
+    }
+
+    /**
+     * @param int $characters
+     *
+     * @return $this
+     */
+    public function cursorUp($characters = 1)
+    {
+        $this->write("\e[{$characters}A");
+        return $this;
+    }
+
+    /**
+     * @param int $characters
+     *
+     * @return $this
+     */
+    public function cursorDown($characters = 1)
+    {
+        $this->write("\e[{$characters}B");
+        return $this;
+    }
+
+    /**
+     * @param int $line
+     * @param int $column
+     *
+     * @return $this
+     */
+    public function cursorPlace($line = 0, $column = 0)
+    {
+        $this->write("\e[{$line};{$column}H");
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function cls()
+    {
+        $this->write("\ec");
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLineLength()
+    {
+        return $this->lineLength;
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearLine()
+    {
+        // Move back the cursor and replace the existing text with spaces
+        $spaces = str_repeat(" ", $this->lineLength);
+        $this->write("\e[{$this->lineLength}D{$spaces}");
+        // And move the cursor back again
+        $this->write("\e[{$this->lineLength}D");
+
+        $this->lineLength = 0;
+
         return $this;
     }
 

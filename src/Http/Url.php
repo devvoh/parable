@@ -5,31 +5,31 @@ namespace Parable\Http;
 class Url
 {
     /** @var string */
-    protected $baseurl;
+    protected $baseUrl;
 
     /**
-     * Initialize the correct baseurl
+     * Initialize the correct baseUrl
      *
      * @return $this
      */
-    public function buildBaseurl()
+    public function buildBaseUrl()
     {
         $domain = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 
         $url = str_replace('/public/index.php', '', $_SERVER['SCRIPT_NAME']);
-        $this->baseurl = $domain . '/' . ltrim($url, '/');
+        $this->baseUrl = $domain . '/' . ltrim($url, '/');
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getBaseurl()
+    public function getBaseUrl()
     {
-        if (!$this->baseurl) {
-            $this->buildBaseurl();
+        if (!$this->baseUrl) {
+            $this->buildBaseUrl();
         }
-        return $this->baseurl;
+        return $this->baseUrl;
     }
 
     /**
@@ -39,38 +39,6 @@ class Url
      */
     public function getUrl($url = '')
     {
-        return rtrim($this->getBaseurl(), '/') . '/' . ltrim($url, '/');
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrentUrl()
-    {
-        return isset($_GET['url']) ? $_GET['url'] : '/';
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrentUrlFull()
-    {
-        return $this->getUrl($this->getCurrentUrl());
-    }
-
-    /**
-     * Redirect to url, adding our own own baseUrl if it's probably a relative path
-     *
-     * @param string $url
-     */
-    public function redirect($url)
-    {
-        if (strpos($url, 'http://') === false
-            && strpos($url, 'https://') === false
-        ) {
-            $url = $this->getUrl($url);
-        }
-        header("location: {$url}");
-        die();
+        return rtrim($this->getBaseUrl(), '/') . '/' . ltrim($url, '/');
     }
 }

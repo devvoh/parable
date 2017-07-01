@@ -13,14 +13,14 @@ class App
     /** @var \Parable\Framework\Dispatcher */
     protected $dispatcher;
 
+    /** @var \Parable\Framework\Toolkit */
+    protected $toolkit;
+
     /** @var \Parable\Event\Hook */
     protected $hook;
 
     /** @var \Parable\Routing\Router */
     protected $router;
-
-    /** @var \Parable\Http\Request */
-    protected $request;
 
     /** @var \Parable\Http\Response */
     protected $response;
@@ -28,36 +28,36 @@ class App
     /** @var \Parable\Http\Url */
     protected $url;
 
-    /** @var \Parable\Http\Values */
-    protected $values;
+    /** @var \Parable\GetSet\Session */
+    protected $session;
 
     /** @var \Parable\ORM\Database */
     protected $database;
 
     /** @var string */
-    protected $version = '0.10.3';
+    protected $version = '0.11.0';
 
     public function __construct(
         \Parable\Filesystem\Path $path,
         \Parable\Framework\Config $config,
         \Parable\Framework\Dispatcher $dispatcher,
+        \Parable\Framework\Toolkit $toolkit,
         \Parable\Event\Hook $hook,
         \Parable\Routing\Router $router,
-        \Parable\Http\Request $request,
         \Parable\Http\Response $response,
         \Parable\Http\Url $url,
-        \Parable\Http\Values $values,
+        \Parable\GetSet\Session $session,
         \Parable\ORM\Database $database
     ) {
         $this->path       = $path;
         $this->config     = $config;
         $this->dispatcher = $dispatcher;
+        $this->toolkit    = $toolkit;
         $this->hook       = $hook;
         $this->router     = $router;
         $this->response   = $response;
-        $this->request    = $request;
         $this->url        = $url;
-        $this->values     = $values;
+        $this->session    = $session;
         $this->database   = $database;
     }
 
@@ -68,9 +68,6 @@ class App
      */
     public function run()
     {
-        /* Set the basedir on paths */
-        $this->path->setBasedir(BASEDIR);
-
         /* Load all known Config files now that we know the baseDir */
         $this->hook->trigger('parable_config_load_before');
         $this->config->load();
@@ -79,8 +76,8 @@ class App
         /* Start the session if session.autoEnable is true */
         if ($this->config->get('session.autoEnable') !== false) {
             $this->hook->trigger('parable_session_start_before');
-            $this->values->session->start();
-            $this->hook->trigger('parable_session_start_after', $this->values->session);
+            $this->session->start();
+            $this->hook->trigger('parable_session_start_after', $this->session);
         }
 
         /* Build the base Url */
@@ -90,8 +87,8 @@ class App
         $this->loadRoutes();
 
         /* Get the current url */
-        $currentUrl     = $this->url->getCurrentUrl();
-        $currentFullUrl = $this->url->getCurrentUrlFull();
+        $currentUrl     = $this->toolkit->getCurrentUrl();
+        $currentFullUrl = $this->toolkit->getCurrentUrlFull();
 
         /* Load the config */
         if ($this->config->get('database.type')) {
@@ -105,7 +102,7 @@ class App
 
         /* And try to match the route */
         $this->hook->trigger('parable_route_match_before', $currentUrl);
-        $route = $this->router->matchCurrentRoute();
+        $route = $this->router->matchUrl($this->toolkit->getCurrentUrl());
         $this->hook->trigger('parable_route_match_after', $route);
         if ($route) {
             $this->response->setHttpCode(200);
@@ -122,15 +119,22 @@ class App
     }
 
     /**
-     * Load the routes
+     * Load the routes from \Routing\App
      *
      * @return $this
      */
     protected function loadRoutes()
     {
-        foreach (\Parable\DI\Container::get(\Routing\App::class)->get() as $name => $route) {
-            $this->router->addRoute($name, $route);
+        try {
+            $routing = \Parable\DI\Container::get(\Routing\App::class);
+
+            foreach ($routing->get() as $name => $route) {
+                $this->router->addRoute($name, $route);
+            }
+        } catch (\Parable\DI\Exception $e) {
+            // Let it slip through
         }
+
         return $this;
     }
 
@@ -138,20 +142,18 @@ class App
      * Create instances of available init files in initLocations.
      *
      * @return $this
+     *
+     * @throws \Parable\Framework\Exception
      */
     protected function loadInits()
     {
         $locations = $this->config->get('initLocations');
 
-        if (!is_array($locations)) {
-            return $this;
-        }
-
         foreach ($locations as $location) {
             $directory = $this->path->getDir($location);
 
             if (!file_exists($directory)) {
-                continue;
+                throw new \Parable\Framework\Exception("initLocation does not exist: '{$directory}");
             }
 
             $dirIterator = new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -160,7 +162,9 @@ class App
             foreach ($iteratorIterator as $file) {
                 /** @var \SplFileInfo $file */
                 if ($file->getExtension() !== 'php') {
+                    // @codeCoverageIgnoreStart
                     continue;
+                    // @codeCoverageIgnoreEnd
                 }
 
                 $className = '\\Init\\' . str_replace('.' . $file->getExtension(), '', $file->getFilename());

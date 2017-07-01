@@ -23,7 +23,7 @@ class App extends \Parable\Framework\Config\Base
                 'app/Init',
             ],
             'database' => [
-                'type'     => 'mysql',
+                'type'     => \Parable\ORM\Database::TYPE_MYSQL,
                 'location' => 'localhost',
                 'username' => 'username',
                 'password' => 'password',

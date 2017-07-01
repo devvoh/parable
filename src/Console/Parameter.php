@@ -13,6 +13,9 @@ class Parameter
     /** @var string */
     protected $scriptName;
 
+    /** @var string */
+    protected $commandName;
+
     /** @var array */
     protected $arguments = [];
 
@@ -21,8 +24,19 @@ class Parameter
 
     public function __construct()
     {
-        $this->rawArguments = $_SERVER["argv"];
+        $this->setArguments($_SERVER["argv"]);
+    }
+
+    /**
+     * @param array $arguments
+     *
+     * @return $this
+     */
+    public function setArguments(array $arguments)
+    {
+        $this->rawArguments = $arguments;
         $this->parseArguments();
+        return $this;
     }
 
     /**
@@ -30,31 +44,39 @@ class Parameter
      */
     public function parseArguments()
     {
+        // Reset all previously gathered data
+        $this->reset();
+
+        // Extract the scriptName
         $this->scriptName = array_shift($this->rawArguments);
 
-        $argumentsCopy = $this->rawArguments;
+        // Extract the commandName
+        if (isset($this->rawArguments[0])
+            && !empty($this->rawArguments[0])
+            && strpos($this->rawArguments[0], '--') === false
+        ) {
+            $this->commandName = array_shift($this->rawArguments);
+        }
 
         $optionName = null;
-        foreach ($argumentsCopy as $key => $argument) {
+        foreach ($this->rawArguments as $key => $argument) {
             if (substr($argument, 0, 2) == '--') {
-                $optionName = $this->trimDashes($argument);
+                $optionName = ltrim($argument, '-');
                 $this->arguments[$optionName] = static::PARAMETER_EXISTS;
             } elseif ($optionName !== null) {
                 $this->arguments[$optionName] = $argument;
+                $optionName = null;
             }
         }
-
         return $this;
     }
 
     /**
-     * @param string $string
-     *
      * @return string
      */
-    protected function trimDashes($string)
+    public function getScriptName()
     {
-        return ltrim($string, '-');
+        return $this->scriptName;
     }
 
     /**
@@ -62,10 +84,7 @@ class Parameter
      */
     public function getCommandName()
     {
-        if (count($this->rawArguments) >= 1) {
-            return $this->rawArguments[0];
-        }
-        return null;
+        return $this->commandName;
     }
 
     /**
@@ -80,13 +99,17 @@ class Parameter
     }
 
     /**
+     * Checks the options set against the parameters set. Takes into account whether an option is required
+     * to be passed or not, or a value is required if it's passed, or sets the defaultValue if given and necessary.
+     *
      * @throws \Parable\Console\Exception
      */
     public function checkOptions()
     {
         foreach ($this->options as $option) {
             // Check if required option is actually passed
-            if ($option['required']
+            if (isset($option['required'])
+                && $option['required']
                 && !array_key_exists($option['name'], $this->arguments)
             ) {
                 throw new \Parable\Console\Exception("Required option '--{$option['name']}' not provided.");
@@ -94,6 +117,7 @@ class Parameter
 
             // Check if non-required but passed option requires a value
             if (array_key_exists($option['name'], $this->arguments)
+                && isset($option['valueRequired'])
                 && $option['valueRequired']
                 && (!$this->arguments[$option['name']] || $this->arguments[$option['name']] == static::PARAMETER_EXISTS)
             ) {
@@ -103,7 +127,8 @@ class Parameter
             }
 
             // Set default value if defaultValue is set and the option is either passed without value or not passed
-            if ($option['defaultValue']
+            if (isset($option['defaultValue'])
+                && $option['defaultValue']
                 && (
                     !array_key_exists($option['name'], $this->arguments)
                     || $this->arguments[$option['name']] == static::PARAMETER_EXISTS
@@ -115,6 +140,9 @@ class Parameter
     }
 
     /**
+     * Returns null if the value doesn't exist. Otherwise, it's whatever was passed to it or set
+     * as a default value.
+     *
      * @param string $name
      *
      * @return mixed|null
@@ -128,5 +156,29 @@ class Parameter
             return true;
         }
         return $this->arguments[$name];
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        $returnArray = [];
+        foreach ($this->arguments as $key => $value) {
+            $returnArray[$key] = $this->getOption($key);
+        }
+        return $returnArray;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function reset()
+    {
+        $this->arguments   = [];
+        $this->scriptName  = null;
+        $this->commandName = null;
+
+        return $this;
     }
 }

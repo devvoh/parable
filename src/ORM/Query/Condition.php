@@ -11,6 +11,9 @@ class Condition
     protected $tableName;
 
     /** @var string */
+    protected $joinTableName;
+
+    /** @var string */
     protected $key;
 
     /** @var string */
@@ -33,6 +36,8 @@ class Condition
     public function setQuery(\Parable\ORM\Query $query)
     {
         $this->query = $query;
+
+        $this->setTableName($query->getTableName());
         return $this;
     }
 
@@ -53,6 +58,25 @@ class Condition
     public function getTableName()
     {
         return $this->tableName;
+    }
+
+    /**
+     * @param string $joinTableName
+     *
+     * @return $this
+     */
+    public function setJoinTableName($joinTableName)
+    {
+        $this->joinTableName = $joinTableName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJoinTableName()
+    {
+        return $this->joinTableName;
     }
 
     /**
@@ -164,9 +188,18 @@ class Condition
     /**
      * @return bool
      */
-    protected function isComparatorIsNotIs()
+    protected function isComparatorIsNotNullIsNull()
     {
-        return in_array(strtolower($this->getComparator()), ['is', 'is not']);
+        return in_array(strtolower($this->getComparator()), ['is null', 'is not null']);
+    }
+
+    /**
+     * @return $this
+     */
+    protected function uppercaseComparator()
+    {
+        $this->setComparator(strtoupper($this->getComparator()));
+        return $this;
     }
 
     /**
@@ -174,28 +207,31 @@ class Condition
      */
     public function build()
     {
+        $value = $this->getValue();
+
         // Check for IS/IS NOT and set the value to NULL if it is.
-        if ($this->isComparatorIsNotIs() && is_array($this->getValue())) {
-            $this->setValue('NULL');
+        if ($this->isComparatorIsNotNullIsNull()) {
+            $this->uppercaseComparator();
+            $value = null;
         }
 
         // Check for IN/NOT IN and build a nice comma-separated list.
-        if (!$this->isComparatorIsNotIs() && $this->isComparatorInNotIn() && is_array($this->getValue())) {
-            $values = $this->getValue();
+        if (!$this->isComparatorIsNotNullIsNull() && $this->isComparatorInNotIn() && is_array($value)) {
+            $this->uppercaseComparator();
             $valueArray = [];
-            foreach ($values as $value) {
+            foreach ($value as $valueItem) {
                 if ($this->shouldQuoteValues()) {
-                    $valueArray[] = $this->query->quote($value);
+                    $valueArray[] = $this->query->quote($valueItem);
                 } else {
-                    $valueArray[] = $value;
+                    $valueArray[] = $valueItem;
                 }
             }
-            $this->setValue('(' . implode(',', $valueArray) . ')');
+            $value = '(' . implode(',', $valueArray) . ')';
         }
 
         // Now check if we need to still quote the value.
-        if (!$this->isComparatorIsNotIs() && !$this->isComparatorInNotIn() && $this->shouldQuoteValues()) {
-            $this->setValue($this->query->quote($this->getValue()));
+        if (!$this->isComparatorIsNotNullIsNull() && !$this->isComparatorInNotIn() && $this->shouldQuoteValues()) {
+            $value = $this->query->quote($value);
         }
 
         // If we don't have IN/NOT IN, IS/NOT IS, and we shouldn't quote, we assume we're checking fields.
@@ -203,19 +239,24 @@ class Condition
             $valueBuild = [
                 $this->query->getQuotedTableName(),
                 '.',
-                $this->query->quoteIdentifier($this->getValue()),
+                $this->query->quoteIdentifier($value),
             ];
             $value = implode($valueBuild);
-        } else {
-            $value = $this->getValue();
         }
 
+        $tableName = $this->getTableName();
+        if ($this->getJoinTableName()) {
+            $tableName = $this->getJoinTableName();
+        }
+        $tableName = $this->query->quoteIdentifier($tableName);
+
         $returnArray = [
-            $this->query->quoteIdentifier($this->getTableName()) . '.' . $this->query->quoteIdentifier($this->getKey()),
+            $tableName . '.' . $this->query->quoteIdentifier($this->getKey()),
             $this->getComparator(),
             $value,
         ];
+        $returnString = implode(' ', $returnArray);
 
-        return implode(' ', $returnArray);
+        return trim($returnString);
     }
 }

@@ -34,6 +34,9 @@ class Path
     public function getDir($dir)
     {
         $dir = str_replace('/', DS, $dir);
-        return $this->basedir . DS . ltrim($dir, DS);
+        if (!file_exists($dir)) {
+            $dir = $this->basedir . DS . ltrim($dir, DS);
+        }
+        return $dir;
     }
 }

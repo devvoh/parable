@@ -4,27 +4,8 @@ namespace Parable\Routing;
 
 class Router
 {
-    /** @var \Parable\Http\Request */
-    protected $request;
-
-    /** @var \Parable\Http\Url */
-    protected $url;
-
-    /** @var \Parable\Filesystem\Path */
-    protected $path;
-
     /** @var \Parable\Routing\Route[] */
     protected $routes = [];
-
-    public function __construct(
-        \Parable\Http\Request $request,
-        \Parable\Http\Url $url,
-        \Parable\Filesystem\Path $path
-    ) {
-        $this->request = $request;
-        $this->url     = $url;
-        $this->path    = $path;
-    }
 
     /**
      * Add a route to the routes list.
@@ -36,7 +17,8 @@ class Router
      */
     public function addRoute($name, array $routeArray)
     {
-        $route = new Route($this->request, $routeArray);
+        $route = new \Parable\Routing\Route();
+        $route->setData($routeArray);
         $this->routes[$name] = $route;
         return $this;
     }
@@ -46,27 +28,16 @@ class Router
      *
      * @param string $name
      *
-     * @return \Parable\Routing\Route
-     * @throws \Parable\Routing\Exception
+     * @return \Parable\Routing\Route|null
      */
     public function getRouteByName($name)
     {
         if (!isset($this->routes[$name])) {
-            throw new \Parable\Routing\Exception("Route named '{$name}' does not exist.");
+            return null;
         }
         return $this->routes[$name];
     }
-
-    /**
-     * Take the current url and try to match it.
-     *
-     * @return \Parable\Routing\Route|null
-     */
-    public function matchCurrentRoute()
-    {
-        return $this->matchRoute($this->url->getCurrentUrl());
-    }
-
+    
     /**
      * Try to find a match in all available routes.
      *
@@ -74,13 +45,13 @@ class Router
      *
      * @return \Parable\Routing\Route|null
      */
-    public function matchRoute($url)
+    public function matchUrl($url)
     {
         $url = '/' . ltrim($url, '/');
-        if ($route = $this->matchRouteDirectly($url)) {
+        if ($route = $this->matchUrlDirectly($url)) {
             return $route;
         }
-        if ($route = $this->matchRouteWithParameters($url)) {
+        if ($route = $this->matchUrlWithParameters($url)) {
             return $route;
         }
         return null;
@@ -93,7 +64,7 @@ class Router
      *
      * @return \Parable\Routing\Route|null
      */
-    protected function matchRouteDirectly($url)
+    protected function matchUrlDirectly($url)
     {
         foreach ($this->routes as $route) {
             if ($route->matchDirectly($url)) {
@@ -110,7 +81,7 @@ class Router
      *
      * @return \Parable\Routing\Route|null
      */
-    protected function matchRouteWithParameters($url)
+    protected function matchUrlWithParameters($url)
     {
         foreach ($this->routes as $route) {
             if ($route->matchWithParameters($url)) {
@@ -129,6 +100,9 @@ class Router
     public function getRouteUrlByName($name, array $parameters = [])
     {
         $route = $this->getRouteByName($name);
+        if (!$route) {
+            return null;
+        }
         return $route->buildUrlWithParameters($parameters);
     }
 }
