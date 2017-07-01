@@ -4,7 +4,7 @@ namespace Parable\Log;
 
 class Logger
 {
-    /** @var  \Parable\Log\Writer */
+    /** @var \Parable\Log\Writer */
     protected $writer;
 
     public function setWriter(\Parable\Log\Writer $writer)
@@ -26,12 +26,9 @@ class Logger
         }
         $message = $this->stringifyMessage($message);
 
-        $message = trim($message) . PHP_EOL;
-
         $this->writer->write($message);
         return $this;
     }
-
 
     /**
      * @param array $messages

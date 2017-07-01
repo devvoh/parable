@@ -41,7 +41,7 @@ class LoggerTest extends \Parable\Tests\Base
 
     public function testLoggerWriteCanHandleAllTypes()
     {
-        $this->logger->setWriter(new \Parable\Log\Writer\StdOut());
+        $this->logger->setWriter(new \Parable\Log\Writer\Terminal());
         $this->logger->write('message');
 
         $this->assertSame("message\n", $this->getActualOutputAndClean());
@@ -72,7 +72,7 @@ class LoggerTest extends \Parable\Tests\Base
             ->withAnyParameters()
             ->willReturnCallback(function ($message) {
                 // To prevent having to actually write to a file, we just add everything to a property
-                $this->recentLogLines .= $message;
+                $this->recentLogLines .= $message . PHP_EOL;
             });
 
         $this->fileWriter->setLogFile($this->logFile);
@@ -96,7 +96,7 @@ class LoggerTest extends \Parable\Tests\Base
             ->withAnyParameters()
             ->willReturnCallback(function ($message) {
                 // To prevent having to actually write to a file, we just add everything to a property
-                $this->recentLogLines .= $message;
+                $this->recentLogLines .= $message . PHP_EOL;
             });
 
         $this->fileWriter->setLogFile($this->logFile);
@@ -119,22 +119,12 @@ class LoggerTest extends \Parable\Tests\Base
         $this->logger->write('stuff');
     }
 
-    public function testFileWriterLoggerThrowsExceptionWhenFileCantBeWrittenTo()
+    public function testFileWriterLoggerThrowsExceptionIfLogfileUnwritable()
     {
         $this->expectException(\Parable\Log\Exception::class);
-        $this->expectExceptionMessage("Could not write to log file.");
+        $this->expectExceptionMessage("Log file is not writable.");
 
-        $this->fileWriter
-            ->method('writeToFile')
-            ->withAnyParameters()
-            ->willReturnCallback(function ($message) {
-                return false;
-            });
-
-        $this->fileWriter->setLogFile($this->logFile);
-        $this->logger->setWriter($this->fileWriter);
-
-        $this->logger->write('stuff');
+        $this->fileWriter->setLogFile("/bla");
     }
 
     protected function tearDown()

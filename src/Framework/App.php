@@ -22,9 +22,6 @@ class App
     /** @var \Parable\Routing\Router */
     protected $router;
 
-    /** @var \Parable\Http\Request */
-    protected $request;
-
     /** @var \Parable\Http\Response */
     protected $response;
 
@@ -47,7 +44,6 @@ class App
         \Parable\Framework\Toolkit $toolkit,
         \Parable\Event\Hook $hook,
         \Parable\Routing\Router $router,
-        \Parable\Http\Request $request,
         \Parable\Http\Response $response,
         \Parable\Http\Url $url,
         \Parable\GetSet\Session $session,
@@ -60,7 +56,6 @@ class App
         $this->hook       = $hook;
         $this->router     = $router;
         $this->response   = $response;
-        $this->request    = $request;
         $this->url        = $url;
         $this->session    = $session;
         $this->database   = $database;

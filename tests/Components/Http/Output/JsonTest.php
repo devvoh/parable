@@ -40,18 +40,4 @@ class JsonTest extends \Parable\Tests\Base
 
         $this->assertSame('{"value":"stuff","secondary":"what now"}', $response->getContent());
     }
-
-    public function testPrepareThrowsExceptionOnInvalidDataType()
-    {
-        $this->expectException(\Parable\Http\Exception::class);
-        $this->expectExceptionMessage("Can not work with objects");
-
-        /** @var \Parable\Http\Response $response */
-        $response = new \Parable\Http\Response();
-        $response->setOutput($this->json);
-
-        $response->setContent(new \stdClass());
-
-        $this->json->prepare($response);
-    }
 }

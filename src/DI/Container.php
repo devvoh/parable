@@ -176,9 +176,9 @@ class Container
     /**
      * Remove all stored instances but KEEP the passed instance names
      *
-     * @param array $keepInstanceNames
+     * @param string[] $keepInstanceNames
      */
-    public static function clearExceptPassed(array $keepInstanceNames)
+    public static function clearExcept(array $keepInstanceNames)
     {
         foreach (self::$instances as $name => $instance) {
             if (!in_array($name, $keepInstanceNames)) {
@@ -192,6 +192,6 @@ class Container
      */
     public static function clearAll()
     {
-        self::clearExceptPassed([]);
+        self::clearExcept([]);
     }
 }

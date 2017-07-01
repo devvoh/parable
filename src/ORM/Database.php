@@ -148,16 +148,17 @@ class Database
     }
 
     /**
-     * Return instance, if any
-     *
      * @return null|\PDO
+     * @throws \Parable\ORM\Exception
      */
     public function getInstance()
     {
         if (!$this->instance && $this->getType() && $this->getLocation()) {
             switch ($this->getType()) {
                 case static::TYPE_SQLITE:
-                    $instance = $this->createPDOSQLite('sqlite:' . $this->getLocation());
+                    $instance = $this->createPDOSQLite(
+                        $this->getLocation()
+                    );
                     $this->setInstance($instance);
                     break;
                 case static::TYPE_MYSQL:
@@ -165,28 +166,34 @@ class Database
                         return null;
                     }
                     $instance = $this->createPDOMySQL(
-                        'mysql:host=' . $this->getLocation() . ';dbname=' . $this->getDatabase(),
+                        $this->getLocation(),
+                        $this->getDatabase(),
                         $this->getUsername(),
                         $this->getPassword()
                     );
                     $this->setInstance($instance);
+                    break;
+                default:
+                    throw new \Parable\ORM\Exception("Database type was invalid: {$this->getType()}");
             }
         }
         return $this->instance;
     }
 
     /**
-     * @param string $dsn
+     * @param string $location
      *
      * @return \Parable\ORM\Database\PDOSQLite
      */
-    protected function createPDOSQLite($dsn)
+    protected function createPDOSQLite($location)
     {
+        $dsn = 'sqlite:' . $location;
         return new \Parable\ORM\Database\PDOSQLite($dsn);
     }
 
     /**
-     * @param string $dsn
+     * @param string $location
+     * @param string $database
      * @param string $username
      * @param string $password
      *
@@ -194,8 +201,9 @@ class Database
      *
      * @codeCoverageIgnore
      */
-    protected function createPDOMySQL($dsn, $username, $password)
+    protected function createPDOMySQL($location, $database, $username, $password)
     {
+        $dsn = 'mysql:host=' . $location . ';dbname=' . $database;
         return new \Parable\ORM\Database\PDOMySQL($dsn, $username, $password);
     }
 

@@ -116,6 +116,7 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
             (string)$this->query
         );
     }
+
     public function testSelectWhereValueTypes()
     {
         $this->query->where($this->query->buildAndSet([
@@ -131,6 +132,39 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
             (string)$this->query
         );
     }
+
+    public function testSelectAndHaving()
+    {
+        $this->query->having($this->query->buildAndSet([
+            ['id', '=', 1],
+            ['active', 'is not null'],
+        ]));
+
+        $this->assertSame(
+            "SELECT * FROM `user` HAVING (`user`.`id` = '1' AND `user`.`active` IS NOT NULL);",
+            (string)$this->query
+        );
+    }
+
+    public function testSelectAndHavingMany()
+    {
+        $this->query->havingMany([
+            $this->query->buildAndSet([
+                ['id', '=', 1],
+                ['active', 'is not null'],
+            ]),
+            $this->query->buildAndSet([
+                ['other_id', '=', 1],
+                ['inactive', 'is null'],
+            ]),
+        ]);
+
+        $this->assertSame(
+            "SELECT * FROM `user` HAVING (`user`.`id` = '1' AND `user`.`active` IS NOT NULL) AND (`user`.`other_id` = '1' AND `user`.`inactive` IS NULL);",
+            (string)$this->query
+        );
+    }
+
 
     public function testInnerJoin()
     {
@@ -307,6 +341,11 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
             ])
         ]));
 
+        $this->query->having($this->query->buildAndSet([
+            ['id', '!=', 1],
+            ['active', 'is null'],
+        ]));
+
         $this->query->leftJoin('settings', 'user_id', '=', 'id');
 
         $this->query->limitOffset(0, 5);
@@ -319,7 +358,7 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
 
         // Understandably, this query is also ridiculously long
         $this->assertSame(
-            "SELECT * FROM `complex` LEFT JOIN `settings` ON `settings`.`user_id` = `complex`.`id` WHERE (`complex`.`id` = '1' AND `complex`.`active` IS NOT NULL AND (`complex`.`id` != '1' OR `complex`.`active` IS NULL OR `complex`.`created_at` IN ('option1','option2'))) GROUP BY `complex`.'name', `settings`.'id' ORDER BY `complex`.'id' DESC, `settings`.'name' ASC LIMIT 5;",
+            "SELECT * FROM `complex` LEFT JOIN `settings` ON `settings`.`user_id` = `complex`.`id` WHERE (`complex`.`id` = '1' AND `complex`.`active` IS NOT NULL AND (`complex`.`id` != '1' OR `complex`.`active` IS NULL OR `complex`.`created_at` IN ('option1','option2'))) GROUP BY `complex`.'name', `settings`.'id' HAVING (`complex`.`id` != '1' AND `complex`.`active` IS NULL) ORDER BY `complex`.'id' DESC, `settings`.'name' ASC LIMIT 5;",
             (string)$this->query
         );
     }

@@ -23,11 +23,7 @@ class Json implements \Parable\Http\Output\OutputInterface
     {
         $content = $response->getContent();
 
-        if (is_object($content)) {
-            throw new \Parable\Http\Exception('Can not work with objects');
-        }
-
-        if (is_array($content) || !json_decode($content)) {
+        if (is_object($content) || is_array($content) || !json_decode($content)) {
             $content = json_encode($content);
         }
 

@@ -22,8 +22,9 @@ class Repository
     /** @var bool */
     protected $returnOne = false;
 
-    public function __construct(\Parable\ORM\Database $database)
-    {
+    public function __construct(
+        \Parable\ORM\Database $database
+    ) {
         $this->database = $database;
     }
 
@@ -219,7 +220,7 @@ class Repository
     }
 
     /**
-     * Set an model on the repository. Reset it so there's no unwanted values stored on it.
+     * Set a model on the repository. Reset it so there's no unwanted values stored on it.
      *
      * @param \Parable\ORM\Model $model
      *

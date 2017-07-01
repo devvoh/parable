@@ -10,8 +10,9 @@ class Config
     /** @var array */
     protected $config = [];
 
-    public function __construct(\Parable\Filesystem\Path $path)
-    {
+    public function __construct(
+        \Parable\Filesystem\Path $path
+    ) {
         $this->path = $path;
     }
 
@@ -111,7 +112,7 @@ class Config
      * @param \Parable\Framework\Config\Base[] $configClasses
      *
      * @return $this
-     * @throws Exception
+     * @throws \Parable\Framework\Exception
      */
     public function addConfigs(array $configClasses)
     {

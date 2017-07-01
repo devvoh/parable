@@ -9,12 +9,15 @@ class Session extends \Parable\GetSet\Base
 
     /**
      * @return $this
+     * @throws \Parable\GetSet\Exception
      */
     public function start()
     {
-        if (!headers_sent()) {
-            session_start();
+        if (headers_sent()) {
+            throw new \Parable\GetSet\Exception("Headers already sent, can't start the session.");
         }
+
+        session_start();
         return $this;
     }
 

@@ -22,8 +22,9 @@ class Model
     /** @var null|string */
     protected $tableKey;
 
-    public function __construct(\Parable\ORM\Database $database)
-    {
+    public function __construct(
+        \Parable\ORM\Database $database
+    ) {
         $this->database = $database;
     }
 
@@ -86,55 +87,6 @@ class Model
             $this->id = $this->database->getInstance()->lastInsertId();
         }
         return $result;
-    }
-
-    /**
-     * Generates an array of the current model, without the protected values
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        $array = (array)$this;
-        foreach ($array as $key => &$value) {
-            // Protected values are prefixed with an '*'
-            if (strpos($key, '*') !== false) {
-                unset($array[$key]);
-                continue;
-            }
-            // If it's specifically decreed that it's a null value, we leave it in, which will set it to NULL in the db
-            if ($value === \Parable\ORM\Database::NULL_VALUE) {
-                $value = null;
-                continue;
-            }
-            // If the value evaluates to regular empty but isn't a 0, we unset it so we don't return it
-            if ($value !== 0 && empty($value)) {
-                unset($array[$key]);
-                continue;
-            }
-        }
-        // If there's a mapper set, also map the array around
-        if ($this->getMapper()) {
-            $array = $this->toMappedArray($array);
-        }
-        return $array;
-    }
-
-    /**
-     * Attempts to use stored mapper array to map fields from the current model's properties to what is set in the
-     * array.
-     *
-     * @param array $array
-     *
-     * @return array
-     */
-    public function toMappedArray(array $array)
-    {
-        $mappedArray = [];
-        foreach ($this->getMapper() as $from => $to) {
-            $mappedArray[$to] = $array[$from];
-        }
-        return $mappedArray;
     }
 
     /**
@@ -261,6 +213,55 @@ class Model
             return (float)$value;
         }
         return $value;
+    }
+
+    /**
+     * Generates an array of the current model, without the protected values
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $array = (array)$this;
+        foreach ($array as $key => &$value) {
+            // Protected values are prefixed with an '*'
+            if (strpos($key, '*') !== false) {
+                unset($array[$key]);
+                continue;
+            }
+            // If it's specifically decreed that it's a null value, we leave it in, which will set it to NULL in the db
+            if ($value === \Parable\ORM\Database::NULL_VALUE) {
+                $value = null;
+                continue;
+            }
+            // If the value evaluates to regular empty but isn't a 0, we unset it so we don't return it
+            if ($value !== 0 && empty($value)) {
+                unset($array[$key]);
+                continue;
+            }
+        }
+        // If there's a mapper set, also map the array around
+        if ($this->getMapper()) {
+            $array = $this->toMappedArray($array);
+        }
+        return $array;
+    }
+
+    /**
+     * Attempts to use stored mapper array to map fields from the current model's properties to what is set in the
+     * array.
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    public function toMappedArray(array $array)
+    {
+        $mappedArray = [];
+        foreach ($this->getMapper() as $from => $to) {
+            $mappedArray[$to] = $array[$from];
+        }
+        return $mappedArray;
     }
 
     /**

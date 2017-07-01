@@ -16,6 +16,9 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     /** @var \Parable\Http\Response|\PHPUnit_Framework_MockObject_MockObject */
     protected $mockResponse;
 
+    /** @var \Parable\GetSet\Session|\PHPUnit_Framework_MockObject_MockObject */
+    protected $mockSession;
+
     /** @var \Parable\Filesystem\Path */
     protected $mockPath;
 
@@ -31,15 +34,22 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
 
         // We need to 'prepare' some classes since they'll expect files elsewhere
         $this->mockPath = new \Parable\Filesystem\Path();
-        $existingPath = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
+        $existingPath   = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
         $this->mockPath->setBasedir(realpath($existingPath->getBaseDir() . '/structure'));
 
-        /** @var \Parable\Http\Response $response */
+        /** @var \Parable\Http\Response $this->mockResponse */
         // Response should not actually terminate
         $this->mockResponse = $this->createPartialMock(\Parable\Http\Response::class, ['terminate']);
         $this->mockResponse->__construct();
 
         \Parable\DI\Container::store($this->mockResponse, \Parable\Http\Response::class);
+
+        /** @var \Parable\GetSet\Session $this->mockSession */
+        // Fake the session since we need to take out the starting of the session
+        $this->mockSession = $this->createPartialMock(\Parable\GetSet\Session::class, ['start']);
+        $this->mockSession->expects($this->any())->method('start')->willReturn($this->mockSession);
+
+        \Parable\DI\Container::store($this->mockSession, \Parable\GetSet\Session::class);
 
         $this->mockDispatcher = new \Parable\Framework\Dispatcher(
             \Parable\DI\Container::get(\Parable\Event\Hook::class),
@@ -247,7 +257,6 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             \Parable\DI\Container::get(\Parable\Framework\Toolkit::class),
             \Parable\DI\Container::get(\Parable\Event\Hook::class),
             $this->mockRouter,
-            \Parable\DI\Container::get(\Parable\Http\Request::class),
             \Parable\DI\Container::get(\Parable\Http\Response::class),
             \Parable\DI\Container::get(\Parable\Http\Url::class),
             \Parable\DI\Container::get(\Parable\GetSet\Session::class),

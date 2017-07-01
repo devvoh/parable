@@ -41,7 +41,7 @@ class Route
      */
     public function setData(array $data)
     {
-        $this->methods    = isset($data['methods'])    ? $data['methods']    : null;
+        $this->methods    = isset($data['methods'])    ? $data['methods']    : [];
         $this->url        = isset($data['url'])        ? $data['url']        : null;
         $this->controller = isset($data['controller']) ? $data['controller'] : null;
         $this->action     = isset($data['action'])     ? $data['action']     : null;
@@ -51,7 +51,7 @@ class Route
         if (!$this->controller && !$this->action && !$this->callable) {
             throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
         }
-        if (!is_array($this->methods)) {
+        if (empty($this->methods) || !is_array($data['methods'])) {
             throw new \Parable\Routing\Exception('Methods are required and must be passed as an array.');
         }
 
@@ -90,7 +90,7 @@ class Route
         foreach ($this->parameters as $index => $name) {
             $value = $urlParts[$index];
 
-            $validValue = $this->checkParameterValueType($name, $value);
+            $validValue = $this->checkAndApplyParameterValueType($name, $value);
             if ($validValue === false) {
                 $this->values = [];
                 break;
@@ -108,7 +108,7 @@ class Route
      *
      * @return mixed|bool
      */
-    protected function checkParameterValueType($name, $value)
+    protected function checkAndApplyParameterValueType($name, $value)
     {
         // If there's no : in the name, then it's not typed.
         if (strpos($name, ':') === false) {
@@ -124,10 +124,8 @@ class Route
             if (is_numeric($value) && (float)$value == $value) {
                 return (float)$value;
             }
-            return false;
         }
 
-        // It IS typed, but we don't know the type
         return false;
     }
 

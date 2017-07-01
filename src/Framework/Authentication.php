@@ -167,7 +167,7 @@ class Authentication
      * @param $user
      *
      * @return $this
-     * @throws Exception
+     * @throws \Parable\Framework\Exception
      */
     public function setUser($user)
     {

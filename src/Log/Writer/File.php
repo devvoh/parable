@@ -15,9 +15,7 @@ class File implements \Parable\Log\Writer
         if (!$this->logFile) {
             throw new \Parable\Log\Exception("No log file set. \Log\Writer\File requires a valid target file.");
         }
-        if (false === $this->writeToFile($message)) {
-            throw new \Parable\Log\Exception("Could not write to log file.");
-        }
+        $this->writeToFile($message);
         return $this;
     }
 
@@ -29,6 +27,14 @@ class File implements \Parable\Log\Writer
      */
     public function setLogFile($logFile)
     {
+        if (!file_exists($logFile)) {
+            // At least attempt to create the file.
+            @touch($logFile);
+        }
+        if (!file_exists($logFile)) {
+            throw new \Parable\Log\Exception("Log file is not writable.");
+        }
+
         $this->logFile = $logFile;
         return $this;
     }
@@ -42,6 +48,7 @@ class File implements \Parable\Log\Writer
      */
     protected function writeToFile($message)
     {
+        $message = $message . PHP_EOL;
         return @file_put_contents($this->logFile, $message, FILE_APPEND);
     }
 }

@@ -67,12 +67,20 @@ class Mailer
     }
 
     /**
+     * @return array
+     */
+    public function getAddresses()
+    {
+        return $this->addresses;
+    }
+
+    /**
      * @param string $type
      *
      * @return string
      * @throws \Parable\Mail\Exception
      */
-    public function getAddresses($type)
+    public function getAddressesForType($type)
     {
         if (!isset($this->addresses[$type])) {
             throw new \Parable\Mail\Exception('Only to, cc, bcc addresses are allowed.');
@@ -219,9 +227,9 @@ class Mailer
         }
 
         // Handle the to, cc and bcc addresses
-        $to  = $this->getAddresses('to');
-        $cc  = $this->getAddresses('cc');
-        $bcc = $this->getAddresses('bcc');
+        $to  = $this->getAddressesForType('to');
+        $cc  = $this->getAddressesForType('cc');
+        $bcc = $this->getAddressesForType('bcc');
 
         if (!empty($cc)) {
             $this->addHeader("Cc: {$cc}");
@@ -231,7 +239,7 @@ class Mailer
         }
 
         // Handle from
-        $from = $this->getAddresses('from');
+        $from = $this->getAddressesForType('from');
         $this->addHeader("From: {$from}");
 
         $headers = array_merge($this->requiredHeaders, $this->headers);
@@ -260,7 +268,7 @@ class Mailer
             $to,
             $subject,
             $body,
-            implode("\r\n", $headers)
+            $headers
         );
     }
 

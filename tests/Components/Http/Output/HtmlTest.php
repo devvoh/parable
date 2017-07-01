@@ -60,7 +60,7 @@ class HtmlTest extends \Parable\Tests\Base
     public function testPrepareThrowsExceptionOnInvalidDataType($data)
     {
         $this->expectException(\Parable\Http\Exception::class);
-        $this->expectExceptionMessage("Can only work with string content");
+        $this->expectExceptionMessage("Can only work with string or null content");
 
         /** @var \Parable\Http\Response $response */
         $response = new \Parable\Http\Response();

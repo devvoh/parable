@@ -2,7 +2,7 @@
 
 namespace Parable\Log\Writer;
 
-class StdOut implements \Parable\Log\Writer
+class Terminal implements \Parable\Log\Writer
 {
     /** @var  */
     protected $file;
@@ -12,8 +12,7 @@ class StdOut implements \Parable\Log\Writer
      */
     public function write($message)
     {
-        echo $message;
-
+        echo $message . PHP_EOL;
         return $this;
     }
 }

@@ -52,11 +52,9 @@ class View
     protected $magicProperties = [];
 
     public function __construct(
-        \Parable\Framework\Toolkit $toolkit,
         \Parable\Filesystem\Path $path,
         \Parable\Http\Response $response
     ) {
-        $this->toolkit  = $toolkit;
         $this->path     = $path;
         $this->response = $response;
 

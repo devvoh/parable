@@ -4,10 +4,7 @@ namespace Parable\Framework;
 
 class Toolkit
 {
-    /** @var \Parable\Filesystem\Path */
-    protected $path;
-
-    /** @var \Parable\Filesystem\Get */
+    /** @var \Parable\GetSet\Get */
     protected $get;
 
     /** @var \Parable\Http\Response */
@@ -20,13 +17,11 @@ class Toolkit
     protected $router;
 
     public function __construct(
-        \Parable\Filesystem\Path $path,
         \Parable\GetSet\Get $get,
         \Parable\Http\Response $response,
         \Parable\Http\Url $url,
         \Parable\Routing\Router $router
     ) {
-        $this->path     = $path;
         $this->get      = $get;
         $this->response = $response;
         $this->url      = $url;

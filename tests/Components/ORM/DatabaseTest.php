@@ -174,4 +174,24 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
         ]);
         $this->assertNull($database->getInstance());
     }
+
+    public function testGetInstanceThrowsExceptionOnInvalidType()
+    {
+        $this->expectException(\Parable\ORM\Exception::class);
+        $this->expectExceptionMessage("Database type was invalid: CustardSQL");
+
+        $database = new \Parable\ORM\Database();
+
+        // Make sure there's no instance
+        $this->assertNull($database->getInstance());
+
+        $database->setConfig([
+            'type'     => "CustardSQL",
+            'location' => 'localhost',
+            'username' => 'username',
+            'password' => 'password',
+            'database' => 'database',
+        ]);
+        $database->getInstance();
+    }
 }

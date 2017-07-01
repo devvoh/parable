@@ -17,6 +17,9 @@ class Query
     /** @var \Parable\ORM\Query\Condition[] */
     protected $where = [];
 
+    /** @var \Parable\ORM\Query\Condition[] */
+    protected $having = [];
+
     /** @var array */
     protected $values = [];
 
@@ -58,8 +61,9 @@ class Query
     /** @var array */
     protected $nonQuoteStrings = ['*', 'sum', 'max', 'min', 'count', 'avg'];
 
-    public function __construct(\Parable\ORM\Database $database)
-    {
+    public function __construct(
+        \Parable\ORM\Database $database
+    ) {
         $this->database = $database;
     }
 
@@ -128,8 +132,8 @@ class Query
     public function setAction($action)
     {
         if (!in_array($action, $this->acceptedValues)) {
-            $validString = implode(', ', $this->acceptedValues);
-            throw new \Parable\ORM\Exception("Invalid action set, only {$validString} are allowed.");
+            $acceptedValuesString = implode(', ', $this->acceptedValues);
+            throw new \Parable\ORM\Exception("Invalid action set, only {$acceptedValuesString} are allowed.");
         }
         $this->action = $action;
         return $this;
@@ -175,6 +179,27 @@ class Query
     {
         foreach ($sets as $set) {
             $this->where($set);
+        }
+    }
+
+    /**
+     * @param \Parable\ORM\Query\ConditionSet $set
+     *
+     * @return $this
+     */
+    public function having(\Parable\ORM\Query\ConditionSet $set)
+    {
+        $this->having[] = $set;
+        return $this;
+    }
+
+    /**
+     * @param \Parable\ORM\Query\ConditionSet[] $sets
+     */
+    public function havingMany(array $sets)
+    {
+        foreach ($sets as $set) {
+            $this->having($set);
         }
     }
 
@@ -435,10 +460,6 @@ class Query
             }
         }
 
-        if (count($builtJoins) === 0) {
-            return '';
-        }
-
         return implode(" ", $builtJoins);
     }
 
@@ -456,6 +477,22 @@ class Query
         // Use a ConditionSet to build the wheres
         $conditionSet = new Query\Condition\AndSet($this, $this->where);
         return "WHERE {$conditionSet->buildWithoutParentheses()}";
+    }
+
+    /**
+     * Build HAVING string if they're available
+     *
+     * @return string
+     */
+    protected function buildHaving()
+    {
+        if (count($this->having) === 0) {
+            return '';
+        }
+
+        // Use a ConditionSet to build the having clause
+        $conditionSet = new Query\Condition\AndSet($this, $this->having);
+        return "HAVING {$conditionSet->buildWithoutParentheses()}";
     }
 
     /**
@@ -537,7 +574,6 @@ class Query
         $query = [];
 
         if ($this->action === 'select') {
-            // Without select values there's no update
             if (count($this->select) == 0) {
                 return '';
             }
@@ -547,10 +583,10 @@ class Query
             $query[] = $this->buildJoins();
             $query[] = $this->buildWheres();
             $query[] = $this->buildGroupBy();
+            $query[] = $this->buildHaving();
             $query[] = $this->buildOrderBy();
             $query[] = $this->buildLimitOffset();
         } elseif ($this->action === 'delete') {
-            // Without wheres there's no update
             if (count($this->where) == 0) {
                 return '';
             }
@@ -558,7 +594,6 @@ class Query
             $query[] = "DELETE FROM " . $this->getQuotedTableName();
             $query[] = $this->buildWheres();
         } elseif ($this->action === 'update') {
-            // Without values there's no update
             if (count($this->values) == 0) {
                 return '';
             }
@@ -592,7 +627,6 @@ class Query
             $query[] = "WHERE " . $this->getQuotedTableName() . '.' . $this->quoteIdentifier($tableKey);
             $query[] = " = " . $this->quote($tableKeyValue);
         } elseif ($this->action === 'insert') {
-            // Without values there's no insert
             if (count($this->values) == 0) {
                 return '';
             }

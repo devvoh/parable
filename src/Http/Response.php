@@ -136,7 +136,7 @@ class Response
     }
 
     /**
-     * @param Output\OutputInterface $output
+     * @param \Parable\Http\Output\OutputInterface $output
      *
      * @return $this
      */
@@ -256,14 +256,14 @@ class Response
      */
     public function returnAllOutputBuffers()
     {
-        if (!$this->isOutputBufferingEnabled()) {
-            return "";
+        $content = "";
+
+        if ($this->isOutputBufferingEnabled()) {
+            while ($this->isOutputBufferingEnabled()) {
+                $content .= $this->returnOutputBuffer();
+            }
         }
 
-        $content = "";
-        while ($this->isOutputBufferingEnabled()) {
-            $content .= $this->returnOutputBuffer();
-        }
         return $content;
     }
 
@@ -310,6 +310,8 @@ class Response
 
     /**
      * @param string $url
+     *
+     * @throws \Parable\Http\Exception
      */
     public function redirect($url)
     {

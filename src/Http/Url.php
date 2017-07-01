@@ -4,17 +4,8 @@ namespace Parable\Http;
 
 class Url
 {
-    /** @var \Parable\Http\Response */
-    protected $response;
-
     /** @var string */
     protected $baseUrl;
-
-    public function __construct(
-        \Parable\Http\Response $response
-    ) {
-        $this->response = $response;
-    }
 
     /**
      * Initialize the correct baseUrl

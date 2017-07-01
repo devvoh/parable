@@ -17,53 +17,90 @@ class MailerTest extends \Parable\Tests\Base
     public function testSetFrom()
     {
         $this->mailer->setFrom('address@test.dev');
-        $this->assertSame('address@test.dev', $this->mailer->getAddresses('from'));
+        $this->assertSame('address@test.dev', $this->mailer->getAddressesForType('from'));
 
         $this->mailer->resetSender();
 
         $this->mailer->setFrom('address@test.dev', 'name of user');
-        $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddresses('from'));
+        $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddressesForType('from'));
     }
 
     public function testAddTo()
     {
         $this->mailer->addTo('address@test.dev');
-        $this->assertSame('address@test.dev', $this->mailer->getAddresses('to'));
+        $this->assertSame('address@test.dev', $this->mailer->getAddressesForType('to'));
 
         $this->mailer->resetRecipients();
 
         $this->mailer->addTo('address@test.dev', 'name of user');
-        $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddresses('to'));
+        $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddressesForType('to'));
     }
 
     public function testAddCc()
     {
         $this->mailer->addCc('address@test.dev');
-        $this->assertSame('address@test.dev', $this->mailer->getAddresses('cc'));
+        $this->assertSame('address@test.dev', $this->mailer->getAddressesForType('cc'));
 
         $this->mailer->resetRecipients();
 
         $this->mailer->addCc('address@test.dev', 'name of user');
-        $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddresses('cc'));
+        $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddressesForType('cc'));
     }
 
     public function testAddBcc()
     {
         $this->mailer->addBcc('address@test.dev');
-        $this->assertSame('address@test.dev', $this->mailer->getAddresses('bcc'));
+        $this->assertSame('address@test.dev', $this->mailer->getAddressesForType('bcc'));
 
         $this->mailer->resetRecipients();
 
         $this->mailer->addBcc('address@test.dev', 'name of user');
-        $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddresses('bcc'));
+        $this->assertSame('name of user <address@test.dev>', $this->mailer->getAddressesForType('bcc'));
     }
 
-    public function testThrowsExceptionWhenInvalidTypePassedToGetAddresses()
+    public function testThrowsExceptionWhenInvalidTypePassedToGetAddressesForType()
     {
         $this->expectExceptionMessage("Only to, cc, bcc addresses are allowed.");
         $this->expectException(\Parable\Mail\Exception::class);
 
-        $this->mailer->getAddresses('la-dee-dah');
+        $this->mailer->getAddressesForType('la-dee-dah');
+    }
+
+    public function testGetAddresses()
+    {
+        $this->mailer->addTo("to@devvoh.com", "To");
+        $this->mailer->addCc("cc@devvoh.com", "Cc");
+        $this->mailer->addBcc("bcc@devvoh.com", "Bcc");
+        $this->mailer->setFrom("from@devvoh.com", "From");
+        $this->assertSame(
+            [
+                "to" => [
+                    [
+                        "email" => "to@devvoh.com",
+                        "name" => "To",
+                    ],
+                ],
+                "cc" => [
+                    [
+                        "email" => "cc@devvoh.com",
+                        "name" => "Cc",
+                    ],
+                ],
+                "bcc" => [
+                    [
+                        "email" => "bcc@devvoh.com",
+                        "name" => "Bcc",
+                    ],
+                ],
+                "from" => [
+                    [
+                        "email" => "from@devvoh.com",
+                        "name" => "From",
+                    ],
+                ],
+            ],
+            $this->mailer->getAddresses()
+        );
     }
 
     public function testThrowsExceptionAddAddressWithInvalidEmailAddress()
@@ -157,10 +194,10 @@ class MailerTest extends \Parable\Tests\Base
 
         $this->assertEmpty($this->mailer->getSubject());
         $this->assertEmpty($this->mailer->getBody());
-        $this->assertEmpty($this->mailer->getAddresses('from'));
-        $this->assertEmpty($this->mailer->getAddresses('to'));
-        $this->assertEmpty($this->mailer->getAddresses('cc'));
-        $this->assertEmpty($this->mailer->getAddresses('bcc'));
+        $this->assertEmpty($this->mailer->getAddressesForType('from'));
+        $this->assertEmpty($this->mailer->getAddressesForType('to'));
+        $this->assertEmpty($this->mailer->getAddressesForType('cc'));
+        $this->assertEmpty($this->mailer->getAddressesForType('bcc'));
         $this->assertEmpty($this->mailer->getHeaders());
         $this->assertEmpty($this->mailer->getHeaders());
     }

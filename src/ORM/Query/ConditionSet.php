@@ -17,8 +17,10 @@ abstract class ConditionSet
     /** @var \Parable\ORM\Query\Condition[] */
     protected $conditions = [];
 
-    public function __construct(\Parable\ORM\Query $query, array $conditions)
-    {
+    public function __construct(
+        \Parable\ORM\Query $query,
+        array $conditions
+    ) {
         $this->query = $query;
 
         if (!is_array($conditions[0]) && !is_object($conditions[0])) {
