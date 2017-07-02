@@ -152,9 +152,9 @@ class Response
      */
     public function send()
     {
-        if ($this->isOutputBufferingEnabled()) {
-            $content = $this->returnAllOutputBuffers();
-            $this->content = $content . $this->content;
+        $buffered_content = $this->returnAllOutputBuffers();
+        if (!empty($buffered_content) && is_string($this->content)) {
+            $this->content = $buffered_content . $this->content;
         }
 
         $this->output->prepare($this);

@@ -44,7 +44,7 @@ class Model
     /**
      * Saves the model, either inserting (no id) or updating (id)
      *
-     * @return mixed
+     * @return bool
      */
     public function save()
     {
@@ -86,20 +86,22 @@ class Model
         if ($result && $query->getAction() === 'insert') {
             $this->id = $this->database->getInstance()->lastInsertId();
         }
-        return $result;
+        return $result ? true : false;
     }
 
     /**
      * Deletes the current model from the database
      *
-     * @return mixed
+     * @return bool
      */
     public function delete()
     {
         $query = $this->createQuery();
         $query->setAction('delete');
         $query->where($query->buildAndSet([$this->getTableKey(), '=', $this->id]));
-        return $this->database->query($query);
+        $result = $this->database->query($query);
+
+        return $result ? true : false;
     }
 
     /**

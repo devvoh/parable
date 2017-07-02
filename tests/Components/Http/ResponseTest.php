@@ -105,6 +105,20 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame("This is content.", $content);
     }
 
+    public function testSendWithJsonAndOutputBufferingEnabled()
+    {
+        $this->response->startOutputBuffer();
+        $this->response->setOutput(new \Parable\Http\Output\Json());
+        $this->response->setContent([
+            'test' => 1,
+        ]);
+        $this->response->send();
+
+        $content = $this->getActualOutputAndClean();
+
+        $this->assertSame('{"test":1}', $content);
+    }
+
     public function testSendClosesOutputbuffer()
     {
         $this->response->startOutputBuffer();

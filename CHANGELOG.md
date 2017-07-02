@@ -1,5 +1,14 @@
 # Parable PHP Framework Changelog
 
+### 0.11.3
+
+__Changes__
+- `\Parable\Http\Response` now only tries to prepend the output buffer if there's data in the buffer and `Response::$content` is already a string.
+- `\Parable\GetSet` now has a new type of resource - those that require their data be parsed from `php://input`.
+- Three `GetSet` types added due to the above: `\GetSet\Delete`, `\GetSet\Patch` and `\GetSet\Put`. This should make API builders really happy ;)
+- `\Parable\ORM\Model` now returns only boolean values on success or fail, instead of a false on fail and a `PDOStatement` on success.
+- Changed the command for `\Command\HelloWorld` to `hello-world` because _somebody_ cares too much about that stuff.
+
 ### 0.11.2
 
 __Changes__

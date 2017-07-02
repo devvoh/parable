@@ -4,7 +4,7 @@ namespace Command;
 
 class HelloWorld extends \Parable\Console\Command
 {
-    protected $name = 'helloworld';
+    protected $name = 'hello-world';
     protected $description = 'This command just wants to say hi.';
 
     public function run()
