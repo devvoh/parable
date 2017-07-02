@@ -9,7 +9,7 @@ $app->setName('Parable');
 
 // Always add Help & Init
 $app->addCommand(\Parable\DI\Container::get(\Parable\Console\Command\Help::class));
-$app->addCommand(\Parable\DI\Container::get(\Parable\Framework\Command\InitParable::class));
+$app->addCommand(\Parable\DI\Container::get(\Parable\Framework\Command\InitStructure::class));
 
 // Attempt to load commands set by the user
 if (file_exists($path->getDir('app'))) {

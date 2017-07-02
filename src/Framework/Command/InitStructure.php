@@ -2,10 +2,10 @@
 
 namespace Parable\Framework\Command;
 
-class InitParable extends \Parable\Console\Command
+class InitStructure extends \Parable\Console\Command
 {
     /** @var string */
-    protected $name = 'init-parable';
+    protected $name = 'init-structure';
 
     /** @var string */
     protected $description = 'This command initializes a parable structure.';
@@ -31,8 +31,13 @@ class InitParable extends \Parable\Console\Command
             "",
             "<red>WARNING</red>",
             "This will overwrite existing files without notice!",
-            "",
         ]);
+
+        if (file_exists($this->path->getDir('app')) && file_exists($this->path->getDir('public'))) {
+            $this->output->writeBlock("Note: It looks like you already have a structure initialized!", "info");
+        } else {
+            $this->output->newline();
+        }
 
         for (;;) {
             $this->output->write("Do you want to continue? [y/N] ");

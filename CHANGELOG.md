@@ -1,5 +1,11 @@
 # Parable PHP Framework Changelog
 
+### 0.11.2
+
+__Changes__
+- Fixed up the README.md file, since it was a bit outdated. Also changed the 'feel' of the text to represent the maturing state of Parable.
+- Renamed `init` command to `init-parable`, then immediately renamed it `init-structure` and added a check whether a structure was already initialized, adding a warning if it was.
+
 ### 0.11.1
 
 Well, that was fast!
