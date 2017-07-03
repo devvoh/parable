@@ -110,10 +110,15 @@ class Container
         $dependencies = [];
         foreach ($parameters as $parameter) {
             $subClassName = $parameter->name;
+
             try {
-                $subClassName = $parameter->getClass()->name;
+                $class = $parameter->getClass();
+                if (is_object($class)) {
+                    $subClassName = $class->name;
+                }
             } catch (\ReflectionException $e) {
             }
+
             if ($createAll) {
                 $dependencies[] = self::create($subClassName, $className);
             } else {
