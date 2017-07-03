@@ -2,7 +2,7 @@
 
 ### 0.11.4
 
-__Changes__
+__Bugfixes__
 - `\Parable\DI\Container` had a bug where in some odd instances, while deciding the dependencies to DI for a class, the parameter's class would be `null` and attempting to get the `name` property from `null`, of course, failed.
 
 ### 0.11.3
