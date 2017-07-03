@@ -37,7 +37,7 @@ class DispatcherTest extends \Parable\Tests\Components\Framework\Base
         $route->setData([
             'methods' => ['GET'],
             'url' => '/',
-            'controller' => \Controller\Home::class,
+            'controller' => \Parable\Tests\TestClasses\Controller::class,
             'action' => 'index',
         ]);
 

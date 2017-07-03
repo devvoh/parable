@@ -65,6 +65,14 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             $this->mockPath
         );
 
+        $this->mockRouter->addRoute('index', [
+            'methods' => ['GET'],
+            'url' => '/',
+            'controller' => \Parable\Tests\TestClasses\Controller::class,
+            'action' => 'index',
+            'template' => $this->path->getDir('tests/TestTemplates/index.phtml'),
+        ]);
+
         $this->app = $this->createApp();
     }
 
@@ -188,19 +196,10 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->expectException(\Parable\Routing\Exception::class);
         $this->expectExceptionMessage("Either a controller/action combination or callable is required.");
 
-        $routing = $this->createPartialMock(\Routing\App::class, ['get']);
-        $routing
-            ->expects($this->once())
-            ->method('get')
-            ->willReturn([
-                'index' => [
-                    'methods' => ['GET'],
-                    'url' => '/',
-                ],
-            ]);
-
-        // Set our fake routing class
-        \Parable\DI\Container::store($routing, \Routing\App::class);
+        $this->mockRouter->addRoute('simple', [
+            'methods' => ['GET'],
+            'url' => '/',
+        ]);
 
         $app = $this->createApp();
         $app->run();

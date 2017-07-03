@@ -42,7 +42,7 @@ class AutoloaderTest extends \Parable\Tests\Components\Framework\Base
 
     public function testLoad()
     {
-        $homeController = \Parable\DI\Container::create(\Controller\Home::class);
-        $this->assertInstanceOf(\Controller\Home::class, $homeController);
+        $homeController = \Parable\DI\Container::create(\Parable\Tests\TestClasses\Controller::class);
+        $this->assertInstanceOf(\Parable\Tests\TestClasses\Controller::class, $homeController);
     }
 }
