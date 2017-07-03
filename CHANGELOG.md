@@ -2,7 +2,7 @@
 
 ### 0.11.5
 
-__Bugfixes__
+__Changes__
 - Rename all the files in `structure` to have a `_struct` suffix, so that IDEs don't pick up on then anymore.
 
 ### 0.11.4
