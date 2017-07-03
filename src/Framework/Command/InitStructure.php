@@ -87,47 +87,47 @@ class InitStructure extends \Parable\Console\Command
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/public/index.php'),
+            $this->path->getDir('vendor/devvoh/parable/structure/public/index.php_struct'),
             $this->path->getDir('public/index.php')
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Command/HelloWorld.php'),
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Command/HelloWorld.php_struct'),
             $this->path->getDir('app/Command/HelloWorld.php')
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Config/App.php'),
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Config/App.php_struct'),
             $this->path->getDir('app/Config/App.php')
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Controller/Home.php'),
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Controller/Home.php_struct'),
             $this->path->getDir('app/Controller/Home.php')
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Init/Example.php'),
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Init/Example.php_struct'),
             $this->path->getDir('app/Init/Example.php')
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Model/User.php'),
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Model/User.php_struct'),
             $this->path->getDir('app/Model/User.php')
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Routing/App.php'),
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Routing/App.php_struct'),
             $this->path->getDir('app/Routing/App.php')
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/View/Home/index.phtml'),
+            $this->path->getDir('vendor/devvoh/parable/structure/app/View/Home/index.phtml_struct'),
             $this->path->getDir('app/View/Home/index.phtml')
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/View/Home/test.phtml'),
+            $this->path->getDir('vendor/devvoh/parable/structure/app/View/Home/test.phtml_struct'),
             $this->path->getDir('app/View/Home/test.phtml')
         );
         $this->output->write('.');
