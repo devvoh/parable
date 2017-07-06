@@ -102,6 +102,11 @@ class InitStructure extends \Parable\Console\Command
         );
         $this->output->write('.');
         copy(
+            $this->path->getDir('vendor/devvoh/parable/structure/app/Config/Custom.php_struct'),
+            $this->path->getDir('app/Config/Custom.php')
+        );
+        $this->output->write('.');
+        copy(
             $this->path->getDir('vendor/devvoh/parable/structure/app/Controller/Home.php_struct'),
             $this->path->getDir('app/Controller/Home.php')
         );

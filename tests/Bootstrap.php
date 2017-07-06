@@ -11,6 +11,7 @@ $path->setBaseDir(BASEDIR);
 /*
  * And load and register the framework's autoloader
  */
+/**@var \Parable\Framework\Autoloader $autoloader */
 $autoloader = \Parable\DI\Container::get(\Parable\Framework\Autoloader::class);
-$autoloader->addLocation(BASEDIR . DS . 'structure/app');
+$autoloader->addLocation($path->getDir("tests/TestClasses"));
 $autoloader->register();

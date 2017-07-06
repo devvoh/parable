@@ -24,6 +24,19 @@ class Router
     }
 
     /**
+     * @param array $routes
+     *
+     * @return $this
+     */
+    public function addRoutes(array $routes)
+    {
+        foreach ($routes as $name => $route) {
+            $this->addRoute($name, $route);
+        }
+        return $this;
+    }
+
+    /**
      * Return a route by its name.
      *
      * @param string $name

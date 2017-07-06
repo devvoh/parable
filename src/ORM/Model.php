@@ -224,29 +224,30 @@ class Model
      */
     public function toArray()
     {
-        $array = (array)$this;
-        foreach ($array as $key => &$value) {
-            // Protected values are prefixed with an '*'
-            if (strpos($key, '*') !== false) {
-                unset($array[$key]);
+        $reflection = new \ReflectionClass(static::class);
+
+        $arrayData = [];
+        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            $value = $property->getValue($this);
+
+            // We don't want to add either static properties or when the value evaluates to regular empty but isn't a 0
+            if ($property->isStatic() || ($value !== 0 && empty($value))) {
                 continue;
             }
+
             // If it's specifically decreed that it's a null value, we leave it in, which will set it to NULL in the db
             if ($value === \Parable\ORM\Database::NULL_VALUE) {
                 $value = null;
-                continue;
             }
-            // If the value evaluates to regular empty but isn't a 0, we unset it so we don't return it
-            if ($value !== 0 && empty($value)) {
-                unset($array[$key]);
-                continue;
-            }
+
+            $arrayData[$property->getName()] = $value;
         }
-        // If there's a mapper set, also map the array around
+
         if ($this->getMapper()) {
-            $array = $this->toMappedArray($array);
+            $arrayData = $this->toMappedArray($arrayData);
         }
-        return $array;
+
+        return $arrayData;
     }
 
     /**
@@ -290,11 +291,10 @@ class Model
      */
     public function reset()
     {
-        $array = (array)$this;
-        foreach ($array as $key => $value) {
-            // Protected values are prefixed with an '*'
-            if (strpos($key, '*') == false) {
-                $this->{$key} = null;
+        $reflection = new \ReflectionClass(static::class);
+        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            if (!$property->isStatic()) {
+                $this->{$property->getName()} = null;
             }
         }
         return $this;

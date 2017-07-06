@@ -1,5 +1,14 @@
 # Parable PHP Framework Changelog
 
+### 0.12.0
+
+__Note: Backwards incompatibility in small ways.__
+
+__Changes__
+- `Routing`, `Init` and additional `Config` files now load the same as `Commands` already did. Only `Config\App` is an expected part of Parable, and from there you can just pass in arrays with class names (see new example in structure) and Parable will get the values from them in the order you provide them in. This removes the need for `sortOrder` in Configs, makes `Routing` files easier to split up for readability, and for Inits it really doesn't change much. No more iterating over files! But it does mean you need to add your inits to your Config class and any child Config classes as well.
+- Replaced `strpos` method of deciding whether a method was public or not with `Reflection` logic. Affects `\Parable\ORM\Model::toArray()` and `\Parable\ORM\Model::reset()`.
+- No longer add structure folder to the autoload path in `tests/bootstrap.php`, since we no longer use the `_struct` files in testing.
+
 ### 0.11.5
 
 __Changes__
@@ -36,7 +45,7 @@ __Bugfixes__
 
 Hey, look! Tests! With 100% code coverage, too! Run `make tests` to run them (which will attempt to `composer install` for needed libraries and then run the tests). Run `make coverage` to run the tests AND generate the HTML coverage report in `./coverage`.
 
-With tests, every nook and cranny of the code was looked at, evaluated and where needed, checked, fixed, removed or added to. This changelog will be huge.
+With tests, every nook and cranny of the code was looked at, evaluated and where needed, checked, fixed, removed or added to.
 
 This release also pulls out all interdependencies except for `Framework` still depending on other Components.
 

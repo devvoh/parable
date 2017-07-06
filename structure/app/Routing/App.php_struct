@@ -2,7 +2,8 @@
 
 namespace Routing;
 
-class App extends \Parable\Framework\Routing\Base
+class App implements
+    \Parable\Framework\Interfaces\Routing
 {
     public function get()
     {

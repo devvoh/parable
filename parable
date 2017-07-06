@@ -14,10 +14,12 @@ $app->addCommand(\Parable\DI\Container::get(\Parable\Framework\Command\InitStruc
 // Attempt to load commands set by the user
 if (file_exists($path->getDir('app'))) {
     /** @var \Parable\Framework\Config $config */
-    $config = \Parable\DI\Container::get(\Parable\Framework\Config::class)->load();
-    if ($config->get('console.commands')) {
+    $config = \Parable\DI\Container::get(\Parable\Framework\Config::class);
+    $config->load();
+
+    if ($config->get('parable.commands')) {
         // We don't try/catch because the dev shouldn't add non-existing classes.
-        foreach ($config->get('console.commands') as $commandClassName) {
+        foreach ($config->get('parable.commands') as $commandClassName) {
             $app->addCommand(\Parable\DI\Container::get($commandClassName));
         }
     }

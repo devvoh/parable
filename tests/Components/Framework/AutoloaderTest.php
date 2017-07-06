@@ -40,9 +40,11 @@ class AutoloaderTest extends \Parable\Tests\Components\Framework\Base
         $this->assertSame("thislocationwasaddedmanually", $locations[0]);
     }
 
-    public function testLoad()
+    public function testLoadFromSetLocation()
     {
-        $homeController = \Parable\DI\Container::create(\Parable\Tests\TestClasses\Controller::class);
-        $this->assertInstanceOf(\Parable\Tests\TestClasses\Controller::class, $homeController);
+        $this->autoloader->addLocation($this->path->getDir("tests/TestClasses"));
+
+        $this->assertTrue($this->autoloader->load(\Autoloader\Basic::class));
+        $this->assertTrue(class_exists(\Autoloader\Basic::class));
     }
 }

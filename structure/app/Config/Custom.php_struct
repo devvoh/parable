@@ -1,8 +1,8 @@
 <?php
 
-namespace Parable\Tests\TestClasses;
+namespace Config;
 
-class Config2 implements
+class Custom implements
     \Parable\Framework\Interfaces\Config
 {
     /**
@@ -11,8 +11,9 @@ class Config2 implements
     public function get()
     {
         return [
-            'setting' => 'secondary value',
-            'also'    => 'this one',
+            "custom" => [
+                "key" => "value",
+            ],
         ];
     }
 }

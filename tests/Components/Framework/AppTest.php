@@ -182,15 +182,6 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->assertSame('callable route found with id: 985', $output);
     }
 
-    public function testAppThrowsExceptionOnInvalidInitLocation()
-    {
-        $this->expectException(\Parable\Framework\Exception::class);
-        $this->expectExceptionMessage("initLocation does not exist:");
-
-        $app = $this->createApp(["initLocations" => ["thisdoesnotexist"]]);
-        $app->run();
-    }
-
     public function testAppThrowsExceptionOnInvalidRoute()
     {
         $this->expectException(\Parable\Routing\Exception::class);
@@ -208,46 +199,24 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         \Parable\DI\Container::clear(\Routing\App::class);
     }
 
+    public function testAppThrowsExceptionOnWrongRouteInterface()
+    {
+        $this->expectException(\Parable\Framework\Exception::class);
+        $this->expectExceptionMessage("Routing\Wrong does not implement \Parable\Framework\Interfaces\Routing");
+
+        $app = $this->createApp(\Parable\Tests\TestClasses\Config\TestBrokenRouting::class);
+        $app->run();
+    }
+
     /**
+     * @param string $mainConfigClassName
      * @return \Parable\Framework\App
      */
-    protected function createApp($configValues = null)
+    protected function createApp($mainConfigClassName = \Parable\Tests\TestClasses\Config\Test::class)
     {
-        // Config, dispatcher requires Path
         /** @var \Parable\Framework\Config|\PHPUnit_Framework_MockObject_MockObject $config */
-        $config = $this->createPartialMock(\Parable\Framework\Config::class, ['getConfig']);
-        $config->__construct($this->mockPath);
-
-        if (!is_array($configValues)) {
-            $configValues = [
-                'app' => [
-                    'title'      => 'Parable'
-                ],
-                'session' => [
-                    'autoEnable' => true,
-                ],
-                'initLocations'  => [
-                    'app/Init',
-                ],
-                'database' => [
-                    'type'     => \Parable\ORM\Database::TYPE_MYSQL,
-                    'location' => 'localhost',
-                    'username' => 'username',
-                    'password' => 'password',
-                    'database' => 'database',
-                ],
-                'console' => [
-                    'commands' => [
-                        \Command\HelloWorld::class,
-                    ]
-                ]
-            ];
-        }
-
-        $config
-            ->expects($this->any())
-            ->method('getConfig')
-            ->willReturn($configValues);
+        $config = new \Parable\Framework\Config($this->path);
+        $config->setMainConfigClassName($mainConfigClassName);
 
         return new \Parable\Framework\App(
             $this->mockPath,

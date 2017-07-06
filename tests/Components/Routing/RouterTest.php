@@ -16,31 +16,33 @@ class RouterTest extends \Parable\Tests\Base
 
         $this->router = \Parable\DI\Container::create(\Parable\Routing\Router::class);
 
-        $this->router->addRoute('simple', [
-            'methods' => ['GET'],
-            'url' => '/',
-            'controller' => \Parable\Tests\TestClasses\Controller::class,
-            'action' => 'simple',
-        ]);
-        $this->router->addRoute('complex', [
-            'methods' => ['GET'],
-            'url' => '/complex/{id}/{name}',
-            'controller' => \Parable\Tests\TestClasses\Controller::class,
-            'action' => 'complex',
-        ]);
-        $this->router->addRoute('complextyped', [
-            'methods' => ['GET'],
-            'url' => '/complextyped/{id:int}/{float:float}',
-            'controller' => \Parable\Tests\TestClasses\Controller::class,
-            'action' => 'complextyped',
-        ]);
-        $this->router->addRoute('callable', [
-            'methods' => ['GET'],
-            'url' => '/callable/{parameter}',
-            'callable' => function (\Parable\Routing\Route $route, $parameter) {
-                return [$route, $parameter];
-            },
-            'template' => 'test-file.phtml',
+        $this->router->addRoutes([
+            'simple' => [
+                'methods' => ['GET'],
+                'url' => '/',
+                'controller' => \Parable\Tests\TestClasses\Controller::class,
+                'action' => 'simple',
+            ],
+            'complex' => [
+                'methods' => ['GET'],
+                'url' => '/complex/{id}/{name}',
+                'controller' => \Parable\Tests\TestClasses\Controller::class,
+                'action' => 'complex',
+            ],
+            'complextyped' => [
+                'methods' => ['GET'],
+                'url' => '/complextyped/{id:int}/{float:float}',
+                'controller' => \Parable\Tests\TestClasses\Controller::class,
+                'action' => 'complextyped',
+            ],
+            'callable' => [
+                'methods' => ['GET'],
+                'url' => '/callable/{parameter}',
+                'callable' => function (\Parable\Routing\Route $route, $parameter) {
+                    return [$route, $parameter];
+                },
+                'template' => 'test-file.phtml',
+            ]
         ]);
     }
 

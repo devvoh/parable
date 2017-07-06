@@ -2,15 +2,13 @@
 
 namespace Parable\Tests\TestClasses;
 
-class Config1 extends \Parable\Framework\Config\Base
+class Config1 implements
+    \Parable\Framework\Interfaces\Config
 {
-    /** @var null|int */
-    protected $sortOrder = 0;
-
     /**
      * @return array
      */
-    public function getValues()
+    public function get()
     {
         return [
             'setting' => 'primary value',

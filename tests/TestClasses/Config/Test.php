@@ -1,13 +1,10 @@
 <?php
 
-namespace Config;
+namespace Parable\Tests\TestClasses\Config;
 
-class App implements
+class Test implements
     \Parable\Framework\Interfaces\Config
 {
-    /**
-     * @return array
-     */
     public function get()
     {
         return [
@@ -26,13 +23,13 @@ class App implements
                     "database" => "database",
                 ],
                 "configs" => [
-                    \Config\Custom::class
+                    \Parable\Tests\TestClasses\Config\Custom::class
                 ],
                 "commands" => [
-                    \Command\HelloWorld::class,
+                    \Parable\Tests\TestClasses\Command\Test::class
                 ],
                 "inits" => [
-                    \Init\Example::class,
+                    \Parable\Tests\TestClasses\Init\Test::class
                 ],
                 "routes" => [
                     \Routing\App::class,

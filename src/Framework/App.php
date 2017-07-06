@@ -35,7 +35,7 @@ class App
     protected $database;
 
     /** @var string */
-    protected $version = '0.11.5';
+    protected $version = '0.12.0';
 
     public function __construct(
         \Parable\Filesystem\Path $path,
@@ -68,16 +68,17 @@ class App
      */
     public function run()
     {
-        /* Load all known Config files now that we know the baseDir */
-        $this->hook->trigger('parable_config_load_before');
+        /* Load the config */
         $this->config->load();
-        $this->hook->trigger('parable_config_load_after', $this->config);
+
+        /* See if there's any inits defined in the config */
+        if ($this->config->get("parable.inits")) {
+            $this->loadInits();
+        }
 
         /* Start the session if session.autoEnable is true */
-        if ($this->config->get('session.autoEnable') !== false) {
-            $this->hook->trigger('parable_session_start_before');
-            $this->session->start();
-            $this->hook->trigger('parable_session_start_after', $this->session);
+        if ($this->config->get('parable.session.autoEnable') !== false) {
+            $this->startSession();
         }
 
         /* Build the base Url */
@@ -90,24 +91,18 @@ class App
         $currentUrl     = $this->toolkit->getCurrentUrl();
         $currentFullUrl = $this->toolkit->getCurrentUrlFull();
 
-        /* Load the config */
-        if ($this->config->get('database.type')) {
-            $this->database->setConfig($this->config->get('database'));
-        }
-
-        /* See if there's an init directory defined in the config */
-        if ($this->config->get('initLocations')) {
-            $this->loadInits();
+        /* Init the database if it's configured */
+        if ($this->config->get('parable.database.type')) {
+            $this->initDatabase();
         }
 
         /* And try to match the route */
         $this->hook->trigger('parable_route_match_before', $currentUrl);
         $route = $this->router->matchUrl($this->toolkit->getCurrentUrl());
         $this->hook->trigger('parable_route_match_after', $route);
+
         if ($route) {
-            $this->response->setHttpCode(200);
-            $this->hook->trigger('parable_http_200', $route);
-            $this->dispatcher->dispatch($route);
+            $this->dispatchRoute($route);
         } else {
             $this->response->setHttpCode(404);
             $this->hook->trigger('parable_http_404', $currentFullUrl);
@@ -119,27 +114,44 @@ class App
     }
 
     /**
-     * Load the routes from \Routing\App
-     *
      * @return $this
      */
-    protected function loadRoutes()
+    protected function startSession()
     {
-        try {
-            $routing = \Parable\DI\Container::get(\Routing\App::class);
-
-            foreach ($routing->get() as $name => $route) {
-                $this->router->addRoute($name, $route);
-            }
-        } catch (\Parable\DI\Exception $e) {
-            // Let it slip through
-        }
-
+        $this->hook->trigger('parable_session_start_before');
+        $this->session->start();
+        $this->hook->trigger('parable_session_start_after', $this->session);
         return $this;
     }
 
     /**
-     * Create instances of available init files in initLocations.
+     * @return $this
+     *
+     * @throws \Parable\Framework\Exception
+     */
+    protected function loadRoutes()
+    {
+        $this->hook->trigger('parable_load_routes_before');
+        if ($this->config->get("parable.routes")) {
+            foreach ($this->config->get("parable.routes") as $routesClass) {
+                /** @var \Parable\Framework\Interfaces\Routing $routes */
+                $routes = \Parable\DI\Container::get($routesClass);
+
+                if (!($routes instanceof \Parable\Framework\Interfaces\Routing)) {
+                    throw new \Parable\Framework\Exception(
+                        "{$routesClass} does not implement \Parable\Framework\Interfaces\Routing"
+                    );
+                }
+
+                $this->router->addRoutes($routes->get());
+            }
+        }
+        $this->hook->trigger('parable_load_routes_after');
+        return $this;
+    }
+
+    /**
+     * Create instances of given init classes
      *
      * @return $this
      *
@@ -147,30 +159,40 @@ class App
      */
     protected function loadInits()
     {
-        $locations = $this->config->get('initLocations');
-
-        foreach ($locations as $location) {
-            $directory = $this->path->getDir($location);
-
-            if (!file_exists($directory)) {
-                throw new \Parable\Framework\Exception("initLocation does not exist: '{$directory}");
-            }
-
-            $dirIterator = new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS);
-            $iteratorIterator = new \RecursiveIteratorIterator($dirIterator);
-
-            foreach ($iteratorIterator as $file) {
-                /** @var \SplFileInfo $file */
-                if ($file->getExtension() !== 'php') {
-                    // @codeCoverageIgnoreStart
-                    continue;
-                    // @codeCoverageIgnoreEnd
-                }
-
-                $className = '\\Init\\' . str_replace('.' . $file->getExtension(), '', $file->getFilename());
-                \Parable\DI\Container::create($className);
+        if ($this->config->get("parable.inits")) {
+            foreach ($this->config->get("parable.inits") as $initClass) {
+                \Parable\DI\Container::create($initClass);
             }
         }
+        $this->hook->trigger('parable_load_inits_after');
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function initDatabase()
+    {
+        $this->hook->trigger('parable_init_database_before');
+        $this->database->setConfig($this->config->get('parable.database'));
+        $this->hook->trigger('parable_init_database_after');
+        return $this;
+    }
+
+    /**
+     * @param \Parable\Routing\Route $route
+     *
+     * @return $this
+     */
+    protected function dispatchRoute(\Parable\Routing\Route $route)
+    {
+        $this->response->setHttpCode(200);
+        $this->hook->trigger('parable_http_200', $route);
+
+        $this->hook->trigger('parable_dispatch_before', $route);
+        $this->dispatcher->dispatch($route);
+        $this->hook->trigger('parable_dispatch_after', $route);
+
         return $this;
     }
 
