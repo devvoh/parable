@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.12.4
+
+__Bugfixes__
+- `\Parable\Framework\Toolkit::redirectToRoute()` did not use `getUrl` to build the url on top of the baseUrl.
+
 ### 0.12.2 - 0.12.3
 
 __Bugfixes__

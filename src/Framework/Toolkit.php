@@ -55,11 +55,11 @@ class Toolkit
      */
     public function redirectToRoute($routeName)
     {
-        $route = $this->router->getRouteByName($routeName);
-        if (!$route) {
+        $url = $this->router->getRouteUrlByName($routeName);
+        if (!$url) {
             throw new \Parable\Framework\Exception("Can't redirect to route, '{$routeName}'' does not exist.");
         }
-        $this->response->redirect($route->url);
+        $this->response->redirect($this->url->getUrl($url));
     }
 
     /**
