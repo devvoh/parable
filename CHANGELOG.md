@@ -2,12 +2,16 @@
 
 ### 0.12.0
 
-__Note: Backwards incompatibility in small ways.__
+__Note: Breaks backwards compatibility. See list below for details how to upgrade from 0.11.x__
 
 __Changes__
+- New `Config` array layout. See the example `Config` for the changes!
 - `Routing`, `Init` and additional `Config` files now load the same as `Commands` already did. Only `Config\App` is an expected part of Parable, and from there you can just pass in arrays with class names (see new example in structure) and Parable will get the values from them in the order you provide them in. This removes the need for `sortOrder` in Configs, makes `Routing` files easier to split up for readability, and for Inits it really doesn't change much. No more iterating over files! But it does mean you need to add your inits to your Config class and any child Config classes as well.
+- `Config` files now need to implement `\Parable\Framework\Interfaces\Config`, no more extends.
+- `Routing` files now need to implement `\Parable\Framework\Interfaces\Routing`, no more extends.
 - Replaced `strpos` method of deciding whether a method was public or not with `Reflection` logic. Affects `\Parable\ORM\Model::toArray()` and `\Parable\ORM\Model::reset()`.
 - No longer add structure folder to the autoload path in `tests/bootstrap.php`, since we no longer use the `_struct` files in testing.
+- `\Parable\Framework\App\loadInits()` has been moved up in the run procedure, allowing more triggers: `parable_load_inits_after`, `parable_load_routes_before/after`, `parable_init_database_before/after`, `parable_dispatch_before/after` 
 
 ### 0.11.5
 
