@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.12.1
+
+__Bugfixes__
+- Hook related to dispatching was being triggered twice. Fixed now.
+
 ### 0.12.0
 
 __Note: Breaks backwards compatibility. See list below for details how to upgrade from 0.11.x__

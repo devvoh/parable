@@ -35,7 +35,7 @@ class App
     protected $database;
 
     /** @var string */
-    protected $version = '0.12.0';
+    protected $version = '0.12.1';
 
     public function __construct(
         \Parable\Filesystem\Path $path,
@@ -189,9 +189,7 @@ class App
         $this->response->setHttpCode(200);
         $this->hook->trigger('parable_http_200', $route);
 
-        $this->hook->trigger('parable_dispatch_before', $route);
         $this->dispatcher->dispatch($route);
-        $this->hook->trigger('parable_dispatch_after', $route);
 
         return $this;
     }
