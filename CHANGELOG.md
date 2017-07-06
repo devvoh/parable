@@ -1,9 +1,10 @@
 # Parable PHP Framework Changelog
 
-### 0.12.2
+### 0.12.2 - 0.12.3
 
 __Bugfixes__
 - Left-over but un-DI-ed `$toolkit` property on `\Parable\Framework\View` was preventing use of toolkit in views.
+- Removed `composer.lock` since it's useless to end users.
 
 ### 0.12.1
 

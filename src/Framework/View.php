@@ -36,9 +36,6 @@ namespace Parable\Framework;
  */
 class View
 {
-    /** @var \Parable\Framework\Toolkit */
-    protected $toolkit;
-
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
