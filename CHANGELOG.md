@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.12.2
+
+__Bugfixes__
+- Left-over but un-DI-ed `$toolkit` property on `\Parable\Framework\View` was preventing use of toolkit in views.
+
 ### 0.12.1
 
 __Bugfixes__
