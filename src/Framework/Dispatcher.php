@@ -4,6 +4,9 @@ namespace Parable\Framework;
 
 class Dispatcher
 {
+    const HOOK_DISPATCH_BEFORE = "parable_dispatch_before";
+    const HOOK_DISPATCH_AFTER  = "parable_dispatch_after";
+
     /** @var \Parable\Event\Hook */
     protected $hook;
 
@@ -35,7 +38,7 @@ class Dispatcher
      */
     public function dispatch(\Parable\Routing\Route $route)
     {
-        $this->hook->trigger('parable_dispatch_before', $route);
+        $this->hook->trigger(self::HOOK_DISPATCH_BEFORE, $route);
         $controller = null;
 
         /* Start output buffering and set $content to null */
@@ -83,7 +86,7 @@ class Dispatcher
         /* And append the content to the response object */
         $this->response->appendContent($content);
 
-        $this->hook->trigger('parable_dispatch_after', $route);
+        $this->hook->trigger(self::HOOK_DISPATCH_AFTER, $route);
         return $this;
     }
 }

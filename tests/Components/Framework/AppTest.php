@@ -40,7 +40,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         /** @var \Parable\Http\Response $this->mockResponse */
         // Response should not actually terminate
         $this->mockResponse = $this->createPartialMock(\Parable\Http\Response::class, ['terminate']);
-        $this->mockResponse->__construct();
+        $this->mockResponse->__construct(\Parable\DI\Container::get(\Parable\Http\Request::class));
 
         \Parable\DI\Container::store($this->mockResponse, \Parable\Http\Response::class);
 
@@ -82,7 +82,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->app->run();
 
         $output = $this->getActualOutputAndClean();
-        
+
         $this->assertContains('PHP framework by <a href="http://devvoh.com">devvoh</a>', $output);
         $this->assertSame(200, $this->mockResponse->getHttpCode());
         $this->assertSame('OK', $this->mockResponse->getHttpCodeText());

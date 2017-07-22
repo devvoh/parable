@@ -11,7 +11,7 @@ class Example
         /*
          * Init scripts function very simply: They need to be in Init namespace, their filename should match their
          * classname, and the location of these scripts needs to be set in a Config file, using the root key
-         * 'initLocations'. See app/Config/App.php.
+         * 'init'. See app/Config/App.php.
          *
          * They need to have a __construct() method, which will be called automatically BEFORE routing/dispatching is
          * done. Init scripts are the perfect place to hook into events before anything else is done. This allows,

@@ -74,22 +74,45 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
     {
         $this->model->username  = 'testuser';
         $this->model->password  = 'password';
+        $this->model->email     = \Parable\ORM\Database::NULL_VALUE;
+        $this->model->created_at = null;
+
+        $this->assertSame(
+            [
+                'username'   => 'testuser',
+                'password'   => 'password',
+                'email'      => null,
+                'created_at' => null,
+                'updated_at' => null,
+                'id'         => null,
+            ],
+            $this->model->toArray()
+        );
+    }
+
+    public function testModelToArrayWithoutEmptyValues()
+    {
+        $this->model->username  = 'testuser';
+        $this->model->password  = 'password';
         // NULL_VALUE will keep it in the array but set it concretely to null, both on the model's array output
         // and the database queries run with it
         $this->model->email     = \Parable\ORM\Database::NULL_VALUE;
         // Just null keeps it from doing anything, since empty values (other than int 0) are ignored. This prevents
         // queries from attempting to write NULL for every value that's not specifically set. This allows for
         // minimally-populated models to be saved.
-        $this->model->create_at = null;
+        $this->model->created_at = null;
+
+        $modelArray = $this->model->toArrayWithoutEmptyValues();
 
         $this->assertSame(
             [
-                'username' => 'testuser',
-                'password' => 'password',
-                'email'    => null,
+                'username'   => 'testuser',
+                'password'   => 'password',
+                'email'      => null,
             ],
-            $this->model->toArray()
+            $modelArray
         );
+        $this->assertArrayNotHasKey('created_at', $modelArray);
     }
 
     public function testModelToMappedArray()
@@ -112,8 +135,24 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
     {
         $this->model->username = 'testuser';
         $this->model->password = 'password';
+        $this->model->created_at = null;
 
         $modelArray = $this->model->exportToArray();
+
+        $this->assertSame(['username', 'email'], $this->model->getExportable());
+
+        $this->assertSame('testuser', $modelArray['username']);
+        $this->assertArrayNotHasKey('password', $modelArray);
+        $this->assertArrayNotHasKey('created_at', $modelArray);
+    }
+
+    public function testModelExportToArrayWithoutEmptyValues()
+    {
+        $this->model->username   = 'testuser';
+        $this->model->password   = 'password';
+        $this->model->created_at = null;
+
+        $modelArray = $this->model->exportToArrayWithoutEmptyValues();
 
         $this->assertSame(['username', 'email'], $this->model->getExportable());
 

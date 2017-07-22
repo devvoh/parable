@@ -87,8 +87,11 @@ class Response
     /**
      * By default we're going to set the Html Output type.
      */
-    public function __construct()
-    {
+    public function __construct(
+        \Parable\Http\Request $request
+    ) {
+        $this->request = $request;
+
         $this->setOutput(new \Parable\Http\Output\Html);
     }
 
@@ -96,9 +99,13 @@ class Response
      * @param int $httpCode
      *
      * @return $this
+     * @throws \Parable\Http\Exception
      */
     public function setHttpCode($httpCode)
     {
+        if (!array_key_exists($httpCode, $this->httpCodes)) {
+            throw new \Parable\Http\Exception("Invalid HTTP code set: '{$httpCode}'");
+        }
         $this->httpCode = $httpCode;
         return $this;
     }
@@ -161,7 +168,7 @@ class Response
 
         if (!headers_sent()) {
             // @codeCoverageIgnoreStart
-            header("HTTP/1.1 {$this->getHttpCode()} {$this->getHttpCodeText()}");
+            header("{$this->request->getProtocol()} {$this->getHttpCode()} {$this->getHttpCodeText()}");
             header("Content-type: {$this->getContentType()}");
             foreach ($this->getHeaders() as $key => $value) {
                 header("{$key}: {$value}");

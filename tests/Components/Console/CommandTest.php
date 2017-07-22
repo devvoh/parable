@@ -61,6 +61,27 @@ class CommandTest extends \Parable\Tests\Base
         );
     }
 
+    public function testAddArgumentAndGetArguments()
+    {
+        $this->command->addArgument('option1', true);
+        $this->command->addArgument('option2', false);
+
+        // Arguments aren't actually named properly until they've been parsed by Parameter
+        $this->assertSame(
+            [
+                [
+                    'name'          => 'option1',
+                    'required'      => true,
+                ],
+                [
+                    'name'          => 'option2',
+                    'required'      => false,
+                ],
+            ],
+            $this->command->getArguments()
+        );
+    }
+
     public function testPrepareAcceptsAndPassesInstancesToCallbackProperly()
     {
         $this->command->prepare(

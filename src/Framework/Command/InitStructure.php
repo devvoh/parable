@@ -16,6 +16,7 @@ class InitStructure extends \Parable\Console\Command
     public function __construct(
         \Parable\Filesystem\Path $path
     ) {
+        $this->addOption("homeDir", false, true, "public");
         $this->path = $path;
     }
 
@@ -24,10 +25,18 @@ class InitStructure extends \Parable\Console\Command
      */
     public function run()
     {
+        $homeDir = $this->parameter->getOption("homeDir");
+        $homeDir = ltrim($homeDir, DIRECTORY_SEPARATOR);
+
+        $homeDir_actual = $this->path->getDir($homeDir);
+
         $this->output->writeln([
             "Parable initialization script",
             "-----------------------------------",
             "This script will initialize Parable's structure.",
+            "",
+            "The 'home directory' will be '<info>{$homeDir_actual}</info>'",
+            "To set a custom homeDir, use the option --homeDir somethingDifferent.",
             "",
             "<red>WARNING</red>",
             "This will overwrite existing files without notice!",
@@ -63,7 +72,7 @@ class InitStructure extends \Parable\Console\Command
             'app/Routing',
             'app/View',
             'app/View/Home',
-            'public',
+            $homeDir,
         ];
 
         foreach ($dirs as $dir) {
@@ -77,65 +86,77 @@ class InitStructure extends \Parable\Console\Command
 
         $this->output->write('Copying files: ');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/.htaccess'),
-            $this->path->getDir('.htaccess')
+            $this->path->getDir("vendor/devvoh/parable/structure/.htaccess"),
+            $this->path->getDir(".htaccess")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/public/.htaccess'),
-            $this->path->getDir('public/.htaccess')
+            $this->path->getDir("vendor/devvoh/parable/structure/public/.htaccess"),
+            $this->path->getDir("{$homeDir}/.htaccess")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/public/index.php_struct'),
-            $this->path->getDir('public/index.php')
+            $this->path->getDir("vendor/devvoh/parable/structure/public/index.php_struct"),
+            $this->path->getDir("{$homeDir}/index.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Command/HelloWorld.php_struct'),
-            $this->path->getDir('app/Command/HelloWorld.php')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/Command/HelloWorld.php_struct"),
+            $this->path->getDir("app/Command/HelloWorld.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Config/App.php_struct'),
-            $this->path->getDir('app/Config/App.php')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/Config/App.php_struct"),
+            $this->path->getDir("app/Config/App.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Config/Custom.php_struct'),
-            $this->path->getDir('app/Config/Custom.php')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/Config/Custom.php_struct"),
+            $this->path->getDir("app/Config/Custom.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Controller/Home.php_struct'),
-            $this->path->getDir('app/Controller/Home.php')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/Controller/Home.php_struct"),
+            $this->path->getDir("app/Controller/Home.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Init/Example.php_struct'),
-            $this->path->getDir('app/Init/Example.php')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/Init/Example.php_struct"),
+            $this->path->getDir("app/Init/Example.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Model/User.php_struct'),
-            $this->path->getDir('app/Model/User.php')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/Model/User.php_struct"),
+            $this->path->getDir("app/Model/User.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/Routing/App.php_struct'),
-            $this->path->getDir('app/Routing/App.php')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/Routing/App.php_struct"),
+            $this->path->getDir("app/Routing/App.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/View/Home/index.phtml_struct'),
-            $this->path->getDir('app/View/Home/index.phtml')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/View/Home/index.phtml_struct"),
+            $this->path->getDir("app/View/Home/index.phtml")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir('vendor/devvoh/parable/structure/app/View/Home/test.phtml_struct'),
-            $this->path->getDir('app/View/Home/test.phtml')
+            $this->path->getDir("vendor/devvoh/parable/structure/app/View/Home/test.phtml_struct"),
+            $this->path->getDir("app/View/Home/test.phtml")
         );
         $this->output->write('.');
+
+        // If the homeDir isn't 'public', change the values in Config\App.php and .htaccess.
+        if ($homeDir !== "public") {
+            $config = file_get_contents($this->path->getDir("app/Config/App.php"));
+            $config = str_replace('"homeDir" => "public"', '"homeDir" => "' . $homeDir . '"', $config);
+            file_put_contents($this->path->getDir("app/Config/App.php"), $config);
+            $this->output->write('.');
+
+            $htaccess = file_get_contents($this->path->getDir('.htaccess'));
+            $htaccess = str_replace("public/$1", "{$homeDir}/$1", $htaccess);
+            file_put_contents($this->path->getDir('.htaccess'), $htaccess);
+        }
 
         $this->output->writeln(" <green>OK</green>");
 

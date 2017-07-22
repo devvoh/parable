@@ -2,7 +2,7 @@
 
 namespace Parable\Tests\Components\Console;
 
-class AppqTest extends \Parable\Tests\Base
+class AppTest extends \Parable\Tests\Base
 {
     /** @var \Parable\Console\App */
     protected $app;

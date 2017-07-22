@@ -20,7 +20,7 @@ class HtmlTest extends \Parable\Tests\Base
 
     public function testInit()
     {
-        $response = new \Parable\Http\Response();
+        $response = \Parable\DI\Container::createAll(\Parable\Http\Response::class);
 
         // Default is text/html
         $this->assertSame('text/html', $response->getContentType());
@@ -43,7 +43,7 @@ class HtmlTest extends \Parable\Tests\Base
     public function testPrepare()
     {
         /** @var \Parable\Http\Response $response */
-        $response = new \Parable\Http\Response();
+        $response = \Parable\DI\Container::createAll(\Parable\Http\Response::class);
         $response->setOutput($this->html);
 
         $response->setContent("this is content");
@@ -63,7 +63,7 @@ class HtmlTest extends \Parable\Tests\Base
         $this->expectExceptionMessage("Can only work with string or null content");
 
         /** @var \Parable\Http\Response $response */
-        $response = new \Parable\Http\Response();
+        $response = \Parable\DI\Container::createAll(\Parable\Http\Response::class);
         $response->setOutput($this->html);
 
         $response->setContent($data);

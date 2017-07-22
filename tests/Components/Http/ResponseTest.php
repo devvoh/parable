@@ -15,7 +15,7 @@ class ResponseTest extends \Parable\Tests\Base
         parent::setUp();
 
         $this->responseMock = $this->createPartialMock(\Parable\Http\Response::class, ['terminate']);
-        $this->responseMock->__construct();
+        $this->responseMock->__construct(\Parable\DI\Container::get(\Parable\Http\Request::class));
 
         // Response should not actually terminate
         $this->response = \Parable\DI\Container::createAll(\Parable\Http\Response::class);
@@ -31,6 +31,14 @@ class ResponseTest extends \Parable\Tests\Base
     {
         $this->response->setHttpCode(404);
         $this->assertSame(404, $this->response->getHttpCode());
+    }
+
+    public function testSetInvalidHttpCodeThrowsException()
+    {
+        $this->expectException(\Parable\Http\Exception::class);
+        $this->expectExceptionMessage("Invalid HTTP code set: '9001'");
+
+        $this->response->setHttpCode(9001);
     }
 
     public function testGetHttpCodeText()

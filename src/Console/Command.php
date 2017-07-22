@@ -16,6 +16,9 @@ class Command
     /** @var array */
     protected $options = [];
 
+    /** @var array */
+    protected $arguments = [];
+
     /** @var \Parable\Console\App */
     protected $app;
 
@@ -113,6 +116,29 @@ class Command
     }
 
     /**
+     * @param string $name
+     * @param bool   $required
+     *
+     * @return $this
+     */
+    public function addArgument($name, $required = false)
+    {
+        $this->arguments[] = [
+            'name'     => $name,
+            'required' => $required,
+        ];
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArguments()
+    {
+        return $this->arguments;
+    }
+
+    /**
      * @param \Parable\Console\App       $app
      * @param \Parable\Console\Output    $output
      * @param \Parable\Console\Input     $input
@@ -148,13 +174,13 @@ class Command
 
     /**
      * @param \Parable\Console\Command $command
-     * @param array                    $arguments
+     * @param array                    $parameters
      * @return mixed
      */
-    protected function runCommand(\Parable\Console\Command $command, array $arguments = [])
+    protected function runCommand(\Parable\Console\Command $command, array $parameters = [])
     {
         $parameter = new \Parable\Console\Parameter();
-        $parameter->setArguments($arguments);
+        $parameter->setParameters($parameters);
 
         $command->prepare($this->app, $this->output, $this->input, $parameter);
 

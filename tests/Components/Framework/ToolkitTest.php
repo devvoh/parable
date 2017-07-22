@@ -18,7 +18,7 @@ class ToolkitTest extends \Parable\Tests\Components\Framework\Base
         parent::setUp();
 
         $this->responseMock = $this->createPartialMock(\Parable\Http\Response::class, ['terminate']);
-        $this->responseMock->__construct();
+        $this->responseMock->__construct(\Parable\DI\Container::get(\Parable\Http\Request::class));
         \Parable\DI\Container::store($this->responseMock, \Parable\Http\Response::class);
 
         $this->router = \Parable\DI\Container::get(\Parable\Routing\Router::class);
