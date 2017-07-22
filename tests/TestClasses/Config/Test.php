@@ -11,6 +11,7 @@ class Test implements
             "parable" => [
                 "app" => [
                     "title" => "Parable",
+                    "homeDir" => "public",
                 ],
                 "session" => [
                     "autoEnable" => true,

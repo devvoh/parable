@@ -256,6 +256,26 @@ class Repository
     }
 
     /**
+     * @param \Parable\ORM\Query\Condition[] $conditions
+     *
+     * @return \Parable\ORM\Query\Condition\AndSet
+     */
+    public function buildAndSet(array $conditions)
+    {
+        return $this->createQuery()->buildAndSet($conditions);
+    }
+
+    /**
+     * @param \Parable\ORM\Query\Condition[] $conditions
+     *
+     * @return \Parable\ORM\Query\Condition\OrSet
+     */
+    public function buildOrSet(array $conditions)
+    {
+        return $this->createQuery()->buildOrSet($conditions);
+    }
+
+    /**
      * Handle the result of one of the get functions
      *
      * @param array $result

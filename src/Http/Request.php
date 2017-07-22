@@ -5,6 +5,9 @@ namespace Parable\Http;
 class Request
 {
     /** @var string */
+    protected $protocol;
+
+    /** @var string */
     protected $method;
 
     /** @var array */
@@ -15,8 +18,6 @@ class Request
      */
     public function __construct()
     {
-        $this->method = $_SERVER['REQUEST_METHOD'];
-
         if (PHP_SAPI !== "cli") {
             // @codeCoverageIgnoreStart
             $this->headers = getallheaders() ?: [];
@@ -27,9 +28,17 @@ class Request
     /**
      * @return string
      */
+    public function getProtocol()
+    {
+        return isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : "HTTP/1.1";
+    }
+
+    /**
+     * @return string
+     */
     public function getMethod()
     {
-        return $this->method;
+        return isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
     }
 
     /**
@@ -39,7 +48,7 @@ class Request
      */
     public function isMethod($method)
     {
-        return $this->method === $method;
+        return $this->getMethod() === $method;
     }
 
     /**

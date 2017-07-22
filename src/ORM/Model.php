@@ -48,7 +48,7 @@ class Model
      */
     public function save()
     {
-        $array = $this->toArray();
+        $array = $this->toArrayWithoutEmptyValues();
 
         $query = $this->createQuery();
 
@@ -220,9 +220,11 @@ class Model
     /**
      * Generates an array of the current model, without the protected values
      *
+     * @param bool $keepNullValue
+     *
      * @return array
      */
-    public function toArray()
+    public function toArray($keepNullValue = false)
     {
         $reflection = new \ReflectionClass(static::class);
 
@@ -231,12 +233,12 @@ class Model
             $value = $property->getValue($this);
 
             // We don't want to add either static properties or when the value evaluates to regular empty but isn't a 0
-            if ($property->isStatic() || ($value !== 0 && empty($value))) {
+            if ($property->isStatic()) {
                 continue;
             }
 
             // If it's specifically decreed that it's a null value, we leave it in, which will set it to NULL in the db
-            if ($value === \Parable\ORM\Database::NULL_VALUE) {
+            if (!$keepNullValue && $value === \Parable\ORM\Database::NULL_VALUE) {
                 $value = null;
             }
 
@@ -248,6 +250,22 @@ class Model
         }
 
         return $arrayData;
+    }
+
+    /**
+     * Generates an array of the current model, but removes empty values
+     *
+     * @return array
+     */
+    public function toArrayWithoutEmptyValues()
+    {
+        $array = $this->removeEmptyValues($this->toArray(true));
+        foreach ($array as $key => $value) {
+            if ($value === \Parable\ORM\Database::NULL_VALUE) {
+                $array[$key] = null;
+            }
+        }
+        return $array;
     }
 
     /**
@@ -282,6 +300,28 @@ class Model
             }
         }
         return $exportData;
+    }
+
+    /**
+     * @return array
+     */
+    public function exportToArrayWithoutEmptyValues()
+    {
+        return $this->removeEmptyValues($this->exportToArray());
+    }
+
+    /**
+     * @param array $array
+     * @return array
+     */
+    public function removeEmptyValues(array $array)
+    {
+        foreach ($array as $key => $value) {
+            if ($value !== 0 && empty($value)) {
+                unset($array[$key]);
+            }
+        }
+        return $array;
     }
 
     /**

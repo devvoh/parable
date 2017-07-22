@@ -16,7 +16,7 @@ class JsonTest extends \Parable\Tests\Base
 
     public function testInit()
     {
-        $response = new \Parable\Http\Response();
+        $response = \Parable\DI\Container::createAll(\Parable\Http\Response::class);
 
         $this->assertSame('text/html', $response->getContentType());
 
@@ -28,7 +28,7 @@ class JsonTest extends \Parable\Tests\Base
     public function testPrepare()
     {
         /** @var \Parable\Http\Response $response */
-        $response = new \Parable\Http\Response();
+        $response = \Parable\DI\Container::createAll(\Parable\Http\Response::class);
         $response->setOutput($this->json);
 
         $response->setContent([

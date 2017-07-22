@@ -19,6 +19,19 @@ class RequestTest extends \Parable\Tests\Base
         $this->mockProperty($this->request, 'headers', ['testkey' => 'testvalue']);
     }
 
+    public function testGetProtocol()
+    {
+        // Default is HTTP/1.1, if, for example, SERVER_PROTOCOL is unset.
+        $this->assertSame("HTTP/1.1", $this->request->getProtocol());
+
+        $_SERVER['SERVER_PROTOCOL'] = "HTTP/2.0";
+
+        $this->assertSame("HTTP/2.0", $this->request->getProtocol());
+
+        // In CLI mode, this value shouldn't be here.
+        unset($_SERVER['SERVER_PROTOCOL']);
+    }
+
     public function testGetMethod()
     {
         $this->assertSame("GET", $this->request->getMethod());

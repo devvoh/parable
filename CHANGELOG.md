@@ -1,5 +1,21 @@
 # Parable PHP Framework Changelog
 
+### 0.12.5
+
+__Changes__
+- `\Parable\ORM\Model` now has the possibility of `toArrayWithoutEmptyValues` and `exportToArrayWithoutEmptyValues`, and the default `toArray` and `exportToArray` now return empty values.
+- `\Parable\ORM\Repository` now offers `buildAndSet()` and `buildOrSet()`. This fixes issue #10.
+- All hook `->trigger(...)` calls now make use of constants so that hooking into them is somewhat more comfortable as well. This fixes issue #11.
+- It's now possible to add `errorMode` to the database config so you can set the error mode. Use the values defined on `PDO` for this: `ERRMODE_SILENT`, `ERRMODE_WARNING` or `ERRMODE_EXCEPTION`. `ERRMODE_SILENT` is the default, so it's no change for you. Setting more punishing error modes should be a conscious choice. This fixes issue #12.
+- Typo in `Init\Example` fixed, was still referencing `initLocations`, whereas that's `inits` now. This fixes #14.
+- `\Parable\Http\Request` now no longer sets Method in its `__construct` method, but checks the `$_SERVER` values every time `getMethod` is called.
+- `\Parable\Http\Response::setHttpCode()` now throws an Exception when an invalid code is set.
+
+__Bugfixes__
+- You can now set a different `homeDir` than `public`, for those who need a different location due to their hosting setup. This makes it possible to keep all app-related code outside of the end-user-accessible dirs. This fixes #13.
+- `\Parable\Console` now supports `--option=value` style options, as well as arguments. Simple `$command->addArgument("name", $required = bool)` and you can use them. Arguments are *in-order*, but can be either preceeded or succeeded by options. This fixes #15.
+- `\Parable\Http\Response` now returns using the same HTTP protocol it was requested with, since it asks `\Parable\Http\Request` what it should be. This fixes issue #16.  
+
 ### 0.12.4
 
 __Bugfixes__

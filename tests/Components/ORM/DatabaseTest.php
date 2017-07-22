@@ -54,6 +54,14 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
         $this->assertSame('db', $this->database->getDatabase());
     }
 
+    public function testSetAndGetErrorMode()
+    {
+        $this->assertSame(\PDO::ERRMODE_SILENT, $this->database->getErrorMode());
+
+        $this->database->setErrorMode(\PDO::ERRMODE_EXCEPTION);
+        $this->assertSame(\PDO::ERRMODE_EXCEPTION, $this->database->getErrorMode());
+    }
+
     public function testGetInstanceReturnsWorkingPDOInstance()
     {
         $this->assertInstanceOf(\Parable\ORM\Database\PDOSQLite::class, $this->database->getInstance());
@@ -118,6 +126,7 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
 
     public function testGetInstanceWithMySQL()
     {
+        /** @var \Parable\ORM\Database $database */
         $database = $this->createPartialMock(\Parable\ORM\Database::class, ['createPDOMySQL']);
 
         $database
@@ -130,10 +139,10 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
 
         $database->setConfig([
             'type' => \Parable\ORM\Database::TYPE_MYSQL,
-            'location' => 'localhost',
-            'username' => 'username',
-            'password' => 'password',
-            'database' => 'database',
+            'location'  => 'localhost',
+            'username'  => 'username',
+            'password'  => 'password',
+            'database'  => 'database',
         ]);
 
         $this->assertInstanceOf(\Parable\ORM\Database\PDOMySQL::class, $database->getInstance());

@@ -20,6 +20,9 @@ class Model extends \Parable\ORM\Model
     /** @var string */
     public $updated_at;
 
+    /** @var string */
+    public static $should_never_show;
+
     /** @var array */
     protected $exportable = ['username', 'email'];
 }

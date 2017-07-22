@@ -4,6 +4,20 @@ namespace Parable\Framework;
 
 class App
 {
+    const HOOK_HTTP_404             = "parable_http_404";
+    const HOOK_HTTP_200             = "parable_http_200";
+    const HOOK_RESPONSE_SEND        = "parable_response_send";
+    const HOOK_LOAD_INITS_AFTER     = "parable_load_inits_after";
+    const HOOK_ROUTE_MATCH_BEFORE   = "parable_route_match_before";
+    const HOOK_ROUTE_MATCH_AFTER    = "parable_route_match_after";
+    const HOOK_SESSION_START_BEFORE = "parable_session_start_before";
+    const HOOK_SESSION_START_AFTER  = "parable_session_start_after";
+    const HOOK_LOAD_ROUTES_BEFORE   = "parable_load_routes_before";
+    const HOOK_LOAD_ROUTES_AFTER    = "parable_load_routes_after";
+    const HOOK_INIT_DATABASE_BEFORE = "parable_init_database_before";
+    const HOOK_INIT_DATABASE_AFTER  = "parable_init_database_after";
+
+
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
@@ -35,7 +49,7 @@ class App
     protected $database;
 
     /** @var string */
-    protected $version = '0.12.4';
+    protected $version = '0.12.5';
 
     public function __construct(
         \Parable\Filesystem\Path $path,
@@ -71,6 +85,12 @@ class App
         /* Load the config */
         $this->config->load();
 
+        /* Set the basePath on the url based on the config */
+        if ($this->config->get('parable.app.homeDir')) {
+            $homeDir = trim($this->config->get('parable.app.homeDir'), "/");
+            $this->url->setBasePath("{$homeDir}/index.php");
+        }
+
         /* See if there's any inits defined in the config */
         if ($this->config->get("parable.inits")) {
             $this->loadInits();
@@ -97,18 +117,18 @@ class App
         }
 
         /* And try to match the route */
-        $this->hook->trigger('parable_route_match_before', $currentUrl);
+        $this->hook->trigger(self::HOOK_ROUTE_MATCH_BEFORE, $currentUrl);
         $route = $this->router->matchUrl($this->toolkit->getCurrentUrl());
-        $this->hook->trigger('parable_route_match_after', $route);
+        $this->hook->trigger(self::HOOK_ROUTE_MATCH_AFTER, $route);
 
         if ($route) {
             $this->dispatchRoute($route);
         } else {
             $this->response->setHttpCode(404);
-            $this->hook->trigger('parable_http_404', $currentFullUrl);
+            $this->hook->trigger(self::HOOK_HTTP_404, $currentFullUrl);
         }
 
-        $this->hook->trigger('parable_response_send');
+        $this->hook->trigger(self::HOOK_RESPONSE_SEND);
         $this->response->send();
         return $this;
     }
@@ -118,9 +138,9 @@ class App
      */
     protected function startSession()
     {
-        $this->hook->trigger('parable_session_start_before');
+        $this->hook->trigger(self::HOOK_SESSION_START_BEFORE);
         $this->session->start();
-        $this->hook->trigger('parable_session_start_after', $this->session);
+        $this->hook->trigger(self::HOOK_SESSION_START_AFTER, $this->session);
         return $this;
     }
 
@@ -131,7 +151,7 @@ class App
      */
     protected function loadRoutes()
     {
-        $this->hook->trigger('parable_load_routes_before');
+        $this->hook->trigger(self::HOOK_LOAD_ROUTES_BEFORE);
         if ($this->config->get("parable.routes")) {
             foreach ($this->config->get("parable.routes") as $routesClass) {
                 /** @var \Parable\Framework\Interfaces\Routing $routes */
@@ -146,7 +166,7 @@ class App
                 $this->router->addRoutes($routes->get());
             }
         }
-        $this->hook->trigger('parable_load_routes_after');
+        $this->hook->trigger(self::HOOK_LOAD_ROUTES_AFTER);
         return $this;
     }
 
@@ -164,7 +184,7 @@ class App
                 \Parable\DI\Container::create($initClass);
             }
         }
-        $this->hook->trigger('parable_load_inits_after');
+        $this->hook->trigger(self::HOOK_LOAD_INITS_AFTER);
         return $this;
     }
 
@@ -173,9 +193,9 @@ class App
      */
     protected function initDatabase()
     {
-        $this->hook->trigger('parable_init_database_before');
+        $this->hook->trigger(self::HOOK_INIT_DATABASE_BEFORE);
         $this->database->setConfig($this->config->get('parable.database'));
-        $this->hook->trigger('parable_init_database_after');
+        $this->hook->trigger(self::HOOK_INIT_DATABASE_AFTER);
         return $this;
     }
 
@@ -187,7 +207,7 @@ class App
     protected function dispatchRoute(\Parable\Routing\Route $route)
     {
         $this->response->setHttpCode(200);
-        $this->hook->trigger('parable_http_200', $route);
+        $this->hook->trigger(self::HOOK_HTTP_200, $route);
 
         $this->dispatcher->dispatch($route);
 

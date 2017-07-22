@@ -10,10 +10,32 @@ class Url
     /** @var string */
     protected $baseUrl;
 
+    /** @var null|string */
+    protected $basePath = "/public/index.php";
+
     public function __construct(
         \Parable\Http\Request $request
     ) {
         $this->request = $request;
+    }
+
+    /**
+     * @param string $basePath
+     *
+     * @return $this
+     */
+    public function setBasePath($basePath)
+    {
+        $this->basePath = "/" . trim($basePath, "/");
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBasePath()
+    {
+        return $this->basePath;
     }
 
     /**
@@ -25,7 +47,7 @@ class Url
     {
         $domain = $this->request->getScheme() . '://' . $_SERVER['HTTP_HOST'];
 
-        $url = str_replace('/public/index.php', '', $_SERVER['SCRIPT_NAME']);
+        $url = str_replace($this->getBasePath(), '', $_SERVER['SCRIPT_NAME']);
         $this->baseUrl = $domain . '/' . ltrim($url, '/');
         return $this;
     }

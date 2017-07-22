@@ -8,7 +8,7 @@ class Parameter
     const PARAMETER_EXISTS = '__parameter_exists__';
 
     /** @var array */
-    protected $rawArguments = [];
+    protected $parameters = [];
 
     /** @var string */
     protected $scriptName;
@@ -17,57 +17,88 @@ class Parameter
     protected $commandName;
 
     /** @var array */
-    protected $arguments = [];
+    protected $parsedOptions = [];
 
     /** @var array */
-    protected $options = [];
+    protected $rawArguments = [];
+
+    /** @var array */
+    protected $parsedArguments = [];
+
+    /** @var array */
+    protected $commandOptions = [];
+
+    /** @var array */
+    protected $commandArguments = [];
 
     public function __construct()
     {
-        $this->setArguments($_SERVER["argv"]);
+        $this->setParameters($_SERVER["argv"]);
     }
 
     /**
-     * @param array $arguments
+     * @param array $parameters
      *
      * @return $this
      */
-    public function setArguments(array $arguments)
+    public function setParameters(array $parameters)
     {
-        $this->rawArguments = $arguments;
-        $this->parseArguments();
+        $this->parameters = $parameters;
+        $this->parseParameters();
         return $this;
     }
 
     /**
+     * @return array
+     */
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    /**
      * @return $this
      */
-    public function parseArguments()
+    public function parseParameters()
     {
         // Reset all previously gathered data
         $this->reset();
 
         // Extract the scriptName
-        $this->scriptName = array_shift($this->rawArguments);
+        $this->scriptName = array_shift($this->parameters);
 
         // Extract the commandName
-        if (isset($this->rawArguments[0])
-            && !empty($this->rawArguments[0])
-            && strpos($this->rawArguments[0], '--') === false
+        if (isset($this->parameters[0])
+            && !empty($this->parameters[0])
+            && strpos($this->parameters[0], '--') === false
         ) {
-            $this->commandName = array_shift($this->rawArguments);
+            $this->commandName = array_shift($this->parameters);
         }
 
         $optionName = null;
-        foreach ($this->rawArguments as $key => $argument) {
-            if (substr($argument, 0, 2) == '--') {
-                $optionName = ltrim($argument, '-');
-                $this->arguments[$optionName] = static::PARAMETER_EXISTS;
-            } elseif ($optionName !== null) {
-                $this->arguments[$optionName] = $argument;
+        foreach ($this->parameters as $key => $parameter) {
+            // check if option
+            if (substr($parameter, 0, 2) == '--') {
+                $parameter = ltrim($parameter, '-');
+                // check if there's an '=' sign in there
+                $equalsPosition = strpos($parameter, '=');
+                if ($equalsPosition !== false) {
+                    $optionName  = substr($parameter, 0, $equalsPosition);
+                    $optionValue = substr($parameter, $equalsPosition + 1);
+
+                    $this->parsedOptions[$optionName] = $optionValue;
+                } else {
+                    $this->parsedOptions[$parameter] = self::PARAMETER_EXISTS;
+                    $optionName = $parameter;
+                }
+            } elseif ($optionName) {
+                $this->parsedOptions[$optionName] = $parameter;
                 $optionName = null;
+            } else {
+                $this->rawArguments[] = $parameter;
             }
         }
+
         return $this;
     }
 
@@ -94,7 +125,18 @@ class Parameter
      */
     public function setOptions(array $options)
     {
-        $this->options = $options;
+        $this->commandOptions = $options;
+        return $this;
+    }
+
+    /**
+     * @param array $arguments
+     *
+     * @return $this
+     */
+    public function setArguments(array $arguments)
+    {
+        $this->commandArguments = $arguments;
         return $this;
     }
 
@@ -106,20 +148,22 @@ class Parameter
      */
     public function checkOptions()
     {
-        foreach ($this->options as $option) {
+        foreach ($this->commandOptions as $option) {
             // Check if required option is actually passed
             if (isset($option['required'])
                 && $option['required']
-                && !array_key_exists($option['name'], $this->arguments)
+                && !array_key_exists($option['name'], $this->parsedOptions)
             ) {
                 throw new \Parable\Console\Exception("Required option '--{$option['name']}' not provided.");
             }
 
             // Check if non-required but passed option requires a value
-            if (array_key_exists($option['name'], $this->arguments)
+            if (array_key_exists($option['name'], $this->parsedOptions)
                 && isset($option['valueRequired'])
                 && $option['valueRequired']
-                && (!$this->arguments[$option['name']] || $this->arguments[$option['name']] == static::PARAMETER_EXISTS)
+                && (!$this->parsedOptions[$option['name']]
+                    || $this->parsedOptions[$option['name']] == self::PARAMETER_EXISTS
+                )
             ) {
                 throw new \Parable\Console\Exception(
                     "Option '--{$option['name']}' requires a value, which is not provided."
@@ -130,12 +174,27 @@ class Parameter
             if (isset($option['defaultValue'])
                 && $option['defaultValue']
                 && (
-                    !array_key_exists($option['name'], $this->arguments)
-                    || $this->arguments[$option['name']] == static::PARAMETER_EXISTS
+                    !array_key_exists($option['name'], $this->parsedOptions)
+                    || $this->parsedOptions[$option['name']] == self::PARAMETER_EXISTS
                 )
             ) {
-                $this->arguments[$option['name']] = $option['defaultValue'];
+                $this->parsedOptions[$option['name']] = $option['defaultValue'];
             }
+        }
+    }
+
+    public function checkArguments()
+    {
+        foreach ($this->commandArguments as $index => $argument) {
+            $key = $index + 1;
+            // Check if required argument is actually passed
+            if (isset($argument['required'])
+                && $argument['required']
+                && !array_key_exists($index, $this->rawArguments)
+            ) {
+                throw new \Parable\Console\Exception("Required argument '{$key}:{$argument['name']}' not provided.");
+            }
+            $this->parsedArguments[$argument['name']] = $this->rawArguments[$index];
         }
     }
 
@@ -149,13 +208,13 @@ class Parameter
      */
     public function getOption($name)
     {
-        if (!array_key_exists($name, $this->arguments)) {
+        if (!array_key_exists($name, $this->parsedOptions)) {
             return null;
         }
-        if ($this->arguments[$name] == static::PARAMETER_EXISTS) {
+        if ($this->parsedOptions[$name] == static::PARAMETER_EXISTS) {
             return true;
         }
-        return $this->arguments[$name];
+        return $this->parsedOptions[$name];
     }
 
     /**
@@ -164,8 +223,33 @@ class Parameter
     public function getOptions()
     {
         $returnArray = [];
-        foreach ($this->arguments as $key => $value) {
+        foreach ($this->parsedOptions as $key => $option) {
             $returnArray[$key] = $this->getOption($key);
+        }
+        return $returnArray;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed|null
+     */
+    public function getArgument($name)
+    {
+        if (!array_key_exists($name, $this->parsedArguments)) {
+            return null;
+        }
+        return $this->parsedArguments[$name];
+    }
+
+    /**
+     * @return array
+     */
+    public function getArguments()
+    {
+        $returnArray = [];
+        foreach ($this->parsedArguments as $key => $argument) {
+            $returnArray[$key] = $this->getArgument($key);
         }
         return $returnArray;
     }
@@ -175,9 +259,11 @@ class Parameter
      */
     protected function reset()
     {
-        $this->arguments   = [];
-        $this->scriptName  = null;
-        $this->commandName = null;
+        $this->scriptName      = null;
+        $this->commandName     = null;
+        $this->rawArguments    = [];
+        $this->parsedArguments = [];
+        $this->parsedOptions   = [];
 
         return $this;
     }

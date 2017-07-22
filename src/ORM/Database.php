@@ -32,6 +32,9 @@ class Database
     /** @var null|\PDO */
     protected $instance;
 
+    /** @var int */
+    protected $errorMode = \PDO::ERRMODE_SILENT;
+
     /**
      * Returns the type, if any
      *
@@ -148,6 +151,27 @@ class Database
     }
 
     /**
+     * @return int
+     */
+    public function getErrorMode()
+    {
+        return $this->errorMode;
+    }
+
+    /**
+     * @param int $errorMode
+     *
+     * @return $this
+     */
+    public function setErrorMode($errorMode)
+    {
+        if (in_array($errorMode, [\PDO::ERRMODE_SILENT, \PDO::ERRMODE_WARNING, \PDO::ERRMODE_EXCEPTION])) {
+            $this->errorMode = $errorMode;
+        }
+        return $this;
+    }
+
+    /**
      * @return null|\PDO
      * @throws \Parable\ORM\Exception
      */
@@ -157,7 +181,8 @@ class Database
             switch ($this->getType()) {
                 case static::TYPE_SQLITE:
                     $instance = $this->createPDOSQLite(
-                        $this->getLocation()
+                        $this->getLocation(),
+                        $this->getErrorMode()
                     );
                     $this->setInstance($instance);
                     break;
@@ -169,7 +194,8 @@ class Database
                         $this->getLocation(),
                         $this->getDatabase(),
                         $this->getUsername(),
-                        $this->getPassword()
+                        $this->getPassword(),
+                        $this->getErrorMode()
                     );
                     $this->setInstance($instance);
                     break;
@@ -182,13 +208,18 @@ class Database
 
     /**
      * @param string $location
+     * @param int    $errorMode
      *
      * @return \Parable\ORM\Database\PDOSQLite
      */
-    protected function createPDOSQLite($location)
+    protected function createPDOSQLite($location, $errorMode)
     {
         $dsn = 'sqlite:' . $location;
-        return new \Parable\ORM\Database\PDOSQLite($dsn);
+
+        $db  = new \Parable\ORM\Database\PDOSQLite($dsn);
+        $db->setAttribute(\PDO::ATTR_ERRMODE, $errorMode);
+
+        return $db;
     }
 
     /**
@@ -196,15 +227,20 @@ class Database
      * @param string $database
      * @param string $username
      * @param string $password
+     * @param int    $errorMode
      *
      * @return \Parable\ORM\Database\PDOMySQL
      *
      * @codeCoverageIgnore
      */
-    protected function createPDOMySQL($location, $database, $username, $password)
+    protected function createPDOMySQL($location, $database, $username, $password, $errorMode)
     {
         $dsn = 'mysql:host=' . $location . ';dbname=' . $database;
-        return new \Parable\ORM\Database\PDOMySQL($dsn, $username, $password);
+
+        $db  = new \Parable\ORM\Database\PDOMySQL($dsn, $username, $password);
+        $db->setAttribute(\PDO::ATTR_ERRMODE, $errorMode);
+
+        return $db;
     }
 
     /**

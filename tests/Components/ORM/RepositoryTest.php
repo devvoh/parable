@@ -230,4 +230,21 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
             [3, 'user'],
         ];
     }
+
+    public function testBuildAndOrSets()
+    {
+        $set = $this->repository->buildAndSet([
+            ['id', '=', 1],
+        ]);
+
+        $this->assertInstanceOf(\Parable\ORM\Query\Condition\AndSet::class, $set);
+        $this->assertSame(\Parable\ORM\Query\ConditionSet::SET_AND, $set::TYPE);
+
+        $set = $this->repository->buildOrSet([
+            ['id', '=', 1],
+        ]);
+
+        $this->assertInstanceOf(\Parable\ORM\Query\Condition\OrSet::class, $set);
+        $this->assertSame(\Parable\ORM\Query\ConditionSet::SET_OR, $set::TYPE);
+    }
 }
