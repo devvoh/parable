@@ -1,5 +1,13 @@
 # Parable PHP Framework Changelog
 
+### 0.12.6
+
+__Changes__
+- `\Parable\Framework\Toolkit::redirectToRoute()` now also accepts a `$parameters` array, to build route Urls with params like `\Parable\Routing\Router::getRouteUrlByName()` does.
+
+__Bugfixes__
+- `Init\Example` (structure file) did not yet use or explain the use of `HOOK_x` constants on `\Parable\Framework\App`.
+
 ### 0.12.5
 
 __Changes__

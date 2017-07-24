@@ -44,7 +44,7 @@ class ToolkitTest extends \Parable\Tests\Components\Framework\Base
     public function testRedirectToRouteThrowsExceptionOnNonExistingRouteName()
     {
         $this->expectException(\Parable\Framework\Exception::class);
-        $this->expectExceptionMessage("Can't redirect to route, 'thisaintnoroute'' does not exist.");
+        $this->expectExceptionMessage("Can't redirect to route, 'thisaintnoroute' does not exist.");
 
         $this->responseMock->expects($this->never())->method('terminate');
         $this->toolkit->redirectToRoute("thisaintnoroute");

@@ -31,8 +31,12 @@ class Example
          * there's no init scripts available. You can also remove the key from the Config.
          *
          * Below is a simple way of hooking into the 404 event.
+         *
+         * Easiest way to deal with Parable's Hooks is to use the constants defined on \Parable\Framework\App::HOOK_x.
+         *
+         * This ensures that even if the string values change in future versions of Parable, they'll still function.
          */
-        $hook->into('parable_http_404', function ($trigger, $url) use ($response) {
+        $hook->into(\Parable\Framework\App::HOOK_HTTP_404, function ($trigger, $url) use ($response) {
             $response->setContent("404 - page '{$url}' could not be found");
             $response->send();
         });
