@@ -51,13 +51,15 @@ class Toolkit
      * Redirect directly by using a route name.
      *
      * @param string $routeName
+     * @param array  $parameters
+     *
      * @throws \Parable\Framework\Exception
      */
-    public function redirectToRoute($routeName)
+    public function redirectToRoute($routeName, array $parameters = [])
     {
-        $url = $this->router->getRouteUrlByName($routeName);
+        $url = $this->router->getRouteUrlByName($routeName, $parameters);
         if (!$url) {
-            throw new \Parable\Framework\Exception("Can't redirect to route, '{$routeName}'' does not exist.");
+            throw new \Parable\Framework\Exception("Can't redirect to route, '{$routeName}' does not exist.");
         }
         $this->response->redirect($this->url->getUrl($url));
     }
