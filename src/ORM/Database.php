@@ -154,19 +154,20 @@ class Database
     }
 
     /**
-     * Return the charset, if any
+     * Return the charset, if set
      *
      * @return null|string
      */
-    public function getCharSet()
+    public function getCharset()
     {
         return $this->charset;
     }
 
     /**
-     * Set the charset for the database connection
+     * Set the charset for the database connection; if not set, database setting is used
      *
      * @param null|string $charset
+     *
      * @return Database
      */
     public function setCharset($charset)
