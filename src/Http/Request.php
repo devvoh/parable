@@ -13,11 +13,16 @@ class Request
     /** @var array */
     protected $headers = [];
 
+    /** @var string */
+    protected $body;
+
     /**
      * Set some basic information we're going to need.
      */
     public function __construct()
     {
+        $this->body = file_get_contents('php://input');
+
         if (PHP_SAPI !== "cli") {
             // @codeCoverageIgnoreStart
             $this->headers = getallheaders() ?: [];
@@ -141,4 +146,13 @@ class Request
         }
         return "http";
     }
+
+    /**
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
 }
