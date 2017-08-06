@@ -21,8 +21,6 @@ class Request
      */
     public function __construct()
     {
-        $this->body = file_get_contents('php://input');
-
         if (PHP_SAPI !== "cli") {
             // @codeCoverageIgnoreStart
             $this->headers = getallheaders() ?: [];
@@ -152,6 +150,9 @@ class Request
      */
     public function getBody()
     {
+        if ($this->body === null) {
+            $this->body = file_get_contents('php://input');
+        }
         return $this->body;
     }
 
