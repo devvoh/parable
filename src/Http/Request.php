@@ -13,6 +13,9 @@ class Request
     /** @var array */
     protected $headers = [];
 
+    /** @var string */
+    protected $body;
+
     /**
      * Set some basic information we're going to need.
      */
@@ -141,4 +144,16 @@ class Request
         }
         return "http";
     }
+
+    /**
+     * @return string
+     */
+    public function getBody()
+    {
+        if ($this->body === null) {
+            $this->body = file_get_contents('php://input');
+        }
+        return $this->body;
+    }
+
 }
