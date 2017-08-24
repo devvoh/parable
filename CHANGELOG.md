@@ -1,5 +1,23 @@
 # Parable PHP Framework Changelog
 
+### 0.12.7
+
+__Changes__
+- `\Parable\Http\Output\Json` has better error checking in `prepare()`, doing its best to make sure the content ends up as json. If it can't it'll throw an exception. This fixes issue #18.
+- `\Parable\Http\Request` has received some love:
+  - `getHeader($key)` now also matches on different capitalisation, to make matching easier.
+  - `getCurrentUrl()` was added, which builds the current url from `$_SERVER` data.
+  - `getHttpHost()` was added, which does its best to return the most reliable value.
+  - `getRequestUrl()` was added.
+  - `getScriptName()` was added.
+  - `getBody()` was added, returning the value of `php://input` passed to the request.
+- `ORM\Database` has gained `setCharset()` and `getCharset()`, so it's now possible to specifically set it. This will also be picked up from the config (key `database.charset`). This fixes issue #19. Fixed by @jerry1970.
+  
+__Bugfixes__
+- `\Parable\GetSet\BaseInput` now auto-detects whether data is json or form-data and attempts to load it both ways. PHP doesn't care whether it's `x-www-form-urlencoded` or passed in the body, so it's all about what the data is.
+- `\Parable\Model\ORM` was using the literal property `id` to check for a primary key. Now uses `$this->getTableKey()` instead.
+- `\Parable\Routing\Route` didn't `rtrim` the / off of the urls. This made matching `url` with `url/` impossible.
+
 ### 0.12.6
 
 __Changes__
