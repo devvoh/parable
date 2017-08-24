@@ -45,9 +45,9 @@ class Url
      */
     public function buildBaseUrl()
     {
-        $domain = $this->request->getScheme() . '://' . $_SERVER['HTTP_HOST'];
+        $domain = $this->request->getScheme() . '://' . $this->request->getHttpHost();
 
-        $url = str_replace($this->getBasePath(), '', $_SERVER['SCRIPT_NAME']);
+        $url = str_replace($this->getBasePath(), '', $this->request->getScriptName());
         $this->baseUrl = $domain . '/' . ltrim($url, '/');
         return $this;
     }
