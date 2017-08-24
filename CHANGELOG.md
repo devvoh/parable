@@ -3,7 +3,7 @@
 ### 0.12.7
 
 __Changes__
-- `\Parable\Http\Output\Json` has better error checking in `prepare()`, doing its best to make sure the content ends up as json. If it can't it'll throw an exception. 
+- `\Parable\Http\Output\Json` has better error checking in `prepare()`, doing its best to make sure the content ends up as json. If it can't it'll throw an exception. This fixes issue #18.
 - `\Parable\Http\Request` has received some love:
   - `getHeader($key)` now also matches on different capitalisation, to make matching easier.
   - `getCurrentUrl()` was added, which builds the current url from `$_SERVER` data.
