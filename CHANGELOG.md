@@ -3,7 +3,7 @@
 ### 0.12.8
 
 __Bugfixes__
-- `\Parable\Http\Url` now has separate base path and script name. So even if you place all but the public files outside of the server's document root, the index.php is still stripped to build the base url. 
+- `\Parable\Http\Url` now has separate base path and script name. So even if you place all but the public files outside of the server's document root, the index.php is still stripped to build the base url. This fixes #22. 
 
 ### 0.12.7
 
