@@ -2,8 +2,11 @@
 
 namespace Parable\GetSet;
 
-abstract class BaseInput extends \Parable\GetSet\Base
+class InputStream extends \Parable\GetSet\Base
 {
+    /** @var string */
+    protected $resource = 'input_stream';
+
     /** @var string */
     protected $inputSource = 'php://input';
 

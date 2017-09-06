@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.12.9
+
+__Changes__
+- `\Parable\GetSet\BaseInput` has been de-abstracted and renamed. It's now available as `\Parable\GetSet\InputStream`. This deprecates the `Put`, `Patch` and `Delete` GetSetters.
+
 ### 0.12.8
 
 __Bugfixes__
