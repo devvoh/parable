@@ -34,7 +34,7 @@ class InputStreamTest extends \Parable\Tests\Base
 
     /**
      * @param string $path
-     * 
+     *
      * @return \Parable\GetSet\InputStream
      */
     protected function setSource($path)
