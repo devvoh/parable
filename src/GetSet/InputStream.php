@@ -5,7 +5,10 @@ namespace Parable\GetSet;
 class InputStream extends \Parable\GetSet\Base
 {
     /** @var string */
-    protected $resource = 'input_stream';
+    protected $resource = 'parable_input_stream';
+
+    /** @var bool */
+    protected $useLocalResource = true;
 
     /** @var string */
     protected $inputSource = 'php://input';
