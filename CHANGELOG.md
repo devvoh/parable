@@ -1,5 +1,11 @@
 # Parable PHP Framework Changelog
 
+### 0.12.11
+
+__Bugfixes__
+- I can't believe nobody noticed this yet, but there was a bug in `\Parable\ORM\Query::buildOrderBy()`, where the key is actually escaped through `quote` rather than `quoteIdentifier`, leaving it as a quoted value rather than a key.
+- Also `buildGroupBy()`, grmbl.
+
 ### 0.12.10
 
 I'm cleaning up this file. All CHANGELOG entries older than the current 'major' pre-release version and the version before that have been moved to CHANGELOG-HISTORY.md.
