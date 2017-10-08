@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 0.12.12
+
+__Bugfixes__
+- Bug in `\Parable\\Routing\Route::isPartCountSame($url)`, where trailing slash vs no trailing slash would be considered not the same. Fixed in PR #25 by @jerry1970.
+
 ### 0.12.11
 
 __Bugfixes__

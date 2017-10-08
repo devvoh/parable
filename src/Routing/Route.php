@@ -229,7 +229,7 @@ class Route
      */
     public function isPartCountSame($url)
     {
-        return count(explode('/', $url)) === count(explode('/', $this->url));
+        return count(explode('/', rtrim($url, '/'))) === count(explode('/', rtrim($this->url, '/')));
     }
 
     /**
