@@ -8,7 +8,7 @@ __Changes__
 - 5 whitespace issues fixed, based on feedback from StyleCI, using the PSR-2 preset. These were the only(!) style discrepancies found.
 
 __Bugfixes__
-- `Undefinet offset` fixed in `\Parable\Console\Parameter::checkArguments()`. Requesting arguments that weren't provided no longer results in a notice.
+- `Undefined offset` fixed in `\Parable\Console\Parameter::checkArguments()`. Requesting arguments that weren't provided no longer results in a notice.
 
 ### 0.12.12
 
