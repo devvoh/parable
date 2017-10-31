@@ -202,5 +202,4 @@ class Request
         }
         return $this->body;
     }
-
 }

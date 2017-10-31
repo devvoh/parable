@@ -1,5 +1,15 @@
 # Parable PHP Framework Changelog
 
+### 0.12.13
+
+__Changes__
+- To ease development a little, try `make server` on a `make`-enabled OS (or run the php built-in webserver yourself with `php-server.php` passed as router script) and it will run (by default) on `http://localhost:5678`.
+- `\Parable\Console\Parameter` and `Command` now understand that even arguments deserve default values. Third (optional) parameter added to `addArgument` that will allow for a default value. 
+- 4 whitespace issues fixed, based on feedback from StyleCI, using the PSR-2 preset. These were the only(!) style discrepancies found.
+
+__Bugfixes__
+- `Undefinet offset` fixed in `\Parable\Console\Parameter::checkArguments()`. Requesting arguments that weren't provided no longer results in a notice.
+
 ### 0.12.12
 
 __Bugfixes__
