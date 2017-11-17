@@ -288,7 +288,7 @@ class Database
     }
 
     /**
-     * If an instance is available, quote/escape the message through PDO's quote function
+     * If an instance is available, quote/escape the message through PDOs quote function
      *
      * @param string $string
      *

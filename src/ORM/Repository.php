@@ -296,4 +296,21 @@ class Repository
         }
         return $entities;
     }
+
+    /**
+     * @param string $modelName
+     *
+     * @return \Parable\ORM\Repository
+     */
+    public static function createInstanceForModelName($modelName)
+    {
+        $model = \Parable\DI\Container::create($modelName);
+
+        /** @var \Parable\ORM\Repository $repository */
+        $repository = \Parable\DI\Container::create(static::class);
+
+        $repository->setModel($model);
+
+        return $repository;
+    }
 }

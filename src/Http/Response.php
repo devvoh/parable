@@ -4,6 +4,9 @@ namespace Parable\Http;
 
 class Response
 {
+    /** @var \Parable\Http\Request */
+    protected $request;
+
     /** @var int */
     protected $httpCode = 200;
 
@@ -84,14 +87,12 @@ class Response
     /** @var bool */
     protected $shouldTerminate = true;
 
-    /**
-     * By default we're going to set the Html Output type.
-     */
     public function __construct(
         \Parable\Http\Request $request
     ) {
         $this->request = $request;
 
+        // By default we're going to set the Html Output, but this can be switched at any time before sending..
         $this->setOutput(new \Parable\Http\Output\Html);
     }
 

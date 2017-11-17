@@ -5,7 +5,7 @@ ini_set('display_errors', '1');
 /** @var \Parable\Console\App $app */
 $app = require_once(__DIR__ . '/src/Framework/Bootstrap.php');
 
-$app->setName('Parable');
+$app->setName("Parable " . \Parable\Framework\App::PARABLE_VERSION);
 
 // Always add Help & Init
 $app->addCommand(\Parable\DI\Container::get(\Parable\Console\Command\Help::class));

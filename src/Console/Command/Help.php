@@ -12,9 +12,10 @@ class Help extends \Parable\Console\Command
 
     public function run()
     {
-        $this->output->writeln("<yellow>{$this->app->getName()} help</yellow>");
-        $this->output->writeln('--------------------------------------------------');
-        $this->output->writeln('Available commands:');
+        $this->output->newline();
+        $this->output->writeln("<yellow>{$this->app->getName()}</yellow> " . str_repeat(" ", 36) . "command-line tool");
+        $this->output->writeln(str_repeat("-", 69));
+        $this->output->writeln('Help screen - available commands:');
         $this->output->newline();
 
         $longestName = 0;

@@ -327,6 +327,19 @@ class Query
     }
 
     /**
+     * @param array $values
+     *
+     * @return $this
+     */
+    public function addValues(array $values)
+    {
+        foreach ($values as $key => $value) {
+            $this->addValue($key, $value);
+        }
+        return $this;
+    }
+
+    /**
      * Sets the order for select queries
      *
      * @param string      $key
