@@ -12,6 +12,7 @@ __Changes__
 
 __Bugfixes__
 - The `parable init-structure` command used a hard-coded vendor path, which could eventually cause problems.
+- Fixed tests up so that all components have 100% code coverage without `Framework` touching all the things. Also improved and simplified some tests.
 
 ### 0.12.13
 

@@ -11,7 +11,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     protected $config = [];
 
     /** @var \Parable\Routing\Router */
-    protected $mockRouter;
+    protected $router;
 
     /** @var \Parable\Http\Response|\PHPUnit_Framework_MockObject_MockObject */
     protected $mockResponse;
@@ -19,23 +19,9 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     /** @var \Parable\GetSet\Session|\PHPUnit_Framework_MockObject_MockObject */
     protected $mockSession;
 
-    /** @var \Parable\Filesystem\Path */
-    protected $mockPath;
-
-    /** @var \Parable\Framework\Config|\PHPUnit_Framework_MockObject_MockObject */
-    protected $mockConfig;
-
-    /** @var \Parable\Framework\Dispatcher */
-    protected $mockDispatcher;
-
     protected function setUp()
     {
         parent::setUp();
-
-        // We need to 'prepare' some classes since they'll expect files elsewhere
-        $this->mockPath = new \Parable\Filesystem\Path();
-        $existingPath   = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
-        $this->mockPath->setBasedir(realpath($existingPath->getBaseDir() . '/structure'));
 
         /** @var \Parable\Http\Response $this->mockResponse */
         // Response should not actually terminate
@@ -51,21 +37,8 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
 
         \Parable\DI\Container::store($this->mockSession, \Parable\GetSet\Session::class);
 
-        $this->mockDispatcher = new \Parable\Framework\Dispatcher(
-            \Parable\DI\Container::get(\Parable\Event\Hook::class),
-            $this->mockPath,
-            \Parable\DI\Container::get(\Parable\Framework\View::class),
-            \Parable\DI\Container::get(\Parable\Http\Response::class)
-        );
-
-        // Router is not a Framework class but does depend on other Parable Components
-        $this->mockRouter = new \Parable\Routing\Router(
-            \Parable\DI\Container::get(\Parable\Http\Request::class),
-            \Parable\DI\Container::get(\Parable\Http\Url::class),
-            $this->mockPath
-        );
-
-        $this->mockRouter->addRoute('index', [
+        $this->router = \Parable\DI\Container::get(\Parable\Routing\Router::class);
+        $this->router->addRoute('index', [
             'methods' => ['GET'],
             'url' => '/',
             'controller' => \Parable\Tests\TestClasses\Controller::class,
@@ -103,7 +76,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     public function testAppRunWithSimpleUrlWorks()
     {
         $_GET['url'] = '/simple';
-        $this->mockRouter->addRoute(
+        $this->router->addRoute(
             'simple',
             [
                 'methods' => ['GET'],
@@ -126,7 +99,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
 
         $_GET['url'] = '/template';
-        $this->mockRouter->addRoute(
+        $this->router->addRoute(
             'template',
             [
                 'methods' => ['GET'],
@@ -150,7 +123,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->expectException(\Parable\Routing\Exception::class);
         $this->expectExceptionMessage("Either a controller/action combination or callable is required.");
 
-        $this->mockRouter->addRoute(
+        $this->router->addRoute(
             'simple',
             [
                 'methods' => ['GET'],
@@ -164,7 +137,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     public function testAppRunWithValuedUrlWorks()
     {
         $_GET['url'] = '/valued/985';
-        $this->mockRouter->addRoute(
+        $this->router->addRoute(
             'valued',
             [
                 'methods' => ['GET'],
@@ -187,7 +160,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->expectException(\Parable\Routing\Exception::class);
         $this->expectExceptionMessage("Either a controller/action combination or callable is required.");
 
-        $this->mockRouter->addRoute('simple', [
+        $this->router->addRoute('simple', [
             'methods' => ['GET'],
             'url' => '/',
         ]);
@@ -218,17 +191,8 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $config = new \Parable\Framework\Config($this->path);
         $config->setMainConfigClassName($mainConfigClassName);
 
-        return new \Parable\Framework\App(
-            $this->mockPath,
-            $config,
-            $this->mockDispatcher,
-            \Parable\DI\Container::get(\Parable\Framework\Toolkit::class),
-            \Parable\DI\Container::get(\Parable\Event\Hook::class),
-            $this->mockRouter,
-            \Parable\DI\Container::get(\Parable\Http\Response::class),
-            \Parable\DI\Container::get(\Parable\Http\Url::class),
-            \Parable\DI\Container::get(\Parable\GetSet\Session::class),
-            \Parable\DI\Container::get(\Parable\ORM\Database::class)
-        );
+        \Parable\DI\Container::store($config);
+
+        return \Parable\DI\Container::create(\Parable\Framework\App::class);
     }
 }

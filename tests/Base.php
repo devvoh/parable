@@ -4,6 +4,14 @@ namespace Parable\Tests;
 
 abstract class Base extends \PHPUnit\Framework\TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // This key might be handy to have
+        $GLOBALS['_SESSION'] = [];
+    }
+
     /**
      * Set $value on $object->$propertyName, even if it's private
      * or protected.

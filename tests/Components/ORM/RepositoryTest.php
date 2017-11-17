@@ -247,4 +247,16 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
         $this->assertInstanceOf(\Parable\ORM\Query\Condition\OrSet::class, $set);
         $this->assertSame(\Parable\ORM\Query\ConditionSet::SET_OR, $set::TYPE);
     }
+
+    public function testCreateInstanceForModelName()
+    {
+        $repository = \Parable\ORM\Repository::createInstanceForModelName(\Parable\Tests\TestClasses\Model::class);
+
+        $this->assertInstanceOf(
+            \Parable\Tests\TestClasses\Model::class,
+            $repository->getModel()
+        );
+
+        $this->assertCount(3, $this->repository->getAll());
+    }
 }
