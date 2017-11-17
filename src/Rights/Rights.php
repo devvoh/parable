@@ -87,16 +87,44 @@ class Rights
      */
     public function combine(array $rights)
     {
-        $return = [];
+        $right_combined = str_repeat(0, count($this->rights));
         foreach ($rights as $right) {
-            for ($i = 0; $i < strlen($right); $i++) {
-                if ($right[$i] == '1') {
-                    $return[$i] = '1';
-                } elseif ($right[$i] !== 1 && !isset($return[$i])) {
-                    $return[$i] = 0;
-                }
+            $right_combined |= $right;
+        }
+        return $right_combined;
+    }
+
+    /**
+     * Turn an array of right names (["read", "create"]) into a binary string of rights ("0011")
+     *
+     * @param string[] $names
+     *
+     * @return string
+     */
+    public function getRightsFromNames(array $names)
+    {
+        $rights_string = "";
+        foreach ($this->getRights() as $right => $value) {
+            $rights_string .= in_array($right, $names) ? "1" : "0";
+        }
+        return strrev($rights_string);
+    }
+
+    /**
+     * Turn a binary string of rights ("0011") into an array of right names (["read", "create"])
+     *
+     * @param string $rights
+     *
+     * @return string[]
+     */
+    public function getNamesFromRights($rights)
+    {
+        $names = [];
+        foreach ($this->rights as $name => $value) {
+            if ($this->check($rights, $name)) {
+                $names[] = $name;
             }
         }
-        return implode($return);
+        return $names;
     }
 }

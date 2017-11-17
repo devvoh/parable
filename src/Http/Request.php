@@ -139,7 +139,7 @@ class Request
             return $_SERVER["REDIRECT_REQUEST_SCHEME"];
         }
         if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
-            // Sometimes available in proxied requests
+            // Sometimes available in proxy-forwarded requests
             return $_SERVER["HTTP_X_FORWARDED_PROTO"];
         }
         if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off") {
@@ -147,7 +147,7 @@ class Request
             return "https";
         }
         if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) {
-            // Hacky but this is our last attempt, so why not
+            // This doesn't say much, but this is our last attempt, so why not try
             return "https";
         }
         return "http";

@@ -4,6 +4,8 @@ namespace Parable\Framework;
 
 class App
 {
+    const PARABLE_VERSION           = '0.12.14';
+
     const HOOK_HTTP_404             = "parable_http_404";
     const HOOK_HTTP_200             = "parable_http_200";
     const HOOK_RESPONSE_SEND        = "parable_response_send";
@@ -16,10 +18,6 @@ class App
     const HOOK_LOAD_ROUTES_AFTER    = "parable_load_routes_after";
     const HOOK_INIT_DATABASE_BEFORE = "parable_init_database_before";
     const HOOK_INIT_DATABASE_AFTER  = "parable_init_database_after";
-
-
-    /** @var \Parable\Filesystem\Path */
-    protected $path;
 
     /** @var \Parable\Framework\Config */
     protected $config;
@@ -48,11 +46,7 @@ class App
     /** @var \Parable\ORM\Database */
     protected $database;
 
-    /** @var string */
-    protected $version = '0.12.13';
-
     public function __construct(
-        \Parable\Filesystem\Path $path,
         \Parable\Framework\Config $config,
         \Parable\Framework\Dispatcher $dispatcher,
         \Parable\Framework\Toolkit $toolkit,
@@ -63,7 +57,6 @@ class App
         \Parable\GetSet\Session $session,
         \Parable\ORM\Database $database
     ) {
-        $this->path       = $path;
         $this->config     = $config;
         $this->dispatcher = $dispatcher;
         $this->toolkit    = $toolkit;
@@ -221,6 +214,6 @@ class App
      */
     public function getVersion()
     {
-        return $this->version;
+        return self::PARABLE_VERSION;
     }
 }

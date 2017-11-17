@@ -31,12 +31,19 @@ class HelpTest extends \Parable\Tests\Base
     {
         $this->helpCommand->run();
 
-        $this->assertSame("\e[0;33m help\e[0m\e[0m
---------------------------------------------------\e[0m
-Available commands:\e[0m
+        $expectedOutput = <<<EOT
+
+\e[0;33m\e[0m                                     command-line tool\e[0m
+---------------------------------------------------------------------\e[0m
+Help screen - available commands:\e[0m
 
     \e[0;32mhelp\e[0m   \e[0mShows all commands available.\e[0m
 
-", $this->getActualOutputAndClean());
+
+EOT;
+        $this->assertSame(
+            $expectedOutput,
+            $this->getActualOutputAndClean()
+        );
     }
 }

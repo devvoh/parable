@@ -13,11 +13,16 @@ class InitStructure extends \Parable\Console\Command
     /** @var \Parable\Filesystem\Path */
     protected $path;
 
+    /** @var string */
+    protected $vendor_path;
+
     public function __construct(
         \Parable\Filesystem\Path $path
     ) {
         $this->addOption("homeDir", false, true, "public");
         $this->path = $path;
+
+        $this->vendor_path = __DIR__ . "/../../..";
     }
 
     /**
@@ -86,62 +91,65 @@ class InitStructure extends \Parable\Console\Command
 
         $this->output->write('Copying files: ');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/.htaccess"),
+            $this->path->getDir("{$this->vendor_path}/structure/.htaccess"),
             $this->path->getDir(".htaccess")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/public/.htaccess"),
+            $this->path->getDir("{$this->vendor_path}/structure/public/.htaccess"),
             $this->path->getDir("{$homeDir}/.htaccess")
         );
         $this->output->write('.');
-        copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/public/index.php_struct"),
-            $this->path->getDir("{$homeDir}/index.php")
-        );
+
+        // For index.php, we do it a bit differently, since we need to alter the content
+        $content = file_get_contents($this->path->getDir("{$this->vendor_path}/structure/public/index.php_struct"));
+        $content = str_replace("###VENDOR_PATH###", $this->vendor_path, $content);
+        file_put_contents($this->path->getDir("{$homeDir}/index.php"), $content);
         $this->output->write('.');
+
+        // And we continue copying files
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/Command/HelloWorld.php_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/Command/HelloWorld.php_struct"),
             $this->path->getDir("app/Command/HelloWorld.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/Config/App.php_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/Config/App.php_struct"),
             $this->path->getDir("app/Config/App.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/Config/Custom.php_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/Config/Custom.php_struct"),
             $this->path->getDir("app/Config/Custom.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/Controller/Home.php_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/Controller/Home.php_struct"),
             $this->path->getDir("app/Controller/Home.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/Init/Example.php_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/Init/Example.php_struct"),
             $this->path->getDir("app/Init/Example.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/Model/User.php_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/Model/User.php_struct"),
             $this->path->getDir("app/Model/User.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/Routing/App.php_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/Routing/App.php_struct"),
             $this->path->getDir("app/Routing/App.php")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/View/Home/index.phtml_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/View/Home/index.phtml_struct"),
             $this->path->getDir("app/View/Home/index.phtml")
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("vendor/devvoh/parable/structure/app/View/Home/test.phtml_struct"),
+            $this->path->getDir("{$this->vendor_path}/structure/app/View/Home/test.phtml_struct"),
             $this->path->getDir("app/View/Home/test.phtml")
         );
         $this->output->write('.');
@@ -157,6 +165,7 @@ class InitStructure extends \Parable\Console\Command
             $htaccess = str_replace("public/$1", "{$homeDir}/$1", $htaccess);
             file_put_contents($this->path->getDir('.htaccess'), $htaccess);
         }
+        $this->output->write('.');
 
         $this->output->writeln(" <green>OK</green>");
 

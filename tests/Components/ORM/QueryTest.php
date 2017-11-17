@@ -209,7 +209,25 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
         $this->query->addValue('active', 1);
         $this->query->addValue('thing', null);
 
-        $this->assertSame("INSERT INTO `user` (`name`, `active`, `thing`) VALUES ('test', '1', NULL);", (string)$this->query);
+        $this->assertSame(
+            "INSERT INTO `user` (`name`, `active`, `thing`) VALUES ('test', '1', NULL);",
+            (string)$this->query
+        );
+    }
+
+    public function testInsertWithAddValues()
+    {
+        $this->query->setAction('insert');
+        $this->query->addValues([
+            'name'   => 'test',
+            'active' => 1,
+            'thing'  => null,
+        ]);
+
+        $this->assertSame(
+            "INSERT INTO `user` (`name`, `active`, `thing`) VALUES ('test', '1', NULL);",
+            (string)$this->query
+        );
     }
 
     public function testUpdate()
@@ -223,7 +241,10 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
         $this->query->addValue('active', 1);
         $this->query->addValue('thing', null);
 
-        $this->assertSame("UPDATE `user` SET `name` = 'test', `active` = '1', `thing` = NULL WHERE `user`.`id`  = '3';", (string)$this->query);
+        $this->assertSame(
+            "UPDATE `user` SET `name` = 'test', `active` = '1', `thing` = NULL WHERE `user`.`id`  = '3';",
+            (string)$this->query
+        );
     }
 
     public function testSelectGivesEmptyStringOnNoSelect()
