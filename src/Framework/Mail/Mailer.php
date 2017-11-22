@@ -27,6 +27,20 @@ class Mailer extends \Parable\Mail\Mailer
         $this->templateVariables = $templateVariables;
         $this->path              = $path;
 
+        $this->setValuesFromConfig();
+    }
+
+    /**
+     * Set the following values from config if available:
+     *
+     * parable.email.sender     - the Mail sender implementation to use (default: PhpMail)
+     * parable.email.from.email - the email to set the from to by default
+     * parable.email.from.name  - the name to set the from to by default, optional, only used if from.email is present
+     *
+     * @throws \Parable\Framework\Exception
+     */
+    protected function setValuesFromConfig()
+    {
         if ($this->config->get("parable.mail.sender")) {
             try {
                 $sender = \Parable\DI\Container::create($this->config->get("parable.mail.sender"));
@@ -37,6 +51,13 @@ class Mailer extends \Parable\Mail\Mailer
         } else {
             // Use PhPMail sender by default
             $this->setMailSender(new \Parable\Mail\Sender\PhpMail());
+        }
+
+        if ($this->config->get("parable.mail.from.email")) {
+            $this->setFrom(
+                $this->config->get("parable.mail.from.email"),
+                $this->config->get("parable.mail.from.name")
+            );
         }
     }
 

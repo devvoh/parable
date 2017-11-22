@@ -48,6 +48,22 @@ class MailerTest extends \Parable\Tests\Components\Framework\Base
         );
     }
 
+    public function testMailerPicksUpFromEmailAndNameFromConfig()
+    {
+        $config = new \Parable\Framework\Config($this->path);
+        $config->set("parable.mail.from.email", "me@thatplace.gov");
+        $config->set("parable.mail.from.name", "yo that's me!");
+
+        $mailer = new \Parable\Framework\Mail\Mailer(
+            $config,
+            \Parable\DI\Container::get(\Parable\Framework\View::class),
+            \Parable\DI\Container::get(\Parable\Framework\Mail\TemplateVariables::class),
+            $this->path
+        );
+
+        $this->assertSame("yo that's me! <me@thatplace.gov>", $mailer->getAddressesForType("from"));
+    }
+
     public function testSetGetTemplateVariable()
     {
         $this->mailer->setTemplateVariable('3', 'three');
