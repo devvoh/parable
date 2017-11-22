@@ -64,7 +64,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     public function testAppRunWithoutRoutesTriggersHookNoRoutesFound()
     {
         $hook = \Parable\DI\Container::get(\Parable\Event\Hook::class);
-        $hook->into(\Parable\Framework\App::HOOK_LOAD_ROUTES_NO_ROUTES_FOUND, function($event) {
+        $hook->into(\Parable\Framework\App::HOOK_LOAD_ROUTES_NO_ROUTES_FOUND, function ($event) {
             $this->assertSame(\Parable\Framework\App::HOOK_LOAD_ROUTES_NO_ROUTES_FOUND, $event);
         });
 
