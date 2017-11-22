@@ -35,6 +35,8 @@ class Route
     public $cleanValues = [];
 
     /**
+     * Set data from array. See method implementation for possible values.
+     *
      * @param array $data
      *
      * @throws \Parable\Routing\Exception
@@ -103,6 +105,9 @@ class Route
     }
 
     /**
+     * For the provided value $name, check the value for validity. This is specifically used for typed
+     * parameters such as {id:int} or {amount:float}.
+     *
      * @param string $name
      * @param mixed  $value
      *
@@ -129,6 +134,13 @@ class Route
         return false;
     }
 
+    /**
+     * Remove the typing from a parameter name.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
     protected function removeParameterValueTypeFromName($name)
     {
         // If there's no : in the name, then it's not typed.
@@ -243,6 +255,8 @@ class Route
     }
 
     /**
+     * Take the values currently available and remove all types from them.
+     *
      * @return $this
      */
     protected function cleanValues()
@@ -271,7 +285,7 @@ class Route
     }
 
     /**
-     * Get all values
+     * Get all values.
      *
      * @return array
      */
@@ -281,6 +295,8 @@ class Route
     }
 
     /**
+     * Build a url based on the route, replacing all parameters with the values passed (as [key => value]).
+     *
      * @param array $parameters
      *
      * @return string

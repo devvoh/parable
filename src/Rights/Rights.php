@@ -38,7 +38,7 @@ class Rights
     }
 
     /**
-     * Return all rights
+     * Return all rights.
      *
      * @return array
      */
@@ -48,7 +48,7 @@ class Rights
     }
 
     /**
-     * Get a specific right by name
+     * Get a specific right by name.
      *
      * @param string $name
      *
@@ -63,7 +63,7 @@ class Rights
     }
 
     /**
-     * Check if binary number $provided has the right bit for right $name
+     * Check if binary number $provided has the right bit for right $name.
      *
      * @param string $provided
      * @param string $name
@@ -77,7 +77,7 @@ class Rights
     }
 
     /**
-     * Combine all right values in $rights into a keep-high combined result
+     * Combine all right values in $rights into a keep-high combined result.
      *
      * Takes an array of binary string values ([00011], [10011], ...])
      *
@@ -95,7 +95,7 @@ class Rights
     }
 
     /**
-     * Turn an array of right names (["read", "create"]) into a binary string of rights ("0011")
+     * Turn an array of right names (["read", "create"]) into a binary string of rights ("0011").
      *
      * @param string[] $names
      *
@@ -111,7 +111,7 @@ class Rights
     }
 
     /**
-     * Turn a binary string of rights ("0011") into an array of right names (["read", "create"])
+     * Turn a binary string of rights ("0011") into an array of right names (["read", "create"]).
      *
      * @param string $rights
      *

@@ -39,7 +39,7 @@ class Database
     protected $errorMode = \PDO::ERRMODE_SILENT;
 
     /**
-     * Returns the type, if any
+     * Returns the type, if any.
      *
      * @return null|string
      */
@@ -49,7 +49,7 @@ class Database
     }
 
     /**
-     * Set the type
+     * Set the type.
      *
      * @param string $type
      *
@@ -62,7 +62,7 @@ class Database
     }
 
     /**
-     * Returns the location, if any
+     * Returns the location, if any.
      *
      * @return null|string
      */
@@ -72,7 +72,7 @@ class Database
     }
 
     /**
-     * Set the location
+     * Set the location.
      *
      * @param string $location
      *
@@ -85,7 +85,7 @@ class Database
     }
 
     /**
-     * Return the username
+     * Return the username.
      *
      * @return null|string
      */
@@ -95,7 +95,7 @@ class Database
     }
 
     /**
-     * Set the username
+     * Set the username.
      *
      * @param string $username
      *
@@ -108,7 +108,7 @@ class Database
     }
 
     /**
-     * Return the password
+     * Return the password.
      *
      * @return null|string
      */
@@ -118,7 +118,7 @@ class Database
     }
 
     /**
-     * Set the password
+     * Set the password.
      *
      * @param string $password
      *
@@ -131,7 +131,7 @@ class Database
     }
 
     /**
-     * Return the database, if any
+     * Return the database, if any.
      *
      * @return null|string
      */
@@ -141,7 +141,7 @@ class Database
     }
 
     /**
-     * Set the database
+     * Set the database.
      *
      * @param string $database
      *
@@ -154,7 +154,7 @@ class Database
     }
 
     /**
-     * Return the charset, if set
+     * Return the charset, if set.
      *
      * @return null|string
      */
@@ -164,7 +164,7 @@ class Database
     }
 
     /**
-     * Set the charset for the database connection; if not set, database setting is used
+     * Set the charset for the database connection; if not set, database setting is used.
      *
      * @param null|string $charset
      *
@@ -177,6 +177,8 @@ class Database
     }
 
     /**
+     * Return the error mode.
+     *
      * @return int
      */
     public function getErrorMode()
@@ -185,6 +187,8 @@ class Database
     }
 
     /**
+     * Set the error mode.
+     *
      * @param int $errorMode
      *
      * @return $this
@@ -198,6 +202,8 @@ class Database
     }
 
     /**
+     * Return the instance, and start one if needed.
+     *
      * @return null|\PDO
      * @throws \Parable\ORM\Exception
      */
@@ -234,6 +240,8 @@ class Database
     }
 
     /**
+     * Create and return a sqlite PDO instance.
+     *
      * @param string $location
      * @param int    $errorMode
      *
@@ -250,6 +258,8 @@ class Database
     }
 
     /**
+     * Create and return a MySQL PDO instance.
+     *
      * @param string $location
      * @param string $database
      * @param string $username
@@ -275,7 +285,7 @@ class Database
     }
 
     /**
-     * Sets the instance
+     * Sets the instance.
      *
      * @param \PDO $instance
      *
@@ -288,7 +298,7 @@ class Database
     }
 
     /**
-     * If an instance is available, quote/escape the message through PDOs quote function
+     * If an instance is available, quote/escape the message through PDOs quote function.
      *
      * @param string $string
      *
@@ -333,7 +343,8 @@ class Database
     }
 
     /**
-     * Use an array to pass multiple config values at the same time
+     * Use an array to pass multiple config values at the same time. The values must correspond to setters
+     * defined on this class. If not, an exception is thrown.
      *
      * @param array $config
      *

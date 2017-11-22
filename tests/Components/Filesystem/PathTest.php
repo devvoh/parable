@@ -16,13 +16,13 @@ class PathTest extends \Parable\Tests\Base
 
     public function testSetAndGetBaseDir()
     {
-        $this->path->setBasedir("This is not a valid basedir.");
-        $this->assertSame("This is not a valid basedir.", $this->path->getBasedir());
+        $this->path->setBaseDir("This is not a valid basedir.");
+        $this->assertSame("This is not a valid basedir.", $this->path->getBaseDir());
     }
 
     public function testGetDir()
     {
-        $this->path->setBasedir("basedir/");
+        $this->path->setBaseDir("basedir/");
         $this->assertSame("basedir/stuff", $this->path->getDir("stuff"));
     }
 }

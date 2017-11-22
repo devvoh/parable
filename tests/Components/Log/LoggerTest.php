@@ -41,7 +41,7 @@ class LoggerTest extends \Parable\Tests\Base
 
     public function testLoggerWriteCanHandleAllTypes()
     {
-        $this->logger->setWriter(new \Parable\Log\Writer\Terminal());
+        $this->logger->setWriter(new \Parable\Log\Writer\Console());
         $this->logger->write('message');
 
         $this->assertSame("message\n", $this->getActualOutputAndClean());

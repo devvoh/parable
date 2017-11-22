@@ -37,6 +37,8 @@ class Parameter
     }
 
     /**
+     * Set parameters and parse them.
+     *
      * @param array $parameters
      *
      * @return $this
@@ -49,6 +51,8 @@ class Parameter
     }
 
     /**
+     * Return the currently set parameters.
+     *
      * @return array
      */
     public function getParameters()
@@ -57,6 +61,8 @@ class Parameter
     }
 
     /**
+     * Split the parameters into script name, command name, options and arguments.
+     *
      * @return $this
      */
     public function parseParameters()
@@ -103,6 +109,8 @@ class Parameter
     }
 
     /**
+     * Return the script name.
+     *
      * @return string
      */
     public function getScriptName()
@@ -111,6 +119,8 @@ class Parameter
     }
 
     /**
+     * Return the command name.
+     *
      * @return null|string
      */
     public function getCommandName()
@@ -119,22 +129,26 @@ class Parameter
     }
 
     /**
+     * Set the options from a command.
+     *
      * @param array $options
      *
      * @return $this
      */
-    public function setOptions(array $options)
+    public function setCommandOptions(array $options)
     {
         $this->commandOptions = $options;
         return $this;
     }
 
     /**
+     * Set the arguments from a command.
+     *
      * @param array $arguments
      *
      * @return $this
      */
-    public function setArguments(array $arguments)
+    public function setCommandArguments(array $arguments)
     {
         $this->commandArguments = $arguments;
         return $this;
@@ -183,6 +197,12 @@ class Parameter
         }
     }
 
+    /**
+     * Checks the arguments set against the parameters set. Takes into account whether an argument is required
+     * to be passed or not.
+     *
+     * @throws \Parable\Console\Exception
+     */
     public function checkArguments()
     {
         foreach ($this->commandArguments as $index => $argument) {
@@ -220,6 +240,8 @@ class Parameter
     }
 
     /**
+     * Return all options.
+     *
      * @return array
      */
     public function getOptions()
@@ -232,6 +254,9 @@ class Parameter
     }
 
     /**
+     * Returns null if the value doesn't exist. Returns default value if set from command, and the actual value
+     * if passed on the command line.
+     *
      * @param string $name
      *
      * @return mixed|null
@@ -249,6 +274,8 @@ class Parameter
     }
 
     /**
+     * Get the argument from the set command arguments or null if it doesn't exist.
+     *
      * @param string $name
      *
      * @return array|null
@@ -264,6 +291,8 @@ class Parameter
     }
 
     /**
+     * Return all arguments passed.
+     *
      * @return array
      */
     public function getArguments()
@@ -276,6 +305,8 @@ class Parameter
     }
 
     /**
+     * Reset the class to a fresh state.
+     *
      * @return $this
      */
     protected function reset()

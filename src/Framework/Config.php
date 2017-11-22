@@ -23,6 +23,8 @@ class Config extends \Parable\GetSet\Base
     }
 
     /**
+     * Set the main config name to use.
+     *
      * @param string $className
      *
      * @return $this
@@ -38,6 +40,9 @@ class Config extends \Parable\GetSet\Base
     }
 
     /**
+     * Load the main config and load all its values. If there are any child configs defined under
+     * "parable.configs", load all of those too.
+     *
      * @return $this
      */
     public function load()
@@ -59,6 +64,8 @@ class Config extends \Parable\GetSet\Base
     }
 
     /**
+     * Add a config and load all of its values.
+     *
      * @param \Parable\Framework\Interfaces\Config $config
      *
      * @return $this

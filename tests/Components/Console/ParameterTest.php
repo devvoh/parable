@@ -88,7 +88,7 @@ class ParameterTest extends \Parable\Tests\Base
         $this->expectException(\Parable\Console\Exception::class);
         $this->expectExceptionMessage("Option '--option' requires a value, which is not provided.");
 
-        $this->parameter->setOptions([
+        $this->parameter->setCommandOptions([
             ['name' => 'option', 'required' => false, 'valueRequired' => true],
         ]);
         $this->parameter->checkOptions();
@@ -103,7 +103,7 @@ class ParameterTest extends \Parable\Tests\Base
             'option-value'
         ]);
 
-        $this->parameter->setOptions([
+        $this->parameter->setCommandOptions([
             ['name' => 'option', 'required' => false, 'valueRequired' => true],
         ]);
         $this->parameter->checkOptions();
@@ -120,7 +120,7 @@ class ParameterTest extends \Parable\Tests\Base
 
         $this->expectException(\Parable\Console\Exception::class);
         $this->expectExceptionMessage("Required option '--option' not provided.");
-        $this->parameter->setOptions([
+        $this->parameter->setCommandOptions([
             ['name' => 'option', 'required' => true],
         ]);
         $this->parameter->checkOptions();
@@ -144,7 +144,7 @@ class ParameterTest extends \Parable\Tests\Base
             'command-to-run',
             'arg1',
         ]);
-        $this->parameter->setArguments([
+        $this->parameter->setCommandArguments([
             ['name' => 'numero1', 'required' => true],
             ['name' => 'numero2', 'required' => true],
         ]);
@@ -163,7 +163,7 @@ class ParameterTest extends \Parable\Tests\Base
             'arg1',
             'arg2',
         ]);
-        $this->parameter->setArguments([
+        $this->parameter->setCommandArguments([
             ['name' => 'numero1', 'required' => true],
             ['name' => 'numero2', 'required' => true, 'defaultValue' => 12],
             ['name' => 'numero3', 'required' => false, 'defaultValue' => 24],
@@ -193,7 +193,7 @@ class ParameterTest extends \Parable\Tests\Base
             'value3',
         ]);
 
-        $this->parameter->setOptions([
+        $this->parameter->setCommandOptions([
             'option1' => ['name' => 'option1', 'required' => true, 'valueRequired' => true],
             'option2' => ['name' => 'option2', 'required' => true],
             'option3' => ['name' => 'option3', 'required' => true, 'valueRequired' => true],
@@ -223,10 +223,10 @@ class ParameterTest extends \Parable\Tests\Base
             'argument3!'
         ]);
 
-        $this->parameter->setOptions([
+        $this->parameter->setCommandOptions([
             'option1' => ['name' => 'option1'],
         ]);
-        $this->parameter->setArguments([
+        $this->parameter->setCommandArguments([
             ['name' => 'arg1', 'required' => true],
             ['name' => 'arg2', 'required' => false],
             ['name' => 'arg3', 'required' => false],

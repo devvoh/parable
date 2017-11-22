@@ -58,6 +58,10 @@ class View
         $this->initializeMagicProperties();
     }
 
+    /**
+     * For all the magic properties defined at the start of this class, loop through them
+     * and add them to our list of magic properties.
+     */
     protected function initializeMagicProperties()
     {
         $reflection = new \ReflectionClass(static::class);
@@ -76,6 +80,8 @@ class View
     }
 
     /**
+     * Set the template path used for this view.
+     *
      * @param string $templatePath
      *
      * @return $this
@@ -87,6 +93,8 @@ class View
     }
 
     /**
+     * Load a template path, interpret it fully and then return the resulting output as a string.
+     *
      * @param string $templatePath
      *
      * @return string
@@ -99,7 +107,7 @@ class View
     }
 
     /**
-     * Render the template from the configured templatePath
+     * Render the template from the configured templatePath.
      *
      * @return $this
      */
@@ -110,7 +118,7 @@ class View
     }
 
     /**
-     * Attempt to load the templatePath
+     * Attempt to load the templatePath.
      *
      * @param string $templatePath
      *

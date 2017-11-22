@@ -4,20 +4,21 @@ namespace Parable\Framework;
 
 class App
 {
-    const PARABLE_VERSION           = '0.12.14';
+    const PARABLE_VERSION           = '0.13.0';
 
-    const HOOK_HTTP_404             = "parable_http_404";
-    const HOOK_HTTP_200             = "parable_http_200";
-    const HOOK_RESPONSE_SEND        = "parable_response_send";
-    const HOOK_LOAD_INITS_AFTER     = "parable_load_inits_after";
-    const HOOK_ROUTE_MATCH_BEFORE   = "parable_route_match_before";
-    const HOOK_ROUTE_MATCH_AFTER    = "parable_route_match_after";
-    const HOOK_SESSION_START_BEFORE = "parable_session_start_before";
-    const HOOK_SESSION_START_AFTER  = "parable_session_start_after";
-    const HOOK_LOAD_ROUTES_BEFORE   = "parable_load_routes_before";
-    const HOOK_LOAD_ROUTES_AFTER    = "parable_load_routes_after";
-    const HOOK_INIT_DATABASE_BEFORE = "parable_init_database_before";
-    const HOOK_INIT_DATABASE_AFTER  = "parable_init_database_after";
+    const HOOK_HTTP_404                    = "parable_http_404";
+    const HOOK_HTTP_200                    = "parable_http_200";
+    const HOOK_RESPONSE_SEND               = "parable_response_send";
+    const HOOK_LOAD_INITS_AFTER            = "parable_load_inits_after";
+    const HOOK_ROUTE_MATCH_BEFORE          = "parable_route_match_before";
+    const HOOK_ROUTE_MATCH_AFTER           = "parable_route_match_after";
+    const HOOK_SESSION_START_BEFORE        = "parable_session_start_before";
+    const HOOK_SESSION_START_AFTER         = "parable_session_start_after";
+    const HOOK_LOAD_ROUTES_BEFORE          = "parable_load_routes_before";
+    const HOOK_LOAD_ROUTES_NO_ROUTES_FOUND = "parable_load_routes_no_routes_found";
+    const HOOK_LOAD_ROUTES_AFTER           = "parable_load_routes_after";
+    const HOOK_INIT_DATABASE_BEFORE        = "parable_init_database_before";
+    const HOOK_INIT_DATABASE_AFTER         = "parable_init_database_after";
 
     /** @var \Parable\Framework\Config */
     protected $config;
@@ -69,7 +70,7 @@ class App
     }
 
     /**
-     * Do all the setup
+     * Do all the setup and then attempt to match and dispatch the current url.
      *
      * @return $this
      */
@@ -127,6 +128,8 @@ class App
     }
 
     /**
+     * Start the session.
+     *
      * @return $this
      */
     protected function startSession()
@@ -138,6 +141,8 @@ class App
     }
 
     /**
+     * Load all the routes, if possible.
+     *
      * @return $this
      *
      * @throws \Parable\Framework\Exception
@@ -158,13 +163,15 @@ class App
 
                 $this->router->addRoutes($routes->get());
             }
+        } else {
+            $this->hook->trigger(self::HOOK_LOAD_ROUTES_NO_ROUTES_FOUND);
         }
         $this->hook->trigger(self::HOOK_LOAD_ROUTES_AFTER);
         return $this;
     }
 
     /**
-     * Create instances of given init classes
+     * Create instances of given init classes.
      *
      * @return $this
      *
@@ -182,6 +189,8 @@ class App
     }
 
     /**
+     * Initialize the database instance with data from the config.
+     *
      * @return $this
      */
     protected function initDatabase()
@@ -193,6 +202,8 @@ class App
     }
 
     /**
+     * Dispatch the provided route.
+     *
      * @param \Parable\Routing\Route $route
      *
      * @return $this
@@ -208,7 +219,7 @@ class App
     }
 
     /**
-     * Return the version number
+     * Return Parable's current version number.
      *
      * @return string
      */

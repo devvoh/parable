@@ -50,6 +50,8 @@ abstract class ConditionSet
     }
 
     /**
+     * Build the conditions into a string. Can be done either with parentheses or without.
+     *
      * @param bool $withParentheses
      *
      * @return string
@@ -76,6 +78,8 @@ abstract class ConditionSet
     }
 
     /**
+     * Build the conditions into a string without parentheses.
+     *
      * @return string
      */
     public function buildWithoutParentheses()
@@ -84,6 +88,8 @@ abstract class ConditionSet
     }
 
     /**
+     * Build the conditions into a string with parentheses.
+     *
      * @return string
      */
     public function buildWithParentheses()

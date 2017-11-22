@@ -5,38 +5,44 @@ namespace Parable\Filesystem;
 class Path
 {
     /** @var string */
-    protected $basedir;
+    protected $baseDir;
 
     /**
-     * @param string $basedir
+     * Set the base dir to base all further paths on.
+     *
+     * @param string $baseDir
      *
      * @return $this
      */
-    public function setBasedir($basedir)
+    public function setBaseDir($baseDir)
     {
-        $this->basedir = rtrim($basedir, DS);
+        $this->baseDir = rtrim($baseDir, DS);
         return $this;
     }
 
     /**
-     * @return string
-     */
-    public function getBasedir()
-    {
-        return $this->basedir;
-    }
-
-    /**
-     * @param string $dir
+     * Return the base dir.
      *
      * @return string
      */
-    public function getDir($dir)
+    public function getBaseDir()
     {
-        $dir = str_replace('/', DS, $dir);
-        if (!file_exists($dir)) {
-            $dir = $this->basedir . DS . ltrim($dir, DS);
+        return $this->baseDir;
+    }
+
+    /**
+     * Get dir based on the base dir.
+     *
+     * @param string $directory
+     *
+     * @return string
+     */
+    public function getDir($directory)
+    {
+        $directory = str_replace('/', DS, $directory);
+        if (!file_exists($directory)) {
+            $directory = $this->getBaseDir() . DS . ltrim($directory, DS);
         }
-        return $dir;
+        return $directory;
     }
 }

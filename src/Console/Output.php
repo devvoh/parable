@@ -37,6 +37,8 @@ class Output
     protected $lineLength = 0;
 
     /**
+     * Write a string to the console.
+     *
      * @param string $string
      *
      * @return $this
@@ -52,6 +54,8 @@ class Output
     }
 
     /**
+     * Write a line or array of lines to the console. This will always end in a newline.
+     *
      * @param array|string $lines
      *
      * @return $this
@@ -70,6 +74,8 @@ class Output
     }
 
     /**
+     * Write a newline (or multiple) to the console.
+     *
      * @param int $count
      *
      * @return $this
@@ -83,6 +89,8 @@ class Output
     }
 
     /**
+     * Move the cursor forward by $characters places.
+     *
      * @param int $characters
      *
      * @return $this
@@ -94,6 +102,8 @@ class Output
     }
 
     /**
+     * Move the cursor backward by $characters places.
+     *
      * @param int $characters
      *
      * @return $this
@@ -105,6 +115,8 @@ class Output
     }
 
     /**
+     * Move the cursor up by $characters places.
+     *
      * @param int $characters
      *
      * @return $this
@@ -116,6 +128,8 @@ class Output
     }
 
     /**
+     * Move the cursor down by $characters places.
+     *
      * @param int $characters
      *
      * @return $this
@@ -127,6 +141,8 @@ class Output
     }
 
     /**
+     * Place the cursor on $line and $column.
+     *
      * @param int $line
      * @param int $column
      *
@@ -139,6 +155,8 @@ class Output
     }
 
     /**
+     * Clear the screen.
+     *
      * @return $this
      */
     public function cls()
@@ -148,6 +166,8 @@ class Output
     }
 
     /**
+     * Get the current line length.
+     *
      * @return int
      */
     public function getLineLength()
@@ -156,6 +176,8 @@ class Output
     }
 
     /**
+     * Clear the line, based on the current lineLength.
+     *
      * @return $this
      */
     public function clearLine()
@@ -172,6 +194,8 @@ class Output
     }
 
     /**
+     * Write an error block to the console.
+     *
      * @param string $string
      *
      * @return $this
@@ -183,6 +207,8 @@ class Output
     }
 
     /**
+     * Write an info block to the console.
+     *
      * @param string $string
      *
      * @return $this
@@ -194,6 +220,8 @@ class Output
     }
 
     /**
+     * Write a success block to the console.
+     *
      * @param string $string
      *
      * @return $this
@@ -205,6 +233,8 @@ class Output
     }
 
     /**
+     * Write a block of text to the console, using a tag (info by default).
+     *
      * @param string $string
      * @param string $tag
      *
@@ -225,6 +255,8 @@ class Output
     }
 
     /**
+     * Parse tags in a string to turn them into bash escape codes.
+     *
      * @param string $string
      *
      * @return mixed

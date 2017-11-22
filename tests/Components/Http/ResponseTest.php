@@ -194,6 +194,55 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame("yo1", $this->response->getHeader("header1"));
     }
 
+    public function testSetHeaders()
+    {
+        $this->assertCount(0, $this->response->getHeaders());
+
+        $this->response->setHeaders([
+            "header1" => "yo1",
+            "header2" => "yo2",
+        ]);
+
+        $this->assertCount(2, $this->response->getHeaders());
+        $this->assertSame(
+            [
+                'header1' => 'yo1',
+                'header2' => 'yo2',
+            ],
+            $this->response->getHeaders()
+        );
+
+        $this->assertSame("yo1", $this->response->getHeader("header1"));
+    }
+
+    public function testSetAndRemoveHeader()
+    {
+        $this->response->setHeaders([
+            "remove" => "me",
+            "leave" => "me",
+        ]);
+
+        $this->assertCount(2, $this->response->getHeaders());
+
+        $this->response->removeHeader("remove");
+
+        $this->assertCount(1, $this->response->getHeaders());
+    }
+
+    public function testClearHeaders()
+    {
+        $this->response->setHeaders([
+            "remove" => "me",
+            "leave" => "me",
+        ]);
+
+        $this->assertCount(2, $this->response->getHeaders());
+
+        $this->response->clearHeaders();
+
+        $this->assertCount(0, $this->response->getHeaders());
+    }
+
     public function testGetInvalidHeaderReturnsNull()
     {
         $this->assertNull($this->response->getHeader('la-dee-dah'));

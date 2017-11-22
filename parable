@@ -7,9 +7,14 @@ $app = require_once(__DIR__ . '/src/Framework/Bootstrap.php');
 
 $app->setName("Parable " . \Parable\Framework\App::PARABLE_VERSION);
 
+$helpCommand          = \Parable\DI\Container::get(\Parable\Console\Command\Help::class);
+$initStructureCommand = \Parable\DI\Container::get(\Parable\Framework\Command\InitStructure::class);
+
 // Always add Help & Init
-$app->addCommand(\Parable\DI\Container::get(\Parable\Console\Command\Help::class));
-$app->addCommand(\Parable\DI\Container::get(\Parable\Framework\Command\InitStructure::class));
+$app->addCommands([
+    $helpCommand,
+    $initStructureCommand,
+]);
 
 // Attempt to load commands set by the user
 if (file_exists($path->getDir('app'))) {
@@ -25,5 +30,5 @@ if (file_exists($path->getDir('app'))) {
     }
 }
 
-$app->setDefaultCommand('help');
+$app->setDefaultCommand($helpCommand);
 $app->run();

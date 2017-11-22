@@ -24,6 +24,8 @@ class Router
     }
 
     /**
+     * Add an array of routes to the router.
+     *
      * @param array $routes
      *
      * @return $this
@@ -105,6 +107,8 @@ class Router
     }
 
     /**
+     * Return a url based on the $name provided, with $parameters passed (as [key => value]).
+     *
      * @param string $name
      * @param array  $parameters
      *

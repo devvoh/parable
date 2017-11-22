@@ -32,6 +32,8 @@ class Dispatcher
     }
 
     /**
+     * Dispatch the provided route.
+     *
      * @param \Parable\Routing\Route $route
      *
      * @return $this

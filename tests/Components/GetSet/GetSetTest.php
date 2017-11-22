@@ -14,9 +14,13 @@ class GetSetTest extends \Parable\Tests\Base
         $this->getSet = new \Parable\Tests\TestClasses\TestGetSet();
     }
 
-    public function testGetResource()
+    public function testSetAndGetResource()
     {
         $this->assertSame('test', $this->getSet->getResource());
+
+        $this->getSet->setResource("what");
+
+        $this->assertSame('what', $this->getSet->getResource());
     }
 
     public function testSetAllGetAll()

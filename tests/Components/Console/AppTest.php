@@ -44,7 +44,7 @@ class AppTest extends \Parable\Tests\Base
         });
         $this->app->addCommand($this->command2);
 
-        $this->app->setDefaultCommand('test1');
+        $this->app->setDefaultCommand($this->command1);
 
         $this->commandReturnOptionValue = new \Parable\Console\Command();
         $this->commandReturnOptionValue->setName('returnOptionValue');
@@ -58,6 +58,19 @@ class AppTest extends \Parable\Tests\Base
         });
 
         $this->app->addCommand($this->commandReturnOptionValue);
+    }
+
+    public function testAddCommands()
+    {
+        $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
+        $this->assertCount(0, $app->getCommands());
+
+        $app->addCommands([
+            $this->command1,
+            $this->command2,
+        ]);
+
+        $this->assertCount(2, $app->getCommands());
     }
 
     public function testAppSetGetName()
@@ -104,7 +117,13 @@ class AppTest extends \Parable\Tests\Base
 
     public function testSetDefaultCommandRunsDefaultCommand()
     {
-        $this->app->setDefaultCommand('test1');
+        $this->app->setDefaultCommand($this->command1);
+        $this->assertSame('OK1', $this->app->run());
+    }
+
+    public function testSetDefaultCommandByNameRunsDefaultCommand()
+    {
+        $this->app->setDefaultCommandByName("test1");
         $this->assertSame('OK1', $this->app->run());
     }
 
@@ -140,7 +159,7 @@ class AppTest extends \Parable\Tests\Base
         $app->addCommand($this->command1);
         $app->addCommand($this->command2);
 
-        $app->setDefaultCommand('test1', $defaultCommandOnly);
+        $app->setDefaultCommand($this->command1, $defaultCommandOnly);
 
         // If defaultCommandOnly, OK1/test1 should run, otherwise OK2/test2
         $this->assertSame($defaultCommandOnly ? 'OK1' : 'OK2', $app->run());
@@ -170,7 +189,7 @@ class AppTest extends \Parable\Tests\Base
         $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
         $app->addCommand($this->command1);
 
-        $app->setDefaultCommand('test1');
+        $app->setDefaultCommand($this->command1);
 
         $this->expectException(\Parable\Console\Exception::class);
         $this->expectExceptionMessage("Option '--option' requires a value, which is not provided.");
@@ -185,7 +204,7 @@ class AppTest extends \Parable\Tests\Base
         $this->commandReturnOptionValue->addOption('option', false, false, 'default value is here!');
         $app->addCommand($this->commandReturnOptionValue);
 
-        $app->setDefaultCommand('returnOptionValue');
+        $app->setDefaultCommand($this->commandReturnOptionValue);
 
         $this->assertSame('passed value here!', $app->run());
     }
@@ -197,7 +216,7 @@ class AppTest extends \Parable\Tests\Base
         $this->commandReturnOptionValue->addOption('option', false, false, 'default value is here!');
         $app->addCommand($this->commandReturnOptionValue);
 
-        $app->setDefaultCommand('returnOptionValue');
+        $app->setDefaultCommand($this->commandReturnOptionValue);
 
         $this->assertSame('default value is here!', $app->run());
     }

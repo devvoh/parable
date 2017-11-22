@@ -14,6 +14,40 @@ class MailerTest extends \Parable\Tests\Components\Framework\Base
         $this->mailer = \Parable\DI\Container::create(\Parable\Framework\Mail\Mailer::class);
     }
 
+    public function testMailerPicksUpMailSenderFromConfig()
+    {
+        // By default it should be the PhpMail sender
+        $this->assertInstanceOf(\Parable\Mail\Sender\PhpMail::class, $this->mailer->getMailSender());
+
+        $config = new \Parable\Framework\Config($this->path);
+        $config->set("parable.mail.sender", \Parable\Mail\Sender\NullMailer::class);
+
+        $mailer = new \Parable\Framework\Mail\Mailer(
+            $config,
+            \Parable\DI\Container::get(\Parable\Framework\View::class),
+            \Parable\DI\Container::get(\Parable\Framework\Mail\TemplateVariables::class),
+            $this->path
+        );
+
+        $this->assertInstanceOf(\Parable\Mail\Sender\NullMailer::class, $mailer->getMailSender());
+    }
+
+    public function testMailerThrowsExceptionOnInvalidSender()
+    {
+        $this->expectException(\Parable\Framework\Exception::class);
+        $this->expectExceptionMessage("Invalid mail sender set in config.");
+
+        $config = new \Parable\Framework\Config($this->path);
+        $config->set("parable.mail.sender", "what am dis");
+
+        $mailer = new \Parable\Framework\Mail\Mailer(
+            $config,
+            \Parable\DI\Container::get(\Parable\Framework\View::class),
+            \Parable\DI\Container::get(\Parable\Framework\Mail\TemplateVariables::class),
+            $this->path
+        );
+    }
+
     public function testSetGetTemplateVariable()
     {
         $this->mailer->setTemplateVariable('3', 'three');
@@ -55,7 +89,7 @@ class MailerTest extends \Parable\Tests\Components\Framework\Base
         $this->mailer->loadTemplate("tests/TestTemplates/mailer_template.phtml");
         $this->assertSame("Mailer template is here!\n\nTemplateVariable:", $this->mailer->getBody());
     }
-    
+
     public function testLoadTemplateThrowsExceptionWhenInvalidTemplatePassed()
     {
         $this->expectException(\Parable\Framework\Exception::class);

@@ -8,7 +8,7 @@ class Dock
     protected $docks = [];
 
     /**
-     * Dock into a frontend dock event trigger, adding a $callable
+     * Dock into a frontend dock event trigger, adding a $callable.
      *
      * @param string      $event
      * @param callable    $callable
@@ -26,7 +26,7 @@ class Dock
     }
 
     /**
-     * Trigger $event and run through all hooks referenced, passing along $payload to all $callables
+     * Trigger $event and run through all hooks referenced, passing along $payload to all $callables.
      *
      * @param null|string $event
      * @param null|mixed  $payload

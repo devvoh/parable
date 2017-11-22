@@ -26,6 +26,8 @@ class InitStructure extends \Parable\Console\Command
     }
 
     /**
+     * Run the init structure command.
+     *
      * @return $this
      */
     public function run()

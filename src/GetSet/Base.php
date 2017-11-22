@@ -14,7 +14,20 @@ abstract class Base
     protected $localResource = [];
 
     /**
-     * Returns the resource type
+     * Set the resource.
+     *
+     * @param string $resource
+     *
+     * @return $this
+     */
+    public function setResource($resource)
+    {
+        $this->resource = $resource;
+        return $this;
+    }
+
+    /**
+     * Return the resource.
      *
      * @return null|string
      */
@@ -24,7 +37,7 @@ abstract class Base
     }
 
     /**
-     * Get all from resource if resource set
+     * Get all from resource if resource is set.
      *
      * @return array
      */
@@ -40,7 +53,7 @@ abstract class Base
     }
 
     /**
-     * Get specific value by key if resource set
+     * Get specific value by key if resource set.
      *
      * $getSet->get("one.two.three", "value") would return $resource["one"]["two"]["three"];
      *
@@ -65,6 +78,8 @@ abstract class Base
     }
 
     /**
+     * Return all from resource and then clear it.
+     *
      * @return array
      */
     public function getAllAndReset()
@@ -75,6 +90,8 @@ abstract class Base
     }
 
     /**
+     * Return specific value by key and then clear it.
+     *
      * @param string $key
      *
      * @return mixed|null
@@ -89,6 +106,8 @@ abstract class Base
     }
 
     /**
+     * Return the number of items on the first level of the resource.
+     *
      * @return int
      */
     public function count()
@@ -163,6 +182,8 @@ abstract class Base
     }
 
     /**
+     * Remove an item by key. It's possible to use the dot-notation (->remove("one.two")).
+     *
      * @param string $key
      *
      * @return $this
@@ -191,6 +212,8 @@ abstract class Base
     }
 
     /**
+     * Reset the resource to contain nothing at all.
+     *
      * @return $this
      */
     public function reset()

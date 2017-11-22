@@ -29,7 +29,7 @@ class Toolkit
     }
 
     /**
-     * Create a repository to work with model of type $modelName (full namespaced name)
+     * Create a repository to work with model of type $modelName (full namespaced name).
      *
      * @param string $modelName
      *
@@ -58,6 +58,8 @@ class Toolkit
     }
 
     /**
+     * Return full url from a route by $name, passing $parameters on (as [key => value]).
+     *
      * @param string $name
      * @param array  $parameters
      *
@@ -69,6 +71,8 @@ class Toolkit
     }
 
     /**
+     * Return the current url as interpreted by Parable.
+     *
      * @return string
      */
     public function getCurrentUrl()
@@ -80,6 +84,8 @@ class Toolkit
     }
 
     /**
+     * Return the current url as interpreted by Parable, as a full url.
+     *
      * @return string
      */
     public function getCurrentUrlFull()

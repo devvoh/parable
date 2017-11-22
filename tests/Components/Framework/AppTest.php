@@ -61,6 +61,19 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->assertSame('OK', $this->mockResponse->getHttpCodeText());
     }
 
+    public function testAppRunWithoutRoutesTriggersHookNoRoutesFound()
+    {
+        $hook = \Parable\DI\Container::get(\Parable\Event\Hook::class);
+        $hook->into(\Parable\Framework\App::HOOK_LOAD_ROUTES_NO_ROUTES_FOUND, function($event) {
+            $this->assertSame(\Parable\Framework\App::HOOK_LOAD_ROUTES_NO_ROUTES_FOUND, $event);
+        });
+
+        $app = $this->createApp(\Parable\Tests\TestClasses\Config\TestNoRouting::class);
+        $app->run();
+
+        $this->getActualOutputAndClean();
+    }
+
     public function testAppRunWithUnknownUrlGives404()
     {
         $_GET['url'] = '/simple';
@@ -190,6 +203,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         /** @var \Parable\Framework\Config|\PHPUnit_Framework_MockObject_MockObject $config */
         $config = new \Parable\Framework\Config($this->path);
         $config->setMainConfigClassName($mainConfigClassName);
+        $config->load();
 
         \Parable\DI\Container::store($config);
 

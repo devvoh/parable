@@ -32,6 +32,8 @@ class Command
     protected $parameter;
 
     /**
+     * Set the command name.
+     *
      * @param string $name
      *
      * @return $this
@@ -43,6 +45,8 @@ class Command
     }
 
     /**
+     * Return the command name.
+     *
      * @return string
      */
     public function getName()
@@ -51,6 +55,8 @@ class Command
     }
 
     /**
+     * Set the command description.
+     *
      * @param string $description
      *
      * @return $this
@@ -62,6 +68,8 @@ class Command
     }
 
     /**
+     * Return the command description.
+     *
      * @return string
      */
     public function getDescription()
@@ -70,6 +78,8 @@ class Command
     }
 
     /**
+     * Set the callable to be run when the command is run.
+     *
      * @param callable $callable
      *
      * @return $this
@@ -81,6 +91,8 @@ class Command
     }
 
     /**
+     * Return the callable.
+     *
      * @return callable
      */
     public function getCallable()
@@ -89,6 +101,8 @@ class Command
     }
 
     /**
+     * Add an option for this command.
+     *
      * @param string $name
      * @param bool   $required
      * @param bool   $valueRequired
@@ -108,6 +122,8 @@ class Command
     }
 
     /**
+     * Return all options for this command.
+     *
      * @return array
      */
     public function getOptions()
@@ -116,6 +132,8 @@ class Command
     }
 
     /**
+     * Add an argument for this command.
+     *
      * @param string $name
      * @param bool   $required
      * @param mixed  $defaultValue
@@ -133,6 +151,8 @@ class Command
     }
 
     /**
+     * Return all arguments for this command.
+     *
      * @return array
      */
     public function getArguments()
@@ -141,6 +161,8 @@ class Command
     }
 
     /**
+     * Prepare the command, setting all classes the command is dependant on.
+     *
      * @param \Parable\Console\App       $app
      * @param \Parable\Console\Output    $output
      * @param \Parable\Console\Input     $input
@@ -163,6 +185,8 @@ class Command
     }
 
     /**
+     * Run the callable if it's set. This can be overridden by implementing the run method on a Command class.
+     *
      * @return mixed
      */
     public function run()
@@ -175,6 +199,8 @@ class Command
     }
 
     /**
+     * Run another command from the current command, passing parameters as an array.
+     *
      * @param \Parable\Console\Command $command
      * @param array                    $parameters
      * @return mixed

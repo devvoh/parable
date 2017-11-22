@@ -29,7 +29,7 @@ class Model
     }
 
     /**
-     * Generate a query set to use the current Model's table name & key
+     * Generate a query set to use the current Model's table name & key.
      *
      * @return \Parable\ORM\Query
      */
@@ -42,7 +42,7 @@ class Model
     }
 
     /**
-     * Saves the model, either inserting (no id) or updating (id)
+     * Saves the model, either inserting (no id) or updating (id).
      *
      * @return bool
      */
@@ -90,7 +90,7 @@ class Model
     }
 
     /**
-     * Deletes the current model from the database
+     * Deletes the current model from the database.
      *
      * @return bool
      */
@@ -105,7 +105,7 @@ class Model
     }
 
     /**
-     * Populates the current model with the data provided
+     * Populates the current model with the data provided.
      *
      * @param array $data
      *
@@ -122,7 +122,7 @@ class Model
     }
 
     /**
-     * Set the tableName
+     * Set the tableName.
      *
      * @param string $tableName
      *
@@ -135,7 +135,7 @@ class Model
     }
 
     /**
-     * Return the tableName
+     * Return the tableName.
      *
      * @return null|string
      */
@@ -145,7 +145,7 @@ class Model
     }
 
     /**
-     * Set the tableKey
+     * Set the tableKey.
      *
      * @param string $tableKey
      *
@@ -158,7 +158,7 @@ class Model
     }
 
     /**
-     * Return the tableKey
+     * Return the tableKey.
      *
      * @return null|string
      */
@@ -168,7 +168,7 @@ class Model
     }
 
     /**
-     * Set the mapper
+     * Set the mapper.
      *
      * @param array $mapper
      *
@@ -181,7 +181,7 @@ class Model
     }
 
     /**
-     * Return the mapper
+     * Return the mapper.
      *
      * @return array
      */
@@ -191,7 +191,7 @@ class Model
     }
 
     /**
-     * Returns the exportable array
+     * Returns the exportable array.
      *
      * @return array
      */
@@ -218,7 +218,7 @@ class Model
     }
 
     /**
-     * Generates an array of the current model, without the protected values
+     * Generates an array of the current model, without the protected values.
      *
      * @param bool $keepNullValue
      *
@@ -253,7 +253,7 @@ class Model
     }
 
     /**
-     * Generates an array of the current model, but removes empty values
+     * Generates an array of the current model, but removes empty values.
      *
      * @return array
      */
@@ -303,6 +303,8 @@ class Model
     }
 
     /**
+     * Export to array without empty values (anything corresponding to empty which is not 0).
+     *
      * @return array
      */
     public function exportToArrayWithoutEmptyValues()
@@ -311,6 +313,8 @@ class Model
     }
 
     /**
+     * Remove all values that are not 0 and empty.
+     *
      * @param array $array
      * @return array
      */
@@ -325,7 +329,7 @@ class Model
     }
 
     /**
-     * Reset all public properties to null
+     * Reset all public properties to null.
      *
      * @return $this
      */

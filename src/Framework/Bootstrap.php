@@ -31,7 +31,7 @@ $autoloader->register();
  */
 /** @var \Parable\Filesystem\Path $path */
 $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
-$path->setBasedir(BASEDIR);
+$path->setBaseDir(BASEDIR);
 
 if (PHP_SAPI === 'cli') {
     return \Parable\DI\Container::get(\Parable\Console\App::class);

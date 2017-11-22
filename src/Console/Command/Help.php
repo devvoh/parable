@@ -10,6 +10,11 @@ class Help extends \Parable\Console\Command
     /** @var string */
     protected $description = 'Shows all commands available.';
 
+    /**
+     * Show the names and descriptions of all commands set on the application at this moment.
+     *
+     * @return $this
+     */
     public function run()
     {
         $this->output->newline();

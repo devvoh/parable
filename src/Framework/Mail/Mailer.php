@@ -4,6 +4,9 @@ namespace Parable\Framework\Mail;
 
 class Mailer extends \Parable\Mail\Mailer
 {
+    /** @var \Parable\Framework\Config */
+    protected $config;
+
     /** @var \Parable\Framework\View */
     protected $view;
 
@@ -14,16 +17,32 @@ class Mailer extends \Parable\Mail\Mailer
     protected $path;
 
     public function __construct(
+        \Parable\Framework\Config $config,
         \Parable\Framework\View $view,
         \Parable\Framework\Mail\TemplateVariables $templateVariables,
         \Parable\Filesystem\Path $path
     ) {
+        $this->config            = $config;
         $this->view              = $view;
         $this->templateVariables = $templateVariables;
         $this->path              = $path;
+
+        if ($this->config->get("parable.mail.sender")) {
+            try {
+                $sender = \Parable\DI\Container::create($this->config->get("parable.mail.sender"));
+                $this->setMailSender($sender);
+            } catch (\Exception $e) {
+                throw new \Parable\Framework\Exception("Invalid mail sender set in config.");
+            }
+        } else {
+            // Use PhPMail sender by default
+            $this->setMailSender(new \Parable\Mail\Sender\PhpMail());
+        }
     }
 
     /**
+     * Set template variables. These will be available in the template using ->templateVariables->get().
+     *
      * @param array $data
      *
      * @return $this
@@ -35,6 +54,8 @@ class Mailer extends \Parable\Mail\Mailer
     }
 
     /**
+     * Return all template variables.
+     *
      * @return array
      */
     public function getTemplateVariables()
@@ -43,6 +64,8 @@ class Mailer extends \Parable\Mail\Mailer
     }
 
     /**
+     * Set a single template variable.
+     *
      * @param string $key
      * @param mixed  $value
      *
@@ -55,6 +78,8 @@ class Mailer extends \Parable\Mail\Mailer
     }
 
     /**
+     * Return a single template variable by key.
+     *
      * @param string $key
      *
      * @return mixed|null
@@ -65,8 +90,7 @@ class Mailer extends \Parable\Mail\Mailer
     }
 
     /**
-     * Override the \Parable\Mail\Mailer's resetMailData to also
-     * remove all templateVariables.
+     * Override the \Parable\Mail\Mailer's resetMailData to also remove all templateVariables.
      *
      * @return $this
      */
@@ -78,6 +102,8 @@ class Mailer extends \Parable\Mail\Mailer
     }
 
     /**
+     * Load template for this mail. Returns the interpreted output as string.
+     *
      * @param string $path
      *
      * @return $this

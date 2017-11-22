@@ -5,6 +5,8 @@ namespace Parable\Console;
 class Input
 {
     /**
+     * Request input from the user.
+     *
      * @return string
      */
     public function get()
@@ -13,6 +15,8 @@ class Input
     }
 
     /**
+     * Request input from the user, while hiding the actual input. Use this to request passwords, for example.
+     *
      * @return string
      *
      * @throws \Parable\Console\Exception
@@ -29,6 +33,8 @@ class Input
     }
 
     /**
+     * Request a y/n input from the user, with a default value highlighted as uppercase ([Y/n], for example).
+     *
      * @param bool $default
      *
      * @return bool

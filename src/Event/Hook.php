@@ -8,7 +8,7 @@ class Hook
     protected $hooks = [];
 
     /**
-     * Add hook referencing $closure to $event, returns false if $callable isn't a function
+     * Add hook referencing $closure to $event, returns false if $callable isn't a function.
      *
      * @param string   $event
      * @param callable $callable
@@ -22,7 +22,7 @@ class Hook
     }
 
     /**
-     * Trigger $event and run through all hooks referenced, passing along $payload to all $callables
+     * Trigger $event and run through all hooks referenced, passing along $payload to all $callables.
      *
      * @param string     $event
      * @param null|mixed $payload
