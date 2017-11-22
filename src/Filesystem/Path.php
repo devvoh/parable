@@ -31,7 +31,7 @@ class Path
     }
 
     /**
-     * Get dir based on the base dir.
+     * Return dir based on the base dir.
      *
      * @param string $directory
      *

@@ -81,7 +81,7 @@ class Query
     }
 
     /**
-     * Get the currently set tableName.
+     * Return the currently set tableName.
      *
      * @return string
      */
@@ -91,7 +91,7 @@ class Query
     }
 
     /**
-     * Get the currently set tableName, quoted.
+     * Return the currently set tableName, quoted.
      *
      * @return null|string
      */
@@ -114,7 +114,7 @@ class Query
     }
 
     /**
-     * Get the current tableKey.
+     * Return the current tableKey.
      *
      * @return null|string
      */

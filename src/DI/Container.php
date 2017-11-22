@@ -11,7 +11,7 @@ class Container
     protected static $relations = [];
 
     /**
-     * Get an already instantiated instance or create a new one.
+     * Return an already instantiated instance or create a new one.
      *
      * @param string $className
      * @param string $parentClassName

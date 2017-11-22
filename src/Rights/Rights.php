@@ -48,7 +48,7 @@ class Rights
     }
 
     /**
-     * Get a specific right by name.
+     * Return a specific right by name.
      *
      * @param string $name
      *

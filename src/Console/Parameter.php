@@ -274,7 +274,7 @@ class Parameter
     }
 
     /**
-     * Get the argument from the set command arguments or null if it doesn't exist.
+     * Return the argument from the set command arguments or null if it doesn't exist.
      *
      * @param string $name
      *

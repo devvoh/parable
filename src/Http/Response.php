@@ -336,7 +336,7 @@ class Response
     }
 
     /**
-     * Get header value by key.
+     * Return header value by key.
      *
      * @param string $key
      *

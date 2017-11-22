@@ -270,7 +270,7 @@ class Route
 
 
     /**
-     * Get a value, if it exists.
+     * Return a value, if it exists.
      *
      * @param string $key
      *
@@ -285,7 +285,7 @@ class Route
     }
 
     /**
-     * Get all values.
+     * Return all values.
      *
      * @return array
      */

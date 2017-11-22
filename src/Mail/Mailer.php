@@ -149,7 +149,7 @@ class Mailer
     }
 
     /**
-     * Get all addresses for type.
+     * Return all addresses for type.
      *
      * @param string $type
      *

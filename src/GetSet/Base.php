@@ -37,7 +37,7 @@ abstract class Base
     }
 
     /**
-     * Get all from resource if resource is set.
+     * Return all from resource if resource is set.
      *
      * @return array
      */
@@ -53,7 +53,7 @@ abstract class Base
     }
 
     /**
-     * Get specific value by key if resource set.
+     * Return specific value by key if resource set.
      *
      * $getSet->get("one.two.three", "value") would return $resource["one"]["two"]["three"];
      *

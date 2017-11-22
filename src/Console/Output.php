@@ -166,7 +166,7 @@ class Output
     }
 
     /**
-     * Get the current line length.
+     * Return the current line length.
      *
      * @return int
      */

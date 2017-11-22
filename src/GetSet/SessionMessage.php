@@ -20,7 +20,7 @@ class SessionMessage
     }
 
     /**
-     * Get all messages or all messages of $type.
+     * Return all messages or all messages of $type.
      *
      * @param null|string $type
      *
@@ -40,7 +40,7 @@ class SessionMessage
     }
 
     /**
-     * Get all messages or all messages of $type and then clear those messages.
+     * Return all messages or all messages of $type and then clear those messages.
      *
      * @param null|string $type
      *
