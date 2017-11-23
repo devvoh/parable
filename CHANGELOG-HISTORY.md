@@ -2,6 +2,56 @@
 
 This file contains the changelog history for Parable. Changelogs pertaining to versions two major versions before the current active version are moved here.
 
+### 0.11.5
+
+__Changes__
+- Rename all the files in `structure` to have a `_struct` suffix, so that IDEs don't pick up on then anymore.
+
+### 0.11.4
+
+__Bugfixes__
+- `\Parable\DI\Container` had a bug where in some odd instances, while deciding the dependencies to DI for a class, the parameter's class would be `null` and attempting to get the `name` property from `null`, of course, failed.
+
+### 0.11.3
+
+__Changes__
+- `\Parable\Http\Response` now only tries to prepend the output buffer if there's data in the buffer and `Response::$content` is already a string.
+- `\Parable\GetSet` now has a new type of resource - those that require their data be parsed from `php://input`.
+- Three `GetSet` types added due to the above: `\GetSet\Delete`, `\GetSet\Patch` and `\GetSet\Put`. This should make API builders really happy ;)
+- `\Parable\ORM\Model` now returns only boolean values on success or fail, instead of a false on fail and a `PDOStatement` on success.
+- Changed the command for `\Command\HelloWorld` to `hello-world` because _somebody_ cares too much about that stuff.
+
+### 0.11.2
+
+__Changes__
+- Fixed up the README.md file, since it was a bit outdated. Also changed the 'feel' of the text to represent the maturing state of Parable.
+- Renamed `init` command to `init-parable`, then immediately renamed it `init-structure` and added a check whether a structure was already initialized, adding a warning if it was.
+
+### 0.11.1
+
+Well, that was fast!
+
+__Bugfixes__
+- Fixed a bug in `\Parable\Http\Url`, where it was directly looking at `$_SERVER['REQUEST_SCHEME']`, which isn't always available. Added `\Parable\Http\Request::getScheme` to try out multiple options to figure it out instead.
+
+### 0.11.0
+
+Hey, look! Tests! With 100% code coverage, too! Run `make tests` to run them (which will attempt to `composer install` for needed libraries and then run the tests). Run `make coverage` to run the tests AND generate the HTML coverage report in `./coverage`.
+
+With tests, every nook and cranny of the code was looked at, evaluated and where needed, checked, fixed, removed or added to.
+
+This release also pulls out all interdependencies except for `Framework` still depending on other Components.
+
+There's so many changes that it'll take a fly's lifetime to jot them all down, and it's just not worth it.
+
+If you're upgrading from 0.10, I wish you all the luck, though in most cases the errors will show you the way.
+
+__Changes__
+- Many things.
+
+__Bugfixes__
+- Much more.
+
 ### 0.10.3
 
 __Bugfixes__

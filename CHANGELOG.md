@@ -1,5 +1,32 @@
 # Parable PHP Framework Changelog
 
+### 1.0.0
+
+Considering the 0.11.x branch as Release Candidate 1 and the 0.12.x branch as RC2, it's time to ship final Parable. This release brings a major clean-up, documentation, and some useful additions.
+
+__Changes__
+- All method doc blocks now have explanatory text, even if it's superfluous, for documentation purposes.
+- `\Parable\Console\App` now supports adding multiple commands in one go, using `addCommands([...])`.
+- `\Parable\Framework\App` now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
+- `\Parable\Framework\Mailer` now supports setting a different mail sender. Default is, as it was, php's own `mail()`.
+- `\Parable\Framework\Mailer` now can act on three config values:
+  - `parable.mail.sender`, which should be the class name of the `SenderInterface` implementation you want to use.
+  - `parable.mail.from.email`, the email for the for address.
+  - `parable.mail.from.name`, the name for the for address.
+- `\Parable\GetSet\Base` now also has `setResource`, for when you want to switch, or set it using a method rather than overwriting a property.
+- `\Parable\Http\Request` now has `isOptions()` to check for OPTIONS method requests.
+- `\Parable\Http\Response` now has `setHeaders()` so you can add a bunch of headers in one call, `removeHeader($key)` so you can remove a header, and `clearHeaders()` to, y'know, actually, I think you got this.
+- `\Parable\Log\Writer\NullLogger` was added, for when you want to log nowhere at all.
+- `\Parable\Mail\Mailer` now obviously also supports setting a Mail Sender. Default is, well, none. That's all up to you to configure. (Hey, psst, `Framework\Mailer` already tries to do that for you!)
+
+__Backwards-incompatible Changes__
+- `\Parable\Console\App::setDefaultCommand()` now takes a command instance rather than the name, as the name would suggest. To set the default command by name, use `setDefaultCommandByName()` instead.
+- `\Parable\Console\Parameter::setOptions()` was renamed to `setCommandOptions()`, because the distinction is important.
+- `\Parable\DI\Container::cleanName()` has been made protected. This shouldn't impact you, as you shouldn't've been using it in the first place.
+- `\Parable\GetSet\InputStream::extractAndSetData()` has been made protected. See above for why you should totally be fine.
+- The interface `\Parable\Log\Writer` has been renamed and moved to `\Parable\Log\Writer\WriterInterface` for clarity and consistency.
+- `\Parable\Log\Writer\Terminal` has been renamed to `\Parable\Log\Writer\Console`, because I don't know what was wrong with me when I chose 'terminal'.
+
 ### 0.12.14
 
 __Changes__
@@ -124,55 +151,5 @@ __Changes__
 - Replaced `strpos` method of deciding whether a method was public or not with `Reflection` logic. Affects `\Parable\ORM\Model::toArray()` and `\Parable\ORM\Model::reset()`.
 - No longer add structure folder to the autoload path in `tests/bootstrap.php`, since we no longer use the `_struct` files in testing.
 - `\Parable\Framework\App\loadInits()` has been moved up in the run procedure, allowing more triggers: `parable_load_inits_after`, `parable_load_routes_before/after`, `parable_init_database_before/after`, `parable_dispatch_before/after` 
-
-### 0.11.5
-
-__Changes__
-- Rename all the files in `structure` to have a `_struct` suffix, so that IDEs don't pick up on then anymore.
-
-### 0.11.4
-
-__Bugfixes__
-- `\Parable\DI\Container` had a bug where in some odd instances, while deciding the dependencies to DI for a class, the parameter's class would be `null` and attempting to get the `name` property from `null`, of course, failed.
-
-### 0.11.3
-
-__Changes__
-- `\Parable\Http\Response` now only tries to prepend the output buffer if there's data in the buffer and `Response::$content` is already a string.
-- `\Parable\GetSet` now has a new type of resource - those that require their data be parsed from `php://input`.
-- Three `GetSet` types added due to the above: `\GetSet\Delete`, `\GetSet\Patch` and `\GetSet\Put`. This should make API builders really happy ;)
-- `\Parable\ORM\Model` now returns only boolean values on success or fail, instead of a false on fail and a `PDOStatement` on success.
-- Changed the command for `\Command\HelloWorld` to `hello-world` because _somebody_ cares too much about that stuff.
-
-### 0.11.2
-
-__Changes__
-- Fixed up the README.md file, since it was a bit outdated. Also changed the 'feel' of the text to represent the maturing state of Parable.
-- Renamed `init` command to `init-parable`, then immediately renamed it `init-structure` and added a check whether a structure was already initialized, adding a warning if it was.
-
-### 0.11.1
-
-Well, that was fast!
-
-__Bugfixes__
-- Fixed a bug in `\Parable\Http\Url`, where it was directly looking at `$_SERVER['REQUEST_SCHEME']`, which isn't always available. Added `\Parable\Http\Request::getScheme` to try out multiple options to figure it out instead.
-
-### 0.11.0
-
-Hey, look! Tests! With 100% code coverage, too! Run `make tests` to run them (which will attempt to `composer install` for needed libraries and then run the tests). Run `make coverage` to run the tests AND generate the HTML coverage report in `./coverage`.
-
-With tests, every nook and cranny of the code was looked at, evaluated and where needed, checked, fixed, removed or added to.
-
-This release also pulls out all interdependencies except for `Framework` still depending on other Components.
-
-There's so many changes that it'll take a fly's lifetime to jot them all down, and it's just not worth it.
-
-If you're upgrading from 0.10, I wish you all the luck, though in most cases the errors will show you the way.
-
-__Changes__
-- Many things.
-
-__Bugfixes__
-- Much more.
 
 [Check CHANGELOG-HISTORY.md](CHANGELOG-HISTORY.md) for older Changelogs.
