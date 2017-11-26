@@ -13,17 +13,17 @@ class App
     /** @var \Parable\Console\Parameter */
     protected $parameter;
 
-    /** @var string */
+    /** @var string|null */
     protected $name;
 
     /** @var \Parable\Console\Command[] */
     protected $commands = [];
 
-    /** @var string */
+    /** @var string|null */
     protected $defaultCommand;
 
     /** @var bool */
-    protected $defaultCommandOnly = false;
+    protected $onlyUseDefaultCommand = false;
 
     public function __construct(
         \Parable\Console\Output $output,
@@ -36,7 +36,7 @@ class App
 
         set_exception_handler(function ($e) {
             // @codeCoverageIgnoreStart
-            $this->output->writeError($e->getMessage());
+            $this->output->writeErrorBlock($e->getMessage());
             // @codeCoverageIgnoreEnd
         });
     }
@@ -57,7 +57,7 @@ class App
     /**
      * Return the application name.
      *
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
@@ -97,29 +97,49 @@ class App
      * Set the default command to use if no command is given (by name).
      *
      * @param string $commandName
-     * @param bool   $defaultCommandOnly
      *
      * @return $this
      */
-    public function setDefaultCommandByName($commandName, $defaultCommandOnly = false)
+    public function setDefaultCommandByName($commandName)
     {
         $this->defaultCommand     = $commandName;
-        $this->defaultCommandOnly = $defaultCommandOnly;
         return $this;
     }
 
     /**
      * Set the default command to use if no command is given.
      *
-     * @param string $commandName
-     * @param bool   $defaultCommandOnly
+     * @param \Parable\Console\Command $command
      *
      * @return $this
      */
-    public function setDefaultCommand(\Parable\Console\Command $command, $defaultCommandOnly = false)
+    public function setDefaultCommand(\Parable\Console\Command $command)
     {
-        $this->setDefaultCommandByName($command->getName(), $defaultCommandOnly);
+        $this->setDefaultCommandByName($command->getName());
         return $this;
+    }
+
+    /**
+     * Set whether, if a default command is set up, we should consider it the only command.
+     *
+     * @param bool $onlyUseDefaultCommand
+     *
+     * @return $this
+     */
+    public function setOnlyUseDefaultCommand($onlyUseDefaultCommand)
+    {
+        $this->onlyUseDefaultCommand = (bool)$onlyUseDefaultCommand;
+        return $this;
+    }
+
+    /**
+     * Return whether, if a default command is set up, we should consider it the only command.
+     *
+     * @return bool
+     */
+    public function shouldOnlyUseDefaultCommand()
+    {
+        return $this->onlyUseDefaultCommand;
     }
 
     /**
@@ -127,7 +147,7 @@ class App
      *
      * @param string $commandName
      *
-     * @return null|\Parable\Console\Command
+     * @return \Parable\Console\Command|null
      */
     public function getCommand($commandName)
     {
@@ -160,7 +180,7 @@ class App
         if ($this->defaultCommand) {
             $defaultCommand = $this->getCommand($this->defaultCommand);
         }
-        if (!$this->defaultCommandOnly) {
+        if (!$this->shouldOnlyUseDefaultCommand()) {
             $commandName = $this->parameter->getCommandName();
             if ($commandName) {
                 $command = $this->getCommand($commandName);

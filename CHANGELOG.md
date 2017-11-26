@@ -7,6 +7,7 @@ Considering the 0.11.x branch as Release Candidate 1 and the 0.12.x branch as RC
 __Changes__
 - All method doc blocks now have explanatory text, even if it's superfluous, for documentation purposes.
 - `\Parable\Console\App` now supports adding multiple commands in one go, using `addCommands([...])`.
+- `\Parable\Console\Output::writeBlockWithTags()` was added, making it possible to write a block with multiple tags.
 - `\Parable\Framework\App` now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
 - `\Parable\Framework\Mailer` now supports setting a different mail sender. Default is, as it was, php's own `mail()`.
 - `\Parable\Framework\Mailer` now can act on three config values:
@@ -21,7 +22,9 @@ __Changes__
 
 __Backwards-incompatible Changes__
 - `\Parable\Console\App::setDefaultCommand()` now takes a command instance rather than the name, as the name would suggest. To set the default command by name, use `setDefaultCommandByName()` instead.
+- `\Parable\Console\App::setOnlyUseDefaultCommand()` was added, and the boolean paramater was removed from the `setDefaultCommand/ByName()` function calls. Checked by calling `shouldOnlyUseDefaultCommand()` 
 - `\Parable\Console\Parameter::setOptions()` was renamed to `setCommandOptions()`, because the distinction is important.
+- `\Parable\Console\Output::writeError/writeInfo/writeSuccess()` are now suffixed with `Block`, so `writeInfoBlock()`, etc.
 - `\Parable\DI\Container::cleanName()` has been made protected. This shouldn't impact you, as you shouldn't've been using it in the first place.
 - `\Parable\GetSet\InputStream::extractAndSetData()` has been made protected. See above for why you should totally be fine.
 - The interface `\Parable\Log\Writer` has been renamed and moved to `\Parable\Log\Writer\WriterInterface` for clarity and consistency.

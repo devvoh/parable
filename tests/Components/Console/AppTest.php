@@ -155,11 +155,13 @@ class AppTest extends \Parable\Tests\Base
         // Same as calling 'php test.php test2'
         $_SERVER["argv"] = ['./test.php', 'test2'];
 
+        /** @var \Parable\Console\App $app */
         $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
         $app->addCommand($this->command1);
         $app->addCommand($this->command2);
 
-        $app->setDefaultCommand($this->command1, $defaultCommandOnly);
+        $app->setOnlyUseDefaultCommand($defaultCommandOnly);
+        $app->setDefaultCommand($this->command1);
 
         // If defaultCommandOnly, OK1/test1 should run, otherwise OK2/test2
         $this->assertSame($defaultCommandOnly ? 'OK1' : 'OK2', $app->run());

@@ -8,7 +8,7 @@ class InitStructure extends \Parable\Console\Command
     protected $name = 'init-structure';
 
     /** @var string */
-    protected $description = 'This command initializes a parable structure.';
+    protected $description = 'This command initializes a default parable structure.';
 
     /** @var \Parable\Filesystem\Path */
     protected $path;

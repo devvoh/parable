@@ -7,15 +7,15 @@ class Output
     /** @var array */
     protected $tags = [
         /* foreground colors */
-        'default' => "\e[0m",
-        'black'   => "\e[0;30m",
-        'red'     => "\e[0;31m",
-        'green'   => "\e[0;32m",
-        'yellow'  => "\e[0;33m",
-        'blue'    => "\e[0;34m",
-        'purple'  => "\e[0;35m",
-        'cyan'    => "\e[0;36m",
-        'white'   => "\e[0;37m",
+        'default'      => "\e[0m",
+        'black'        => "\e[0;30m",
+        'red'          => "\e[0;31m",
+        'green'        => "\e[0;32m",
+        'yellow'       => "\e[0;33m",
+        'blue'         => "\e[0;34m",
+        'purple'       => "\e[0;35m",
+        'cyan'         => "\e[0;36m",
+        'white'        => "\e[0;37m",
 
         /* background colors */
         'black_bg'     => "\e[40m",
@@ -28,9 +28,9 @@ class Output
         'lightgray_bg' => "\e[47m",
 
         /* styles */
-        'error'   => "\e[0;37m\e[41m",
-        'success' => "\e[0;30m\e[42m",
-        'info'    => "\e[0;30m\e[43m",
+        'error'        => "\e[0;37m\e[41m",
+        'success'      => "\e[0;30m\e[42m",
+        'info'         => "\e[0;30m\e[43m",
     ];
 
     /** @var int */
@@ -200,7 +200,7 @@ class Output
      *
      * @return $this
      */
-    public function writeError($string)
+    public function writeErrorBlock($string)
     {
         $this->writeBlock($string, 'error');
         return $this;
@@ -213,7 +213,7 @@ class Output
      *
      * @return $this
      */
-    public function writeInfo($string)
+    public function writeInfoBlock($string)
     {
         $this->writeBlock($string, 'info');
         return $this;
@@ -226,7 +226,7 @@ class Output
      *
      * @return $this
      */
-    public function writeSuccess($string)
+    public function writeSuccessBlock($string)
     {
         $this->writeBlock($string, 'success');
         return $this;
@@ -242,13 +242,36 @@ class Output
      */
     public function writeBlock($string, $tag = 'info')
     {
+        $this->writeBlockWithTags($string, [$tag]);
+        return $this;
+    }
+
+    /**
+     * Write a block of text to the console, applying all tags appropriately.
+     *
+     * @param string   $string
+     * @param string[] $tags
+     *
+     * @return $this
+     */
+    public function writeBlockWithTags($string, array $tags = [])
+    {
         $strlen = mb_strlen($string);
+
+        $tagsOpen  = "";
+        $tagsClose = "";
+        if (count($tags) > 0) {
+            foreach ($tags as $tag) {
+                $tagsOpen  .= "<{$tag}>";
+                $tagsClose .= "</{$tag}>";
+            }
+        }
 
         $this->writeln([
             "",
-            " <{$tag}>┌" . str_repeat("─", $strlen + 2) . "┐</{$tag}>",
-            " <{$tag}>│ {$string} │</{$tag}>",
-            " <{$tag}>└" . str_repeat("─", $strlen + 2) . "┘</{$tag}>",
+            " {$tagsOpen}┌" . str_repeat("─", $strlen + 2) . "┐{$tagsClose}",
+            " {$tagsOpen}│ {$string} │{$tagsClose}",
+            " {$tagsOpen}└" . str_repeat("─", $strlen + 2) . "┘{$tagsClose}",
             "",
         ]);
         return $this;

@@ -10,10 +10,10 @@ class Parameter
     /** @var array */
     protected $parameters = [];
 
-    /** @var string */
+    /** @var string|null */
     protected $scriptName;
 
-    /** @var string */
+    /** @var string|null */
     protected $commandName;
 
     /** @var array */

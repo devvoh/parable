@@ -40,10 +40,10 @@ class DockTest extends \Parable\Tests\Base
         $testDock = $docks['test_dock_into'][0];
 
         $this->assertArrayHasKey('callable', $testDock);
-        $this->assertArrayHasKey('template', $testDock);
+        $this->assertArrayHasKey('templatePath', $testDock);
 
         $callable = $testDock['callable'];
-        $template = $testDock['template'];
+        $template = $testDock['templatePath'];
 
         $this->assertNotEmpty($callable);
         $this->assertNotEmpty($template);

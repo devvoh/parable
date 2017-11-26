@@ -7,7 +7,7 @@ class Authentication
     /** @var string */
     protected $userClassName = '\Model\User';
 
-    /** @var null|object */
+    /** @var object|null */
     protected $user;
 
     /** @var \Parable\Framework\Toolkit */

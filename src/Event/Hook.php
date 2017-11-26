@@ -8,7 +8,7 @@ class Hook
     protected $hooks = [];
 
     /**
-     * Add hook referencing $closure to $event, returns false if $callable isn't a function.
+     * Add the $callable to the list of hooks run when $event is triggered.
      *
      * @param string   $event
      * @param callable $callable
@@ -31,7 +31,7 @@ class Hook
      */
     public function trigger($event, &$payload = null)
     {
-        // Disallow calling a trigger on global docks
+        // Disallow calling a trigger on global hooks
         if ($event === '*') {
             return $this;
         }
@@ -42,7 +42,7 @@ class Hook
             $globalHooks = $this->hooks['*'];
         }
 
-        // Check if the event exists and has closures to call
+        // Check if the event exists and has callables to run
         if (!isset($this->hooks[$event]) || count($this->hooks[$event]) == 0) {
             // There are no specific hooks, but maybe there's global hooks?
             if (count($globalHooks) === 0) {
@@ -55,9 +55,9 @@ class Hook
             $hooks = array_merge($hooks, $globalHooks);
         }
 
-        // All good, let's call those closures
-        foreach ($hooks as $closure) {
-            $closure($event, $payload);
+        // All good, let's call those callables
+        foreach ($hooks as $callable) {
+            $callable($event, $payload);
         }
         return $this;
     }

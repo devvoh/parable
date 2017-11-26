@@ -4,8 +4,8 @@ namespace Parable\ORM\Query;
 
 abstract class ConditionSet
 {
-    /** Default is AND */
-    const TYPE = self::SET_AND;
+    /** Default condition set is AND */
+    const TYPE    = self::SET_AND;
 
     /** Types of sets */
     const SET_AND = 'AND';

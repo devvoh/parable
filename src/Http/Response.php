@@ -326,6 +326,8 @@ class Response
      * Set an array of headers for this response.
      *
      * @param array $headers
+     *
+     * @return $this
      */
     public function setHeaders(array $headers)
     {

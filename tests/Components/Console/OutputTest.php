@@ -165,7 +165,7 @@ class OutputTest extends \Parable\Tests\Base
 
     public function testWriteErrorBlock()
     {
-        $this->output->writeError('error');
+        $this->output->writeErrorBlock('error');
 
         $output = [
             $this->addTag(""),
@@ -184,7 +184,7 @@ class OutputTest extends \Parable\Tests\Base
 
     public function testWriteInfoBlock()
     {
-        $this->output->writeInfo('info');
+        $this->output->writeInfoBlock('info');
 
         $output = [
             $this->addTag(""),
@@ -203,7 +203,7 @@ class OutputTest extends \Parable\Tests\Base
 
     public function testWriteSuccessBlock()
     {
-        $this->output->writeSuccess('success');
+        $this->output->writeSuccessBlock('success');
 
         $output = [
             $this->addTag(""),
@@ -229,6 +229,44 @@ class OutputTest extends \Parable\Tests\Base
             $this->addTag(" <anytag>┌───────────┐</anytag>"),
             $this->addTag(" <anytag>│ any block │</anytag>"),
             $this->addTag(" <anytag>└───────────┘</anytag>"),
+            $this->addTag(""),
+            "",
+        ];
+
+        $this->assertSame(
+            implode("\n", $output),
+            $this->getActualOutputAndClean()
+        );
+    }
+
+    public function testWriteBlockWithTagsUsingMultipleTags()
+    {
+        $this->output->writeBlockWithTags('any block', ["1", "2", "3"]);
+
+        $output = [
+            $this->addTag(""),
+            $this->addTag(" <1><2><3>┌───────────┐</1></2></3>"),
+            $this->addTag(" <1><2><3>│ any block │</1></2></3>"),
+            $this->addTag(" <1><2><3>└───────────┘</1></2></3>"),
+            $this->addTag(""),
+            "",
+        ];
+
+        $this->assertSame(
+            implode("\n", $output),
+            $this->getActualOutputAndClean()
+        );
+    }
+
+    public function testWriteBlockWithTagsUsingNoTagsOutputsNoTags()
+    {
+        $this->output->writeBlockWithTags('any block', []);
+
+        $output = [
+            $this->addTag(""),
+            $this->addTag(" ┌───────────┐"),
+            $this->addTag(" │ any block │"),
+            $this->addTag(" └───────────┘"),
             $this->addTag(""),
             "",
         ];

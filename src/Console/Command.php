@@ -4,13 +4,13 @@ namespace Parable\Console;
 
 class Command
 {
-    /** @var string */
+    /** @var string|null */
     protected $name;
 
-    /** @var string */
+    /** @var string|null */
     protected $description;
 
-    /** @var callable */
+    /** @var callable|null */
     protected $callable;
 
     /** @var array */
@@ -19,17 +19,41 @@ class Command
     /** @var array */
     protected $arguments = [];
 
-    /** @var \Parable\Console\App */
+    /** @var \Parable\Console\App|null */
     protected $app;
 
-    /** @var \Parable\Console\Output */
+    /** @var \Parable\Console\Output|null */
     protected $output;
 
-    /** @var \Parable\Console\Input */
+    /** @var \Parable\Console\Input|null */
     protected $input;
 
-    /** @var \Parable\Console\Parameter */
+    /** @var \Parable\Console\Parameter|null */
     protected $parameter;
+
+    /**
+     * Prepare the command, setting all classes the command is dependant on.
+     *
+     * @param \Parable\Console\App       $app
+     * @param \Parable\Console\Output    $output
+     * @param \Parable\Console\Input     $input
+     * @param \Parable\Console\Parameter $parameter
+     *
+     * @return $this
+     */
+    public function prepare(
+        \Parable\Console\App $app,
+        \Parable\Console\Output $output,
+        \Parable\Console\Input $input,
+        \Parable\Console\Parameter $parameter
+    ) {
+        $this->app       = $app;
+        $this->output    = $output;
+        $this->input     = $input;
+        $this->parameter = $parameter;
+
+        return $this;
+    }
 
     /**
      * Set the command name.
@@ -47,7 +71,7 @@ class Command
     /**
      * Return the command name.
      *
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
@@ -158,30 +182,6 @@ class Command
     public function getArguments()
     {
         return $this->arguments;
-    }
-
-    /**
-     * Prepare the command, setting all classes the command is dependant on.
-     *
-     * @param \Parable\Console\App       $app
-     * @param \Parable\Console\Output    $output
-     * @param \Parable\Console\Input     $input
-     * @param \Parable\Console\Parameter $parameter
-     *
-     * @return $this
-     */
-    public function prepare(
-        \Parable\Console\App $app,
-        \Parable\Console\Output $output,
-        \Parable\Console\Input $input,
-        \Parable\Console\Parameter $parameter
-    ) {
-        $this->app       = $app;
-        $this->output    = $output;
-        $this->input     = $input;
-        $this->parameter = $parameter;
-
-        return $this;
     }
 
     /**

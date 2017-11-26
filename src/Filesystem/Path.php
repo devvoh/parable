@@ -4,7 +4,7 @@ namespace Parable\Filesystem;
 
 class Path
 {
-    /** @var string */
+    /** @var string|null */
     protected $baseDir;
 
     /**
