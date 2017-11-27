@@ -128,39 +128,50 @@ class OutputTest extends \Parable\Tests\Base
         $this->assertSameWithTag("\e[4;8H", $this->getActualOutputAndClean());
     }
 
+    public function testCursorPlaceDisablesClearLine()
+    {
+        $this->output->write("stuff!");
+        $this->assertTrue($this->output->isClearLineEnabled());
+
+        $this->output->cursorPlace(1, 1);
+        $this->assertFalse($this->output->isClearLineEnabled());
+
+        // This should do nothing
+        $this->output->clearLine();
+
+        // If clear line had worked, there would be many spaces. The string we're expecting does not.
+        $this->assertSame("stuff!\e[0m\e[1;1H\e[0m", $this->getActualOutputAndClean());
+    }
+
     public function testCls()
     {
         $this->output->cls();
         $this->assertSameWithTag("\ec", $this->getActualOutputAndClean());
     }
 
-    /**
-     * This was a surprisingly hard test to do -_-
-     */
     public function testClearLine()
     {
-        $expectedLineLength = strlen($this->addTag('12345'));
-
-        $this->output->write('12345');
-        $this->assertSame($expectedLineLength, $this->output->getLineLength());
-
-        // Clearing the line does multiple things. Moves the cursor back, overwrites the old text with spaces,
-        // and moves the cursor back again, then resets the line length to 0.
+        $this->output->write("12345");
         $this->output->clearLine();
+        $this->output->write("no");
 
-        // Line length should have reset
-        $this->assertSame(0, $this->output->getLineLength());
+        // Use urlencode because the carriage return escape codes are annoying to escape otherwise
+        $output = urlencode($this->getActualOutputAndClean());
 
-        $spaces = str_repeat(" ", $expectedLineLength);
-        $expectedString  = $this->addTag("12345");
-        $expectedString .= $this->addTag("\e[{$expectedLineLength}D{$spaces}");
+        // Check that we've got 2 carriage returns and then remove %0D (carriage return)
+        $this->assertSame(2, substr_count($output, "%0D"));
+        $output = str_replace("%0D", "", $output);
 
-        // The current lineLength is equivalent to the entire expectedString up to this point, since we wrote a string
-        // (+tag), wrote escape codes to move the cursor back (+tag), wrote the appropriate amount of spaces (5+tag)
-        $newExpectedLineLength = strlen($expectedString);
-        $expectedString .= $this->addTag("\e[{$newExpectedLineLength}D");
+        // Straight up remove %1B (backslash) and %5B (square bracket) combinations (the reset style \[0m)
+        $output = str_replace("%1B%5B0m", "", $output);
 
-        $this->assertSame($expectedString, $this->getActualOutputAndClean());
+        // Check that we've got the correct amount of spaces (+)
+        $spaces = str_repeat("+", $this->output->getTerminalWidth());
+
+        $this->assertSame(
+            $output,
+            "12345{$spaces}no"
+        );
     }
 
     public function testWriteErrorBlock()

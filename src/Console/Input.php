@@ -24,7 +24,9 @@ class Input
     public function getHidden()
     {
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            throw new \Parable\Console\Exception('Parable on Windows does not support hidden input.');
+            throw new \Parable\Console\Exception(
+                "Hidden input is not supported on windows."
+            );
         }
         system('stty -echo');
         $input = trim(fgets(STDIN));

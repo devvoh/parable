@@ -33,8 +33,8 @@ class Output
         'info'         => "\e[0;30m\e[43m",
     ];
 
-    /** @var int */
-    protected $lineLength = 0;
+    /** @var bool */
+    protected $clearLineEnabled = false;
 
     /**
      * Write a string to the console.
@@ -47,10 +47,26 @@ class Output
     {
         $string = $this->parseTags($string);
 
-        $this->lineLength += strlen($string);
+        $this->enableClearLine();
 
         echo $string;
         return $this;
+    }
+
+    /**
+     * Return the terminal width. If not an interactive shell, return default 80;
+     *
+     * @return int
+     */
+    public function getTerminalWidth()
+    {
+        // If running on windows or not an interactive shell, just pretend it's 80
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || !posix_isatty(0)) {
+            // @codeCoverageIgnoreStart
+            return 80;
+            // @codeCoverageIgnoreEnd
+        }
+        return (int)shell_exec("tput cols");
     }
 
     /**
@@ -82,14 +98,14 @@ class Output
      */
     public function newline($count = 1)
     {
-        $this->lineLength = 0;
+        $this->disableClearLine();
 
         echo str_repeat(PHP_EOL, $count);
         return $this;
     }
 
     /**
-     * Move the cursor forward by $characters places.
+     * Move the cursor forward by $characters places and reset the lineLength.
      *
      * @param int $characters
      *
@@ -102,7 +118,7 @@ class Output
     }
 
     /**
-     * Move the cursor backward by $characters places.
+     * Move the cursor backward by $characters places and reset the lineLength.
      *
      * @param int $characters
      *
@@ -115,7 +131,7 @@ class Output
     }
 
     /**
-     * Move the cursor up by $characters places.
+     * Move the cursor up by $characters places and reset the lineLength.
      *
      * @param int $characters
      *
@@ -124,11 +140,12 @@ class Output
     public function cursorUp($characters = 1)
     {
         $this->write("\e[{$characters}A");
+        $this->disableClearLine();
         return $this;
     }
 
     /**
-     * Move the cursor down by $characters places.
+     * Move the cursor down by $characters places and reset the lineLength.
      *
      * @param int $characters
      *
@@ -137,11 +154,12 @@ class Output
     public function cursorDown($characters = 1)
     {
         $this->write("\e[{$characters}B");
+        $this->disableClearLine();
         return $this;
     }
 
     /**
-     * Place the cursor on $line and $column.
+     * Place the cursor on $line and $column and reset the lineLength.
      *
      * @param int $line
      * @param int $column
@@ -151,6 +169,18 @@ class Output
     public function cursorPlace($line = 0, $column = 0)
     {
         $this->write("\e[{$line};{$column}H");
+        $this->disableClearLine();
+        return $this;
+    }
+
+    /**
+     * Reset the cursor position to the start of the current line you're on.
+     *
+     * @return $this
+     */
+    public function cursorReset()
+    {
+        $this->write("\r");
         return $this;
     }
 
@@ -161,18 +191,42 @@ class Output
      */
     public function cls()
     {
+        $this->disableClearLine();
+
         $this->write("\ec");
         return $this;
     }
 
     /**
-     * Return the current line length.
+     * Enables clearing the line. This is dependent on staying on the same line.
      *
-     * @return int
+     * @return $this
      */
-    public function getLineLength()
+    public function enableClearLine()
     {
-        return $this->lineLength;
+        $this->clearLineEnabled = true;
+        return $this;
+    }
+
+    /**
+     * Disables clearing the line. Moving the cursor up or down or clearing the screen will do this.
+     *
+     * @return $this
+     */
+    public function disableClearLine()
+    {
+        $this->clearLineEnabled = false;
+        return $this;
+    }
+
+    /**
+     * Return whether or not line clearing is currently enabled.
+     *
+     * @return bool
+     */
+    public function isClearLineEnabled()
+    {
+        return $this->clearLineEnabled;
     }
 
     /**
@@ -182,13 +236,15 @@ class Output
      */
     public function clearLine()
     {
-        // Move back the cursor and replace the existing text with spaces
-        $spaces = str_repeat(" ", $this->lineLength);
-        $this->write("\e[{$this->lineLength}D{$spaces}");
-        // And move the cursor back again
-        $this->write("\e[{$this->lineLength}D");
+        if (!$this->isClearLineEnabled()) {
+            return $this;
+        }
 
-        $this->lineLength = 0;
+        $this->cursorReset();
+        $this->write(str_repeat(" ", $this->getTerminalWidth()));
+        $this->cursorReset();
+
+        $this->disableClearLine();
 
         return $this;
     }
