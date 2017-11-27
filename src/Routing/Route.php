@@ -126,7 +126,7 @@ class Route
                 return (int)$value;
             }
         } elseif ($type === "float") {
-            if (is_numeric($value) && (float)$value == $value) {
+            if (is_numeric($value) && is_float($value)) {
                 return (float)$value;
             }
         }

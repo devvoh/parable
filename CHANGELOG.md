@@ -32,6 +32,7 @@ __Backwards-incompatible Changes__
 
 __Bugfixes__
 - `\Parable\Console\Output` had a bug where moving the cursors would mess with the functionality of `clearLine()`. Line length is no longer kept track of, but whether or not the line is clearable is a boolean value. Moving the cursor up/down or placing it disables line clearing, writing anything enables it again. When you clear the line, the line gets cleared using the terminal width.
+- `\Parable\Routing\Route::checkAndApplyParameterValueType()` did not detect floats correctly. Now it does.
 
 ### 0.12.14
 
