@@ -37,7 +37,7 @@ class Output
     protected $clearLineEnabled = false;
 
     /**
-     * Write a string to the console.
+     * Write a string to the console and make sure clear line is enabled.
      *
      * @param string $string
      *
@@ -90,7 +90,7 @@ class Output
     }
 
     /**
-     * Write a newline (or multiple) to the console.
+     * Write a newline (or multiple) to the console and disable clear line.
      *
      * @param int $count
      *
@@ -105,7 +105,7 @@ class Output
     }
 
     /**
-     * Move the cursor forward by $characters places and reset the lineLength.
+     * Move the cursor forward by $characters places.
      *
      * @param int $characters
      *
@@ -118,7 +118,7 @@ class Output
     }
 
     /**
-     * Move the cursor backward by $characters places and reset the lineLength.
+     * Move the cursor backward by $characters places.
      *
      * @param int $characters
      *
@@ -131,7 +131,7 @@ class Output
     }
 
     /**
-     * Move the cursor up by $characters places and reset the lineLength.
+     * Move the cursor up by $characters places and disable clear line.
      *
      * @param int $characters
      *
@@ -145,7 +145,7 @@ class Output
     }
 
     /**
-     * Move the cursor down by $characters places and reset the lineLength.
+     * Move the cursor down by $characters places and disable clear line.
      *
      * @param int $characters
      *
@@ -159,7 +159,7 @@ class Output
     }
 
     /**
-     * Place the cursor on $line and $column and reset the lineLength.
+     * Place the cursor on $line and $column and disable clear line.
      *
      * @param int $line
      * @param int $column
@@ -185,7 +185,7 @@ class Output
     }
 
     /**
-     * Clear the screen.
+     * Clear the screen and disable clear line.
      *
      * @return $this
      */
@@ -230,7 +230,7 @@ class Output
     }
 
     /**
-     * Clear the line, based on the current lineLength.
+     * Clear the line, based on the terminal width and disable clear line.
      *
      * @return $this
      */
