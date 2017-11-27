@@ -115,7 +115,7 @@ class Model
     {
         foreach ($data as $property => $value) {
             if (property_exists($this, $property)) {
-                $this->$property = $this->guessValueType($value);
+                $this->{$property} = $value;
             }
         }
         return $this;
@@ -198,23 +198,6 @@ class Model
     public function getExportable()
     {
         return $this->exportable;
-    }
-
-    /**
-     * Attempts to guess the value type. Will return int, float or string.
-     *
-     * @param string $value
-     *
-     * @return int|float|string
-     */
-    public function guessValueType($value)
-    {
-        if (is_numeric($value) && (int)$value == $value) {
-            return (int)$value;
-        } elseif (is_numeric($value) && (float)$value == $value) {
-            return (float)$value;
-        }
-        return $value;
     }
 
     /**

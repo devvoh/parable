@@ -31,9 +31,6 @@ class Route
     /** @var array */
     public $values = [];
 
-    /** @var array */
-    public $cleanValues = [];
-
     /**
      * Set data from array. See method implementation for possible values.
      *
@@ -90,67 +87,9 @@ class Route
         $urlParts = explode('/', $url);
         $this->values = [];
         foreach ($this->parameters as $index => $name) {
-            $value = $urlParts[$index];
-
-            $validValue = $this->checkAndApplyParameterValueType($name, $value);
-            if ($validValue === false) {
-                $this->values = [];
-                break;
-            }
-
-            $this->values[$name] = $validValue;
+            $this->values[$name] = $urlParts[$index];
         }
-        $this->cleanValues();
         return $this->values;
-    }
-
-    /**
-     * For the provided value $name, check the value for validity. This is specifically used for typed
-     * parameters such as {id:int} or {amount:float}.
-     *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return mixed|bool
-     */
-    protected function checkAndApplyParameterValueType($name, $value)
-    {
-        // If there's no : in the name, then it's not typed.
-        if (strpos($name, ':') === false) {
-            return $value;
-        }
-        list(, $type) = explode(":", $name);
-
-        if ($type === "int") {
-            if (is_numeric($value) && (int)$value == $value) {
-                return (int)$value;
-            }
-        } elseif ($type === "float") {
-            if (is_numeric($value) && is_float($value + 0)) {
-                return (float)$value;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Remove the typing from a parameter name.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function removeParameterValueTypeFromName($name)
-    {
-        // If there's no : in the name, then it's not typed.
-        if (strpos($name, ':') === false) {
-            return $name;
-        }
-        list($key) = explode(":", $name);
-
-        // All good, so return just the key
-        return $key;
     }
 
     /**
@@ -255,21 +194,6 @@ class Route
     }
 
     /**
-     * Take the values currently available and remove all types from them.
-     *
-     * @return $this
-     */
-    protected function cleanValues()
-    {
-        foreach ($this->values as $key => $value) {
-            $key = $this->removeParameterValueTypeFromName($key);
-            $this->cleanValues[$key] = $value;
-        }
-        return $this;
-    }
-
-
-    /**
      * Return a value, if it exists.
      *
      * @param string $key
@@ -278,10 +202,10 @@ class Route
      */
     public function getValue($key)
     {
-        if (!isset($this->cleanValues[$key])) {
+        if (!isset($this->values[$key])) {
             return null;
         }
-        return $this->cleanValues[$key];
+        return $this->values[$key];
     }
 
     /**
@@ -291,7 +215,7 @@ class Route
      */
     public function getValues()
     {
-        return $this->cleanValues;
+        return $this->values;
     }
 
     /**

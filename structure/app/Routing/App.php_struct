@@ -22,15 +22,11 @@ class App implements
              * If you add parameters to a URL by adding {param} anywhere, it is REQUIRED. Leaving
              * the parameter off in the requested URL will cause a 404 to be thrown.
              *
-             * Within a URL, you may specify what type a parameter is required to be.
-             *
-             * Valid values: {param:int}, {param:string}, {param:float}
-             *
              * If the value passed is invalid, a 404 is thrown.
              */
             'test-parameters' => [
                 'methods' => ['GET'],
-                'url' => '/test/{id:int}/{name}',
+                'url' => '/test/{id}/{name}',
                 'controller' => \Controller\Home::class,
                 'action' => 'test',
             ],

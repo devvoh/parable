@@ -171,19 +171,4 @@ class ModelTest extends \Parable\Tests\Components\ORM\Base
         $this->model->setTableName('tableName');
         $this->assertSame('tableName', $this->model->getTableName());
     }
-
-    public function testGuessValueType()
-    {
-        $this->assertTrue(is_string($this->model->guessValueType("nope")));
-        $this->assertFalse(is_float($this->model->guessValueType("nope")));
-        $this->assertFalse(is_int($this->model->guessValueType("nope")));
-
-        $this->assertTrue(is_int($this->model->guessValueType("1")));
-        $this->assertFalse(is_float($this->model->guessValueType("1")));
-        $this->assertFalse(is_string($this->model->guessValueType("1")));
-
-        $this->assertTrue(is_float($this->model->guessValueType("1.23")));
-        $this->assertFalse(is_int($this->model->guessValueType("1.23")));
-        $this->assertFalse(is_string($this->model->guessValueType("1.23")));
-    }
 }

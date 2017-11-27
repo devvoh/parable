@@ -170,38 +170,38 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
         // ASC is the default
         $result = $this->repository->getAll();
 
-        $this->assertSame($result[0]->id, 1);
-        $this->assertSame($result[1]->id, 2);
-        $this->assertSame($result[2]->id, 3);
+        $this->assertSame($result[0]->id, "1");
+        $this->assertSame($result[1]->id, "2");
+        $this->assertSame($result[2]->id, "3");
 
         // Go to DESC
         $result = $this->repository->orderBy('id', \Parable\ORM\Query::ORDER_DESC)->getAll();
 
-        $this->assertSame($result[0]->id, 3);
-        $this->assertSame($result[1]->id, 2);
-        $this->assertSame($result[2]->id, 1);
+        $this->assertSame($result[0]->id, "3");
+        $this->assertSame($result[1]->id, "2");
+        $this->assertSame($result[2]->id, "1");
 
         // And back to ASC
         $result = $this->repository->orderBy('id', \Parable\ORM\Query::ORDER_ASC)->getAll();
 
-        $this->assertSame($result[0]->id, 1);
-        $this->assertSame($result[1]->id, 2);
-        $this->assertSame($result[2]->id, 3);
+        $this->assertSame($result[0]->id, "1");
+        $this->assertSame($result[1]->id, "2");
+        $this->assertSame($result[2]->id, "3");
     }
 
     public function testLimitOffset()
     {
         $result = $this->repository->limitOffset(1)->getAll();
 
-        $this->assertSame($result[0]->id, 1);
+        $this->assertSame($result[0]->id, "1");
 
         $result = $this->repository->limitOffset(1, 1)->getAll();
 
-        $this->assertSame($result[0]->id, 2);
+        $this->assertSame($result[0]->id, "2");
 
         $result = $this->repository->limitOffset(1, 2)->getAll();
 
-        $this->assertSame($result[0]->id, 3);
+        $this->assertSame($result[0]->id, "3");
     }
 
     public function testReturnOneAndReturnAll()

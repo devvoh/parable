@@ -29,12 +29,6 @@ class RouterTest extends \Parable\Tests\Base
                 'controller' => \Parable\Tests\TestClasses\Controller::class,
                 'action' => 'complex',
             ],
-            'complextyped' => [
-                'methods' => ['GET'],
-                'url' => '/complextyped/{id:int}/{float:float}',
-                'controller' => \Parable\Tests\TestClasses\Controller::class,
-                'action' => 'complextyped',
-            ],
             'callable' => [
                 'methods' => ['GET'],
                 'url' => '/callable/{parameter}',
@@ -151,31 +145,6 @@ class RouterTest extends \Parable\Tests\Base
         );
     }
 
-    public function testmatchUrlComplexTyped()
-    {
-        $route = $this->router->matchUrl('/complextyped/1/1.45');
-
-        $this->assertNotNull($route);
-
-        $this->assertSame(['GET'], $route->methods);
-        $this->assertSame('/complextyped/{id:int}/{float:float}', $route->url);
-        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->controller);
-        $this->assertSame('complextyped', $route->action);
-
-        $this->assertNull($route->callable);
-        $this->assertNull($route->template);
-
-        $this->assertTrue($route->hasParameters());
-
-        $this->assertSame(
-            [
-                'id'    => 1,
-                'float' => 1.45,
-            ],
-            $route->getValues()
-        );
-    }
-
     public function testmatchUrlCallable()
     {
         $route = $this->router->matchUrl('/callable/stuff');
@@ -204,56 +173,6 @@ class RouterTest extends \Parable\Tests\Base
         $values = $callable(...$parameters);
 
         $this->assertSame('stuff', $values[1]);
-    }
-
-    public function testParameterTypesMatterForInts()
-    {
-        $this->router->addRoute('callable', [
-            'methods' => ['GET'],
-            'url' => '/int/{int:int}',
-            'callable' => function () {
-            },
-        ]);
-
-        // With an int value we're fine
-        $route = $this->router->matchUrl('/int/1');
-
-        $this->assertSame(1, $route->getValue('int'));
-
-        // But with a string value it should fail
-        $route = $this->router->matchUrl('/int/string');
-
-        $this->assertNull($route);
-
-        // Same for float
-        $route = $this->router->matchUrl('/int/1.45');
-
-        $this->assertNull($route);
-    }
-
-    public function testParameterTypesMatterForFloats()
-    {
-        $this->router->addRoute('callable', [
-            'methods' => ['GET'],
-            'url' => '/float/{float:float}',
-            'callable' => function () {
-            },
-        ]);
-
-        // With an float value we're fine
-        $route = $this->router->matchUrl('/float/1.23');
-
-        $this->assertSame(1.23, $route->getValue('float'));
-
-        // With an int value we're fine, because it CAN be represented as a float
-        $route = $this->router->matchUrl('/float/1');
-
-        $this->assertSame(1.0, $route->getValue('float'));
-
-        // But with a string value it should fail
-        $route = $this->router->matchUrl('/float/string');
-
-        $this->assertNull($route);
     }
 
     public function testMatchNonExistingRoute()

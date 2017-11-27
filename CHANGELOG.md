@@ -29,6 +29,8 @@ __Backwards-incompatible Changes__
 - `\Parable\GetSet\InputStream::extractAndSetData()` has been made protected. See above for why you should totally be fine.
 - The interface `\Parable\Log\Writer` has been renamed and moved to `\Parable\Log\Writer\WriterInterface` for clarity and consistency.
 - `\Parable\Log\Writer\Terminal` has been renamed to `\Parable\Log\Writer\Console`, because I don't know what was wrong with me when I chose 'terminal'.
+- `\Parable\Orm\Model::guessValueType()` has been removed. Everything's a string now. Parable shouldn't change types for you. Honestly, when I added a method that started with `guess`, I should've doubted whether it was the right choice in the first place. Oh well.
+- `\Parable\Routing\Route` has lost the ability to use typed params. Too much code for too little gain. If you need typed parameters, I suggest you figure something out for yourself.
 
 __Bugfixes__
 - `\Parable\Console\Output` had a bug where moving the cursors would mess with the functionality of `clearLine()`. Line length is no longer kept track of, but whether or not the line is clearable is a boolean value. Moving the cursor up/down or placing it disables line clearing, writing anything enables it again. When you clear the line, the line gets cleared using the terminal width.
