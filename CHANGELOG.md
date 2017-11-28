@@ -19,6 +19,7 @@ __Changes__
   - `parable.mail.from.email`, the email for the for address.
   - `parable.mail.from.name`, the name for the for address.
 - `\Parable\GetSet\Base` now also has `setResource`, for when you want to switch, or set it using a method rather than overwriting a property.
+- `\Parable\GetSet\Base::get()` now accepts a second parameter `$default` which is the value to return when the requested `$key` is not found.
 - `\Parable\Http\Request` now has `isOptions()` to check for OPTIONS method requests.
 - `\Parable\Http\Response` now has `setHeaders()` so you can add a bunch of headers in one call, `removeHeader($key)` so you can remove a header, and `clearHeaders()` to, y'know, actually, I think you got this.
 - `\Parable\Http\Response::clearContent()` was added, in case you want to just want to call `appendContent()` multiple times rather than one `setContent()` and then those appends.
