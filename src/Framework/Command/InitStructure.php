@@ -98,7 +98,7 @@ class InitStructure extends \Parable\Console\Command
         $this->output->write('.');
         copy(
             $this->path->getDir("{$this->vendor_path}/structure/dynamicReturnTypeMeta.json"),
-            $this->path->getDir("dynamicReturnTypeMeta.json")
+            $this->path->getDir("/dynamicReturnTypeMeta.json")
         );
         $this->output->write('.');
         copy(
