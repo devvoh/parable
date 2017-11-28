@@ -53,7 +53,7 @@ class RouterTest extends \Parable\Tests\Base
         $this->expectExceptionMessage("Methods are required and must be passed as an array.");
         $this->expectException(\Parable\Routing\Exception::class);
 
-        $this->router->addRoute('invalid', ['callable' => function() {
+        $this->router->addRoute('invalid', ['callable' => function () {
         }]);
     }
 
