@@ -78,6 +78,17 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame("This is content.", $this->response->getContent());
     }
 
+    public function testClearContent()
+    {
+        $this->response->setContent("This is content.");
+        $this->assertSame("This is content.", $this->response->getContent());
+
+        $this->response->clearContent();
+        $this->response->appendContent("New!");
+
+        $this->assertSame("New!", $this->response->getContent());
+    }
+
     public function testAppendAndPrependContent()
     {
         $this->response->setContent('yo2');

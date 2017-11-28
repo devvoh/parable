@@ -17,6 +17,7 @@ __Changes__
 - `\Parable\GetSet\Base` now also has `setResource`, for when you want to switch, or set it using a method rather than overwriting a property.
 - `\Parable\Http\Request` now has `isOptions()` to check for OPTIONS method requests.
 - `\Parable\Http\Response` now has `setHeaders()` so you can add a bunch of headers in one call, `removeHeader($key)` so you can remove a header, and `clearHeaders()` to, y'know, actually, I think you got this.
+- `\Parable\Http\Response::clearContent()` was added, in case you want to just want to call `appendContent()` multiple times rather than one `setContent()` and then those appends.
 - `\Parable\Log\Writer\NullLogger` was added, for when you want to log nowhere at all.
 - `\Parable\Mail\Mailer` now obviously also supports setting a Mail Sender. Default is, well, none. That's all up to you to configure. (Hey, psst, `Framework\Mailer` already tries to do that for you!)
 - `\Parable\Routing\Route` now makes sure all methods set on it are uppercase, for more consistent matching.

@@ -254,6 +254,17 @@ class Response
     }
 
     /**
+     * Clear the currently set content.
+     *
+     * @return $this
+     */
+    public function clearContent()
+    {
+        $this->content = null;
+        return $this;
+    }
+
+    /**
      * Start a new output buffer, upping the internal outputBufferLevel.
      *
      * @return $this
