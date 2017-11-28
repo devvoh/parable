@@ -11,7 +11,7 @@ class Config extends \Parable\GetSet\Base
     protected $useLocalResource = true;
 
     /** @var string */
-    protected $mainConfigClass = \Config\App::class;
+    protected $mainConfigClass = '\Config\App';
 
     /** @var \Parable\Filesystem\Path */
     protected $path;

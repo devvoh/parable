@@ -7,6 +7,10 @@ Considering the 0.11.x branch as Release Candidate 1 and the 0.12.x branch as RC
 __Changes__
 - All method doc blocks now have explanatory text, even if it's superfluous, for documentation purposes.
 - `\Parable\Console\App` now supports adding multiple commands in one go, using `addCommands([...])`.
+- `\Parable\Console\Input` has received a massive update that I've wanted to do for ages but never got around to.
+  - `\Parable\Console\Input::getKeyPress()` has been added. It will wait for a single key press and return its value immediately. Special characters like arrow keys, escape, enter, etc, will be returned as a string value accordingly.
+  - `\Parable\Console\Input::enableShowInput()` and its buddy `disable` are now available for you to use. If disabled, hides the user's input as they enter it. `Input` will call the `enable` on destruct to prevent its effects lingering after exiting the script.
+  - `\Parable\Console\Input::enableRequireReturn()` and its buddy `disable` are now available for you to use as well. If disabled, no longer requires an enter before returning input.
 - `\Parable\Console\Output::writeBlockWithTags()` was added, making it possible to write a block with multiple tags.
 - `\Parable\Framework\App` now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
 - `\Parable\Framework\Mailer` now supports setting a different mail sender. Default is, as it was, php's own `mail()`.
@@ -42,6 +46,7 @@ __Backwards-incompatible Changes__
 __Bugfixes__
 - `\Parable\Console\Output` had a bug where moving the cursors would mess with the functionality of `clearLine()`. Line length is no longer kept track of, but whether or not the line is clearable is a boolean value. Moving the cursor up/down or placing it disables line clearing, writing anything enables it again. When you clear the line, the line gets cleared using the terminal width.
 - `\Parable\Filesystem\Path::getDir()` had a bug where if the filename you were trying to get a proper base-dirred path for already existed in the directory the code was run from, it would think it didn't need to and return just the provided path again.
+- `\Parable\Framework\Config` had a bug where a class was referenced that doesn't exist until you've run `parable init-structure`. This has been replaced with a string value instead. Found by @dmvdbrugge. Thanks!
 
 ### 0.12.14
 
