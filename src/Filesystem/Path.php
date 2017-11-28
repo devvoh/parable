@@ -40,7 +40,7 @@ class Path
     public function getDir($directory)
     {
         $directory = str_replace('/', DS, $directory);
-        if (!file_exists($directory)) {
+        if (strpos($directory, $this->getBaseDir()) === false || !file_exists($directory)) {
             $directory = $this->getBaseDir() . DS . ltrim($directory, DS);
         }
         return $directory;

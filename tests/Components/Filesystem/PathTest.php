@@ -25,4 +25,13 @@ class PathTest extends \Parable\Tests\Base
         $this->path->setBaseDir("basedir/");
         $this->assertSame("basedir/stuff", $this->path->getDir("stuff"));
     }
+
+    public function testBaseDirAppliedCorrectlyIfLocalFileExists()
+    {
+        $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
+
+        $expectedPath = $path->getBaseDir() . DS . "PathTest.php";
+
+        $this->assertSame($expectedPath, $path->getDir("PathTest.php"));
+    }
 }
