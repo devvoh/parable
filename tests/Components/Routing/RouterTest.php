@@ -35,7 +35,7 @@ class RouterTest extends \Parable\Tests\Base
                 'callable' => function (\Parable\Routing\Route $route, $parameter) {
                     return [$route, $parameter];
                 },
-                'template' => 'test-file.phtml',
+                'templatePath' => 'test-file.phtml',
             ]
         ]);
     }
@@ -53,15 +53,7 @@ class RouterTest extends \Parable\Tests\Base
         $this->expectExceptionMessage("Methods are required and must be passed as an array.");
         $this->expectException(\Parable\Routing\Exception::class);
 
-        $this->router->addRoute('invalid', ['callable' => 'test']);
-    }
-
-    public function testAddRouteInvalidMethodsThrowsException()
-    {
-        $this->expectExceptionMessage("Methods are required and must be passed as an array.");
-        $this->expectException(\Parable\Routing\Exception::class);
-
-        $this->router->addRoute('invalid', ['methods' => 'GET', 'callable' => 'test']);
+        $this->router->addRoute('invalid', ['callable' => function() {}]);
     }
 
     public function testAddRouteInvalidMethodsAcceptedReturnsNull()
@@ -89,13 +81,13 @@ class RouterTest extends \Parable\Tests\Base
     {
         $route = $this->router->getRouteByName('simple');
 
-        $this->assertSame(['GET'], $route->methods);
-        $this->assertSame('/', $route->url);
-        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->controller);
-        $this->assertSame('simple', $route->action);
+        $this->assertSame(['GET'], $route->getMethods());
+        $this->assertSame('/', $route->getUrl());
+        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->getController());
+        $this->assertSame('simple', $route->getAction());
 
-        $this->assertNull($route->callable);
-        $this->assertNull($route->template);
+        $this->assertNull($route->getCallable());
+        $this->assertNull($route->getTemplatePath());
     }
 
     public function testInvalidGetRouteByNameReturnsNull()
@@ -109,13 +101,13 @@ class RouterTest extends \Parable\Tests\Base
 
         $this->assertNotNull($route);
 
-        $this->assertSame(['GET'], $route->methods);
-        $this->assertSame('/', $route->url);
-        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->controller);
-        $this->assertSame('simple', $route->action);
+        $this->assertSame(['GET'], $route->getMethods());
+        $this->assertSame('/', $route->getUrl());
+        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->getController());
+        $this->assertSame('simple', $route->getAction());
 
-        $this->assertNull($route->callable);
-        $this->assertNull($route->template);
+        $this->assertNull($route->getCallable());
+        $this->assertNull($route->getTemplatePath());
 
         $this->assertFalse($route->hasParameters());
     }
@@ -126,13 +118,13 @@ class RouterTest extends \Parable\Tests\Base
 
         $this->assertNotNull($route);
 
-        $this->assertSame(['GET'], $route->methods);
-        $this->assertSame('/complex/{id}/{name}', $route->url);
-        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->controller);
-        $this->assertSame('complex', $route->action);
+        $this->assertSame(['GET'], $route->getMethods());
+        $this->assertSame('/complex/{id}/{name}', $route->getUrl());
+        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->getController());
+        $this->assertSame('complex', $route->getAction());
 
-        $this->assertNull($route->callable);
-        $this->assertNull($route->template);
+        $this->assertNull($route->getCallable());
+        $this->assertNull($route->getTemplatePath());
 
         $this->assertTrue($route->hasParameters());
 
@@ -151,9 +143,9 @@ class RouterTest extends \Parable\Tests\Base
 
         $this->assertNotNull($route);
 
-        $this->assertSame(['GET'], $route->methods);
-        $this->assertSame('/callable/{parameter}', $route->url);
-        $this->assertSame('test-file.phtml', $route->template);
+        $this->assertSame(['GET'], $route->getMethods());
+        $this->assertSame('/callable/{parameter}', $route->getUrl());
+        $this->assertSame('test-file.phtml', $route->getTemplatePath());
         $this->assertSame(
             [
                 'parameter' => 'stuff',
@@ -161,9 +153,9 @@ class RouterTest extends \Parable\Tests\Base
             $route->getValues()
         );
 
-        $this->assertNotNull($route->callable);
+        $this->assertNotNull($route->getCallable());
 
-        $callable = $route->callable;
+        $callable = $route->getCallable();
 
         $parameters = [$route];
         foreach ($route->getValues() as $value) {
@@ -213,5 +205,14 @@ class RouterTest extends \Parable\Tests\Base
         $this->assertInstanceOf(\Parable\Routing\Route::class, $route);
 
         $this->assertSame('/', $route->buildUrlWithParameters([]));
+    }
+
+    public function testRouteBuildUrlWithParameters()
+    {
+        $route = $this->router->matchUrl('/callable/test');
+
+        $this->assertSame("test", $route->getValue("parameter"));
+
+        $this->assertSame("/callable/test", $route->buildUrlWithParameters(["parameter" => "test"]));
     }
 }

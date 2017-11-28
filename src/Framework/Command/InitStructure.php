@@ -65,7 +65,6 @@ class InitStructure extends \Parable\Console\Command
             }
         }
 
-        /** @var \Parable\Filesystem\Path $path */
         $this->output->newline();
         $this->output->write('Creating folder structure: ');
 

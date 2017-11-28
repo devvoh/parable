@@ -18,7 +18,7 @@ class Router
     public function addRoute($name, array $routeArray)
     {
         $route = new \Parable\Routing\Route();
-        $route->setData($routeArray);
+        $route->setDataFromArray($routeArray);
         $this->routes[$name] = $route;
         return $this;
     }

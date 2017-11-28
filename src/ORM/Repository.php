@@ -313,7 +313,6 @@ class Repository
     {
         $model = \Parable\DI\Container::create($modelName);
 
-        /** @var \Parable\ORM\Repository $repository */
         $repository = \Parable\DI\Container::create(static::class);
 
         $repository->setModel($model);

@@ -5,56 +5,231 @@ namespace Parable\Routing;
 class Route
 {
     /** @var array */
-    public $methods = [];
+    protected $methods = [];
 
     /** @var null|string */
-    public $name;
+    protected $name;
 
     /** @var null|string */
-    public $url;
+    protected $url;
 
     /** @var null|string */
-    public $controller;
+    protected $controller;
 
     /** @var null|string */
-    public $action;
+    protected $action;
 
     /** @var null|callable */
-    public $callable;
+    protected $callable;
 
     /** @var null|string */
-    public $template;
+    protected $templatePath;
 
     /** @var array */
-    public $parameters = [];
+    protected $parameters = [];
 
     /** @var array */
-    public $values = [];
+    protected $values = [];
 
     /**
-     * Set data from array. See method implementation for possible values.
+     * Set data from array. Can only set values that have a corresponding setProperty method.
      *
      * @param array $data
      *
      * @throws \Parable\Routing\Exception
      */
-    public function setData(array $data)
+    public function setDataFromArray(array $data)
     {
-        $this->methods    = isset($data['methods'])    ? $data['methods']    : [];
-        $this->url        = isset($data['url'])        ? $data['url']        : null;
-        $this->controller = isset($data['controller']) ? $data['controller'] : null;
-        $this->action     = isset($data['action'])     ? $data['action']     : null;
-        $this->callable   = isset($data['callable'])   ? $data['callable']   : null;
-        $this->template   = isset($data['template'])   ? $data['template']   : null;
+        foreach ($data as $property => $value) {
+            $method = 'set' . ucfirst($property);
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            } else {
+                throw new \Parable\Routing\Exception(
+                    "Tried to set non-existing property '{$property}' with value '{$value}' on Route."
+                );
+            }
+        }
 
         if (!$this->controller && !$this->action && !$this->callable) {
             throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
         }
-        if (empty($this->methods) || !is_array($data['methods'])) {
+        if (empty($this->methods)) {
             throw new \Parable\Routing\Exception('Methods are required and must be passed as an array.');
         }
 
         $this->parseUrlParameters();
+    }
+
+    /**
+     * Set the methods accepted by this Route (POST, GET, PUT, etc.) and make sure they're uppercase.
+     *
+     * @param stringp[ $methods
+     *
+     * @return $this
+     */
+    public function setMethods(array $methods)
+    {
+        foreach ($methods as &$method) {
+            $method = strtoupper($method);
+        }
+        $this->methods = $methods;
+        return $this;
+    }
+
+    /**
+     * Return the methods accepted by this Route
+     *
+     * @return array
+     */
+    public function getMethods()
+    {
+        return $this->methods;
+    }
+
+    /**
+     * Set the url this route is matched on.
+     *
+     * @param string $url
+     *
+     * @return $this
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    /**
+     * Return the url this route is matched on.
+     *
+     * @return null|string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set the controller name for this Route.
+     *
+     * @param string $controller
+     *
+     * @return $this
+     */
+    public function setController($controller)
+    {
+        $this->controller = $controller;
+        return $this;
+    }
+
+    /**
+     * Return the controller name for this Route.
+     *
+     * @return null|string
+     */
+    public function getController()
+    {
+        return $this->controller;
+    }
+
+    /**
+     * Set the action for this Route.
+     *
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+        return $this;
+    }
+
+    /**
+     * Return the action for this Route.
+     *
+     * @return null|string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * Set the callable for this Route.
+     *
+     * @param callable $callable
+     *
+     * @return $this
+     */
+    public function setCallable(callable $callable)
+    {
+        $this->callable = $callable;
+        return $this;
+    }
+
+    /**
+     * Return the callable for this Route.
+     *
+     * @return callable|null
+     */
+    public function getCallable()
+    {
+        return $this->callable;
+    }
+
+    /**
+     * Set the template path for this Route.
+     *
+     * @param string $templatePath
+     *
+     * @return $this
+     */
+    public function setTemplatePath($templatePath)
+    {
+        $this->templatePath = $templatePath;
+        return $this;
+    }
+
+    /**
+     * Return the template path for this Route.
+     *
+     * @return mixed
+     */
+    public function getTemplatePath()
+    {
+        return $this->templatePath;
+    }
+
+    /**
+     * Return whether the Route has a controller AND an action set.
+     *
+     * @return bool
+     */
+    public function hasControllerAndAction()
+    {
+        return (bool)$this->getController() && (bool)$this->getAction();
+    }
+
+    /**
+     * Return whether the Route has a callable set.
+     *
+     * @return bool
+     */
+    public function hasCallable()
+    {
+        return (bool)$this->getCallable();
+    }
+
+    /**
+     * Return whether the Route has a template path set.
+     *
+     * @return bool
+     */
+    public function hasTemplatePath()
+    {
+        return (bool)$this->getTemplatePath();
     }
 
     /**
@@ -87,7 +262,10 @@ class Route
         $urlParts = explode('/', $url);
         $this->values = [];
         foreach ($this->parameters as $index => $name) {
-            $this->values[$name] = $urlParts[$index];
+            $value = trim($urlParts[$index]);
+            if (!empty($value)) {
+                $this->values[$name] = $value;
+            }
         }
         return $this->values;
     }
@@ -141,8 +319,7 @@ class Route
      */
     public function matchWithParameters($url)
     {
-        if (!$this->parameters
-            || !$this->isAcceptedRequestMethod()
+        if (!$this->isAcceptedRequestMethod()
             || !$this->isPartCountSame($url)
             || !$this->hasParameters()
         ) {
@@ -150,15 +327,9 @@ class Route
         }
 
         $this->extractParameterValues($url);
-        if (!$this->values) {
-            return false;
-        }
         $correctedUrl = $this->injectParameters($url);
 
-        if ($this->matchDirectly($correctedUrl)) {
-            return true;
-        }
-        return false;
+        return $this->matchDirectly($correctedUrl);
     }
 
     /**
@@ -168,7 +339,7 @@ class Route
      */
     public function isAcceptedRequestMethod()
     {
-        return in_array($_SERVER['REQUEST_METHOD'], $this->methods);
+        return in_array($_SERVER['REQUEST_METHOD'], $this->getMethods());
     }
 
     /**

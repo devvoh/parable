@@ -14,12 +14,9 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
     {
         parent::setUp();
 
-        /** @var \Parable\ORM\Model $model */
         $this->model = \Parable\DI\Container::create(\Parable\Tests\TestClasses\Model::class);
 
-        /** @var \Parable\ORM\Repository $repository */
         $this->repository = \Parable\DI\Container::create(\Parable\ORM\Repository::class);
-
         $this->repository->setModel($this->model);
     }
 

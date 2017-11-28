@@ -19,6 +19,8 @@ __Changes__
 - `\Parable\Http\Response` now has `setHeaders()` so you can add a bunch of headers in one call, `removeHeader($key)` so you can remove a header, and `clearHeaders()` to, y'know, actually, I think you got this.
 - `\Parable\Log\Writer\NullLogger` was added, for when you want to log nowhere at all.
 - `\Parable\Mail\Mailer` now obviously also supports setting a Mail Sender. Default is, well, none. That's all up to you to configure. (Hey, psst, `Framework\Mailer` already tries to do that for you!)
+- `\Parable\Routing\Route` now makes sure all methods set on it are uppercase, for more consistent matching.
+- `dynamicReturnTypeMeta.json` has been added, removing the need for `/** @var \Class $var */` references in the code. This works with the dynamic return type plugin in PhpStorm. Removed the few existing references that were there.
 
 __Backwards-incompatible Changes__
 - `\Parable\Console\App::setDefaultCommand()` now takes a command instance rather than the name, as the name would suggest. To set the default command by name, use `setDefaultCommandByName()` instead.
@@ -26,11 +28,13 @@ __Backwards-incompatible Changes__
 - `\Parable\Console\Parameter::setOptions()` was renamed to `setCommandOptions()`, because the distinction is important.
 - `\Parable\Console\Output::writeError/writeInfo/writeSuccess()` are now suffixed with `Block`, so `writeInfoBlock()`, etc.
 - `\Parable\DI\Container::cleanName()` has been made protected. This shouldn't impact you, as you shouldn't've been using it in the first place.
+- `\Parable\Framework\Dispatcher` no longer passes the Route to actions or callables as the first parameter. All parameters passed will be from the url params, in the same order as defined.
 - `\Parable\GetSet\InputStream::extractAndSetData()` has been made protected. See above for why you should totally be fine.
 - The interface `\Parable\Log\Writer` has been renamed and moved to `\Parable\Log\Writer\WriterInterface` for clarity and consistency.
 - `\Parable\Log\Writer\Terminal` has been renamed to `\Parable\Log\Writer\Console`, because I don't know what was wrong with me when I chose 'terminal'.
 - `\Parable\Orm\Model::guessValueType()` has been removed. Everything's a string now. Parable shouldn't change types for you. Honestly, when I added a method that started with `guess`, I should've doubted whether it was the right choice in the first place. Oh well.
 - `\Parable\Routing\Route` has lost the ability to use typed params. Too much code for too little gain. If you need typed parameters, I suggest you figure something out for yourself.
+- `\Parable\Routing\Route` no longer supports `template` for the template path, but the more correctly named `templatePath` instead. Because of this, it now checks more strictly whether valid properties are set through the Routing array. `setDataFromArray()` attempts to call setters named like the properties. Any that are not available with a setter will throw an Exception. All properties are now also `protected`.
 
 __Bugfixes__
 - `\Parable\Console\Output` had a bug where moving the cursors would mess with the functionality of `clearLine()`. Line length is no longer kept track of, but whether or not the line is clearable is a boolean value. Moving the cursor up/down or placing it disables line clearing, writing anything enables it again. When you clear the line, the line gets cleared using the terminal width.

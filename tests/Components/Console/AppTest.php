@@ -129,7 +129,6 @@ class AppTest extends \Parable\Tests\Base
 
     public function testPassCommandOnCommandLineRunsAppropriateCommand()
     {
-        /** @var \Parable\Console\App $app */
         $app = new \Parable\Console\App(new \Parable\Console\Output(), new \Parable\Console\Input(), $this->parameter);
         $app->addCommand($this->command1);
         $app->addCommand($this->command2);
@@ -155,7 +154,6 @@ class AppTest extends \Parable\Tests\Base
         // Same as calling 'php test.php test2'
         $_SERVER["argv"] = ['./test.php', 'test2'];
 
-        /** @var \Parable\Console\App $app */
         $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
         $app->addCommand($this->command1);
         $app->addCommand($this->command2);

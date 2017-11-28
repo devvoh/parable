@@ -29,7 +29,6 @@ $autoloader->register();
 /*
  * Set the BASEDIR on Path
  */
-/** @var \Parable\Filesystem\Path $path */
 $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
 $path->setBaseDir(BASEDIR);
 

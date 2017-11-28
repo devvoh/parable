@@ -257,7 +257,6 @@ class Query
         $value = null,
         $shouldCompareFields = true
     ) {
-        /** @var \Parable\ORM\Query\Condition $condition */
         $condition = new \Parable\ORM\Query\Condition();
         $condition
             ->setTableName($this->getTableName())

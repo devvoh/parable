@@ -97,14 +97,12 @@ class Container
             throw new \Parable\DI\Exception($message);
         }
 
-        /** @var \ReflectionMethod $construct */
         $construct = $reflection->getConstructor();
 
         if (!$construct) {
             return new $className();
         }
 
-        /** @var \ReflectionParameter[] $parameters */
         $parameters = $construct->getParameters();
 
         $dependencies = [];

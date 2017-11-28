@@ -152,7 +152,6 @@ class App
         $this->hook->trigger(self::HOOK_LOAD_ROUTES_BEFORE);
         if ($this->config->get("parable.routes")) {
             foreach ($this->config->get("parable.routes") as $routesClass) {
-                /** @var \Parable\Framework\Interfaces\Routing $routes */
                 $routes = \Parable\DI\Container::get($routesClass);
 
                 if (!($routes instanceof \Parable\Framework\Interfaces\Routing)) {

@@ -90,7 +90,6 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
 
     public function testThrowsExceptionWhenQuotingValueWithoutInstance()
     {
-        /** @var \Parable\ORM\Database $database */
         $database = \Parable\DI\Container::create(\Parable\ORM\Database::class);
         $this->assertNull($database->getInstance());
 
@@ -101,7 +100,6 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
 
     public function testThrowsExceptionWhenRunningQueryWithoutInstance()
     {
-        /** @var \Parable\ORM\Database $database */
         $database = \Parable\DI\Container::create(\Parable\ORM\Database::class);
         $this->assertNull($database->getInstance());
 
@@ -134,7 +132,6 @@ class DatabaseTest extends \Parable\Tests\Components\ORM\Base
 
     public function testGetInstanceWithMySQL()
     {
-        /** @var \Parable\ORM\Database $database */
         $database = $this->createPartialMock(\Parable\ORM\Database::class, ['createPDOMySQL']);
 
         $database

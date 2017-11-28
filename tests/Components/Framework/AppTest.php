@@ -46,7 +46,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             'url' => '/',
             'controller' => \Parable\Tests\TestClasses\Controller::class,
             'action' => 'index',
-            'template' => $this->path->getDir('tests/TestTemplates/index.phtml'),
+            'templatePath' => $this->path->getDir('tests/TestTemplates/index.phtml'),
         ]);
 
         $this->app = $this->createApp();
@@ -102,7 +102,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             [
                 'methods' => ['GET'],
                 'url' => '/simple',
-                'callable' => function (\Parable\Routing\Route $route) {
+                'callable' => function () {
                     echo "callable route found";
                 }
             ]
@@ -125,10 +125,10 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             [
                 'methods' => ['GET'],
                 'url' => '/template',
-                'callable' => function (\Parable\Routing\Route $route) {
+                'callable' => function () {
                     echo "Hello";
                 },
-                'template' => $path->getDir('tests/TestTemplates/app_test_template.phtml'),
+                'templatePath' => $path->getDir('tests/TestTemplates/app_test_template.phtml'),
             ]
         );
 
@@ -163,7 +163,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             [
                 'methods' => ['GET'],
                 'url' => '/valued/{id}',
-                'callable' => function (\Parable\Routing\Route $route, $id) {
+                'callable' => function ($id) {
                     echo "callable route found with id: {$id}";
                 }
             ]
@@ -208,7 +208,6 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
      */
     protected function createApp($mainConfigClassName = \Parable\Tests\TestClasses\Config\Test::class)
     {
-        /** @var \Parable\Framework\Config|\PHPUnit_Framework_MockObject_MockObject $config */
         $config = new \Parable\Framework\Config($this->path);
         $config->setMainConfigClassName($mainConfigClassName);
         $config->load();
