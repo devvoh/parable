@@ -49,7 +49,7 @@ class Input
         $this->disableRequireReturn();
 
         $input = null;
-        while(1) {
+        while (1) {
             $input = fread(STDIN, 10000);
             break;
         }
