@@ -20,6 +20,7 @@ __Changes__
 - `\Parable\Log\Writer\NullLogger` was added, for when you want to log nowhere at all.
 - `\Parable\Mail\Mailer` now obviously also supports setting a Mail Sender. Default is, well, none. That's all up to you to configure. (Hey, psst, `Framework\Mailer` already tries to do that for you!)
 - `\Parable\Routing\Route` now makes sure all methods set on it are uppercase, for more consistent matching.
+- `\Parable\Routing\Router` now has a `getRoutes()` method that returns all set routes. In case you, err, need that. 
 - `dynamicReturnTypeMeta.json` has been added, removing the need for `/** @var \Class $var */` references in the code. This works with the dynamic return type plugin in PhpStorm. Removed the few existing references that were there.
 
 __Backwards-incompatible Changes__
@@ -35,6 +36,7 @@ __Backwards-incompatible Changes__
 - `\Parable\Orm\Model::guessValueType()` has been removed. Everything's a string now. Parable shouldn't change types for you. Honestly, when I added a method that started with `guess`, I should've doubted whether it was the right choice in the first place. Oh well.
 - `\Parable\Routing\Route` has lost the ability to use typed params. Too much code for too little gain. If you need typed parameters, I suggest you figure something out for yourself.
 - `\Parable\Routing\Route` no longer supports `template` for the template path, but the more correctly named `templatePath` instead. Because of this, it now checks more strictly whether valid properties are set through the Routing array. `setDataFromArray()` attempts to call setters named like the properties. Any that are not available with a setter will throw an Exception. All properties are now also `protected`.
+- `\Parable\Routing\Router` now also supports adding a completely set-up `Route` object directly (or in an array), without having to pass them as arrays, through `addRoute()` and `addRoutes()`. These methods already existed, but those are now renamed to `addRouteFromArray()` and `addRoutesFromArray()`.
 
 __Bugfixes__
 - `\Parable\Console\Output` had a bug where moving the cursors would mess with the functionality of `clearLine()`. Line length is no longer kept track of, but whether or not the line is clearable is a boolean value. Moving the cursor up/down or placing it disables line clearing, writing anything enables it again. When you clear the line, the line gets cleared using the terminal width.

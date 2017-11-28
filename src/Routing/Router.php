@@ -8,25 +8,26 @@ class Router
     protected $routes = [];
 
     /**
-     * Add a route to the routes list.
+     * Add a Route object to the routes list as $name.
      *
-     * @param string $name
-     * @param array $routeArray
+     * @param string                 $name
+     * @param \Parable\Routing\Route $route
      *
      * @return $this
      */
-    public function addRoute($name, array $routeArray)
+    public function addRoute($name, \Parable\Routing\Route $route)
     {
-        $route = new \Parable\Routing\Route();
-        $route->setDataFromArray($routeArray);
+        // Call checkValidProperties because invalid Routes have no place here.
+        $route->checkValidProperties();
+
         $this->routes[$name] = $route;
         return $this;
     }
 
     /**
-     * Add an array of routes to the router.
+     * Add an array of routes to the routes list, where key is the route name.
      *
-     * @param array $routes
+     * @param \Parable\Routing\Route[] $routes
      *
      * @return $this
      */
@@ -36,6 +37,47 @@ class Router
             $this->addRoute($name, $route);
         }
         return $this;
+    }
+
+    /**
+     * Add a route to the routes list from array data.
+     *
+     * @param string $name
+     * @param array $routeArray
+     *
+     * @return $this
+     */
+    public function addRouteFromArray($name, array $routeArray)
+    {
+        $route = new \Parable\Routing\Route();
+        $route->setDataFromArray($routeArray);
+        $this->addRoute($name, $route);
+        return $this;
+    }
+
+    /**
+     * Add an array of routes defined by array data to the router.
+     *
+     * @param array $routes
+     *
+     * @return $this
+     */
+    public function addRoutesFromArray(array $routes)
+    {
+        foreach ($routes as $name => $route) {
+            $this->addRouteFromArray($name, $route);
+        }
+        return $this;
+    }
+
+    /**
+     * Return all routes currently set.
+     *
+     * @return \Parable\Routing\Route[]
+     */
+    public function getRoutes()
+    {
+        return $this->routes;
     }
 
     /**

@@ -160,7 +160,7 @@ class App
                     );
                 }
 
-                $this->router->addRoutes($routes->get());
+                $this->router->addRoutesFromArray($routes->get());
             }
         } else {
             $this->hook->trigger(self::HOOK_LOAD_ROUTES_NO_ROUTES_FOUND);

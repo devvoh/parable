@@ -22,7 +22,7 @@ class ToolkitTest extends \Parable\Tests\Components\Framework\Base
         \Parable\DI\Container::store($this->responseMock, \Parable\Http\Response::class);
 
         $this->router = \Parable\DI\Container::get(\Parable\Routing\Router::class);
-        $this->router->addRoute('simple', [
+        $this->router->addRouteFromArray('simple', [
             'methods' => ['GET'],
             'url' => '/',
             'controller' => \Parable\Tests\TestClasses\Controller::class,

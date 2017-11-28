@@ -41,7 +41,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         \Parable\DI\Container::store($this->mockSession, \Parable\GetSet\Session::class);
 
         $this->router = \Parable\DI\Container::get(\Parable\Routing\Router::class);
-        $this->router->addRoute('index', [
+        $this->router->addRouteFromArray('index', [
             'methods' => ['GET'],
             'url' => '/',
             'controller' => \Parable\Tests\TestClasses\Controller::class,
@@ -97,7 +97,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     public function testAppRunWithSimpleUrlWorks()
     {
         $_GET['url'] = '/simple';
-        $this->router->addRoute(
+        $this->router->addRouteFromArray(
             'simple',
             [
                 'methods' => ['GET'],
@@ -120,7 +120,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
 
         $_GET['url'] = '/template';
-        $this->router->addRoute(
+        $this->router->addRouteFromArray(
             'template',
             [
                 'methods' => ['GET'],
@@ -144,7 +144,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->expectException(\Parable\Routing\Exception::class);
         $this->expectExceptionMessage("Either a controller/action combination or callable is required.");
 
-        $this->router->addRoute(
+        $this->router->addRouteFromArray(
             'simple',
             [
                 'methods' => ['GET'],
@@ -158,7 +158,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     public function testAppRunWithValuedUrlWorks()
     {
         $_GET['url'] = '/valued/985';
-        $this->router->addRoute(
+        $this->router->addRouteFromArray(
             'valued',
             [
                 'methods' => ['GET'],
@@ -181,7 +181,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->expectException(\Parable\Routing\Exception::class);
         $this->expectExceptionMessage("Either a controller/action combination or callable is required.");
 
-        $this->router->addRoute('simple', [
+        $this->router->addRouteFromArray('simple', [
             'methods' => ['GET'],
             'url' => '/',
         ]);

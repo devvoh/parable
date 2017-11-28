@@ -51,13 +51,7 @@ class Route
             }
         }
 
-        if (!$this->controller && !$this->action && !$this->callable) {
-            throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
-        }
-        if (empty($this->methods)) {
-            throw new \Parable\Routing\Exception('Methods are required and must be passed as an array.');
-        }
-
+        $this->checkValidProperties();
         $this->parseUrlParameters();
     }
 
@@ -200,6 +194,21 @@ class Route
     public function getTemplatePath()
     {
         return $this->templatePath;
+    }
+
+    /**
+     * Check whether a valid set of properties is set.
+     *
+     * @throws \Parable\Routing\Exception
+     */
+    public function checkValidProperties()
+    {
+        if (!$this->controller && !$this->action && !$this->callable) {
+            throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
+        }
+        if (empty($this->methods)) {
+            throw new \Parable\Routing\Exception('Methods are required and must be passed as an array.');
+        }
     }
 
     /**

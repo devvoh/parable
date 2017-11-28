@@ -16,7 +16,7 @@ class RouterTest extends \Parable\Tests\Base
 
         $this->router = \Parable\DI\Container::create(\Parable\Routing\Router::class);
 
-        $this->router->addRoutes([
+        $this->router->addRoutesFromArray([
             'simple' => [
                 'methods' => ['GET'],
                 'url' => '/',
@@ -45,7 +45,7 @@ class RouterTest extends \Parable\Tests\Base
         $this->expectExceptionMessage("Either a controller/action combination or callable is required.");
         $this->expectException(\Parable\Routing\Exception::class);
 
-        $this->router->addRoute('invalid', []);
+        $this->router->addRouteFromArray('invalid', []);
     }
 
     public function testAddRouteNoMethodsThrowsException()
@@ -53,14 +53,14 @@ class RouterTest extends \Parable\Tests\Base
         $this->expectExceptionMessage("Methods are required and must be passed as an array.");
         $this->expectException(\Parable\Routing\Exception::class);
 
-        $this->router->addRoute('invalid', ['callable' => function () {
+        $this->router->addRouteFromArray('invalid', ['callable' => function () {
         }]);
     }
 
     public function testAddRouteInvalidMethodsAcceptedReturnsNull()
     {
         $_GET['url'] = '/easy';
-        $this->router->addRoute('callable', [
+        $this->router->addRouteFromArray('callable', [
             'methods' => ['GET'],
             'url' => '/easy',
             'callable' => function () {
@@ -69,7 +69,7 @@ class RouterTest extends \Parable\Tests\Base
         $this->assertInstanceOf(\Parable\Routing\Route::class, $this->router->matchUrl('/easy'));
 
         // Now re-add as a POST-only route
-        $this->router->addRoute('callable', [
+        $this->router->addRouteFromArray('callable', [
             'methods' => ['POST'],
             'url' => '/easy',
             'callable' => function () {
@@ -215,5 +215,78 @@ class RouterTest extends \Parable\Tests\Base
         $this->assertSame("test", $route->getValue("parameter"));
 
         $this->assertSame("/callable/test", $route->buildUrlWithParameters(["parameter" => "test"]));
+    }
+
+    public function testGetRoutesReturnsCorrectNumberOfRoutes()
+    {
+        $this->assertCount(3, $this->router->getRoutes());
+    }
+
+    public function testAddRouteDirectly()
+    {
+        $router = \Parable\DI\Container::create(\Parable\Routing\Router::class);
+
+        $this->assertCount(0, $router->getRoutes());
+
+        $route = new \Parable\Routing\Route();
+        $route->setDataFromArray([
+            "methods"  => ["get"],
+            "callable" => function () {
+                return "test";
+            },
+        ]);
+        $router->addRoute("test", $route);
+
+        $this->assertCount(1, $router->getRoutes());
+    }
+
+    public function testAddMultipleRoutesDirectly()
+    {
+        $router = \Parable\DI\Container::create(\Parable\Routing\Router::class);
+
+        $this->assertCount(0, $router->getRoutes());
+
+        $route1 = new \Parable\Routing\Route();
+        $route1->setDataFromArray([
+            "methods"  => ["get"],
+            "callable" => function () {
+                return "test";
+            },
+        ]);
+
+        $route2 = clone $route1;
+
+        $router->addRoutes([
+            "route1" => $route1,
+            "route2" => $route2,
+        ]);
+
+        $this->assertCount(2, $router->getRoutes());
+    }
+
+    public function testAddRouteDirectlyThrowsExceptionOnInvalidRoutePropertiesWithoutMethods()
+    {
+        $this->expectException(\Parable\Routing\Exception::class);
+        $this->expectExceptionMessage("Methods are required and must be passed as an array.");
+
+        $route = new \Parable\Routing\Route();
+        $route->setDataFromArray([
+            "callable" => function () {
+                return "test";
+            },
+        ]);
+        $this->router->addRoute("test", $route);
+    }
+
+    public function testAddRouteDirectlyThrowsExceptionOnInvalidRoutePropertiesWithoutControllerActionCallable()
+    {
+        $this->expectException(\Parable\Routing\Exception::class);
+        $this->expectExceptionMessage("Either a controller/action combination or callable is required.");
+
+        $route = new \Parable\Routing\Route();
+        $route->setDataFromArray([
+            "methods" => ["get"],
+        ]);
+        $this->router->addRoute("test", $route);
     }
 }
