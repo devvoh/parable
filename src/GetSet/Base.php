@@ -53,22 +53,23 @@ abstract class Base
     }
 
     /**
-     * Return specific value by key if resource set.
+     * Return specific value by key if resource set. If not found, return default.
      *
-     * $getSet->get("one.two.three", "value") would return $resource["one"]["two"]["three"];
+     * $getSet->get("one.two.three", "value") would return $resource["one"]["two"]["three"] or "value";
      *
-     * @param string $key
+     * @param string     $key
+     * @param mixed|null $default
      *
      * @return mixed|null
      */
-    public function get($key)
+    public function get($key, $default = null)
     {
         $resource = $this->getAll();
 
         $keys = explode(".", $key);
         foreach ($keys as $key) {
             if (!isset($resource[$key])) {
-                $resource = null;
+                $resource = $default;
                 break;
             }
             $resource = &$resource[$key];
