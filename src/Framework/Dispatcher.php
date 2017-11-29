@@ -19,6 +19,9 @@ class Dispatcher
     /** @var \Parable\Http\Response */
     protected $response;
 
+    /** @var \Parable\Routing\Route|null */
+    protected $dispatchedRoute;
+
     public function __construct(
         \Parable\Event\Hook $hook,
         \Parable\Filesystem\Path $path,
@@ -40,6 +43,8 @@ class Dispatcher
      */
     public function dispatch(\Parable\Routing\Route $route)
     {
+        $this->dispatchedRoute = $route;
+
         $this->hook->trigger(self::HOOK_DISPATCH_BEFORE, $route);
         $controller = null;
 
@@ -92,5 +97,15 @@ class Dispatcher
 
         $this->hook->trigger(self::HOOK_DISPATCH_AFTER, $route);
         return $this;
+    }
+
+    /**
+     * Return the route we've dispatched, if any.
+     *
+     * @return \Parable\Routing\Route|null
+     */
+    public function getDispatchedRoute()
+    {
+        return $this->dispatchedRoute;
     }
 }

@@ -16,6 +16,7 @@ __Changes__
   - `\Parable\Console\Output::getTerminalWidth()` will return the columns available in the current terminal window. `getTerminalHeight()` will return the lines available.
   - `\parable\Console\Output::isInteractiveShell()` will return whether the script is running in an interactive terminal session or not.
 - `\Parable\Framework\App` now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
+- `\Parable\Framework\Dispatcher` can now return the route it dispatched by calling `getDispatchedRoute()`.
 - `\Parable\Framework\Mailer` now supports setting a different mail sender. Default is, as it was, php's own `mail()`.
 - `\Parable\Framework\Mailer` now can act on three config values:
   - `parable.mail.sender`, which should be the class name of the `SenderInterface` implementation you want to use.

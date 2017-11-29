@@ -78,4 +78,24 @@ class DispatcherTest extends \Parable\Tests\Components\Framework\Base
         );
         $this->assertSame("stuff from the template", $this->response->getContent());
     }
+
+    public function testGetRouteReturnsNullIfNothingDispatched()
+    {
+        $this->assertNull($this->dispatcher->getDispatchedRoute());
+    }
+
+    public function testGetRouteReturnsRouteIfRouteDispatched()
+    {
+        $route = new \Parable\Routing\Route();
+        $route->setDataFromArray([
+            'methods' => ['GET'],
+            'url' => '/',
+            'controller' => \Parable\Tests\TestClasses\Controller::class,
+            'action' => 'index',
+        ]);
+
+        $this->dispatcher->dispatch($route);
+
+        $this->assertSame($route, $this->dispatcher->getDispatchedRoute());
+    }
 }
