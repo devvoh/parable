@@ -76,8 +76,6 @@ class Input
             $specialKey = array_search(urlencode($input), $this->specialKeys);
         }
 
-        var_dump(urlencode($input));
-
         return $specialKey ? $specialKey : null;
     }
 
