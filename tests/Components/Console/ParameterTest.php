@@ -220,16 +220,22 @@ class ParameterTest extends \Parable\Tests\Base
             'argument2 is a string',
             '--option1',
             'value1',
-            'argument3!'
+            'argument3!',
+            '--option2=value2',
+            'argument4',
+            'argument5',
         ]);
 
         $this->parameter->setCommandOptions([
             'option1' => ['name' => 'option1'],
+            'option2' => ['name' => 'option2'],
         ]);
         $this->parameter->setCommandArguments([
             ['name' => 'arg1', 'required' => true],
             ['name' => 'arg2', 'required' => false],
             ['name' => 'arg3', 'required' => false],
+            ['name' => 'arg4', 'required' => false],
+            ['name' => 'arg5', 'required' => false],
         ]);
 
         $this->parameter->checkOptions();
@@ -238,6 +244,7 @@ class ParameterTest extends \Parable\Tests\Base
         $this->assertSame(
             [
                 'option1' => 'value1',
+                'option2' => 'value2',
             ],
             $this->parameter->getOptions()
         );
@@ -246,6 +253,8 @@ class ParameterTest extends \Parable\Tests\Base
                 'arg1' => 'argument1',
                 'arg2' => 'argument2 is a string',
                 'arg3' => 'argument3!',
+                'arg4' => 'argument4',
+                'arg5' => 'argument5',
             ],
             $this->parameter->getArguments()
         );
