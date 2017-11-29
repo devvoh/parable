@@ -15,7 +15,7 @@ class OutputTest extends \Parable\Tests\Base
         parent::setUp();
 
         // We mock out parseTags, because it adds too many escape codes. We'll test parseTags concretely later.
-        $this->output = $this->createPartialMock(\Parable\Console\Output::class, ['parseTags']);
+        $this->output = $this->createPartialMock(\Parable\Console\Output::class, ['parseTags', 'isInteractiveShell']);
 
         $this->output
             ->method('parseTags')
@@ -23,6 +23,12 @@ class OutputTest extends \Parable\Tests\Base
             ->willReturnCallback(function ($string) {
                 return $string . $this->defaultTag;
             });
+
+        // Make sure Output always thinks it's not in an interactive shell
+        $this->output
+            ->method('isInteractiveShell')
+            ->withAnyParameters()
+            ->willReturn(false);
     }
 
     /**
@@ -305,5 +311,17 @@ class OutputTest extends \Parable\Tests\Base
             $this->addTag("\e[0;31m\e[47mred on lightgray", 3),
             $output->parseTags('<red><lightgray_bg>red on lightgray</lightgray_bg></red>')
         );
+    }
+
+    public function testGetTerminalWidth()
+    {
+        // Since Output::isInteractiveShell always returns false, assume default value
+        $this->assertSame(80, $this->output->getTerminalWidth());
+    }
+
+    public function testGetTerminalHeight()
+    {
+        // Since Output::isInteractiveShell always returns false, assume default value
+        $this->assertSame(25, $this->output->getTerminalHeight());
     }
 }

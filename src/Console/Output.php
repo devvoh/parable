@@ -61,12 +61,38 @@ class Output
     public function getTerminalWidth()
     {
         // If running on windows or not an interactive shell, just pretend it's 80
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || !posix_isatty(0)) {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || !$this->isInteractiveShell()) {
             // @codeCoverageIgnoreStart
             return 80;
             // @codeCoverageIgnoreEnd
         }
         return (int)shell_exec("tput cols");
+    }
+
+    /**
+     * Return the terminal width. If not an interactive shell, return default 25;
+     *
+     * @return int
+     */
+    public function getTerminalHeight()
+    {
+        // If running on windows or not an interactive shell, just pretend it's 25
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || !$this->isInteractiveShell()) {
+            // @codeCoverageIgnoreStart
+            return 25;
+            // @codeCoverageIgnoreEnd
+        }
+        return (int)shell_exec("tput lines");
+    }
+
+    /**
+     * Return whether we're currently in an interactive shell or not.
+     *
+     * @return bool
+     */
+    public function isInteractiveShell()
+    {
+        return posix_isatty(0);
     }
 
     /**

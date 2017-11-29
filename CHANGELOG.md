@@ -11,15 +11,19 @@ __Changes__
   - `\Parable\Console\Input::getKeyPress()` has been added. It will wait for a single key press and return its value immediately. Special characters like arrow keys, escape, enter, etc, will be returned as a string value accordingly.
   - `\Parable\Console\Input::enableShowInput()` and its buddy `disable` are now available for you to use. If disabled, hides the user's input as they enter it. `Input` will call the `enable` on destruct to prevent its effects lingering after exiting the script.
   - `\Parable\Console\Input::enableRequireReturn()` and its buddy `disable` are now available for you to use as well. If disabled, no longer requires an enter before returning input.
-- `\Parable\Console\Output::writeBlockWithTags()` was added, making it possible to write a block with multiple tags.
+- `\Parable\Console\Output` also received some updates.
+  - `\Parable\Console\Output::writeBlockWithTags()` was added, making it possible to write a block with multiple tags.
+  - `\Parable\Console\Output::getTerminalWidth()` will return the columns available in the current terminal window. `getTerminalHeight()` will return the lines available.
+  - `\parable\Console\Output::isInteractiveShell()` will return whether the script is running in an interactive terminal session or not.
 - `\Parable\Framework\App` now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
 - `\Parable\Framework\Mailer` now supports setting a different mail sender. Default is, as it was, php's own `mail()`.
 - `\Parable\Framework\Mailer` now can act on three config values:
   - `parable.mail.sender`, which should be the class name of the `SenderInterface` implementation you want to use.
   - `parable.mail.from.email`, the email for the for address.
   - `parable.mail.from.name`, the name for the for address.
+- `\Parable\Framework\View` now accepts more classes to be registered for use within Views. Call `$view->registerClass($property, $className)` and you can do `$this->property_name->stuff()` in your views.
 - `\Parable\GetSet\Base` now also has `setResource`, for when you want to switch, or set it using a method rather than overwriting a property.
-- `\Parable\GetSet\Base::get()` now accepts a second parameter `$default` which is the value to return when the requested `$key` is not found.
+- `\Parable\GetSet\Base::get()` now accepts a second parameter `$default` which is the value to return when the requested `$key` is not found. Added by @dmvdbrugge in PR #30. Thanks!
 - `\Parable\Http\Request` now has `isOptions()` to check for OPTIONS method requests.
 - `\Parable\Http\Response` now has `setHeaders()` so you can add a bunch of headers in one call, `removeHeader($key)` so you can remove a header, and `clearHeaders()` to, y'know, actually, I think you got this.
 - `\Parable\Http\Response::clearContent()` was added, in case you want to just want to call `appendContent()` multiple times rather than one `setContent()` and then those appends.
@@ -43,9 +47,11 @@ __Backwards-incompatible Changes__
 - `\Parable\Routing\Route` has lost the ability to use typed params. Too much code for too little gain. If you need typed parameters, I suggest you figure something out for yourself.
 - `\Parable\Routing\Route` no longer supports `template` for the template path, but the more correctly named `templatePath` instead. Because of this, it now checks more strictly whether valid properties are set through the Routing array. `setDataFromArray()` attempts to call setters named like the properties. Any that are not available with a setter will throw an Exception. All properties are now also `protected`.
 - `\Parable\Routing\Router` now also supports adding a completely set-up `Route` object directly (or in an array), without having to pass them as arrays, through `addRoute()` and `addRoutes()`. These methods already existed, but those are now renamed to `addRouteFromArray()` and `addRoutesFromArray()`.
+- Two config keys were renamed: `parable.session.autoEnable` has become `parable.session.auto-enable` and `parable.app.homeDir` has become `parable.app.homedir`. The option for `init-structure` has also become `--homedir`.
 
 __Bugfixes__
 - `\Parable\Console\Output` had a bug where moving the cursors would mess with the functionality of `clearLine()`. Line length is no longer kept track of, but whether or not the line is clearable is a boolean value. Moving the cursor up/down or placing it disables line clearing, writing anything enables it again. When you clear the line, the line gets cleared using the terminal width.
+- `\Parable\Console\Parameter` had a bug where providing an argument after an option with an `=` sign in it (so `script.php command option=value arg`) would see the argument as the option value and overwrite the actual value. Fixed by @dmvdbrugge in PR #31. Thanks!
 - `\Parable\Filesystem\Path::getDir()` had a bug where if the filename you were trying to get a proper base-dirred path for already existed in the directory the code was run from, it would think it didn't need to and return just the provided path again.
 - `\Parable\Framework\Config` had a bug where a class was referenced that doesn't exist until you've run `parable init-structure`. This has been replaced with a string value instead. Found by @dmvdbrugge. Thanks!
 

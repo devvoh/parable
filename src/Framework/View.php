@@ -46,7 +46,7 @@ class View
     protected $templatePath;
 
     /** @var array */
-    protected $magicProperties = [];
+    protected $classes = [];
 
     public function __construct(
         \Parable\Filesystem\Path $path,
@@ -55,28 +55,50 @@ class View
         $this->path     = $path;
         $this->response = $response;
 
-        $this->initializeMagicProperties();
+        $this->registerClassesFromMagicProperties();
     }
 
     /**
      * For all the magic properties defined at the start of this class, loop through them
      * and add them to our list of magic properties.
+     *
+     * @return $this
      */
-    protected function initializeMagicProperties()
+    protected function registerClassesFromMagicProperties()
     {
-        $reflection = new \ReflectionClass(static::class);
-        $magicPropertiesBlock = explode(PHP_EOL, $reflection->getDocComment());
+        $reflection      = new \ReflectionClass(self::class);
 
-        foreach ($magicPropertiesBlock as $magicPropertiesLine) {
-            if (strpos($magicPropertiesLine, "@property") === false) {
+        $docComment      = $reflection->getDocComment();
+        $magicProperties = $docComment ? explode(PHP_EOL, $docComment) : [];
+
+        foreach ($magicProperties as $magicProperty) {
+            if (strpos($magicProperty, "@property") === false) {
                 continue;
             }
 
-            $partsString = trim(str_replace("* @property", "", $magicPropertiesLine));
+            $partsString = trim(str_replace("* @property", "", $magicProperty));
             $parts       = explode('$', $partsString);
 
-            $this->magicProperties[trim($parts[1])] = trim($parts[0]);
+            list($className, $property) = $parts;
+
+            $this->registerClass(trim($property), trim($className));
         }
+        return $this;
+    }
+
+    /**
+     * Register a class with the View for ->property lazyloading.
+     *
+     * @param string $property
+     * @param string $className
+     */
+    public function registerClass($property, $className)
+    {
+        // Make sure the $className is prefixed with a backslash
+        $className = "\\" . ltrim($className, "\\");
+
+        $this->classes[$property] = $className;
+        return $this;
     }
 
     /**
@@ -126,9 +148,7 @@ class View
      */
     protected function loadTemplatePath($templatePath)
     {
-        if (!file_exists($templatePath)) {
-            $templatePath = $this->path->getDir($templatePath);
-        }
+        $templatePath = $this->path->getDir($templatePath);
         if (file_exists($templatePath)) {
             require($templatePath);
         }
@@ -136,17 +156,20 @@ class View
     }
 
     /**
-     * Magic get function to pass through all calls to DI-able classes.
+     * Magic get function to pass through all calls to DI-able classes that have been registered with the View.
      *
      * @param string $property
      *
-     * @return null|object
+     * @return object
+     * @throws \Parable\Framework\Exception
      */
     public function __get($property)
     {
-        if (isset($this->magicProperties[$property])) {
-            return \Parable\DI\Container::get($this->magicProperties[$property]);
+        if (!isset($this->classes[$property])) {
+            throw new \Parable\Framework\Exception(
+                "Could not find property '{$property}'. Make sure it was registered with the View."
+            );
         }
-        return null;
+        return \Parable\DI\Container::get($this->classes[$property]);
     }
 }

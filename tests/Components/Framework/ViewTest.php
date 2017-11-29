@@ -14,8 +14,11 @@ class ViewTest extends \Parable\Tests\Components\Framework\Base
         $this->view = \Parable\DI\Container::create(\Parable\Framework\View::class);
     }
 
-    public function testGettingNonExistingMagicPropertyReturnsNull()
+    public function testGettingNonExistingMagicPropertyThrowsException()
     {
+        $this->expectException(\Parable\Framework\Exception::class);
+        $this->expectExceptionMessage("Could not find property 'stuff'. Make sure it was registered with the View.");
+
         $this->assertNull($this->view->stuff);
     }
 
@@ -25,5 +28,23 @@ class ViewTest extends \Parable\Tests\Components\Framework\Base
         $this->view->render();
 
         $this->assertEmpty($this->getActualOutput());
+    }
+
+    public function testAccessingExistingMagicPropertyWorks()
+    {
+        $this->assertInstanceOf(
+            \Parable\Framework\Toolkit::class,
+            $this->view->toolkit
+        );
+    }
+
+    public function testRegisterCustomClassesWorks()
+    {
+        $this->view->registerClass("basic_test_class", \Parable\Tests\TestClasses\Basic::class);
+
+        $this->assertInstanceOf(
+            \Parable\Tests\TestClasses\Basic::class,
+            $this->view->basic_test_class
+        );
     }
 }

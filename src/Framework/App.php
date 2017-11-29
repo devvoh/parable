@@ -80,9 +80,9 @@ class App
         $this->config->load();
 
         /* Set the basePath on the url based on the config */
-        if ($this->config->get('parable.app.homeDir')) {
-            $homeDir = trim($this->config->get('parable.app.homeDir'), "/");
-            $this->url->setBasePath($homeDir);
+        if ($this->config->get('parable.app.homedir')) {
+            $homedir = trim($this->config->get('parable.app.homedir'), "/");
+            $this->url->setBasePath($homedir);
         }
 
         /* See if there's any inits defined in the config */
@@ -90,8 +90,8 @@ class App
             $this->loadInits();
         }
 
-        /* Start the session if session.autoEnable is true */
-        if ($this->config->get('parable.session.autoEnable') !== false) {
+        /* Start the session if session.auto-enable is true */
+        if ($this->config->get('parable.session.auto-enable') !== false) {
             $this->startSession();
         }
 
