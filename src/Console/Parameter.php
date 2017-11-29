@@ -93,6 +93,7 @@ class Parameter
                     $optionValue = substr($parameter, $equalsPosition + 1);
 
                     $this->parsedOptions[$optionName] = $optionValue;
+                    $optionName = null;
                 } else {
                     $this->parsedOptions[$parameter] = self::PARAMETER_EXISTS;
                     $optionName = $parameter;
