@@ -273,7 +273,7 @@ class Route
         foreach ($this->parameters as $index => $name) {
             $value = trim($urlParts[$index]);
             if (!empty($value)) {
-                $this->values[$name] = $value;
+                $this->setValue($name, $value);
             }
         }
         return $this->values;
@@ -371,6 +371,20 @@ class Route
     public function hasParameters()
     {
         return mb_strpos($this->url, '{') && mb_strpos($this->url, '}');
+    }
+
+    /**
+     * Set a value on the route.
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setValue($key, $value)
+    {
+        $this->values[$key] = $value;
+        return $this;
     }
 
     /**

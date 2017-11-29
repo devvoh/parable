@@ -49,4 +49,12 @@ class RouteTest extends \Parable\Tests\Base
 
         unset($_SERVER["REQUEST_METHOD"]);
     }
+
+    public function testSetGetValue()
+    {
+        $route = new \Parable\Routing\Route();
+        $route->setValue("stuff", "what");
+
+        $this->assertSame("what", $route->getValue("stuff"));
+    }
 }
