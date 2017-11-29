@@ -4,8 +4,10 @@ namespace Parable\Framework;
 
 class Dispatcher
 {
-    const HOOK_DISPATCH_BEFORE = "parable_dispatch_before";
-    const HOOK_DISPATCH_AFTER  = "parable_dispatch_after";
+    const HOOK_DISPATCH_BEFORE          = "parable_dispatch_before";
+    const HOOK_DISPATCH_AFTER           = "parable_dispatch_after";
+    const HOOK_DISPATCH_TEMPLATE_BEFORE = "parable_dispatch_template_before";
+    const HOOK_DISPATCH_TEMPLATE_AFTER  = "parable_dispatch_template_after";
 
     /** @var \Parable\Event\Hook */
     protected $hook;
@@ -67,6 +69,8 @@ class Dispatcher
             $content = $callable(...$parameters);
         }
 
+        $this->hook->trigger(self::HOOK_DISPATCH_TEMPLATE_BEFORE, $route);
+
         // If the route has no template path, attempt to build one based on controller/action.phtml
         if (!$route->hasTemplatePath() && $route->hasControllerAndAction()) {
             $reflection = new \ReflectionClass($controller);
@@ -95,6 +99,7 @@ class Dispatcher
         // And append the content to the response object
         $this->response->appendContent($content);
 
+        $this->hook->trigger(self::HOOK_DISPATCH_TEMPLATE_AFTER, $route);
         $this->hook->trigger(self::HOOK_DISPATCH_AFTER, $route);
         return $this;
     }
