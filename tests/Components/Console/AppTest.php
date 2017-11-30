@@ -172,16 +172,26 @@ class AppTest extends \Parable\Tests\Base
 
         $command = $this->app->getCommand('test1');
 
-        // Now make the option optional, but the value required
-        $command->addOption('option', true);
+        // Now make the option required
+        $command->addOption(
+            'option',
+            \Parable\Console\Parameter::OPTION_REQUIRED
+        );
 
         $this->app->run();
     }
 
     public function testOptionalOptionWithRequiredValueThrowsExceptionIfNoValue()
     {
+        $this->expectException(\Parable\Console\Exception::class);
+        $this->expectExceptionMessage("Option '--option' requires a value, which is not provided.");
+
         // First test the regular app instance, showing it does not care if the option isn't there
-        $this->command1->addOption('option', false, true);
+        $this->command1->addOption(
+            'option',
+            \Parable\Console\Parameter::OPTION_OPTIONAL,
+            \Parable\Console\Parameter::OPTION_VALUE_REQUIRED
+        );
         $this->assertSame('OK1', $this->app->run());
 
         // And now build a new app with the option passed without a value
@@ -191,8 +201,24 @@ class AppTest extends \Parable\Tests\Base
 
         $app->setDefaultCommand($this->command1);
 
+        $app->run();
+    }
+
+    public function testOptionWithProhibitedValuePassedThrowsException()
+    {
         $this->expectException(\Parable\Console\Exception::class);
-        $this->expectExceptionMessage("Option '--option' requires a value, which is not provided.");
+        $this->expectExceptionMessage("Option '--option' prohibits a value, but was provided with one.");
+
+        $_SERVER["argv"] = ['./test.php', '--option', "this value shouln't be here"];
+        $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
+        $this->commandReturnOptionValue->addOption(
+            'option',
+            \Parable\Console\Parameter::OPTION_OPTIONAL,
+            \Parable\Console\Parameter::OPTION_VALUE_PROHIBITED
+        );
+        $app->addCommand($this->commandReturnOptionValue);
+
+        $app->setDefaultCommand($this->commandReturnOptionValue);
 
         $app->run();
     }
@@ -201,7 +227,12 @@ class AppTest extends \Parable\Tests\Base
     {
         $_SERVER["argv"] = ['./test.php', '--option', 'passed value here!'];
         $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
-        $this->commandReturnOptionValue->addOption('option', false, false, 'default value is here!');
+        $this->commandReturnOptionValue->addOption(
+            'option',
+            \Parable\Console\Parameter::OPTION_OPTIONAL,
+            \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
+            'default value is here!'
+        );
         $app->addCommand($this->commandReturnOptionValue);
 
         $app->setDefaultCommand($this->commandReturnOptionValue);
@@ -213,7 +244,12 @@ class AppTest extends \Parable\Tests\Base
     {
         $_SERVER["argv"] = ['./test.php', '--option'];
         $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
-        $this->commandReturnOptionValue->addOption('option', false, false, 'default value is here!');
+        $this->commandReturnOptionValue->addOption(
+            'option',
+            \Parable\Console\Parameter::OPTION_OPTIONAL,
+            \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
+            'default value is here!'
+        );
         $app->addCommand($this->commandReturnOptionValue);
 
         $app->setDefaultCommand($this->commandReturnOptionValue);

@@ -128,14 +128,18 @@ class Command
      * Add an option for this command.
      *
      * @param string $name
-     * @param bool   $required
-     * @param bool   $valueRequired
+     * @param int    $required
+     * @param int    $valueRequired
      * @param mixed  $defaultValue
      *
      * @return $this
      */
-    public function addOption($name, $required = false, $valueRequired = false, $defaultValue = null)
-    {
+    public function addOption(
+        $name,
+        $required = Parameter::OPTION_OPTIONAL,
+        $valueRequired = Parameter::OPTION_VALUE_OPTIONAL,
+        $defaultValue = null
+    ) {
         $this->options[$name] = [
             'name'          => $name,
             'required'      => $required,
@@ -164,7 +168,7 @@ class Command
      *
      * @return $this
      */
-    public function addArgument($name, $required = false, $defaultValue = null)
+    public function addArgument($name, $required = Parameter::ARGUMENT_OPTIONAL, $defaultValue = null)
     {
         $this->arguments[] = [
             'name'         => $name,

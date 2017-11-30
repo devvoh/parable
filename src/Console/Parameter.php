@@ -5,7 +5,17 @@ namespace Parable\Console;
 class Parameter
 {
     /** Used to designate a parameter as existing but without value */
-    const PARAMETER_EXISTS = '__parameter_exists__';
+    const PARAMETER_EXISTS        = '__parameter_exists__';
+
+    const OPTION_REQUIRED         = 1;
+    const OPTION_OPTIONAL         = 2;
+
+    const OPTION_VALUE_REQUIRED   = 11;
+    const OPTION_VALUE_OPTIONAL   = 12;
+    const OPTION_VALUE_PROHIBITED = 13;
+
+    const ARGUMENT_REQUIRED       = 21;
+    const ARGUMENT_OPTIONAL       = 22;
 
     /** @var array */
     protected $parameters = [];
@@ -166,7 +176,7 @@ class Parameter
         foreach ($this->commandOptions as $option) {
             // Check if required option is actually passed
             if (isset($option['required'])
-                && $option['required']
+                && $option['required'] === self::OPTION_REQUIRED
                 && !array_key_exists($option['name'], $this->parsedOptions)
             ) {
                 throw new \Parable\Console\Exception("Required option '--{$option['name']}' not provided.");
@@ -175,13 +185,26 @@ class Parameter
             // Check if non-required but passed option requires a value
             if (array_key_exists($option['name'], $this->parsedOptions)
                 && isset($option['valueRequired'])
-                && $option['valueRequired']
+                && $option['valueRequired'] === self::OPTION_VALUE_REQUIRED
                 && (!$this->parsedOptions[$option['name']]
-                    || $this->parsedOptions[$option['name']] == self::PARAMETER_EXISTS
+                    || $this->parsedOptions[$option['name']] === self::PARAMETER_EXISTS
                 )
             ) {
                 throw new \Parable\Console\Exception(
                     "Option '--{$option['name']}' requires a value, which is not provided."
+                );
+            }
+
+            // Check if non-required but passed option prohibits a value
+            if (array_key_exists($option['name'], $this->parsedOptions)
+                && isset($option['valueRequired'])
+                && $option['valueRequired'] === self::OPTION_VALUE_PROHIBITED
+                && ($this->parsedOptions[$option['name']]
+                    && $this->parsedOptions[$option['name']] !== self::PARAMETER_EXISTS
+                )
+            ) {
+                throw new \Parable\Console\Exception(
+                    "Option '--{$option['name']}' prohibits a value, but was provided with one."
                 );
             }
 
@@ -210,7 +233,7 @@ class Parameter
             $key = $index + 1;
             // Check if required argument is actually passed
             if (isset($argument['required'])
-                && $argument['required']
+                && $argument['required'] === self::ARGUMENT_REQUIRED
                 && !array_key_exists($index, $this->rawArguments)
             ) {
                 throw new \Parable\Console\Exception("Required argument '{$key}:{$argument['name']}' not provided.");

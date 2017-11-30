@@ -89,7 +89,11 @@ class ParameterTest extends \Parable\Tests\Base
         $this->expectExceptionMessage("Option '--option' requires a value, which is not provided.");
 
         $this->parameter->setCommandOptions([
-            ['name' => 'option', 'required' => false, 'valueRequired' => true],
+            [
+                'name' => 'option',
+                'required' => \Parable\Console\Parameter::OPTION_OPTIONAL,
+                'valueRequired' => \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
+            ],
         ]);
         $this->parameter->checkOptions();
     }
@@ -121,7 +125,7 @@ class ParameterTest extends \Parable\Tests\Base
         $this->expectException(\Parable\Console\Exception::class);
         $this->expectExceptionMessage("Required option '--option' not provided.");
         $this->parameter->setCommandOptions([
-            ['name' => 'option', 'required' => true],
+            ['name' => 'option', 'required' => \Parable\Console\Parameter::OPTION_REQUIRED],
         ]);
         $this->parameter->checkOptions();
     }
@@ -145,8 +149,8 @@ class ParameterTest extends \Parable\Tests\Base
             'arg1',
         ]);
         $this->parameter->setCommandArguments([
-            ['name' => 'numero1', 'required' => true],
-            ['name' => 'numero2', 'required' => true],
+            ['name' => 'numero1', 'required' => \Parable\Console\Parameter::ARGUMENT_REQUIRED],
+            ['name' => 'numero2', 'required' => \Parable\Console\Parameter::ARGUMENT_REQUIRED],
         ]);
 
         $this->expectException(\Parable\Console\Exception::class);

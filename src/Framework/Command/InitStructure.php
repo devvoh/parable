@@ -19,7 +19,12 @@ class InitStructure extends \Parable\Console\Command
     public function __construct(
         \Parable\Filesystem\Path $path
     ) {
-        $this->addOption("homedir", false, true, "public");
+        $this->addOption(
+            "homedir",
+            \Parable\Console\Parameter::OPTION_OPTIONAL,
+            \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
+            "public"
+        );
         $this->path = $path;
 
         $this->vendor_path = __DIR__ . "/../../..";

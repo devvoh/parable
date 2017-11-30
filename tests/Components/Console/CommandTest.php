@@ -39,21 +39,31 @@ class CommandTest extends \Parable\Tests\Base
 
     public function testAddOptionAndGetOptions()
     {
-        $this->command->addOption('option1', true, true, 'stupid');
-        $this->command->addOption('option2', false, false, 'smart');
+        $this->command->addOption(
+            'option1',
+            \Parable\Console\Parameter::OPTION_REQUIRED,
+            \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
+            'stupid'
+        );
+        $this->command->addOption(
+            'option2',
+            \Parable\Console\Parameter::OPTION_OPTIONAL,
+            \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
+            'smart'
+        );
 
         $this->assertSame(
             [
                 'option1' => [
                     'name'          => 'option1',
-                    'required'      => true,
-                    'valueRequired' => true,
+                    'required'      => \Parable\Console\Parameter::OPTION_REQUIRED,
+                    'valueRequired' => \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
                     'defaultValue'  => 'stupid',
                 ],
                 'option2' => [
                     'name'          => 'option2',
-                    'required'      => false,
-                    'valueRequired' => false,
+                    'required'      => \Parable\Console\Parameter::OPTION_OPTIONAL,
+                    'valueRequired' => \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
                     'defaultValue'  => 'smart',
                 ],
             ],

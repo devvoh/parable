@@ -86,7 +86,9 @@ class Input
      */
     public function enableRequireReturn()
     {
-        system('stty -cbreak');
+        if ($this->isInteractiveShell()) {
+            system('stty -cbreak');
+        }
         return $this;
     }
 
@@ -97,7 +99,9 @@ class Input
      */
     public function disableRequireReturn()
     {
-        system('stty cbreak');
+        if ($this->isInteractiveShell()) {
+            system('stty cbreak');
+        }
         return $this;
     }
 
@@ -108,7 +112,9 @@ class Input
      */
     public function enableShowInput()
     {
-        system('stty echo');
+        if ($this->isInteractiveShell()) {
+            system('stty echo');
+        }
         return $this;
     }
 
@@ -119,7 +125,9 @@ class Input
      */
     public function disableShowInput()
     {
-        system('stty -echo');
+        if ($this->isInteractiveShell()) {
+            system('stty -echo');
+        }
         return $this;
     }
 
@@ -170,6 +178,16 @@ class Input
 
         // Anything else should be considered false
         return false;
+    }
+
+    /**
+     * Return whether we're currently in an interactive shell or not.
+     *
+     * @return bool
+     */
+    public function isInteractiveShell()
+    {
+        return posix_isatty(0);
     }
 
     /**

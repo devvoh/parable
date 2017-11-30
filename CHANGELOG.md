@@ -37,7 +37,9 @@ __Changes__
 
 __Backwards-incompatible Changes__
 - `\Parable\Console\App::setDefaultCommand()` now takes a command instance rather than the name, as the name would suggest. To set the default command by name, use `setDefaultCommandByName()` instead.
-- `\Parable\Console\App::setOnlyUseDefaultCommand()` was added, and the boolean paramater was removed from the `setDefaultCommand/ByName()` function calls. Checked by calling `shouldOnlyUseDefaultCommand()` 
+- `\Parable\Console\App::setOnlyUseDefaultCommand()` was added, and the boolean paramater was removed from the `setDefaultCommand/ByName()` function calls. Checked by calling `shouldOnlyUseDefaultCommand()`.
+- `\Parable\Console\Command::addOption()` and `addArgument()` no longer take booleans for `required` or `valueRequired` but constants. See `\Parable\Console\Parameter` for the values. This adds the `OPTION_VALUE_PROHIBITED` possibility.
+- `\Parable\Console\Parameter` has received several constants: `OPTION_OPTIONAL`, `OPTION_REQUIRED`, `OPTION_VALUE_OPTIONAL`, `OPTION_VALUE_REQUIRED`, `OPTION_VALUE_PROHIBITED`, `ARGUMENT_OPTIONAL` and `ARGUMENT_REQUIRED`. The only new functionality if `PROHIBITED`. This will allow an option, but only ever without a value. This can be used to make sure true flag-like options can't erroneously see an argument as its value.
 - `\Parable\Console\Parameter::setOptions()` was renamed to `setCommandOptions()`, because the distinction is important.
 - `\Parable\Console\Output::writeError/writeInfo/writeSuccess()` are now suffixed with `Block`, so `writeInfoBlock()`, etc.
 - `\Parable\DI\Container::cleanName()` has been made protected. This shouldn't impact you, as you shouldn't've been using it in the first place.
