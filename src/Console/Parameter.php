@@ -91,7 +91,7 @@ class Parameter
                 if ($this->commandNameEnabled && !$this->commandName) {
                     $this->commandName = $parameter;
                 } else {
-                    $this->arguments[count($this->arguments)] = $parameter;
+                    $this->arguments[] = $parameter;
                 }
             }
         }
