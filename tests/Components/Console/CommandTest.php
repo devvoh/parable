@@ -68,7 +68,6 @@ class CommandTest extends \Parable\Tests\Base
         $this->assertFalse($option2->isRequired());
         $this->assertFalse($option2->isValueRequired());
         $this->assertSame("smart", $option2->getDefaultValue());
-
     }
 
     public function testAddArgumentAndGetArguments()
