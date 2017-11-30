@@ -41,57 +41,54 @@ class CommandTest extends \Parable\Tests\Base
     {
         $this->command->addOption(
             'option1',
-            \Parable\Console\Parameter::OPTION_REQUIRED,
+            \Parable\Console\Parameter::PARAMETER_REQUIRED,
             \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
             'stupid'
         );
         $this->command->addOption(
             'option2',
-            \Parable\Console\Parameter::OPTION_OPTIONAL,
+            \Parable\Console\Parameter::PARAMETER_OPTIONAL,
             \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
             'smart'
         );
 
-        $this->assertSame(
-            [
-                'option1' => [
-                    'name'          => 'option1',
-                    'required'      => \Parable\Console\Parameter::OPTION_REQUIRED,
-                    'valueRequired' => \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
-                    'defaultValue'  => 'stupid',
-                ],
-                'option2' => [
-                    'name'          => 'option2',
-                    'required'      => \Parable\Console\Parameter::OPTION_OPTIONAL,
-                    'valueRequired' => \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
-                    'defaultValue'  => 'smart',
-                ],
-            ],
-            $this->command->getOptions()
-        );
+        $options = $this->command->getOptions();
+
+        $option1 = $options["option1"];
+        $option2 = $options["option2"];
+
+        $this->assertInstanceOf(\Parable\Console\Parameter\Option::class, $option1);
+        $this->assertSame("option1", $option1->getName());
+        $this->assertTrue($option1->isRequired());
+        $this->assertTrue($option1->isValueRequired());
+        $this->assertSame("stupid", $option1->getDefaultValue());
+
+        $this->assertInstanceOf(\Parable\Console\Parameter\Option::class, $option2);
+        $this->assertSame("option2", $option2->getName());
+        $this->assertFalse($option2->isRequired());
+        $this->assertFalse($option2->isValueRequired());
+        $this->assertSame("smart", $option2->getDefaultValue());
     }
 
     public function testAddArgumentAndGetArguments()
     {
-        $this->command->addArgument('option1', true);
-        $this->command->addArgument('option2', false, 12);
+        $this->command->addArgument('arg1', \Parable\Console\Parameter::PARAMETER_REQUIRED);
+        $this->command->addArgument('arg2', \Parable\Console\Parameter::PARAMETER_OPTIONAL, 12);
 
-        // Arguments aren't actually named properly until they've been parsed by Parameter
-        $this->assertSame(
-            [
-                [
-                    'name'         => 'option1',
-                    'required'     => true,
-                    'defaultValue' => null,
-                ],
-                [
-                    'name'         => 'option2',
-                    'required'     => false,
-                    'defaultValue' => 12,
-                ],
-            ],
-            $this->command->getArguments()
-        );
+        $arguments = $this->command->getArguments();
+
+        $argument1 = $arguments["arg1"];
+        $argument2 = $arguments["arg2"];
+
+        $this->assertInstanceOf(\Parable\Console\Parameter\Argument::class, $argument1);
+        $this->assertSame("arg1", $argument1->getName());
+        $this->assertTrue($argument1->isRequired());
+        $this->assertSame(null, $argument1->getDefaultValue());
+
+        $this->assertInstanceOf(\Parable\Console\Parameter\Argument::class, $argument2);
+        $this->assertSame("arg2", $argument2->getName());
+        $this->assertFalse($argument2->isRequired());
+        $this->assertSame(12, $argument2->getDefaultValue());
     }
 
     public function testPrepareAcceptsAndPassesInstancesToCallbackProperly()

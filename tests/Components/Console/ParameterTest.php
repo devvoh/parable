@@ -16,25 +16,37 @@ class ParameterTest extends \Parable\Tests\Base
 
     public function testParseParametersWorkedCorrectly()
     {
+        $this->parameter->setCommandOptions([
+            "option" => new \Parable\Console\Parameter\Option("option"),
+            "key"    => new \Parable\Console\Parameter\Option("key"),
+        ]);
+        $this->parameter->setCommandArguments([
+            new \Parable\Console\Parameter\Argument("arg1"),
+        ]);
+
         $this->parameter->setParameters([
             './test.php',
             'command-to-run',
             '--option',
-            '--key',
-            'value',
+            'argument',
+            '--key=value2',
         ]);
+
+        $this->parameter->checkCommandOptions();
+        $this->parameter->checkCommandArguments();
 
         $this->assertSame('./test.php', $this->parameter->getScriptName());
         $this->assertSame('command-to-run', $this->parameter->getCommandName());
 
         $this->assertTrue($this->parameter->getOption('option'));
-        $this->assertSame("value", $this->parameter->getOption('key'));
+        $this->assertSame("value2", $this->parameter->getOption('key'));
 
         $this->assertSame(
             [
+                "command-to-run",
                 "--option",
-                "--key",
-                "value",
+                "argument",
+                "--key=value2",
             ],
             $this->parameter->getParameters()
         );
@@ -79,23 +91,24 @@ class ParameterTest extends \Parable\Tests\Base
 
     public function testThrowsExceptionWhenOptionIsGivenButValueRequiredNotGiven()
     {
+        $this->expectException(\Parable\Console\Exception::class);
+        $this->expectExceptionMessage("Option '--option' requires a value, which is not provided.");
+
         $this->parameter->setParameters([
             './test.php',
             'command-to-run',
             '--option',
         ]);
 
-        $this->expectException(\Parable\Console\Exception::class);
-        $this->expectExceptionMessage("Option '--option' requires a value, which is not provided.");
-
         $this->parameter->setCommandOptions([
-            [
-                'name' => 'option',
-                'required' => \Parable\Console\Parameter::OPTION_OPTIONAL,
-                'valueRequired' => \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
-            ],
+            "option" => new \Parable\Console\Parameter\Option(
+                "option",
+                \Parable\Console\Parameter::PARAMETER_OPTIONAL,
+                \Parable\Console\Parameter::OPTION_VALUE_REQUIRED
+            ),
         ]);
-        $this->parameter->checkOptions();
+
+        $this->parameter->checkCommandOptions();
     }
 
     public function testOptionIsGivenAndValueRequiredAlsoGivenWorksProperly()
@@ -103,14 +116,17 @@ class ParameterTest extends \Parable\Tests\Base
         $this->parameter->setParameters([
             './test.php',
             'command-to-run',
-            '--option',
-            'option-value'
+            '--option=option-value'
         ]);
 
         $this->parameter->setCommandOptions([
-            ['name' => 'option', 'required' => false, 'valueRequired' => true],
+            "option" => new \Parable\Console\Parameter\Option(
+                "option",
+                \Parable\Console\Parameter::PARAMETER_OPTIONAL,
+                \Parable\Console\Parameter::OPTION_VALUE_REQUIRED
+            ),
         ]);
-        $this->parameter->checkOptions();
+        $this->parameter->checkCommandOptions();
 
         $this->assertSame('option-value', $this->parameter->getOption('option'));
     }
@@ -124,39 +140,31 @@ class ParameterTest extends \Parable\Tests\Base
 
         $this->expectException(\Parable\Console\Exception::class);
         $this->expectExceptionMessage("Required option '--option' not provided.");
+
         $this->parameter->setCommandOptions([
-            ['name' => 'option', 'required' => \Parable\Console\Parameter::OPTION_REQUIRED],
+            "option" => new \Parable\Console\Parameter\Option(
+                "option",
+                \Parable\Console\Parameter::PARAMETER_REQUIRED
+            ),
         ]);
-        $this->parameter->checkOptions();
-    }
-
-    public function testOptionAcceptsEqualsValue()
-    {
-        $this->parameter->setParameters([
-            './test.php',
-            'command-to-run',
-            '--option1=value1',
-        ]);
-
-        $this->assertSame("value1", $this->parameter->getOption("option1"));
+        $this->parameter->checkCommandOptions();
     }
 
     public function testRequiredArgumentThrowsException()
     {
+        $this->expectException(\Parable\Console\Exception::class);
+        $this->expectExceptionMessage("Required argument with index #1 'numero2' not provided.");
+
         $this->parameter->setParameters([
             './test.php',
             'command-to-run',
             'arg1',
         ]);
         $this->parameter->setCommandArguments([
-            ['name' => 'numero1', 'required' => \Parable\Console\Parameter::ARGUMENT_REQUIRED],
-            ['name' => 'numero2', 'required' => \Parable\Console\Parameter::ARGUMENT_REQUIRED],
+            new \Parable\Console\Parameter\Argument("numero1", \Parable\Console\Parameter::PARAMETER_REQUIRED),
+            new \Parable\Console\Parameter\Argument("numero2", \Parable\Console\Parameter::PARAMETER_REQUIRED),
         ]);
-
-        $this->expectException(\Parable\Console\Exception::class);
-        $this->expectExceptionMessage("Required argument '2:numero2' not provided.");
-
-        $this->parameter->checkArguments();
+        $this->parameter->checkCommandArguments();
     }
 
     public function testGetArgumentReturnsAppropriateValues()
@@ -167,13 +175,14 @@ class ParameterTest extends \Parable\Tests\Base
             'arg1',
             'arg2',
         ]);
+
         $this->parameter->setCommandArguments([
-            ['name' => 'numero1', 'required' => true],
-            ['name' => 'numero2', 'required' => true, 'defaultValue' => 12],
-            ['name' => 'numero3', 'required' => false, 'defaultValue' => 24],
+            new \Parable\Console\Parameter\Argument("numero1", \Parable\Console\Parameter::PARAMETER_REQUIRED),
+            new \Parable\Console\Parameter\Argument("numero2", \Parable\Console\Parameter::PARAMETER_REQUIRED, 12),
+            new \Parable\Console\Parameter\Argument("numero3", \Parable\Console\Parameter::PARAMETER_OPTIONAL, 24),
         ]);
 
-        $this->parameter->checkArguments();
+        $this->parameter->checkCommandArguments();
 
         $this->assertSame("arg1", $this->parameter->getArgument("numero1"));
         $this->assertSame("arg2", $this->parameter->getArgument("numero2"));
@@ -185,25 +194,23 @@ class ParameterTest extends \Parable\Tests\Base
         $this->assertNull($this->parameter->getArgument("totally not"));
     }
 
-    public function testMultipleParameters()
+    public function testMultipleOptionParameters()
     {
         $this->parameter->setParameters([
             './test.php',
             'command-to-run',
-            '--option1',
-            'value1',
+            '--option1=value1',
             '--option2',
-            '--option3',
-            'value3',
+            '--option3=value3',
         ]);
 
         $this->parameter->setCommandOptions([
-            'option1' => ['name' => 'option1', 'required' => true, 'valueRequired' => true],
-            'option2' => ['name' => 'option2', 'required' => true],
-            'option3' => ['name' => 'option3', 'required' => true, 'valueRequired' => true],
+            new \Parable\Console\Parameter\Option("option1", \Parable\Console\Parameter::PARAMETER_REQUIRED, \Parable\Console\Parameter::OPTION_VALUE_REQUIRED),
+            new \Parable\Console\Parameter\Option("option2", \Parable\Console\Parameter::PARAMETER_REQUIRED),
+            new \Parable\Console\Parameter\Option("option3", \Parable\Console\Parameter::PARAMETER_OPTIONAL, \Parable\Console\Parameter::OPTION_VALUE_REQUIRED),
         ]);
 
-        $this->parameter->checkOptions();
+        $this->parameter->checkCommandOptions();
 
         $this->assertSame(
             [
@@ -222,8 +229,7 @@ class ParameterTest extends \Parable\Tests\Base
             'command-to-run',
             'argument1',
             'argument2 is a string',
-            '--option1',
-            'value1',
+            '--option1=value1',
             'argument3!',
             '--option2=value2',
             'argument4',
@@ -231,19 +237,19 @@ class ParameterTest extends \Parable\Tests\Base
         ]);
 
         $this->parameter->setCommandOptions([
-            'option1' => ['name' => 'option1'],
-            'option2' => ['name' => 'option2'],
+            new \Parable\Console\Parameter\Option("option1"),
+            new \Parable\Console\Parameter\Option("option2"),
         ]);
         $this->parameter->setCommandArguments([
-            ['name' => 'arg1', 'required' => true],
-            ['name' => 'arg2', 'required' => false],
-            ['name' => 'arg3', 'required' => false],
-            ['name' => 'arg4', 'required' => false],
-            ['name' => 'arg5', 'required' => false],
+            new \Parable\Console\Parameter\Argument("arg1", \Parable\Console\Parameter::PARAMETER_REQUIRED),
+            new \Parable\Console\Parameter\Argument("arg2", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
+            new \Parable\Console\Parameter\Argument("arg3", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
+            new \Parable\Console\Parameter\Argument("arg4", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
+            new \Parable\Console\Parameter\Argument("arg5", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
         ]);
 
-        $this->parameter->checkOptions();
-        $this->parameter->checkArguments();
+        $this->parameter->checkCommandOptions();
+        $this->parameter->checkCommandArguments();
 
         $this->assertSame(
             [
@@ -259,6 +265,66 @@ class ParameterTest extends \Parable\Tests\Base
                 'arg3' => 'argument3!',
                 'arg4' => 'argument4',
                 'arg5' => 'argument5',
+            ],
+            $this->parameter->getArguments()
+        );
+    }
+
+    public function testSetCommandOptionsWithArrayThrowsException()
+    {
+        $this->expectException(\Parable\Console\Exception::class);
+        $this->expectExceptionMessage("Options must be instances of Parameter\Option. invalid_option is not.");
+
+        $this->parameter->setCommandOptions(["invalid_option" => []]);
+    }
+
+    public function testSetCommandArgumentsWithArrayThrowsException()
+    {
+        $this->expectException(\Parable\Console\Exception::class);
+        $this->expectExceptionMessage("Arguments must be instances of Parameter\Argument. The item at index 0 is not.");
+
+        $this->parameter->setCommandArguments([[]]);
+    }
+
+    public function testEnableDisableCommandNameKeepsArgumentOrderValid()
+    {
+        $this->parameter->setParameters([
+            './test.php',
+            'command-to-run',
+            'argument1',
+        ]);
+
+        $this->parameter->setCommandArguments([
+            new \Parable\Console\Parameter\Argument("arg1", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
+            new \Parable\Console\Parameter\Argument("arg2", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
+        ]);
+
+        $this->parameter->checkCommandArguments();
+
+        $this->assertSame(
+            [
+                "arg1" => "argument1",
+                "arg2" => null,
+            ],
+            $this->parameter->getArguments()
+        );
+
+        $this->parameter->disableCommandName()->checkCommandArguments();
+
+        $this->assertSame(
+            [
+                "arg1" => "command-to-run",
+                "arg2" => "argument1",
+            ],
+            $this->parameter->getArguments()
+        );
+
+        $this->parameter->enableCommandName()->checkCommandArguments();
+
+        $this->assertSame(
+            [
+                "arg1" => "argument1",
+                "arg2" => null,
             ],
             $this->parameter->getArguments()
         );

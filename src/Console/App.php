@@ -177,6 +177,7 @@ class App
     {
         $defaultCommand = null;
         $command        = null;
+
         if ($this->defaultCommand) {
             $defaultCommand = $this->getCommand($this->defaultCommand);
         }
@@ -185,6 +186,9 @@ class App
             if ($commandName) {
                 $command = $this->getCommand($commandName);
             }
+            $this->parameter->enableCommandName();
+        } else {
+            $this->parameter->disableCommandName();
         }
 
         // Use $command or $defaultCommand, since they're mutually exclusive
@@ -195,10 +199,10 @@ class App
         }
 
         $this->parameter->setCommandArguments($command->getArguments());
-        $this->parameter->checkArguments();
+        $this->parameter->checkCommandArguments();
 
         $this->parameter->setCommandOptions($command->getOptions());
-        $this->parameter->checkOptions();
+        $this->parameter->checkCommandOptions();
 
         return $command->run();
     }

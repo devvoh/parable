@@ -21,7 +21,7 @@ class InitStructure extends \Parable\Console\Command
     ) {
         $this->addOption(
             "homedir",
-            \Parable\Console\Parameter::OPTION_OPTIONAL,
+            \Parable\Console\Parameter::PARAMETER_OPTIONAL,
             \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
             "public"
         );
@@ -50,7 +50,7 @@ class InitStructure extends \Parable\Console\Command
             "The full 'home directory' will be '<green>{$homedir_actual}</green>',",
             "but you can use the --homedir option to change this.",
             "",
-            "Example: <yellow>parable init-structure --homedir http_docs</yellow>",
+            "Example: <yellow>parable init-structure --homedir=http_docs</yellow>",
             "",
             "<red>WARNING</red>",
             "This will overwrite existing files without notice!",

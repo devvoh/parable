@@ -13,10 +13,10 @@ class Command
     /** @var callable|null */
     protected $callable;
 
-    /** @var array */
+    /** @var \Parable\Console\Parameter\Option[] */
     protected $options = [];
 
-    /** @var array */
+    /** @var \Parable\Console\Parameter\Argument[] */
     protected $arguments = [];
 
     /** @var \Parable\Console\App|null */
@@ -136,23 +136,18 @@ class Command
      */
     public function addOption(
         $name,
-        $required = Parameter::OPTION_OPTIONAL,
+        $required = Parameter::PARAMETER_REQUIRED,
         $valueRequired = Parameter::OPTION_VALUE_OPTIONAL,
         $defaultValue = null
     ) {
-        $this->options[$name] = [
-            'name'          => $name,
-            'required'      => $required,
-            'valueRequired' => $valueRequired,
-            'defaultValue'  => $defaultValue,
-        ];
+        $this->options[$name] = new \Parable\Console\Parameter\Option($name, $required, $valueRequired, $defaultValue);
         return $this;
     }
 
     /**
      * Return all options for this command.
      *
-     * @return array
+     * @return \Parable\Console\Parameter\Option[]
      */
     public function getOptions()
     {
@@ -163,25 +158,24 @@ class Command
      * Add an argument for this command.
      *
      * @param string $name
-     * @param bool   $required
+     * @param int    $required
      * @param mixed  $defaultValue
      *
      * @return $this
      */
-    public function addArgument($name, $required = Parameter::ARGUMENT_OPTIONAL, $defaultValue = null)
-    {
-        $this->arguments[] = [
-            'name'         => $name,
-            'required'     => $required,
-            'defaultValue' => $defaultValue,
-        ];
+    public function addArgument(
+        $name,
+        $required = Parameter::PARAMETER_OPTIONAL,
+        $defaultValue = null
+    ) {
+        $this->arguments[$name] = new \Parable\Console\Parameter\Argument($name, $required, $defaultValue);
         return $this;
     }
 
     /**
      * Return all arguments for this command.
      *
-     * @return array
+     * @return \Parable\Console\Parameter\Argument[]
      */
     public function getArguments()
     {
