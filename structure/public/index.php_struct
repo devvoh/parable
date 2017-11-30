@@ -1,5 +1,5 @@
 <?php
-$vendorDir = "###VENDOR_PATH###";
+$vendorDir = realpath(__DIR__ . "/../vendor/devvoh/parable");
 
 $bootstrapDirectory = "{$vendorDir}/src/Framework/Bootstrap.php";
 if (!file_exists($bootstrapDirectory)) {

@@ -104,15 +104,14 @@ class InitStructure extends \Parable\Console\Command
         );
         $this->output->write('.');
         copy(
+            $this->path->getDir("{$this->vendor_path}/structure/public/index.php_struct"),
+            $this->path->getDir("{$homedir}/index.php")
+        );
+        $this->output->write('.');
+        copy(
             $this->path->getDir("{$this->vendor_path}/structure/public/.htaccess"),
             $this->path->getDir("{$homedir}/.htaccess")
         );
-        $this->output->write('.');
-
-        // For index.php, we do it a bit differently, since we need to alter the content
-        $content = file_get_contents($this->path->getDir("{$this->vendor_path}/structure/public/index.php_struct"));
-        $content = str_replace("###VENDOR_PATH###", $this->vendor_path, $content);
-        file_put_contents($this->path->getDir("{$homedir}/index.php"), $content);
         $this->output->write('.');
 
         // And we continue copying files
