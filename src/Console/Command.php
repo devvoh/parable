@@ -168,7 +168,7 @@ class Command
         $required = Parameter::PARAMETER_OPTIONAL,
         $defaultValue = null
     ) {
-        $this->arguments[$name] = new \Parable\Console\Parameter\Argument($name, $required, $defaultValue);
+        $this->arguments[] = new \Parable\Console\Parameter\Argument($name, $required, $defaultValue);
         return $this;
     }
 

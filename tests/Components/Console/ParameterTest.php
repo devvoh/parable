@@ -241,7 +241,7 @@ class ParameterTest extends \Parable\Tests\Base
             new \Parable\Console\Parameter\Option("option2"),
         ]);
         $this->parameter->setCommandArguments([
-            new \Parable\Console\Parameter\Argument("arg1", \Parable\Console\Parameter::PARAMETER_REQUIRED),
+            new \Parable\Console\Parameter\Argument("brg1", \Parable\Console\Parameter::PARAMETER_REQUIRED),
             new \Parable\Console\Parameter\Argument("arg2", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
             new \Parable\Console\Parameter\Argument("arg3", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
             new \Parable\Console\Parameter\Argument("arg4", \Parable\Console\Parameter::PARAMETER_OPTIONAL),
@@ -260,7 +260,7 @@ class ParameterTest extends \Parable\Tests\Base
         );
         $this->assertSame(
             [
-                'arg1' => 'argument1',
+                'brg1' => 'argument1',
                 'arg2' => 'argument2 is a string',
                 'arg3' => 'argument3!',
                 'arg4' => 'argument4',

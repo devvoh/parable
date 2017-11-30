@@ -169,9 +169,9 @@ class AppTest extends \Parable\Tests\Base
         // If default command only, the "command name" should be shifted to the arguments list instead
         $arguments = $this->command1->getArguments();
         if ($defaultCommandOnly) {
-            $this->assertSame("test2", $arguments["arg1"]->getValue());
+            $this->assertSame("test2", $arguments[0]->getValue());
         } else {
-            $this->assertNull($arguments["arg1"]->getValue());
+            $this->assertNull($arguments[0]->getValue());
         }
     }
 
