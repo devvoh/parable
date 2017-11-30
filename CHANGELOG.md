@@ -15,6 +15,7 @@ __Changes__
   - `\Parable\Console\Output::writeBlockWithTags()` was added, making it possible to write a block with multiple tags.
   - `\Parable\Console\Output::getTerminalWidth()` will return the columns available in the current terminal window. `getTerminalHeight()` will return the lines available.
   - `\parable\Console\Output::isInteractiveShell()` will return whether the script is running in an interactive terminal session or not.
+- `\Parable\Console\Parameter` has been rewritten, and options and arguments are no longer just arrays of data, but actual classes. This allows much more fine-grained control over whether, for example, an option has been provided but there's no value to go with it.
 - `\Parable\Framework\App` now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
 - `\Parable\Framework\Dispatcher` can now return the route it dispatched by calling `getDispatchedRoute()`.
 - `\Parable\Framework\Dispatcher` now triggers two more events: `HOOK_DISPATCH_TEMPLATE_BEFORE` and `HOOK_DISPATCH_TEMPLATE_AFTER`. Use this to do something between a controller/callable being called and the template being loaded.
@@ -36,10 +37,11 @@ __Changes__
 - `dynamicReturnTypeMeta.json` has been added, removing the need for `/** @var \Class $var */` references in the code. This works with the dynamic return type plugin in PhpStorm. Removed the few existing references that were there.
 
 __Backwards-incompatible Changes__
+- `\Parable\Console` no longer accepts options in the format `--option value`, but only in the following: `--option=value`. This is because if you had an option which didn't require a value, and was followed by an argument, the argument would be seen as the option's value instead.
 - `\Parable\Console\App::setDefaultCommand()` now takes a command instance rather than the name, as the name would suggest. To set the default command by name, use `setDefaultCommandByName()` instead.
 - `\Parable\Console\App::setOnlyUseDefaultCommand()` was added, and the boolean paramater was removed from the `setDefaultCommand/ByName()` function calls. Checked by calling `shouldOnlyUseDefaultCommand()`.
 - `\Parable\Console\Command::addOption()` and `addArgument()` no longer take booleans for `required` or `valueRequired` but constants. See `\Parable\Console\Parameter` for the values. This adds the `OPTION_VALUE_PROHIBITED` possibility.
-- `\Parable\Console\Parameter` has received several constants: `OPTION_OPTIONAL`, `OPTION_REQUIRED`, `OPTION_VALUE_OPTIONAL`, `OPTION_VALUE_REQUIRED`, `OPTION_VALUE_PROHIBITED`, `ARGUMENT_OPTIONAL` and `ARGUMENT_REQUIRED`. The only new functionality if `PROHIBITED`. This will allow an option, but only ever without a value. This can be used to make sure true flag-like options can't erroneously see an argument as its value.
+- `\Parable\Console\Parameter` has received several constants: `PARAMETER_OPTIONAL`, `PARAMETER_REQUIRED`, `OPTION_VALUE_OPTIONAL` and `OPTION_VALUE_REQUIRED`. This replaces the boolean functionality Parable had before. This makes it more readable.
 - `\Parable\Console\Parameter::setOptions()` was renamed to `setCommandOptions()`, because the distinction is important.
 - `\Parable\Console\Output::writeError/writeInfo/writeSuccess()` are now suffixed with `Block`, so `writeInfoBlock()`, etc.
 - `\Parable\DI\Container::cleanName()` has been made protected. This shouldn't impact you, as you shouldn't've been using it in the first place.
