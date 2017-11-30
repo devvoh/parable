@@ -136,7 +136,7 @@ class Command
      */
     public function addOption(
         $name,
-        $required = Parameter::PARAMETER_REQUIRED,
+        $required = Parameter::PARAMETER_OPTIONAL,
         $valueRequired = Parameter::OPTION_VALUE_OPTIONAL,
         $defaultValue = null
     ) {
