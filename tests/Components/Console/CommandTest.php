@@ -77,8 +77,8 @@ class CommandTest extends \Parable\Tests\Base
 
         $arguments = $this->command->getArguments();
 
-        $argument1 = $arguments["arg1"];
-        $argument2 = $arguments["arg2"];
+        $argument1 = $arguments[0];
+        $argument2 = $arguments[1];
 
         $this->assertInstanceOf(\Parable\Console\Parameter\Argument::class, $argument1);
         $this->assertSame("arg1", $argument1->getName());

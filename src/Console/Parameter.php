@@ -219,7 +219,7 @@ class Parameter
             }
 
             $argument->setOrder($index);
-            $orderedArguments[$argument->getOrder()] = $argument;
+            $orderedArguments[$index] = $argument;
         }
         $this->commandArguments = $orderedArguments;
 
