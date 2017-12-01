@@ -272,7 +272,7 @@ class Parameter
     {
         $returnArray = [];
         foreach ($this->commandArguments as $argument) {
-            $returnArray[$argument->getName()] = $this->getArgument($argument->getName());
+            $returnArray[$argument->getName()] = $argument->getValue();
         }
         return $returnArray;
     }
