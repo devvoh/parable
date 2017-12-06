@@ -4,6 +4,22 @@ namespace Parable\Http;
 
 class Request
 {
+    const METHOD_GET     = "GET";
+    const METHOD_POST    = "POST";
+    const METHOD_PUT     = "PUT";
+    const METHOD_PATCH   = "PATCH";
+    const METHOD_DELETE  = "DELETE";
+    const METHOD_OPTIONS = "OPTIONS";
+
+    const VALID_METHODS  = [
+        self::METHOD_GET,
+        self::METHOD_POST,
+        self::METHOD_PUT,
+        self::METHOD_PATCH,
+        self::METHOD_DELETE,
+        self::METHOD_OPTIONS,
+    ];
+
     /** @var string */
     protected $protocol;
 
@@ -108,7 +124,7 @@ class Request
      */
     public function isGet()
     {
-        return $this->isMethod('GET');
+        return $this->isMethod(self::METHOD_GET);
     }
 
     /**
@@ -118,7 +134,7 @@ class Request
      */
     public function isPost()
     {
-        return $this->isMethod('POST');
+        return $this->isMethod(self::METHOD_POST);
     }
 
     /**
@@ -128,17 +144,7 @@ class Request
      */
     public function isPut()
     {
-        return $this->isMethod('PUT');
-    }
-
-    /**
-     * Return whether the current request is a DELETE request.
-     *
-     * @return bool
-     */
-    public function isDelete()
-    {
-        return $this->isMethod('DELETE');
+        return $this->isMethod(self::METHOD_PUT);
     }
 
     /**
@@ -148,7 +154,17 @@ class Request
      */
     public function isPatch()
     {
-        return $this->isMethod('PATCH');
+        return $this->isMethod(self::METHOD_PATCH);
+    }
+
+    /**
+     * Return whether the current request is a DELETE request.
+     *
+     * @return bool
+     */
+    public function isDelete()
+    {
+        return $this->isMethod(self::METHOD_DELETE);
     }
 
     /**
@@ -158,7 +174,7 @@ class Request
      */
     public function isOptions()
     {
-        return $this->isMethod('OPTIONS');
+        return $this->isMethod(self::METHOD_OPTIONS);
     }
 
     /**

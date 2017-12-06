@@ -1,8 +1,7 @@
 <?php
 date_default_timezone_set("Europe/Amsterdam");
 
-define('DS', DIRECTORY_SEPARATOR);
-define('BASEDIR', realpath(__DIR__ . DS . '..'));
+define('BASEDIR', realpath(__DIR__ . DIRECTORY_SEPARATOR . '..'));
 
 $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
 $path->setBaseDir(BASEDIR);

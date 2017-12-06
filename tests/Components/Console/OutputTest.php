@@ -4,7 +4,7 @@ namespace Parable\Tests\Components\Console;
 
 class OutputTest extends \Parable\Tests\Base
 {
-    /** @var \Parable\Console\Output */
+    /** @var \Parable\Console\Output|\PHPUnit_Framework_MockObject_MockObject */
     protected $output;
 
     /** @var string */

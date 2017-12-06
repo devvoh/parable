@@ -30,7 +30,7 @@ class PathTest extends \Parable\Tests\Base
     {
         $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
 
-        $expectedPath = $path->getBaseDir() . DS . "PathTest.php";
+        $expectedPath = $path->getBaseDir() . DIRECTORY_SEPARATOR . "PathTest.php";
 
         $this->assertSame($expectedPath, $path->getDir("PathTest.php"));
     }

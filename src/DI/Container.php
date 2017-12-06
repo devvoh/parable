@@ -118,7 +118,7 @@ class Container
             }
 
             if ($createAll) {
-                $dependencies[] = self::create($subClassName, $className);
+                $dependencies[] = self::createAll($subClassName, $className);
             } else {
                 $dependencies[] = self::get($subClassName, $className);
             }

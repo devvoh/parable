@@ -7,18 +7,23 @@ Considering the 0.11.x branch as Release Candidate 1 and the 0.12.x branch as RC
 __Changes__
 - All method doc blocks now have explanatory text, even if it's superfluous, for documentation purposes.
 - `\Parable\Console\App` now supports adding multiple commands in one go, using `addCommands([...])`.
-- `\Parable\Console\Input` has received a massive update that I've wanted to do for ages but never got around to.
+- `\Parable\Console\Input` received the following updates:
   - `\Parable\Console\Input::getKeyPress()` has been added. It will wait for a single key press and return its value immediately. Special characters like arrow keys, escape, enter, etc, will be returned as a string value accordingly.
   - `\Parable\Console\Input::enableShowInput()` and its buddy `disable` are now available for you to use. If disabled, hides the user's input as they enter it. `Input` will call the `enable` on destruct to prevent its effects lingering after exiting the script.
   - `\Parable\Console\Input::enableRequireReturn()` and its buddy `disable` are now available for you to use as well. If disabled, no longer requires an enter before returning input.
-- `\Parable\Console\Output` also received some updates.
+- `\Parable\Console\Output` received the following updates:
   - `\Parable\Console\Output::writeBlockWithTags()` was added, making it possible to write a block with multiple tags.
   - `\Parable\Console\Output::getTerminalWidth()` will return the columns available in the current terminal window. `getTerminalHeight()` will return the lines available.
   - `\parable\Console\Output::isInteractiveShell()` will return whether the script is running in an interactive terminal session or not.
 - `\Parable\Console\Parameter` has been rewritten, and options and arguments are no longer just arrays of data, but actual classes. This allows much more fine-grained control over whether, for example, an option has been provided but there's no value to go with it.
-- `\Parable\Framework\App` now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
-- `\Parable\Framework\Dispatcher` can now return the route it dispatched by calling `getDispatchedRoute()`.
-- `\Parable\Framework\Dispatcher` now triggers two more events: `HOOK_DISPATCH_TEMPLATE_BEFORE` and `HOOK_DISPATCH_TEMPLATE_AFTER`. Use this to do something between a controller/callable being called and the template being loaded.
+- `\Parable\Framework\App` received the following updates:
+    - It now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
+    - It now has `get()`, `post()`, `put()`, `patch()`, `delete()`, `options()` and `any()` methods, so there's an easy way of defining callback routes without having to set up the entire structure. `any()` accepts either an empty array for literally any method, or you can pass an array of the methods you want it to match with.
+    - It also has `setErrorReportingEnabled($bool)` and `isErrorReportingEnabled()`. By default it's set to off. You can add `parable.debug` to the Config and set it to true to enable it.
+    - It can now set the default timezone if you add a `parable.timezone` value to the config. 
+- `\Parable\Framework\Dispatcher` received the following updates:
+  - It can now return the route it dispatched by calling `getDispatchedRoute()`.
+  - It now triggers two more events: `HOOK_DISPATCH_TEMPLATE_BEFORE` and `HOOK_DISPATCH_TEMPLATE_AFTER`. Use this to do something between a controller/callable being called and the template being loaded.
 - `\Parable\Framework\Mailer` now supports setting a different mail sender. Default is, as it was, php's own `mail()`.
 - `\Parable\Framework\Mailer` now can act on three config values:
   - `parable.mail.sender`, which should be the class name of the `SenderInterface` implementation you want to use.
@@ -28,15 +33,23 @@ __Changes__
 - `\Parable\GetSet\Base` now also has `setResource`, for when you want to switch, or set it using a method rather than overwriting a property.
 - `\Parable\GetSet\Base::get()` now accepts a second parameter `$default` which is the value to return when the requested `$key` is not found. Added by @dmvdbrugge in PR #30. Thanks!
 - `\Parable\Http\Request` now has `isOptions()` to check for OPTIONS method requests.
+- `\Parable\Http\Request` now has constants for all methods and all accepted methods are in `Request::VALID_METHODS`.
 - `\Parable\Http\Response` now has `setHeaders()` so you can add a bunch of headers in one call, `removeHeader($key)` so you can remove a header, and `clearHeaders()` to, y'know, actually, I think you got this.
 - `\Parable\Http\Response::clearContent()` was added, in case you want to just want to call `appendContent()` multiple times rather than one `setContent()` and then those appends.
 - `\Parable\Log\Writer\NullLogger` was added, for when you want to log nowhere at all.
 - `\Parable\Mail\Mailer` now obviously also supports setting a Mail Sender. Default is, well, none. That's all up to you to configure. (Hey, psst, `Framework\Mailer` already tries to do that for you!)
-- `\Parable\Routing\Route` now makes sure all methods set on it are uppercase, for more consistent matching.
+- `\Parable\Routing\Route` received the following updates:
+  - In `setUrl()`, it now prepends a '/' if it isn't provided. Now you can add a url without the prepended slash if you find that cleaner.
+  - It now makes sure all methods set on it are uppercase, for more consistent matching.
+  - It now receives its own name and can be retrieved by calling `getName()` on it.
+  - It now has `setValues()`, in case you want to overwrite all values. These will be passed to the controller or callable, in order. This makes it possible to intercept a dispatch and inject, for example, the request or response objects in addition to the parameter values from the url.
+  - It now has `createFromDataArray()`, which can be used to create a `Route` object from the same type of data set in the `Routing` file in the structure.
 - `\Parable\Routing\Router` now has a `getRoutes()` method that returns all set routes. In case you, err, need that. 
 - `dynamicReturnTypeMeta.json` has been added, removing the need for `/** @var \Class $var */` references in the code. This works with the dynamic return type plugin in PhpStorm. Removed the few existing references that were there.
 
 __Backwards-incompatible Changes__
+- `Bootstrap.php` has been removed. `\Parable\Framework\App` handles its own setup now. This makes it easier to implement App without much hassle.
+- The constant `DS` has been removed. Replace these (if any) with the longer and built-in `DIRECTORY_SEPARATOR`.
 - `\Parable\Console` no longer accepts options in the format `--option value`, but only in the following: `--option=value`. This is because if you had an option which didn't require a value, and was followed by an argument, the argument would be seen as the option's value instead.
 - `\Parable\Console\App::setDefaultCommand()` now takes a command instance rather than the name, as the name would suggest. To set the default command by name, use `setDefaultCommandByName()` instead.
 - `\Parable\Console\App::setOnlyUseDefaultCommand()` was added, and the boolean paramater was removed from the `setDefaultCommand/ByName()` function calls. Checked by calling `shouldOnlyUseDefaultCommand()`.

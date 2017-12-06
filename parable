@@ -1,9 +1,23 @@
 #!/usr/bin/env php
 <?php
+// We're going to want to display all errors.
 ini_set('display_errors', '1');
 
+require_once realpath(__DIR__ . "/../../autoload.php");
+
 /** @var \Parable\Console\App $app */
-$app = require_once(__DIR__ . '/src/Framework/Bootstrap.php');
+$app = \Parable\DI\Container::create(\Parable\Console\App::class);
+
+$basedir = realpath(__DIR__ . "/../../..");
+
+// Add the default location to the autoloader and register it
+$autoloader = \Parable\DI\Container::create(\Parable\Framework\Autoloader::class);
+$autoloader->addLocation($basedir . DIRECTORY_SEPARATOR . 'app');
+$autoloader->register();
+
+// Set the basedir on the path
+$path = \Parable\DI\Container::create(\Parable\Filesystem\Path::class);
+$path->setBaseDir($basedir);
 
 $app->setName("Parable " . \Parable\Framework\App::PARABLE_VERSION);
 

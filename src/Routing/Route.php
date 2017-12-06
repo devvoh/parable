@@ -90,6 +90,9 @@ class Route
      */
     public function setUrl($url)
     {
+        if (strpos($url, "/") !== 0) {
+            $url = "/" . $url;
+        }
         $this->url = $url;
         return $this;
     }
@@ -148,6 +151,29 @@ class Route
     public function getAction()
     {
         return $this->action;
+    }
+
+    /**
+     * Set the name for this Route.
+     *
+     * @param $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Return the name for this Route.
+     *
+     * @return null|string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -388,6 +414,16 @@ class Route
     }
 
     /**
+     * @param array $values
+     */
+    public function setValues(array $values)
+    {
+        foreach ($values as $key => $value) {
+            $this->setValue($key, $value);
+        }
+    }
+
+    /**
      * Return a value, if it exists.
      *
      * @param string $key
@@ -431,5 +467,19 @@ class Route
             $url = str_replace('{' . $key . '}', $value, $url);
         }
         return $url;
+    }
+
+    /**
+     * Create new route based on data from array.
+     *
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function createFromDataArray(array $data)
+    {
+        $route = new static();
+        $route->setDataFromArray($data);
+        return $route;
     }
 }

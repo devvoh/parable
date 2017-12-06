@@ -329,4 +329,24 @@ class ParameterTest extends \Parable\Tests\Base
             $this->parameter->getArguments()
         );
     }
+
+    public function testParameterRequiredOnlyAcceptConstantValues()
+    {
+        $this->expectException(\Parable\Console\Exception::class);
+        $this->expectExceptionMessage("Required must one of the PARAMETER_* constants.");
+
+        $option = new \Parable\Console\Parameter\Option("test", 418);
+    }
+
+    public function testParameterValueRequiredOnlyAcceptConstantValues()
+    {
+        $this->expectException(\Parable\Console\Exception::class);
+        $this->expectExceptionMessage("Value required must one of the OPTION_VALUE_* constants.");
+
+        $option = new \Parable\Console\Parameter\Option(
+            "test",
+            \Parable\Console\Parameter::PARAMETER_REQUIRED,
+            418
+        );
+    }
 }

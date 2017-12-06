@@ -50,7 +50,6 @@ class Config extends \Parable\GetSet\Base
         try {
             $this->addConfig(\Parable\DI\Container::get($this->mainConfigClass));
         } catch (\Exception $e) {
-            // We don't throw here since the file isn't required to exist, but we do stop here
             return $this;
         }
 

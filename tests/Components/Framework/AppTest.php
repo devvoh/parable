@@ -115,6 +115,62 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->assertSame('callable route found', $output);
     }
 
+    public function testAppWithAnyQuickRoute()
+    {
+        $_GET['url'] = '/any';
+        $this->app->get("any", function () { return "any quickroute"; })->run();
+        $this->assertSame("any quickroute", $this->getActualOutputAndClean());
+    }
+
+    /**
+     * @param $type
+     *
+     * @dataProvider dpMethods
+     */
+    public function testAppWithSpecificQuickRoute($type)
+    {
+        $_SERVER["REQUEST_METHOD"] = strtoupper($type);
+        $_GET['url'] = '/quickroute';
+        $this->app->{$type}("quickroute", function () use ($type) { return "{$type} quickroute"; })->run();
+        $this->assertSame("{$type} quickroute", $this->getActualOutputAndClean());
+    }
+
+    /**
+     * @param $type
+     *
+     * @dataProvider dpMethods
+     */
+    public function testAppWithAnyQuickRouteWithoutMethodsAcceptsAnyMethod($type)
+    {
+        $_SERVER["REQUEST_METHOD"] = strtoupper($type);
+        $_GET['url'] = '/quickroute';
+        $this->app->any([], "quickroute", function () use ($type) { return "any quickroute"; })->run();
+        $this->assertSame("any quickroute", $this->getActualOutputAndClean());
+    }
+
+    public function dpMethods()
+    {
+        return [
+            ["get"],
+            ["post"],
+            ["put"],
+            ["patch"],
+            ["delete"],
+            ["options"],
+        ];
+    }
+
+    public function testAppWithGetQuickRouteDoesNotAcceptPost()
+    {
+        $_SERVER["REQUEST_METHOD"] = "POST";
+        $_GET['url'] = '/quickroute';
+        $this->app->get("quickroute", function () { return "get quickroute"; })->run();
+        // And now it should be empty
+        $this->assertSame("", $this->getActualOutputAndClean());
+
+        $this->assertSame(404, $this->mockResponse->getHttpCode());
+    }
+
     public function testAppRunWithTemplatedUrlWorks()
     {
         $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
@@ -202,6 +258,83 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $app->run();
     }
 
+    public function testEnableErrorReporting()
+    {
+        // get the original state
+        $errorReportingEnabledOriginally = $this->app->isErrorReportingEnabled();
+
+        $this->app->setErrorReportingEnabled(true);
+
+        $this->assertSame("1", ini_get('display_errors'));
+        $this->assertSame(E_ALL, error_reporting());
+
+        $this->app->setErrorReportingEnabled(false);
+
+        $this->assertSame("0", ini_get('display_errors'));
+        $this->assertSame(E_ALL | ~E_DEPRECATED, error_reporting());
+
+        // and reset to the original state
+        $this->app->setErrorReportingEnabled($errorReportingEnabledOriginally);
+    }
+
+    public function testUnsetBasedirOnPathGetsSet()
+    {
+        // get the original state
+        $pathOriginal = $this->path->getBaseDir();
+
+        $this->path->setBaseDir("");
+        $this->assertEmpty($this->path->getBaseDir());
+
+        $this->createApp();
+
+        $this->assertNotEmpty($this->path->getBaseDir());
+
+        // and reset to the original state
+        $this->path->setBaseDir($pathOriginal);
+    }
+
+    public function testDebugConfigOptionEnablesErrorReporting()
+    {
+        $config = \Parable\DI\Container::create(\Parable\Tests\TestClasses\SettableConfig::class);
+        $config->set([
+            "parable" => [
+                "debug" => true,
+            ],
+        ]);
+
+        $app = $this->createAppWithSpecificConfig($config);
+
+        $this->assertFalse($app->isErrorReportingEnabled());
+
+        $app->run();
+
+        $this->assertTrue($app->isErrorReportingEnabled());
+    }
+
+    public function testSetDefaultTimezoneFromConfig()
+    {
+        // get the original state
+        $timezone = date_default_timezone_get();
+
+        $config = \Parable\DI\Container::create(\Parable\Tests\TestClasses\SettableConfig::class);
+        $config->set([
+            "parable" => [
+                "timezone" => "Antarctica/McMurdo",
+            ],
+        ]);
+
+        $app = $this->createAppWithSpecificConfig($config);
+
+        $this->assertSame($timezone, date_default_timezone_get());
+
+        $app->run();
+
+        $this->assertSame("Antarctica/McMurdo", date_default_timezone_get());
+
+        // and reset to the original state
+        date_default_timezone_set($timezone);
+    }
+
     /**
      * @param string $mainConfigClassName
      * @return \Parable\Framework\App
@@ -210,10 +343,35 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     {
         $config = new \Parable\Framework\Config($this->path);
         $config->setMainConfigClassName($mainConfigClassName);
-        $config->load();
 
         \Parable\DI\Container::store($config);
 
-        return \Parable\DI\Container::create(\Parable\Framework\App::class);
+        $app = \Parable\DI\Container::create(\Parable\Framework\App::class);
+
+        \Parable\DI\Container::clear(\Parable\Framework\Config::class);
+
+        return $app;
+    }
+
+    protected function createAppWithSpecificConfig(\Parable\Framework\Interfaces\Config $specificConfig)
+    {
+        $config = new \Parable\Framework\Config($this->path);
+        $config->setMainConfigClassName(get_class($specificConfig));
+        $config->addConfig($specificConfig);
+
+        \Parable\DI\Container::store($config);
+
+        $app = \Parable\DI\Container::create(\Parable\Framework\App::class);
+
+        \Parable\DI\Container::clear(\Parable\Framework\Config::class);
+
+        return $app;
+    }
+
+    public function tearDown()
+    {
+        // Make sure we never echo nothin'
+        $this->getActualOutputAndClean();
+        parent::tearDown();
     }
 }

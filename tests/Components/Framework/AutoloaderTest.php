@@ -17,16 +17,9 @@ class AutoloaderTest extends \Parable\Tests\Components\Framework\Base
     public function testRegister()
     {
         $autoloaders = spl_autoload_functions();
-        $this->assertCount(2, $autoloaders);
-
-        $this->autoloader->register();
-        $autoloaders = spl_autoload_functions();
-        $this->assertCount(3, $autoloaders);
 
         $this->assertInstanceOf(\Composer\Autoload\ClassLoader::class, $autoloaders[0][0]);
         $this->assertInstanceOf(\Parable\Framework\Autoloader::class, $autoloaders[1][0]);
-        // And since we registered it again, thar we go.
-        $this->assertInstanceOf(\Parable\Framework\Autoloader::class, $autoloaders[2][0]);
     }
 
     public function testAddAndGetLocation()

@@ -49,9 +49,11 @@ class Router
      */
     public function addRouteFromArray($name, array $routeArray)
     {
-        $route = new \Parable\Routing\Route();
-        $route->setDataFromArray($routeArray);
+        $route = \Parable\Routing\Route::createFromDataArray($routeArray);
+        $route->setName($name);
+
         $this->addRoute($name, $route);
+
         return $this;
     }
 

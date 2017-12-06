@@ -289,4 +289,23 @@ class RouterTest extends \Parable\Tests\Base
         ]);
         $this->router->addRoute("test", $route);
     }
+
+    public function testAddRouteFromArrayReturnsProperRouteObject()
+    {
+        $this->router->addRouteFromArray("this-is-a-route", [
+            "methods" => ["GET"],
+            "url" => "/this-is-a-route",
+            "controller" => \Parable\Tests\TestClasses\Controller::class,
+            "action" => "thisIsARoute",
+        ]);
+        $route = $this->router->matchUrl("/this-is-a-route");
+
+        $this->assertNotNull($route);
+
+        $this->assertSame("this-is-a-route", $route->getName());
+        $this->assertSame(["GET"], $route->getMethods());
+        $this->assertSame("/this-is-a-route", $route->getUrl());
+        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->getController());
+        $this->assertSame("thisIsARoute", $route->getAction());
+    }
 }

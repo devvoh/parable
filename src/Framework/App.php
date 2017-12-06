@@ -32,6 +32,9 @@ class App
     /** @var \Parable\Event\Hook */
     protected $hook;
 
+    /** @var \Parable\Filesystem\Path */
+    protected $path;
+
     /** @var \Parable\Routing\Router */
     protected $router;
 
@@ -47,11 +50,16 @@ class App
     /** @var \Parable\ORM\Database */
     protected $database;
 
+    /** @var bool */
+    protected $errorReportingEnabled = false;
+
     public function __construct(
+        \Parable\Framework\Autoloader $autoloader,
         \Parable\Framework\Config $config,
         \Parable\Framework\Dispatcher $dispatcher,
         \Parable\Framework\Toolkit $toolkit,
         \Parable\Event\Hook $hook,
+        \Parable\Filesystem\Path $path,
         \Parable\Routing\Router $router,
         \Parable\Http\Response $response,
         \Parable\Http\Url $url,
@@ -62,11 +70,55 @@ class App
         $this->dispatcher = $dispatcher;
         $this->toolkit    = $toolkit;
         $this->hook       = $hook;
+        $this->path       = $path;
         $this->router     = $router;
         $this->response   = $response;
         $this->url        = $url;
         $this->session    = $session;
         $this->database   = $database;
+
+        $basedir = realpath(__DIR__ . "/../../../../../");
+
+        // Add the default location to the autoloader and register it
+        $autoloader->addLocation($basedir . DIRECTORY_SEPARATOR . 'app');
+        $autoloader->register();
+
+        // Set the basedir on the path if it's not already set
+        if (!$path->getBaseDir()) {
+            $path->setBaseDir($basedir);
+        }
+    }
+
+    /**
+     * Enable error reporting, setting display_errors to on and reporting to E_ALL
+     *
+     * @return $this
+     */
+    public function setErrorReportingEnabled($enabled)
+    {
+        ini_set("log_errors", 1);
+
+        if ($enabled) {
+            ini_set("display_errors", 1);
+            error_reporting(E_ALL);
+        } else {
+            ini_set("display_errors", 0);
+            error_reporting(E_ALL | ~E_DEPRECATED);
+        }
+
+        $this->errorReportingEnabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Return whether error reporting is currently enabled or not
+     *
+     * @return bool
+     */
+    public function isErrorReportingEnabled()
+    {
+        return $this->errorReportingEnabled;
     }
 
     /**
@@ -76,41 +128,53 @@ class App
      */
     public function run()
     {
-        /* Load the config */
+        // Load the config
         $this->config->load();
 
-        /* Set the basePath on the url based on the config */
+        // Enable error reporting if debug is set to true
+        if ($this->config->get('parable.debug') === true) {
+            $this->setErrorReportingEnabled(true);
+        } else {
+            $this->setErrorReportingEnabled(false);
+        }
+
+        // Set the basePath on the url based on the config
         if ($this->config->get('parable.app.homedir')) {
             $homedir = trim($this->config->get('parable.app.homedir'), "/");
             $this->url->setBasePath($homedir);
         }
 
-        /* See if there's any inits defined in the config */
+        // See if there's any inits defined in the config
         if ($this->config->get("parable.inits")) {
             $this->loadInits();
         }
 
-        /* Start the session if session.auto-enable is true */
+        // Start the session if session.auto-enable is true
         if ($this->config->get('parable.session.auto-enable') !== false) {
             $this->startSession();
         }
 
-        /* Build the base Url */
+        // Set the default timezone if it's set
+        if ($this->config->get('parable.timezone')) {
+            date_default_timezone_set($this->config->get('parable.timezone'));
+        }
+
+        // Build the base Url
         $this->url->buildBaseurl();
 
-        /* Load the routes */
+        // Load the routes
         $this->loadRoutes();
 
-        /* Get the current url */
+        // Get the current url
         $currentUrl     = $this->toolkit->getCurrentUrl();
         $currentFullUrl = $this->toolkit->getCurrentUrlFull();
 
-        /* Init the database if it's configured */
+        // Init the database if it's configured
         if ($this->config->get('parable.database.type')) {
             $this->initDatabase();
         }
 
-        /* And try to match the route */
+        // And try to match the route
         $this->hook->trigger(self::HOOK_ROUTE_MATCH_BEFORE, $currentUrl);
         $route = $this->router->matchUrl($currentUrl);
         $this->hook->trigger(self::HOOK_ROUTE_MATCH_AFTER, $route);
@@ -225,5 +289,128 @@ class App
     public function getVersion()
     {
         return self::PARABLE_VERSION;
+    }
+
+    /**
+     * Add a route with any accepted method (passing an empty array) or a specific subset of methods.
+     *
+     * The name is just a uniqid since quick routes aren't intended to be used the same as full routes.
+     *
+     * @param array       $methods
+     * @param string      $url
+     * @param callable    $callable
+     * @param string|null $templatePath
+     *
+     * @return $this
+     */
+    public function any(array $methods, $url, $callable, $templatePath = null)
+    {
+        if (empty($methods)) {
+            $methods = \Parable\Http\Request::VALID_METHODS;
+        }
+
+        $name = uniqid();
+
+        $this->router->addRouteFromArray(
+            $name,
+            [
+                "methods"      => $methods,
+                "url"          => $url,
+                "callable"     => $callable,
+                "templatePath" => $templatePath,
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add a GET route with a callable and optionally a templatePath.
+     *
+     * @param string      $url
+     * @param callable    $callable
+     * @param string|null $templatePath
+     *
+     * @return $this
+     */
+    public function get($url, $callable, $templatePath = null)
+    {
+        $this->any([\Parable\Http\Request::METHOD_GET], $url, $callable, $templatePath);
+        return $this;
+    }
+
+    /**
+     * Add a POST route with a callable and optionally a templatePath.
+     *
+     * @param string      $url
+     * @param callable    $callable
+     * @param string|null $templatePath
+     *
+     * @return $this
+     */
+    public function post($url, $callable, $templatePath = null)
+    {
+        $this->any([\Parable\Http\Request::METHOD_POST], $url, $callable, $templatePath);
+        return $this;
+    }
+
+    /**
+     * Add a PUT route with a callable and optionally a templatePath.
+     *
+     * @param string      $url
+     * @param callable    $callable
+     * @param string|null $templatePath
+     *
+     * @return $this
+     */
+    public function put($url, $callable, $templatePath = null)
+    {
+        $this->any([\Parable\Http\Request::METHOD_PUT], $url, $callable, $templatePath);
+        return $this;
+    }
+
+    /**
+     * Add a PATCH route with a callable and optionally a templatePath.
+     *
+     * @param string      $url
+     * @param callable    $callable
+     * @param string|null $templatePath
+     *
+     * @return $this
+     */
+    public function patch($url, $callable, $templatePath = null)
+    {
+        $this->any([\Parable\Http\Request::METHOD_PATCH], $url, $callable, $templatePath);
+        return $this;
+    }
+
+    /**
+     * Add a DELETE route with a callable and optionally a templatePath.
+     *
+     * @param string      $url
+     * @param callable    $callable
+     * @param string|null $templatePath
+     *
+     * @return $this
+     */
+    public function delete($url, $callable, $templatePath = null)
+    {
+        $this->any([\Parable\Http\Request::METHOD_DELETE], $url, $callable, $templatePath);
+        return $this;
+    }
+
+    /**
+     * Add an OPTIONS route with a callable and optionally a templatePath.
+     *
+     * @param string      $url
+     * @param callable    $callable
+     * @param string|null $templatePath
+     *
+     * @return $this
+     */
+    public function options($url, $callable, $templatePath = null)
+    {
+        $this->any([\Parable\Http\Request::METHOD_OPTIONS], $url, $callable, $templatePath);
+        return $this;
     }
 }

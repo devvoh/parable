@@ -57,4 +57,21 @@ class RouteTest extends \Parable\Tests\Base
 
         $this->assertSame("what", $route->getValue("stuff"));
     }
+
+    public function testSetGetValues()
+    {
+        $route = new \Parable\Routing\Route();
+        $route->setValues([
+            "stuff" => "what",
+            "what"  => "stuff",
+        ]);
+
+        $this->assertSame(
+            [
+                "stuff" => "what",
+                "what"  => "stuff",
+            ],
+            $route->getValues()
+        );
+    }
 }
