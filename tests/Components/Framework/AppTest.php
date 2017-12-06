@@ -118,7 +118,8 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     public function testAppWithAnyQuickRoute()
     {
         $_GET['url'] = '/any';
-        $this->app->get("any", function () { return "any quickroute"; })->run();
+        $this->app->get("any", function () {
+            return "any quickroute"; })->run();
         $this->assertSame("any quickroute", $this->getActualOutputAndClean());
     }
 
@@ -131,7 +132,8 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     {
         $_SERVER["REQUEST_METHOD"] = strtoupper($type);
         $_GET['url'] = '/quickroute';
-        $this->app->{$type}("quickroute", function () use ($type) { return "{$type} quickroute"; })->run();
+        $this->app->{$type}("quickroute", function () use ($type) {
+            return "{$type} quickroute"; })->run();
         $this->assertSame("{$type} quickroute", $this->getActualOutputAndClean());
     }
 
@@ -144,7 +146,8 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     {
         $_SERVER["REQUEST_METHOD"] = strtoupper($type);
         $_GET['url'] = '/quickroute';
-        $this->app->any([], "quickroute", function () use ($type) { return "any quickroute"; })->run();
+        $this->app->any([], "quickroute", function () use ($type) {
+            return "any quickroute"; })->run();
         $this->assertSame("any quickroute", $this->getActualOutputAndClean());
     }
 
@@ -164,7 +167,8 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     {
         $_SERVER["REQUEST_METHOD"] = "POST";
         $_GET['url'] = '/quickroute';
-        $this->app->get("quickroute", function () { return "get quickroute"; })->run();
+        $this->app->get("quickroute", function () {
+            return "get quickroute"; })->run();
         // And now it should be empty
         $this->assertSame("", $this->getActualOutputAndClean());
 

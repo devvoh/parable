@@ -20,7 +20,8 @@ class SettableConfig implements
      *
      * @return $this
      */
-    public function set(array $config) {
+    public function set(array $config)
+    {
         $this->config = $config;
         return $this;
     }
