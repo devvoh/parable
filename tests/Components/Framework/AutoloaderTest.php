@@ -35,7 +35,7 @@ class AutoloaderTest extends \Parable\Tests\Components\Framework\Base
 
     public function testLoadFromSetLocation()
     {
-        $this->autoloader->addLocation($this->path->getDir("tests/TestClasses"));
+        $this->autoloader->addLocation($this->testPath->getDir("tests/TestClasses"));
 
         $this->assertTrue($this->autoloader->load(\Autoloader\Basic::class));
         $this->assertTrue(class_exists(\Autoloader\Basic::class));

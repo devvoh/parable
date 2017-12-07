@@ -77,16 +77,13 @@ class App
         $this->session    = $session;
         $this->database   = $database;
 
-        $basedir = realpath(__DIR__ . "/../../../../../");
-
         // Add the default location to the autoloader and register it
-        $autoloader->addLocation($basedir . DIRECTORY_SEPARATOR . 'app');
+        $autoloader->addLocation(BASEDIR . DS . 'app');
         $autoloader->register();
 
-        // Set the basedir on the path if it's not already set
-        if (!$path->getBaseDir()) {
-            $path->setBaseDir($basedir);
-        }
+        // And make sure $path has the proper BASEDIR
+        $this->path = $path;
+        $this->path->setBaseDir(BASEDIR);
     }
 
     /**
@@ -140,7 +137,7 @@ class App
 
         // Set the basePath on the url based on the config
         if ($this->config->get('parable.app.homedir')) {
-            $homedir = trim($this->config->get('parable.app.homedir'), "/");
+            $homedir = trim($this->config->get('parable.app.homedir'), DS);
             $this->url->setBasePath($homedir);
         }
 

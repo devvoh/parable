@@ -16,7 +16,7 @@ class Path
      */
     public function setBaseDir($baseDir)
     {
-        $this->baseDir = rtrim($baseDir, DIRECTORY_SEPARATOR);
+        $this->baseDir = rtrim($baseDir, DS);
         return $this;
     }
 
@@ -39,9 +39,9 @@ class Path
      */
     public function getDir($directory)
     {
-        $directory = str_replace('/', DIRECTORY_SEPARATOR, $directory);
+        $directory = str_replace('/', DS, $directory);
         if (strpos($directory, $this->getBaseDir()) === false || !file_exists($directory)) {
-            $directory = $this->getBaseDir() . DIRECTORY_SEPARATOR . ltrim($directory, DIRECTORY_SEPARATOR);
+            $directory = $this->getBaseDir() . DS . ltrim($directory, DS);
         }
         return $directory;
     }

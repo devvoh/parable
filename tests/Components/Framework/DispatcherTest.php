@@ -59,7 +59,7 @@ class DispatcherTest extends \Parable\Tests\Components\Framework\Base
         $route->setAction("index");
 
         $path = new \Parable\Filesystem\Path();
-        $path->setBaseDir($this->path->getBaseDir() . DIRECTORY_SEPARATOR . "tests/TestTemplates/");
+        $path->setBaseDir($this->testPath->getBaseDir() . DS . "tests/TestTemplates/");
 
         $dispatcher = new \Parable\Framework\Dispatcher(
             $this->hook,

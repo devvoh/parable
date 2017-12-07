@@ -11,7 +11,12 @@ class MailerTest extends \Parable\Tests\Components\Framework\Base
     {
         parent::setUp();
 
-        $this->mailer = \Parable\DI\Container::create(\Parable\Framework\Mail\Mailer::class);
+        $this->mailer = new \Parable\Framework\Mail\Mailer(
+            \Parable\DI\Container::get(\Parable\Framework\Config::class),
+            \Parable\DI\Container::get(\Parable\Framework\View::class),
+            \Parable\DI\Container::get(\Parable\Framework\Mail\TemplateVariables::class),
+            $this->testPath
+        );
     }
 
     public function testMailerPicksUpMailSenderFromConfig()
@@ -19,14 +24,14 @@ class MailerTest extends \Parable\Tests\Components\Framework\Base
         // By default it should be the PhpMail sender
         $this->assertInstanceOf(\Parable\Mail\Sender\PhpMail::class, $this->mailer->getMailSender());
 
-        $config = new \Parable\Framework\Config($this->path);
+        $config = new \Parable\Framework\Config($this->testPath);
         $config->set("parable.mail.sender", \Parable\Mail\Sender\NullMailer::class);
 
         $mailer = new \Parable\Framework\Mail\Mailer(
             $config,
             \Parable\DI\Container::get(\Parable\Framework\View::class),
             \Parable\DI\Container::get(\Parable\Framework\Mail\TemplateVariables::class),
-            $this->path
+            $this->testPath
         );
 
         $this->assertInstanceOf(\Parable\Mail\Sender\NullMailer::class, $mailer->getMailSender());
@@ -37,20 +42,20 @@ class MailerTest extends \Parable\Tests\Components\Framework\Base
         $this->expectException(\Parable\Framework\Exception::class);
         $this->expectExceptionMessage("Invalid mail sender set in config.");
 
-        $config = new \Parable\Framework\Config($this->path);
+        $config = new \Parable\Framework\Config($this->testPath);
         $config->set("parable.mail.sender", "what am dis");
 
-        $mailer = new \Parable\Framework\Mail\Mailer(
+        new \Parable\Framework\Mail\Mailer(
             $config,
             \Parable\DI\Container::get(\Parable\Framework\View::class),
             \Parable\DI\Container::get(\Parable\Framework\Mail\TemplateVariables::class),
-            $this->path
+            $this->testPath
         );
     }
 
     public function testMailerPicksUpFromEmailAndNameFromConfig()
     {
-        $config = new \Parable\Framework\Config($this->path);
+        $config = new \Parable\Framework\Config($this->testPath);
         $config->set("parable.mail.from.email", "me@thatplace.gov");
         $config->set("parable.mail.from.name", "yo that's me!");
 
@@ -58,7 +63,7 @@ class MailerTest extends \Parable\Tests\Components\Framework\Base
             $config,
             \Parable\DI\Container::get(\Parable\Framework\View::class),
             \Parable\DI\Container::get(\Parable\Framework\Mail\TemplateVariables::class),
-            $this->path
+            $this->testPath
         );
 
         $this->assertSame("yo that's me! <me@thatplace.gov>", $mailer->getAddressesForType("from"));

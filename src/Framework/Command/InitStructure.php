@@ -25,9 +25,12 @@ class InitStructure extends \Parable\Console\Command
             \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
             "public"
         );
-        $this->path = $path;
 
-        $this->vendor_path = __DIR__ . "/../../..";
+        $this->path = $path;
+        $this->path->setBaseDir(BASEDIR);
+
+        // Since we can't rely on the package name 100%, we set the vendor_path backwards from here.
+        $this->vendor_path = realpath(__DIR__ . DS . ".." . DS . ".." . DS . "..");
     }
 
     /**
@@ -38,7 +41,7 @@ class InitStructure extends \Parable\Console\Command
     public function run()
     {
         $homedir = $this->parameter->getOption("homedir");
-        $homedir = ltrim($homedir, DIRECTORY_SEPARATOR);
+        $homedir = ltrim($homedir, DS);
 
         $homedir_actual = $this->path->getDir($homedir);
 
@@ -76,15 +79,15 @@ class InitStructure extends \Parable\Console\Command
         $this->output->write('Creating folder structure: ');
 
         $dirs = [
-            'app',
-            'app/Command',
-            'app/Config',
-            'app/Controller',
-            'app/Init',
-            'app/Model',
-            'app/Routing',
-            'app/View',
-            'app/View/Home',
+            "app",
+            "app/Command",
+            "app/Config",
+            "app/Controller",
+            "app/Init",
+            "app/Model",
+            "app/Routing",
+            "app/View",
+            "app/View/Home",
             $homedir,
         ];
 

@@ -50,9 +50,9 @@ class Autoloader
      */
     public function load($class)
     {
-        $path = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-        $path = '##replace##/' . trim($path, DIRECTORY_SEPARATOR) . '.php';
-        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        $path = str_replace('\\', DS, $class);
+        $path = '##replace##/' . trim($path, DS) . '.php';
+        $path = str_replace('/', DS, $path);
 
         foreach ($this->getLocations() as $subPath) {
             $actualPath = str_replace('##replace##', $subPath, $path);

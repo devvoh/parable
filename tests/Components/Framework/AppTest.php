@@ -46,7 +46,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
             'url' => '/',
             'controller' => \Parable\Tests\TestClasses\Controller::class,
             'action' => 'index',
-            'templatePath' => $this->path->getDir('tests/TestTemplates/index.phtml'),
+            'templatePath' => $this->testPath->getDir('tests/TestTemplates/index.phtml'),
         ]);
 
         $this->app = $this->createApp();
@@ -181,8 +181,6 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
 
     public function testAppRunWithTemplatedUrlWorks()
     {
-        $path = \Parable\DI\Container::get(\Parable\Filesystem\Path::class);
-
         $_GET['url'] = '/template';
         $this->router->addRouteFromArray(
             'template',
@@ -192,7 +190,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
                 'callable' => function () {
                     echo "Hello";
                 },
-                'templatePath' => $path->getDir('tests/TestTemplates/app_test_template.phtml'),
+                'templatePath' => $this->testPath->getDir('tests/TestTemplates/app_test_template.phtml'),
             ]
         );
 
@@ -285,22 +283,6 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->app->setErrorReportingEnabled($errorReportingEnabledOriginally);
     }
 
-    public function testUnsetBasedirOnPathGetsSet()
-    {
-        // get the original state
-        $pathOriginal = $this->path->getBaseDir();
-
-        $this->path->setBaseDir("");
-        $this->assertEmpty($this->path->getBaseDir());
-
-        $this->createApp();
-
-        $this->assertNotEmpty($this->path->getBaseDir());
-
-        // and reset to the original state
-        $this->path->setBaseDir($pathOriginal);
-    }
-
     public function testDebugConfigOptionEnablesErrorReporting()
     {
         $config = \Parable\DI\Container::create(\Parable\Tests\TestClasses\SettableConfig::class);
@@ -349,7 +331,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
      */
     protected function createApp($mainConfigClassName = \Parable\Tests\TestClasses\Config\Test::class)
     {
-        $config = new \Parable\Framework\Config($this->path);
+        $config = new \Parable\Framework\Config($this->testPath);
         $config->setMainConfigClassName($mainConfigClassName);
 
         \Parable\DI\Container::store($config);
@@ -363,7 +345,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
 
     protected function createAppWithSpecificConfig(\Parable\Framework\Interfaces\Config $specificConfig)
     {
-        $config = new \Parable\Framework\Config($this->path);
+        $config = new \Parable\Framework\Config($this->testPath);
         $config->setMainConfigClassName(get_class($specificConfig));
         $config->addConfig($specificConfig);
 
