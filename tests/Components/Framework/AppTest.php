@@ -144,14 +144,34 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
      *
      * @dataProvider dpMethods
      */
-    public function testAppWithAnyQuickRouteWithoutMethodsAcceptsAnyMethod($type)
+    public function testAppWithAnyQuickRouteAcceptsAnyMethod($type)
     {
         $_SERVER["REQUEST_METHOD"] = strtoupper($type);
         $_GET['url'] = '/quickroute';
-        $this->app->any([], "quickroute", function () use ($type) {
+        $this->app->any("quickroute", function () use ($type) {
             return "any quickroute";
         })->run();
         $this->assertSame("any quickroute", $this->getActualOutputAndClean());
+    }
+
+    /**
+     * @param $type
+     *
+     * @dataProvider dpMethods
+     */
+    public function testAppWithMultipleQuickRouteAcceptsMultipleMethods($type)
+    {
+        $_SERVER["REQUEST_METHOD"] = strtoupper($type);
+        $_GET['url'] = '/quickroute';
+        $this->app->multiple(["GET", "PUT", "OPTIONS"], "quickroute", function () use ($type) {
+            return "multiple quickroute";
+        })->run();
+
+        if (in_array(strtoupper($type), ["GET", "PUT", "OPTIONS"])) {
+            $this->assertSame("multiple quickroute", $this->getActualOutputAndClean());
+        } else {
+            $this->assertEmpty($this->getActualOutputAndClean());
+        }
     }
 
     public function dpMethods()

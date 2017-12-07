@@ -18,7 +18,7 @@ __Changes__
 - `\Parable\Console\Parameter` has been rewritten, and options and arguments are no longer just arrays of data, but actual classes. This allows much more fine-grained control over whether, for example, an option has been provided but there's no value to go with it.
 - `\Parable\Framework\App` received the following updates:
     - It now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
-    - It now has `get()`, `post()`, `put()`, `patch()`, `delete()`, `options()` and `any()` methods, so there's an easy way of defining callback routes without having to set up the entire structure. `any()` accepts either an empty array for literally any method, or you can pass an array of the methods you want it to match with.
+    - It now has `get()`, `post()`, `put()`, `patch()`, `delete()`, `options()`, `any()` and `multiple()` methods, so there's an easy way of defining callback routes without having to set up the entire structure. `any()` accepts literally any method, or you can pass an array of the methods to `multiple()` as its first parameter.
     - It also has `setErrorReportingEnabled($bool)` and `isErrorReportingEnabled()`. By default it's set to off. You can add `parable.debug` to the Config and set it to true to enable it.
     - It can now set the default timezone if you add a `parable.timezone` value to the config. 
 - `\Parable\Framework\Dispatcher` received the following updates:

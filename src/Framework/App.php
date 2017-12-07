@@ -289,7 +289,7 @@ class App
     }
 
     /**
-     * Add a route with any accepted method (passing an empty array) or a specific subset of methods.
+     * Add a route which will respond to all methods passed in $methods.
      *
      * The name is just a uniqid since quick routes aren't intended to be used the same as full routes.
      *
@@ -300,12 +300,8 @@ class App
      *
      * @return $this
      */
-    public function any(array $methods, $url, $callable, $templatePath = null)
+    public function multiple(array $methods, $url, $callable, $templatePath = null)
     {
-        if (empty($methods)) {
-            $methods = \Parable\Http\Request::VALID_METHODS;
-        }
-
         $name = uniqid();
 
         $this->router->addRouteFromArray(
@@ -321,6 +317,13 @@ class App
         return $this;
     }
 
+    public function any($url, $callable, $templatePath = null)
+    {
+        $this->multiple(\Parable\Http\Request::VALID_METHODS, $url, $callable, $templatePath);
+        return $this;
+
+    }
+
     /**
      * Add a GET route with a callable and optionally a templatePath.
      *
@@ -332,7 +335,7 @@ class App
      */
     public function get($url, $callable, $templatePath = null)
     {
-        $this->any([\Parable\Http\Request::METHOD_GET], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_GET], $url, $callable, $templatePath);
         return $this;
     }
 
@@ -347,7 +350,7 @@ class App
      */
     public function post($url, $callable, $templatePath = null)
     {
-        $this->any([\Parable\Http\Request::METHOD_POST], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_POST], $url, $callable, $templatePath);
         return $this;
     }
 
@@ -362,7 +365,7 @@ class App
      */
     public function put($url, $callable, $templatePath = null)
     {
-        $this->any([\Parable\Http\Request::METHOD_PUT], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_PUT], $url, $callable, $templatePath);
         return $this;
     }
 
@@ -377,7 +380,7 @@ class App
      */
     public function patch($url, $callable, $templatePath = null)
     {
-        $this->any([\Parable\Http\Request::METHOD_PATCH], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_PATCH], $url, $callable, $templatePath);
         return $this;
     }
 
@@ -392,7 +395,7 @@ class App
      */
     public function delete($url, $callable, $templatePath = null)
     {
-        $this->any([\Parable\Http\Request::METHOD_DELETE], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_DELETE], $url, $callable, $templatePath);
         return $this;
     }
 
@@ -407,7 +410,7 @@ class App
      */
     public function options($url, $callable, $templatePath = null)
     {
-        $this->any([\Parable\Http\Request::METHOD_OPTIONS], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_OPTIONS], $url, $callable, $templatePath);
         return $this;
     }
 }
