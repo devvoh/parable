@@ -321,7 +321,6 @@ class App
     {
         $this->multiple(\Parable\Http\Request::VALID_METHODS, $url, $callable, $templatePath);
         return $this;
-
     }
 
     /**
