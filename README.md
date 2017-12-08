@@ -55,9 +55,13 @@ After you've run `parable init-structure`, you should have a basic structure to 
 
 Now, if you want to keep this out of your git (or other vcs) repository, you can place this in a separate config file and exclude it using a `.gitignore` file.
 
-## Documentation & More
+## More information
 
-_...documentation is in the works..._
+Read the [documentation](https://devvoh.com/parable/documentation) for more detailed information on how to use Parable, and [CHANGELOG.md](CHANGELOG.md) for recent changes.
+
+## Contributing
+
+Any help in improving Parable is much appreciated, but check [CONTRIBUTING.md](CONTRIBUTING.md) before creating any pull requests.
 
 ## Contact
 
