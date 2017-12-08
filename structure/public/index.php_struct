@@ -1,5 +1,6 @@
 <?php
-$autoloaderPath = realpath(__DIR__ . "/../vendor/autoload.php");
+$bs = DIRECTORY_SEPARATOR;
+$autoloaderPath = realpath(__DIR__ . $bs . ".." . $bs . "vendor" . $bs . "autoload.php");
 
 if (!file_exists($autoloaderPath)) {
     die("<b>ERROR</b>: You need to run <pre style='display:inline-block;background:#e6e6e6;padding:2px 5px'>composer install</pre> before Parable will work.");
