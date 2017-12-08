@@ -12,7 +12,7 @@ Parable is a PHP micro-framework intended to be readable, extensible and out-of-
 
 Parable can be installed by using [Composer](http://getcomposer.org/).
 
-```
+```bash
 $ composer require devvoh/parable
 ```
 
@@ -22,7 +22,7 @@ This will install Parable and all required dependencies. Parable requires PHP 5.
 
 Create an `index.php` file and include the composer autoloader: 
 
-```
+```php
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -41,7 +41,7 @@ Then go into the `vendor/devvoh/parable` directory and run `make server`. You ca
 
 To use Parable for more than straightforward apps like in the Basic Usage above, and you want to use Controllers, Actions, Views and more, after installation, run the following command:
 
-```
+```bash
 $ vendor/bin/parable init-structure
 ```
 
