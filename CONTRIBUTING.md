@@ -1,12 +1,21 @@
-# So you want to contribute to Parable? Great!
+# So you want to contribute to Parable?
+
+Great! Though it is important to remember what the design goals for Parable are:
+
+1. It needs to be fast.
+2. It needs to be small.
+3. It needs to be readable and easy to extend.
+4. It doesn't need to do everything.
+
+Anything that doesn't adhere to these goals, might not be accepted. Know that up front. If you want to make sure before creating a Pull Request, you can create an issue to describe the change you'd like to suggest first. 
 
 ## How to Pull Request
+
+It is strongly requested to create a separate PR _per change_. This makes it easier to merge specific issues and an issue with one change in a PR won't block the other change.
 
 1. Fork the Parable repository.
 2. Create a new branch per feature or improvement.
 3. Send a pull request from each of your branches against the version branch for which your fix is intended.
-
-It's extremely helpful to keep separate features and improvements separate, so that Pull Requests don't become combinations of changes that can't easily be merged and released separately. If changes are required for one change, other changes don't need to be delayed if they're okay.
 
 ## Style Guide
 
