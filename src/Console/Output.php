@@ -4,6 +4,9 @@ namespace Parable\Console;
 
 class Output
 {
+    const TERMINAL_DEFAULT_HEIGHT = 25;
+    const TERMINAL_DEFAULT_WIDTH  = 80;
+
     /** @var array */
     protected $tags = [
         /* foreground colors */
@@ -54,7 +57,7 @@ class Output
     }
 
     /**
-     * Return the terminal width. If not an interactive shell, return default 80;
+     * Return the terminal width. If not an interactive shell, return default.
      *
      * @return int
      *
@@ -67,16 +70,16 @@ class Output
             return $this->getTerminalWidthForWindows();
         }
 
-        // If not an interactive shell, just pretend it's 80
+        // If not an interactive shell, just pretend default
         if (!$this->isInteractiveShell()) {
-            return 80;
+            return self::TERMINAL_DEFAULT_WIDTH;
         }
 
         return (int)shell_exec("tput cols");
     }
 
     /**
-     * Return the terminal width in the case of Windows. Default is also 80.
+     * Return the terminal width in the case of Windows.
      * Does not take "interactive" into account because no way of detecting.
      *
      * @return int
@@ -85,27 +88,16 @@ class Output
      */
     private function getTerminalWidthForWindows()
     {
-        // Command Prompt has no shell, but f.e. MinGW does
+        // Command Prompt has no shell, but for example MinGW does
         if (getenv("shell")) {
             return (int)shell_exec("tput cols");
         }
 
-        // PHP_EOL on Windows is "\r\n", however mode uses only "\n"
-        $mode = explode("\n", shell_exec("mode"));
-
-        if (!isset($mode[4])) {
-            // Fallback, just pretend it's 80
-            return 80;
-        }
-
-        list(, $columns) = explode(':', $mode[4]);
-
-        // Again with fallback. Windows ;)
-        return (int)trim($columns) ?: 80;
+        return self::TERMINAL_DEFAULT_WIDTH;
     }
 
     /**
-     * Return the terminal height. If not an interactive shell, return default 25;
+     * Return the terminal height. If not an interactive shell, return default.
      *
      * @return int
      *
@@ -118,16 +110,16 @@ class Output
             return $this->getTerminalHeightForWindows();
         }
 
-        // If not an interactive shell, just pretend it's 25
+        // If not an interactive shell, just pretend default
         if (!$this->isInteractiveShell()) {
-            return 25;
+            return self::TERMINAL_DEFAULT_HEIGHT;
         }
 
         return (int)shell_exec("tput lines");
     }
 
     /**
-     * Return the terminal height in the case of Windows. Default is also 25.
+     * Return the terminal height in the case of Windows.
      * Does not take "interactive" into account because no way of detecting.
      *
      * @return int
@@ -136,23 +128,12 @@ class Output
      */
     private function getTerminalHeightForWindows()
     {
-        // Command Prompt has no shell, but f.e. MinGW does
+        // Command Prompt has no shell, but for example MinGW does
         if (getenv("shell")) {
             return (int)shell_exec("tput lines");
         }
 
-        // PHP_EOL on Windows is "\r\n", however mode uses only "\n"
-        $mode = explode("\n", shell_exec("mode"));
-
-        if (!isset($mode[3])) {
-            // Fallback, just pretend it's 25
-            return 25;
-        }
-
-        list(, $lines) = explode(':', $mode[3]);
-
-        // Again with fallback. Windows ;)
-        return (int)trim($lines) ?: 25;
+        return self::TERMINAL_DEFAULT_HEIGHT;
     }
 
     /**
