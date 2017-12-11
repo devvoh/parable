@@ -65,31 +65,9 @@ class Output
      */
     public function getTerminalWidth()
     {
-        // Windows is special
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            return $this->getTerminalWidthForWindows();
-        }
-
-        // If not an interactive shell, just pretend default
-        if (!$this->isInteractiveShell()) {
-            return self::TERMINAL_DEFAULT_WIDTH;
-        }
-
-        return (int)shell_exec("tput cols");
-    }
-
-    /**
-     * Return the terminal width in the case of Windows.
-     * Does not take "interactive" into account because no way of detecting.
-     *
-     * @return int
-     *
-     * @codeCoverageIgnore
-     */
-    private function getTerminalWidthForWindows()
-    {
-        // Command Prompt has no shell, but for example MinGW does
-        if (getenv("shell")) {
+        if ($this->isInteractiveShell()
+            || (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && getenv("shell"))
+        ) {
             return (int)shell_exec("tput cols");
         }
 
@@ -105,31 +83,9 @@ class Output
      */
     public function getTerminalHeight()
     {
-        // Windows is special
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            return $this->getTerminalHeightForWindows();
-        }
-
-        // If not an interactive shell, just pretend default
-        if (!$this->isInteractiveShell()) {
-            return self::TERMINAL_DEFAULT_HEIGHT;
-        }
-
-        return (int)shell_exec("tput lines");
-    }
-
-    /**
-     * Return the terminal height in the case of Windows.
-     * Does not take "interactive" into account because no way of detecting.
-     *
-     * @return int
-     *
-     * @codeCoverageIgnore
-     */
-    private function getTerminalHeightForWindows()
-    {
-        // Command Prompt has no shell, but for example MinGW does
-        if (getenv("shell")) {
+        if ($this->isInteractiveShell()
+            || (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && getenv("shell"))
+        ) {
             return (int)shell_exec("tput lines");
         }
 
@@ -137,8 +93,7 @@ class Output
     }
 
     /**
-     * Return whether we're currently in an interactive shell or not.
-     * Warning: does not function on Windows, even when running in f.e. MinGW.
+     * Return whether we're currently in an interactive shell or not. Will always be false on Windows.
      *
      * @return bool
      *
