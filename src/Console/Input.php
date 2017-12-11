@@ -187,7 +187,7 @@ class Input
      */
     public function isInteractiveShell()
     {
-        return posix_isatty(0);
+        return function_exists('posix_isatty') && posix_isatty(0);
     }
 
     /**

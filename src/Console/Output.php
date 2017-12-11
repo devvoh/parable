@@ -4,6 +4,9 @@ namespace Parable\Console;
 
 class Output
 {
+    const TERMINAL_DEFAULT_HEIGHT = 25;
+    const TERMINAL_DEFAULT_WIDTH  = 80;
+
     /** @var array */
     protected $tags = [
         /* foreground colors */
@@ -54,7 +57,7 @@ class Output
     }
 
     /**
-     * Return the terminal width. If not an interactive shell, return default 80;
+     * Return the terminal width. If not an interactive shell, return default.
      *
      * @return int
      *
@@ -62,15 +65,39 @@ class Output
      */
     public function getTerminalWidth()
     {
-        // If running on windows or not an interactive shell, just pretend it's 80
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || !$this->isInteractiveShell()) {
-            return 80;
+        // Windows is special
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return $this->getTerminalWidthForWindows();
         }
+
+        // If not an interactive shell, just pretend default
+        if (!$this->isInteractiveShell()) {
+            return self::TERMINAL_DEFAULT_WIDTH;
+        }
+
         return (int)shell_exec("tput cols");
     }
 
     /**
-     * Return the terminal width. If not an interactive shell, return default 25;
+     * Return the terminal width in the case of Windows.
+     * Does not take "interactive" into account because no way of detecting.
+     *
+     * @return int
+     *
+     * @codeCoverageIgnore
+     */
+    private function getTerminalWidthForWindows()
+    {
+        // Command Prompt has no shell, but for example MinGW does
+        if (getenv("shell")) {
+            return (int)shell_exec("tput cols");
+        }
+
+        return self::TERMINAL_DEFAULT_WIDTH;
+    }
+
+    /**
+     * Return the terminal height. If not an interactive shell, return default.
      *
      * @return int
      *
@@ -78,15 +105,40 @@ class Output
      */
     public function getTerminalHeight()
     {
-        // If running on windows or not an interactive shell, just pretend it's 25
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || !$this->isInteractiveShell()) {
-            return 25;
+        // Windows is special
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return $this->getTerminalHeightForWindows();
         }
+
+        // If not an interactive shell, just pretend default
+        if (!$this->isInteractiveShell()) {
+            return self::TERMINAL_DEFAULT_HEIGHT;
+        }
+
         return (int)shell_exec("tput lines");
     }
 
     /**
+     * Return the terminal height in the case of Windows.
+     * Does not take "interactive" into account because no way of detecting.
+     *
+     * @return int
+     *
+     * @codeCoverageIgnore
+     */
+    private function getTerminalHeightForWindows()
+    {
+        // Command Prompt has no shell, but for example MinGW does
+        if (getenv("shell")) {
+            return (int)shell_exec("tput lines");
+        }
+
+        return self::TERMINAL_DEFAULT_HEIGHT;
+    }
+
+    /**
      * Return whether we're currently in an interactive shell or not.
+     * Warning: does not function on Windows, even when running in f.e. MinGW.
      *
      * @return bool
      *
@@ -94,7 +146,7 @@ class Output
      */
     public function isInteractiveShell()
     {
-        return posix_isatty(0);
+        return function_exists("posix_isatty") && posix_isatty(0);
     }
 
     /**
