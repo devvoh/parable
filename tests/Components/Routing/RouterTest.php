@@ -113,6 +113,26 @@ class RouterTest extends \Parable\Tests\Base
         $this->assertFalse($route->hasParameters());
     }
 
+    public function testMatchUrlSanitizesUrlAndStillMatches()
+    {
+        $_GET['url'] = '/<b>this-should-work</b>';
+        $this->router->addRouteFromArray('callable', [
+            'methods' => ['GET'],
+            'url' => '/this-should-work',
+            'callable' => function () {
+                return "it did!";
+            },
+        ]);
+
+        $route = $this->router->matchUrl('/this-should-work');
+
+        $this->assertInstanceOf(\Parable\Routing\Route::class, $route);
+
+        $callable = $route->getCallable();
+
+        $this->assertSame("it did!", $callable());
+    }
+
     public function testmatchUrlComplex()
     {
         $route = $this->router->matchUrl('/complex/id-value/name-value');

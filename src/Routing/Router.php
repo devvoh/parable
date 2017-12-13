@@ -107,10 +107,12 @@ class Router
     public function matchUrl($url)
     {
         $url = '/' . ltrim($url, '/');
-        if ($route = $this->matchUrlDirectly($url)) {
+        $url = $this->sanitizeUrl($url);
+
+        if ($url && $route = $this->matchUrlDirectly($url)) {
             return $route;
         }
-        if ($route = $this->matchUrlWithParameters($url)) {
+        if ($url && $route = $this->matchUrlWithParameters($url)) {
             return $route;
         }
         return null;
@@ -165,5 +167,17 @@ class Router
             return null;
         }
         return $route->buildUrlWithParameters($parameters);
+    }
+
+    /**
+     * Sanitize the Url, removing html characters and other special characters.
+     *
+     * @param string $url
+     *
+     * @return false|string
+     */
+    protected function sanitizeUrl($url)
+    {
+        return filter_var($url, FILTER_SANITIZE_STRING);
     }
 }
