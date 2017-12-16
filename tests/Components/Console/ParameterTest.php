@@ -349,4 +349,59 @@ class ParameterTest extends \Parable\Tests\Base
             418
         );
     }
+
+    /**
+     * @dataProvider dpGetOptionReturnsExpected
+     *
+     * @param string $parameter As provoked from cli
+     * @param mixed  $default   Option default
+     * @param mixed  $expected  Expected result
+     */
+    public function testGetOptionReturnsExpected($parameter, $default, $expected)
+    {
+        $parameters = [
+            './test.php',
+            'command-to-run',
+        ];
+
+        if (!empty($parameter)) {
+            $parameters[] = $parameter;
+        }
+
+        $this->parameter->setParameters($parameters);
+        $this->parameter->setCommandOptions([
+            'option' => new \Parable\Console\Parameter\Option(
+                "option",
+                \Parable\Console\Parameter::PARAMETER_OPTIONAL,
+                \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
+                $default
+            ),
+        ]);
+
+        $this->parameter->checkCommandOptions();
+
+        $this->assertEquals($expected, $this->parameter->getOption('option'));
+    }
+
+    /**
+     * This does not test the case where the option doesn't exist.
+     *
+     * @return array
+     */
+    public function dpGetOptionReturnsExpected()
+    {
+        return [
+            ['', null, null],
+            ['', 0, 0],
+            ['', '0', '0'],
+            ['', false, false],
+            ['--option', null, true], // This is "flag"-style
+            ['--option', 0, 0],
+            ['--option', '0', '0'],
+            ['--option', false, false],
+            ['--option=null', null, 'null'],
+            ['--option=0', null, '0'],
+            ['--option=false', null, 'false'],
+        ];
+    }
 }
