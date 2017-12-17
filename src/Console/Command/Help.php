@@ -39,7 +39,7 @@ class Help extends \Parable\Console\Command
     /**
      * Show information about all commands.
      */
-    private function showGeneralHelp()
+    protected function showGeneralHelp()
     {
         $this->output->writeln("<yellow>Available commands:</yellow>");
 
@@ -60,11 +60,11 @@ class Help extends \Parable\Console\Command
     }
 
     /**
-     * Show the usage and description for a specificcommand.
+     * Show the usage and description for a specific command.
      *
      * @param string $commandName
      */
-    private function showCommandHelp($commandName)
+    protected function showCommandHelp($commandName)
     {
         $command = $this->app->getCommand($commandName);
 

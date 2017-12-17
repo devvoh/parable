@@ -19,7 +19,7 @@ class App
     /** @var \Parable\Console\Command[] */
     protected $commands = [];
 
-    /** @var \Parable\Console\Command */
+    /** @var \Parable\Console\Command|null */
     protected $activeCommand;
 
     /** @var string|null */
