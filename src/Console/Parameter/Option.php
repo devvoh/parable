@@ -9,12 +9,10 @@ class Option extends Base
 
     public function __construct(
         $name,
-        $required = \Parable\Console\Parameter::PARAMETER_OPTIONAL,
         $valueRequired = \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
         $defaultValue = null
     ) {
         $this->setName($name);
-        $this->setRequired($required);
         $this->setValueRequired($valueRequired);
         $this->setDefaultValue($defaultValue);
     }

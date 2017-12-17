@@ -19,6 +19,9 @@ class App
     /** @var \Parable\Console\Command[] */
     protected $commands = [];
 
+    /** @var \Parable\Console\Command */
+    protected $activeCommand;
+
     /** @var string|null */
     protected $defaultCommand;
 
@@ -37,6 +40,8 @@ class App
         set_exception_handler(function ($e) {
             // @codeCoverageIgnoreStart
             $this->output->writeErrorBlock($e->getMessage());
+
+            $this->output->writeln("<yellow>Usage</yellow>: " . $this->activeCommand->getUsage());
             // @codeCoverageIgnoreEnd
         });
     }
@@ -197,6 +202,8 @@ class App
         if (!$command) {
             throw new \Parable\Console\Exception('No valid commands found.');
         }
+
+        $this->activeCommand = $command;
 
         $this->parameter->setCommandArguments($command->getArguments());
         $this->parameter->checkCommandArguments();

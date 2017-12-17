@@ -21,7 +21,6 @@ class InitStructure extends \Parable\Console\Command
     ) {
         $this->addOption(
             "homedir",
-            \Parable\Console\Parameter::PARAMETER_OPTIONAL,
             \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
             "public"
         );

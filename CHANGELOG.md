@@ -7,6 +7,7 @@ Considering the 0.11.x branch as Release Candidate 1 and the 0.12.x branch as RC
 __Changes__
 - All method doc blocks now have explanatory text, even if it's superfluous, for documentation purposes.
 - `\Parable\Console\App` now supports adding multiple commands in one go, using `addCommands([...])`.
+- `\Parable\Console\Command\Help` now can generate a string for the usage of a command. Try it yourself: `vendor/bin/parable help init-structure`. Usage is also added to any exception caught by `\Parable\Console\App`'s exception handler.
 - `\Parable\Console\Input` received the following updates:
   - `\Parable\Console\Input::getKeyPress()` has been added. It will wait for a single key press and return its value immediately. Special characters like arrow keys, escape, enter, etc, will be returned as a string value accordingly.
   - `\Parable\Console\Input::enableShowInput()` and its buddy `disable` are now available for you to use. If disabled, hides the user's input as they enter it. `Input` will call the `enable` on destruct to prevent its effects lingering after exiting the script.
@@ -18,7 +19,7 @@ __Changes__
 - `\Parable\Console\Parameter` has been rewritten, and options and arguments are no longer just arrays of data, but actual classes. This allows much more fine-grained control over whether, for example, an option has been provided but there's no value to go with it.
 - `\Parable\Framework\App` received the following updates:
     - It now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
-    - It now has `get()`, `post()`, `put()`, `patch()`, `delete()`, `options()`, `any()` and `multiple()` methods, so there's an easy way of defining callback routes without having to set up the entire structure. `any()` accepts literally any method, or you can pass an array of the methods to `multiple()` as its first parameter.
+    - Quickroutes! It now has `get()`, `post()`, `put()`, `patch()`, `delete()`, `options()`, `any()` and `multiple()` methods, so there's an easy way of defining callback routes without having to set up the entire structure. `any()` accepts literally any method, or you can pass an array of the methods to `multiple()` as its first parameter.
     - It also has `setErrorReportingEnabled($bool)` and `isErrorReportingEnabled()`. By default it's set to off. You can add `parable.debug` to the Config and set it to true to enable it.
     - It can now set the default timezone if you add a `parable.timezone` value to the config. 
 - `\Parable\Framework\Dispatcher` received the following updates:
@@ -52,7 +53,7 @@ __Backwards-incompatible Changes__
 - `\Parable\Console` no longer accepts options in the format `--option value`, but only in the following: `--option=value`. This is because if you had an option which didn't require a value, and was followed by an argument, the argument would be seen as the option's value instead.
 - `\Parable\Console\App::setDefaultCommand()` now takes a command instance rather than the name, as the name would suggest. To set the default command by name, use `setDefaultCommandByName()` instead.
 - `\Parable\Console\App::setOnlyUseDefaultCommand()` was added, and the boolean paramater was removed from the `setDefaultCommand/ByName()` function calls. Checked by calling `shouldOnlyUseDefaultCommand()`.
-- `\Parable\Console\Command::addOption()` and `addArgument()` no longer take booleans for `required` or `valueRequired` but constants. See `\Parable\Console\Parameter` for the values. This adds the `OPTION_VALUE_PROHIBITED` possibility.
+- `\Parable\Console\Command::addOption()` and `addArgument()` no longer take booleans for `required` or `valueRequired` but constants. See `\Parable\Console\Parameter` for the values. This adds the `OPTION_VALUE_PROHIBITED` possibility. Options can no longer be made required.
 - `\Parable\Console\Parameter` has received several constants: `PARAMETER_OPTIONAL`, `PARAMETER_REQUIRED`, `OPTION_VALUE_OPTIONAL` and `OPTION_VALUE_REQUIRED`. This replaces the boolean functionality Parable had before. This makes it more readable.
 - `\Parable\Console\Parameter::setOptions()` was renamed to `setCommandOptions()`, because the distinction is important.
 - `\Parable\Console\Output::writeError/writeInfo/writeSuccess()` are now suffixed with `Block`, so `writeInfoBlock()`, etc.
@@ -70,6 +71,7 @@ __Backwards-incompatible Changes__
 __Bugfixes__
 - `\Parable\Console\Output` had a bug where moving the cursors would mess with the functionality of `clearLine()`. Line length is no longer kept track of, but whether or not the line is clearable is a boolean value. Moving the cursor up/down or placing it disables line clearing, writing anything enables it again. When you clear the line, the line gets cleared using the terminal width.
 - `\Parable\Console\Parameter` had a bug where providing an argument after an option with an `=` sign in it (so `script.php command option=value arg`) would see the argument as the option value and overwrite the actual value. Fixed by @dmvdbrugge in PR #31. Thanks!
+- `\Parable\Console\Parameter` had a bug, where false-equivalent values passed to an option would be seen as the option being provided without a value, making the returned value `true`. Fixed by @dmvdbrugge in PR #37. Thanks!
 - `\Parable\Filesystem\Path::getDir()` had a bug where if the filename you were trying to get a proper base-dirred path for already existed in the directory the code was run from, it would think it didn't need to and return just the provided path again.
 - `\Parable\Framework\Config` had a bug where a class was referenced that doesn't exist until you've run `parable init-structure`. This has been replaced with a string value instead. Found by @dmvdbrugge. Thanks!
 - `\Parable\Routing\Router` now sanitizes the Url before trying to match it, stripping html and special characters.

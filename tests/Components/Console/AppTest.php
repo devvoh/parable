@@ -175,22 +175,6 @@ class AppTest extends \Parable\Tests\Base
         }
     }
 
-    public function testRequiredOptionThrowsExceptionIfMissing()
-    {
-        $this->expectException(\Parable\Console\Exception::class);
-        $this->expectExceptionMessage("Required option '--option' not provided.");
-
-        $command = $this->app->getCommand('test1');
-
-        // Now make the option required
-        $command->addOption(
-            'option',
-            \Parable\Console\Parameter::PARAMETER_REQUIRED
-        );
-
-        $this->app->run();
-    }
-
     public function testOptionalOptionWithRequiredValueThrowsExceptionIfNoValue()
     {
         $this->expectException(\Parable\Console\Exception::class);
@@ -199,7 +183,6 @@ class AppTest extends \Parable\Tests\Base
         // First test the regular app instance, showing it does not care if the option isn't there
         $this->command1->addOption(
             'option',
-            \Parable\Console\Parameter::PARAMETER_OPTIONAL,
             \Parable\Console\Parameter::OPTION_VALUE_REQUIRED
         );
         $this->assertSame('OK1', $this->app->run());
@@ -220,7 +203,6 @@ class AppTest extends \Parable\Tests\Base
         $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
         $this->commandReturnOptionValue->addOption(
             'option',
-            \Parable\Console\Parameter::PARAMETER_OPTIONAL,
             \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
             'default value is here!'
         );
@@ -237,7 +219,6 @@ class AppTest extends \Parable\Tests\Base
         $app = \Parable\DI\Container::createAll(\Parable\Console\App::class);
         $this->commandReturnOptionValue->addOption(
             'option',
-            \Parable\Console\Parameter::PARAMETER_OPTIONAL,
             \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
             'default value is here!'
         );

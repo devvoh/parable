@@ -95,7 +95,6 @@ class Parameter
                 }
             }
         }
-
         return $this;
     }
 
@@ -149,12 +148,6 @@ class Parameter
     {
         foreach ($this->commandOptions as $option) {
             $option->addParameters($this->options);
-
-            if ($option->isRequired() && !$option->hasBeenProvided()) {
-                throw new \Parable\Console\Exception(
-                    "Required option '--{$option->getName()}' not provided."
-                );
-            }
 
             if ($option->isValueRequired() && $option->hasBeenProvided() && !$option->getValue()) {
                 throw new \Parable\Console\Exception(
@@ -299,11 +292,15 @@ class Parameter
      */
     public function enableCommandName()
     {
-        $this->commandNameEnabled = true;
-        if ($this->commandName) {
-            $this->arguments = array_diff($this->arguments, [$this->commandName]);
+        if (!$this->commandNameEnabled
+            && $this->commandName
+            && isset($this->arguments[0])
+            && $this->arguments[0] === $this->commandName
+        ) {
+            unset($this->arguments[0]);
             $this->arguments = array_values($this->arguments);
         }
+        $this->commandNameEnabled = true;
         return $this;
     }
 
@@ -314,10 +311,10 @@ class Parameter
      */
     public function disableCommandName()
     {
-        $this->commandNameEnabled = false;
-        if ($this->commandName) {
+        if ($this->commandNameEnabled && $this->commandName) {
             array_unshift($this->arguments, $this->commandName);
         }
+        $this->commandNameEnabled = false;
         return $this;
     }
 }

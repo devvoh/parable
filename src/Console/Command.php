@@ -128,7 +128,6 @@ class Command
      * Add an option for this command.
      *
      * @param string $name
-     * @param int    $required
      * @param int    $valueRequired
      * @param mixed  $defaultValue
      *
@@ -136,11 +135,10 @@ class Command
      */
     public function addOption(
         $name,
-        $required = Parameter::PARAMETER_OPTIONAL,
         $valueRequired = Parameter::OPTION_VALUE_OPTIONAL,
         $defaultValue = null
     ) {
-        $this->options[$name] = new \Parable\Console\Parameter\Option($name, $required, $valueRequired, $defaultValue);
+        $this->options[$name] = new \Parable\Console\Parameter\Option($name, $valueRequired, $defaultValue);
         return $this;
     }
 
@@ -180,6 +178,38 @@ class Command
     public function getArguments()
     {
         return $this->arguments;
+    }
+
+    /**
+     * Build a usage string out of the arguments and options set on the command.
+     * Is automatically called when an exception is caught by App.
+     *
+     * @return string
+     */
+    public function getUsage()
+    {
+        $string = [];
+
+        $string[] = $this->getName();
+
+        foreach ($this->getArguments() as $argument) {
+            if ($argument->isRequired()) {
+                $string[] = $argument->getName();
+            } else {
+                $string[] = "[" . $argument->getName() . "]";
+            }
+        }
+
+        foreach ($this->getOptions() as $option) {
+            if ($option->isValueRequired()) {
+                $optionString = "{$option->getName()}=value";
+            } else {
+                $optionString = "{$option->getName()}[=value]";
+            }
+            $string[] = "[--{$optionString}]";
+        }
+
+        return implode(" ", $string);
     }
 
     /**

@@ -23,7 +23,8 @@ $path->setBaseDir(BASEDIR);
 
 $app->setName("Parable " . \Parable\Framework\App::PARABLE_VERSION);
 
-$helpCommand          = \Parable\DI\Container::get(\Parable\Console\Command\Help::class);
+$helpCommand = \Parable\DI\Container::get(\Parable\Console\Command\Help::class);
+
 $initStructureCommand = \Parable\DI\Container::get(\Parable\Framework\Command\InitStructure::class);
 
 // Always add Help & Init

@@ -10,6 +10,11 @@ class Help extends \Parable\Console\Command
     /** @var string */
     protected $description = 'Shows all commands available.';
 
+    public function __construct()
+    {
+        $this->addArgument("command_name");
+    }
+
     /**
      * Show the names and descriptions of all commands set on the application at this moment.
      *
@@ -17,11 +22,26 @@ class Help extends \Parable\Console\Command
      */
     public function run()
     {
-        $this->output->newline();
-        $this->output->writeln("<yellow>{$this->app->getName()}</yellow> " . str_repeat(" ", 36) . "command-line tool");
-        $this->output->writeln(str_repeat("-", 69));
-        $this->output->writeln('Help screen - available commands:');
-        $this->output->newline();
+        if ($this->app->getName()) {
+            $this->output->writeln($this->app->getName());
+            $this->output->newline();
+        }
+
+        $commandName = $this->parameter->getArgument("command_name");
+        if ($commandName) {
+            $this->showCommandHelp($this->parameter->getArgument("command_name"));
+        } else {
+            $this->showGeneralHelp();
+        }
+        return $this;
+    }
+
+    /**
+     * Show information about all commands.
+     */
+    private function showGeneralHelp()
+    {
+        $this->output->writeln("<yellow>Available commands:</yellow>");
 
         $longestName = 0;
         foreach ($this->app->getCommands() as $command) {
@@ -33,11 +53,33 @@ class Help extends \Parable\Console\Command
 
         foreach ($this->app->getCommands() as $command) {
             $name = $command->getName();
-            $this->output->write(str_pad("    <green>{$name}</green>", $longestName + 22, ' ', STR_PAD_RIGHT));
+            $this->output->write(str_pad("  <green>{$name}</green>", $longestName + 22, ' ', STR_PAD_RIGHT));
             $this->output->write("{$command->getDescription()}");
             $this->output->newline();
         }
-        $this->output->newline();
-        return $this;
+    }
+
+    /**
+     * Show the usage and description for a specificcommand.
+     *
+     * @param string $commandName
+     */
+    private function showCommandHelp($commandName)
+    {
+        $command = $this->app->getCommand($commandName);
+
+        if (!$command) {
+            $this->output->writeln("<red>Unknown command:</red> {$commandName}");
+            return;
+        }
+
+        if ($command->getDescription()) {
+            $this->output->writeln("<yellow>Description:</yellow>");
+            $this->output->writeln("  {$command->getDescription()}");
+            $this->output->newline();
+        }
+
+        $this->output->writeln("<yellow>Usage:</yellow>");
+        $this->output->writeln("  {$command->getUsage()}");
     }
 }

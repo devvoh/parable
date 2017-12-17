@@ -103,7 +103,6 @@ class ParameterTest extends \Parable\Tests\Base
         $this->parameter->setCommandOptions([
             "option" => new \Parable\Console\Parameter\Option(
                 "option",
-                \Parable\Console\Parameter::PARAMETER_OPTIONAL,
                 \Parable\Console\Parameter::OPTION_VALUE_REQUIRED
             ),
         ]);
@@ -122,32 +121,12 @@ class ParameterTest extends \Parable\Tests\Base
         $this->parameter->setCommandOptions([
             "option" => new \Parable\Console\Parameter\Option(
                 "option",
-                \Parable\Console\Parameter::PARAMETER_OPTIONAL,
                 \Parable\Console\Parameter::OPTION_VALUE_REQUIRED
             ),
         ]);
         $this->parameter->checkCommandOptions();
 
         $this->assertSame('option-value', $this->parameter->getOption('option'));
-    }
-
-    public function testThrowsExceptionWhenRequiredOptionIsMissing()
-    {
-        $this->parameter->setParameters([
-            './test.php',
-            'command-to-run',
-        ]);
-
-        $this->expectException(\Parable\Console\Exception::class);
-        $this->expectExceptionMessage("Required option '--option' not provided.");
-
-        $this->parameter->setCommandOptions([
-            "option" => new \Parable\Console\Parameter\Option(
-                "option",
-                \Parable\Console\Parameter::PARAMETER_REQUIRED
-            ),
-        ]);
-        $this->parameter->checkCommandOptions();
     }
 
     public function testRequiredArgumentThrowsException()
@@ -205,9 +184,9 @@ class ParameterTest extends \Parable\Tests\Base
         ]);
 
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("option1", \Parable\Console\Parameter::PARAMETER_REQUIRED, \Parable\Console\Parameter::OPTION_VALUE_REQUIRED),
-            new \Parable\Console\Parameter\Option("option2", \Parable\Console\Parameter::PARAMETER_REQUIRED),
-            new \Parable\Console\Parameter\Option("option3", \Parable\Console\Parameter::PARAMETER_OPTIONAL, \Parable\Console\Parameter::OPTION_VALUE_REQUIRED),
+            new \Parable\Console\Parameter\Option("option1", \Parable\Console\Parameter::OPTION_VALUE_REQUIRED),
+            new \Parable\Console\Parameter\Option("option2"),
+            new \Parable\Console\Parameter\Option("option3", \Parable\Console\Parameter::OPTION_VALUE_REQUIRED),
         ]);
 
         $this->parameter->checkCommandOptions();
@@ -335,7 +314,7 @@ class ParameterTest extends \Parable\Tests\Base
         $this->expectException(\Parable\Console\Exception::class);
         $this->expectExceptionMessage("Required must one of the PARAMETER_* constants.");
 
-        $option = new \Parable\Console\Parameter\Option("test", 418);
+        $option = new \Parable\Console\Parameter\Argument("test", 418);
     }
 
     public function testParameterValueRequiredOnlyAcceptConstantValues()
@@ -372,7 +351,6 @@ class ParameterTest extends \Parable\Tests\Base
         $this->parameter->setCommandOptions([
             'option' => new \Parable\Console\Parameter\Option(
                 "option",
-                \Parable\Console\Parameter::PARAMETER_OPTIONAL,
                 \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
                 $default
             ),

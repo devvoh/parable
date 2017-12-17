@@ -7,9 +7,6 @@ abstract class Base
     /** @var string|null */
     protected $name;
 
-    /** @var int|null */
-    protected $required;
-
     /** @var mixed|null */
     protected $defaultValue;
 
@@ -40,36 +37,6 @@ abstract class Base
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set whether this parameter is required.
-     *
-     * @param int $required
-     *
-     * @return $this
-     * @throws \Parable\Console\Exception
-     */
-    public function setRequired($required)
-    {
-        if (!in_array(
-            $required,
-            [\Parable\Console\Parameter::PARAMETER_REQUIRED, \Parable\Console\Parameter::PARAMETER_OPTIONAL])
-        ) {
-            throw new \Parable\Console\Exception("Required must one of the PARAMETER_* constants.");
-        }
-        $this->required = $required;
-        return $this;
-    }
-
-    /**
-     * Return whether the parameter is required.
-     *
-     * @return bool
-     */
-    public function isRequired()
-    {
-        return $this->required === \Parable\Console\Parameter::PARAMETER_REQUIRED;
     }
 
     /**
