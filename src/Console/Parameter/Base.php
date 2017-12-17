@@ -148,7 +148,7 @@ abstract class Base
      */
     public function getValue()
     {
-        if ($this->getProvidedValue()) {
+        if ($this->getProvidedValue() !== null) {
             return $this->getProvidedValue();
         }
 

@@ -180,7 +180,7 @@ class Parameter
 
         $option = $this->commandOptions[$name];
 
-        if ($option->hasBeenProvided() && !$option->getProvidedValue() && !$option->getDefaultValue()) {
+        if ($option->hasBeenProvided() && $option->getProvidedValue() === null && $option->getDefaultValue() === null) {
             return true;
         }
 
