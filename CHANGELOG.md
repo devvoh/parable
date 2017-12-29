@@ -20,6 +20,7 @@ __Changes__
 - `\Parable\Framework\App` received the following updates:
     - It now has a `HOOK_LOAD_ROUTES_NO_ROUTES_FOUND` constant and triggers it when, you guessed it, no routes are found.
     - Quickroutes! It now has `get()`, `post()`, `put()`, `patch()`, `delete()`, `options()`, `any()` and `multiple()` methods, so there's an easy way of defining callback routes without having to set up the entire structure. `any()` accepts literally any method, or you can pass an array of the methods to `multiple()` as its first parameter.
+    - Quickroutes also accept `["controller", "action"]` style callbacks and will set them as discrete `controller` and `action` values on a route if the action is not a static function, to keep load down.
     - It also has `setErrorReportingEnabled($bool)` and `isErrorReportingEnabled()`. By default it's set to off. You can add `parable.debug` to the Config and set it to true to enable it.
     - It can now set the default timezone if you add a `parable.timezone` value to the config. 
 - `\Parable\Framework\Dispatcher` received the following updates:

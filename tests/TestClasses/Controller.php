@@ -17,4 +17,9 @@ class Controller
     {
         return [$id, $name];
     }
+
+    public static function staticIndex()
+    {
+        return "static index here!";
+    }
 }

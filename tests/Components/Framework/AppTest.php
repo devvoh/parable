@@ -124,6 +124,43 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->assertSame("any quickroute", $this->getActualOutputAndClean());
     }
 
+    public function testAppWithAnyQuickRouteAcceptsControllerActionCombination()
+    {
+        $_GET['url'] = '/any-controller-action';
+        $this->app->get(
+            "any-controller-action",
+            [\Parable\Tests\TestClasses\Controller::class, "simple"]
+        )->run();
+        $this->assertSame("simple action", $this->getActualOutputAndClean());
+
+        $dispatcher = \Parable\DI\Container::get(\Parable\Framework\Dispatcher::class);
+        $dispatchedRoute = $dispatcher->getDispatchedRoute();
+
+        $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $dispatchedRoute->getController());
+        $this->assertSame("simple", $dispatchedRoute->getAction());
+        $this->assertNull($dispatchedRoute->getCallable());
+    }
+
+    public function testAppWithAnyQuickRouteAcceptsStaticControllerActionAsCallable()
+    {
+        $_GET['url'] = '/any-static-callable';
+        $this->app->get(
+            "any-static-callable",
+            [\Parable\Tests\TestClasses\Controller::class, "staticIndex"]
+        )->run();
+        $this->assertSame("static index here!", $this->getActualOutputAndClean());
+
+        $dispatcher = \Parable\DI\Container::get(\Parable\Framework\Dispatcher::class);
+        $dispatchedRoute = $dispatcher->getDispatchedRoute();
+
+        $this->assertNull($dispatchedRoute->getController());
+        $this->assertNull($dispatchedRoute->getAction());
+        $this->assertSame(
+            [\Parable\Tests\TestClasses\Controller::class, "staticIndex"],
+            $dispatchedRoute->getCallable()
+        );
+    }
+
     /**
      * @param $type
      *

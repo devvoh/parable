@@ -293,6 +293,12 @@ class App
      *
      * The name is just a uniqid since quick routes aren't intended to be used the same as full routes.
      *
+     * A valid callable is anything that is considered 'invokable' (function, a class with __invoke, an anonymous
+     * function), but this also includes an array of a class and a method (["Controller", "indexAction"]). In these
+     * cases, the action normally must be a static function. Parable solves this by checking whether the action is
+     * static or not. If it isn't, it doesn't set the Callable as a callable, but it sets it as Controller and Action
+     * separately to make sure things aren't loaded until they have to be.
+     *
      * @param array       $methods
      * @param string      $url
      * @param callable    $callable
@@ -304,14 +310,26 @@ class App
     {
         $name = uniqid();
 
+        $routeData = [
+            "methods"      => $methods,
+            "url"          => $url,
+            "templatePath" => $templatePath,
+        ];
+
+        if (is_array($callable)
+            && count($callable) === 2
+            && class_exists($callable[0])
+            && !(new \ReflectionMethod($callable[0], $callable[1]))->isStatic()
+        ) {
+            $routeData["controller"] = $callable[0];
+            $routeData["action"]     = $callable[1];
+        } else {
+            $routeData["callable"]   = $callable;
+        }
+
         $this->router->addRouteFromArray(
             $name,
-            [
-                "methods"      => $methods,
-                "url"          => $url,
-                "callable"     => $callable,
-                "templatePath" => $templatePath,
-            ]
+            $routeData
         );
 
         return $this;
