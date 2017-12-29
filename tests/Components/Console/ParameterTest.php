@@ -312,7 +312,7 @@ class ParameterTest extends \Parable\Tests\Base
     public function testParameterRequiredOnlyAcceptConstantValues()
     {
         $this->expectException(\Parable\Console\Exception::class);
-        $this->expectExceptionMessage("Required must one of the PARAMETER_* constants.");
+        $this->expectExceptionMessage("Required must be one of the PARAMETER_* constants.");
 
         $option = new \Parable\Console\Parameter\Argument("test", 418);
     }
@@ -320,7 +320,7 @@ class ParameterTest extends \Parable\Tests\Base
     public function testParameterValueRequiredOnlyAcceptConstantValues()
     {
         $this->expectException(\Parable\Console\Exception::class);
-        $this->expectExceptionMessage("Value required must one of the OPTION_VALUE_* constants.");
+        $this->expectExceptionMessage("Value required must be one of the OPTION_VALUE_* constants.");
 
         $option = new \Parable\Console\Parameter\Option(
             "test",

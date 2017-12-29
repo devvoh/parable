@@ -41,7 +41,9 @@ class App
             // @codeCoverageIgnoreStart
             $this->output->writeErrorBlock($e->getMessage());
 
-            $this->output->writeln("<yellow>Usage</yellow>: " . $this->activeCommand->getUsage());
+            if ($this->activeCommand) {
+                $this->output->writeln("<yellow>Usage</yellow>: " . $this->activeCommand->getUsage());
+            }
             // @codeCoverageIgnoreEnd
         });
     }

@@ -31,7 +31,7 @@ class Option extends Base
             $valueRequired,
             [\Parable\Console\Parameter::OPTION_VALUE_REQUIRED, \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL])
         ) {
-            throw new \Parable\Console\Exception("Value required must one of the OPTION_VALUE_* constants.");
+            throw new \Parable\Console\Exception("Value required must be one of the OPTION_VALUE_* constants.");
         }
         $this->valueRequired = $valueRequired;
         return $this;
