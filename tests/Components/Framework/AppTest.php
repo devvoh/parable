@@ -315,7 +315,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     public function testAppThrowsExceptionOnWrongRouteInterface()
     {
         $this->expectException(\Parable\Framework\Exception::class);
-        $this->expectExceptionMessage("Routing\Wrong does not implement \Parable\Framework\Interfaces\Routing");
+        $this->expectExceptionMessage("Routing\Wrong does not extend \Parable\Framework\Routing\AbstractRouting");
 
         $app = $this->createApp(\Parable\Tests\TestClasses\Config\TestBrokenRouting::class);
         $app->run();

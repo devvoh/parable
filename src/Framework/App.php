@@ -213,15 +213,16 @@ class App
         $this->hook->trigger(self::HOOK_LOAD_ROUTES_BEFORE);
         if ($this->config->get("parable.routes")) {
             foreach ($this->config->get("parable.routes") as $routesClass) {
-                $routes = \Parable\DI\Container::get($routesClass);
+                $routes = \Parable\DI\Container::create($routesClass);
 
-                if (!($routes instanceof \Parable\Framework\Interfaces\Routing)) {
+                if (!($routes instanceof \Parable\Framework\Routing\AbstractRouting)) {
                     throw new \Parable\Framework\Exception(
-                        "{$routesClass} does not implement \Parable\Framework\Interfaces\Routing"
+                        "{$routesClass} does not extend \Parable\Framework\Routing\AbstractRouting"
                     );
                 }
 
-                $this->router->addRoutesFromArray($routes->get());
+                // Load the routes
+                $routes->load();
             }
         } else {
             $this->hook->trigger(self::HOOK_LOAD_ROUTES_NO_ROUTES_FOUND);

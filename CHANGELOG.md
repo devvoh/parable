@@ -67,6 +67,7 @@ __Backwards-incompatible Changes__
 - `\Parable\Routing\Route` has lost the ability to use typed params. Too much code for too little gain. If you need typed parameters, I suggest you figure something out for yourself.
 - `\Parable\Routing\Route` no longer supports `template` for the template path, but the more correctly named `templatePath` instead. Because of this, it now checks more strictly whether valid properties are set through the Routing array. `setDataFromArray()` attempts to call setters named like the properties. Any that are not available with a setter will throw an Exception. All properties are now also `protected`.
 - `\Parable\Routing\Router` now also supports adding a completely set-up `Route` object directly (or in an array), without having to pass them as arrays, through `addRoute()` and `addRoutes()`. These methods already existed, but those are now renamed to `addRouteFromArray()` and `addRoutesFromArray()`.
+- The default structure's `\Config\App` is now expected to extend the abstract base class `\Parable\Framework\Routing\AbstractRouting` and the old `Interfaces\Routing` interface has been removed. **This removes passing routes as arrays!**. See the new implementation, using the method calls on `\Parable\Framework\App` in the structure's `app/Routing/App.php_struct`.
 - Two config keys were renamed: `parable.session.autoEnable` has become `parable.session.auto-enable` and `parable.app.homeDir` has become `parable.app.homedir`. The option for `init-structure` has also become `--homedir`.
 
 __Bugfixes__
