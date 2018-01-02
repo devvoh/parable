@@ -67,7 +67,7 @@ class ToolkitTest extends \Parable\Tests\Components\Framework\Base
     public function testAppQuickRouteAndGetFullRouteUrlByName()
     {
         $app = \Parable\DI\Container::create(\Parable\Framework\App::class);
-        $app->get("/test-route/{id}", function() {
+        $app->get("/test-route/{id}", function () {
             return "yeah";
         }, "test-route");
 

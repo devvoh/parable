@@ -2,28 +2,31 @@
 
 namespace Routing;
 
+use \Parable\Http\Request;
+
 class App extends \Parable\Framework\Routing\AbstractRouting
 {
     public function load()
     {
         /*
-         * Valid methods are GET/POST/PUT/PATCH/DELETE/OPTIONS. If a url matches but the method doesn't,
-         * a 404 is thrown. It's possible to define a url twice, once for GET and once for POST, and both
-         * methods will be handled only on the appropriate requests. Use this to separate GET and POST
-         * logic more clearly, for example.
+         * Valid methods are GET/POST/PUT/PATCH/DELETE/OPTIONS (see Request::VALID_METHODS).
+         * If a url matches but the method doesn't, a 404 is thrown. It's possible to define
+         * a url twice, once for GET and once for POST, and both methods will be handled only
+         * on the appropriate requests. Use this to separate GET and POST logic more clearly,
+         * for example.
          */
-        $this->app->get("/", [\Controller\Home::class, "index"]);
+        $this->app->get("/", [\Controller\Home::class, "index"], "index");
 
         /*
-         * By calling ->any(), you're saying that the method doesn't matter. As long as Parable accepts the method,
-         * it'll match if the url does.
+         * By calling ->any(), you're saying that the method doesn't matter. As long as
+         * Parable accepts the method, it'll match if the url does.
          */
-        $this->app->any("/test/{id}/{name}", [\Controller\Home::class, "test"]);
+        $this->app->any("/test/{id}/{name}", [\Controller\Home::class, "test"], "test");
 
         /*
          * It's also possible to specify multiple methods to respond to. Also, callables.
          */
-        $this->app->multiple(["GET", "POST"], "/callable", function () {
+        $this->app->multiple([Request::METHOD_GET, Request::METHOD_POST], "/callable", function () {
             $request = \Parable\DI\Container::get(\Parable\Http\Request::class);
             if ($request->isPost()) {
                 return "It's a POST!";
@@ -32,6 +35,6 @@ class App extends \Parable\Framework\Routing\AbstractRouting
             } else {
                 return "Well this is awkward, this shouldn't be possible.";
             }
-        });
+        }, "callable");
     }
 }
