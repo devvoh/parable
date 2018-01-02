@@ -124,6 +124,37 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->assertSame("any quickroute", $this->getActualOutputAndClean());
     }
 
+    public function testAddQuickRouteWithoutNameGeneratesUniqueID()
+    {
+        $_GET['url'] = '/any';
+        $this->app->get("any", function () {
+            return "any quickroute";
+        })->run();
+
+        $dispatcher = \Parable\DI\Container::get(\Parable\Framework\Dispatcher::class);
+        $dispatchedRoute = $dispatcher->getDispatchedRoute();
+
+        $this->getActualOutputAndClean();
+
+        $this->assertSame(23, strlen($dispatchedRoute->getName()));
+        $this->assertContains(".", $dispatchedRoute->getName());
+    }
+
+    public function testAddQuickRouteWithNameActuallyHasName()
+    {
+        $_GET['url'] = '/any';
+        $this->app->get("any", function () {
+            return "any quickroute";
+        }, "this-is-a-named-route")->run();
+
+        $dispatcher = \Parable\DI\Container::get(\Parable\Framework\Dispatcher::class);
+        $dispatchedRoute = $dispatcher->getDispatchedRoute();
+
+        $this->getActualOutputAndClean();
+
+        $this->assertSame("this-is-a-named-route", $dispatchedRoute->getName());
+    }
+
     public function testAppWithAnyQuickRouteAcceptsControllerActionCombination()
     {
         $_GET['url'] = '/any-controller-action';

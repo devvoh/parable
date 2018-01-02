@@ -300,17 +300,16 @@ class App
      * static or not. If it isn't, it doesn't set the Callable as a callable, but it sets it as Controller and Action
      * separately to make sure things aren't loaded until they have to be.
      *
-     * @param array       $methods
+     * @param string[]    $methods
      * @param string      $url
      * @param callable    $callable
+     * @param string|null $name
      * @param string|null $templatePath
      *
      * @return $this
      */
-    public function multiple(array $methods, $url, $callable, $templatePath = null)
+    public function multiple(array $methods, $url, $callable, $name = null, $templatePath = null)
     {
-        $name = uniqid();
-
         $routeData = [
             "methods"      => $methods,
             "url"          => $url,
@@ -329,16 +328,24 @@ class App
         }
 
         $this->router->addRouteFromArray(
-            $name,
+            $name ?: uniqid("", true),
             $routeData
         );
 
         return $this;
     }
 
-    public function any($url, $callable, $templatePath = null)
+    /**
+     * @param string      $url
+     * @param callable    $callable
+     * @param string|null $name
+     * @param string|null $templatePath
+     *
+     * @return $this
+     */
+    public function any($url, $callable, $name = null, $templatePath = null)
     {
-        $this->multiple(\Parable\Http\Request::VALID_METHODS, $url, $callable, $templatePath);
+        $this->multiple(\Parable\Http\Request::VALID_METHODS, $url, $callable, $name, $templatePath);
         return $this;
     }
 
@@ -347,13 +354,14 @@ class App
      *
      * @param string      $url
      * @param callable    $callable
+     * @param string|null $name
      * @param string|null $templatePath
      *
      * @return $this
      */
-    public function get($url, $callable, $templatePath = null)
+    public function get($url, $callable, $name = null, $templatePath = null)
     {
-        $this->multiple([\Parable\Http\Request::METHOD_GET], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_GET], $url, $callable, $name, $templatePath);
         return $this;
     }
 
@@ -362,13 +370,14 @@ class App
      *
      * @param string      $url
      * @param callable    $callable
+     * @param string|null $name
      * @param string|null $templatePath
      *
      * @return $this
      */
-    public function post($url, $callable, $templatePath = null)
+    public function post($url, $callable, $name = null, $templatePath = null)
     {
-        $this->multiple([\Parable\Http\Request::METHOD_POST], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_POST], $url, $callable, $name, $templatePath);
         return $this;
     }
 
@@ -377,13 +386,14 @@ class App
      *
      * @param string      $url
      * @param callable    $callable
+     * @param string|null $name
      * @param string|null $templatePath
      *
      * @return $this
      */
-    public function put($url, $callable, $templatePath = null)
+    public function put($url, $callable, $name = null, $templatePath = null)
     {
-        $this->multiple([\Parable\Http\Request::METHOD_PUT], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_PUT], $url, $callable, $name, $templatePath);
         return $this;
     }
 
@@ -392,13 +402,14 @@ class App
      *
      * @param string      $url
      * @param callable    $callable
+     * @param string|null $name
      * @param string|null $templatePath
      *
      * @return $this
      */
-    public function patch($url, $callable, $templatePath = null)
+    public function patch($url, $callable, $name = null, $templatePath = null)
     {
-        $this->multiple([\Parable\Http\Request::METHOD_PATCH], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_PATCH], $url, $callable, $name, $templatePath);
         return $this;
     }
 
@@ -407,13 +418,14 @@ class App
      *
      * @param string      $url
      * @param callable    $callable
+     * @param string|null $name
      * @param string|null $templatePath
      *
      * @return $this
      */
-    public function delete($url, $callable, $templatePath = null)
+    public function delete($url, $callable, $name = null, $templatePath = null)
     {
-        $this->multiple([\Parable\Http\Request::METHOD_DELETE], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_DELETE], $url, $callable, $name, $templatePath);
         return $this;
     }
 
@@ -422,13 +434,14 @@ class App
      *
      * @param string      $url
      * @param callable    $callable
+     * @param string|null $name
      * @param string|null $templatePath
      *
      * @return $this
      */
-    public function options($url, $callable, $templatePath = null)
+    public function options($url, $callable, $name = null, $templatePath = null)
     {
-        $this->multiple([\Parable\Http\Request::METHOD_OPTIONS], $url, $callable, $templatePath);
+        $this->multiple([\Parable\Http\Request::METHOD_OPTIONS], $url, $callable, $name, $templatePath);
         return $this;
     }
 }

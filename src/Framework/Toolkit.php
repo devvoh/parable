@@ -67,7 +67,11 @@ class Toolkit
      */
     public function getFullRouteUrlByName($name, array $parameters = [])
     {
-        return $this->url->getUrl($this->router->getRouteUrlByName($name, $parameters));
+        $routeUrl = $this->router->getRouteUrlByName($name, $parameters);
+        if ($routeUrl === null) {
+            return null;
+        }
+        return $this->url->getUrl($routeUrl);
     }
 
     /**
