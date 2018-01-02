@@ -124,6 +124,37 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->assertSame("any quickroute", $this->getActualOutputAndClean());
     }
 
+    public function testAddQuickRouteWithoutNameGeneratesUniqueID()
+    {
+        $_GET['url'] = '/any';
+        $this->app->get("any", function () {
+            return "any quickroute";
+        })->run();
+
+        $dispatcher = \Parable\DI\Container::get(\Parable\Framework\Dispatcher::class);
+        $dispatchedRoute = $dispatcher->getDispatchedRoute();
+
+        $this->getActualOutputAndClean();
+
+        $this->assertSame(23, strlen($dispatchedRoute->getName()));
+        $this->assertContains(".", $dispatchedRoute->getName());
+    }
+
+    public function testAddQuickRouteWithNameActuallyHasName()
+    {
+        $_GET['url'] = '/any';
+        $this->app->get("any", function () {
+            return "any quickroute";
+        }, "this-is-a-named-route")->run();
+
+        $dispatcher = \Parable\DI\Container::get(\Parable\Framework\Dispatcher::class);
+        $dispatchedRoute = $dispatcher->getDispatchedRoute();
+
+        $this->getActualOutputAndClean();
+
+        $this->assertSame("this-is-a-named-route", $dispatchedRoute->getName());
+    }
+
     public function testAppWithAnyQuickRouteAcceptsControllerActionCombination()
     {
         $_GET['url'] = '/any-controller-action';
@@ -315,7 +346,7 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
     public function testAppThrowsExceptionOnWrongRouteInterface()
     {
         $this->expectException(\Parable\Framework\Exception::class);
-        $this->expectExceptionMessage("Routing\Wrong does not implement \Parable\Framework\Interfaces\Routing");
+        $this->expectExceptionMessage("Routing\Wrong does not extend \Parable\Framework\Routing\AbstractRouting");
 
         $app = $this->createApp(\Parable\Tests\TestClasses\Config\TestBrokenRouting::class);
         $app->run();
