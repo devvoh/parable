@@ -1,7 +1,7 @@
 <?php
 $autoloaderPath = realpath(__DIR__ . "/../vendor/autoload.php");
 
-if ($autoloaderPath) {
+if (!$autoloaderPath) {
     die("<b>ERROR</b>: You need to run <code>composer install</code> before Parable will work.");
 }
 
