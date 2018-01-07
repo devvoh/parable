@@ -1,6 +1,6 @@
 <?php
 
-namespace Parable\GetSet;
+namespace Parable\Framework;
 
 class SessionMessage
 {

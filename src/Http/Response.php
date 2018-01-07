@@ -228,10 +228,12 @@ class Response
      */
     public function prependContent($content)
     {
-        if (is_array($this->content)) {
-            array_unshift($this->content, $content);
-        } else {
-            $this->content = $content . $this->content;
+        if (!empty($content)) {
+            if (is_array($this->content)) {
+                array_unshift($this->content, $content);
+            } else {
+                $this->content = $content . $this->content;
+            }
         }
         return $this;
     }
@@ -245,10 +247,12 @@ class Response
      */
     public function appendContent($content)
     {
-        if (is_array($this->content)) {
-            $this->content[] = $content;
-        } else {
-            $this->content .= $content;
+        if (!empty($content)) {
+            if (is_array($this->content)) {
+                $this->content[] = $content;
+            } else {
+                $this->content .= $content;
+            }
         }
         return $this;
     }

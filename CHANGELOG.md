@@ -51,6 +51,7 @@ __Changes__
 
 __Backwards-incompatible Changes__
 - `Bootstrap.php` has been removed. `\Parable\Framework\App` handles its own setup now. This makes it easier to implement App without much hassle.
+- `SessionMessage` has been moved from the `GetSet` component into `Framework`, as it isn't a `GetSet` instance itself but merely uses the `Session` instance.
 - `\Parable\Console` no longer accepts options in the format `--option value`, but only in the following: `--option=value`. This is because if you had an option which didn't require a value, and was followed by an argument, the argument would be seen as the option's value instead.
 - `\Parable\Console\App::setDefaultCommand()` now takes a command instance rather than the name, as the name would suggest. To set the default command by name, use `setDefaultCommandByName()` instead.
 - `\Parable\Console\App::setOnlyUseDefaultCommand()` was added, and the boolean paramater was removed from the `setDefaultCommand/ByName()` function calls. Checked by calling `shouldOnlyUseDefaultCommand()`.
@@ -74,6 +75,7 @@ __Bugfixes__
 - `\Parable\Console\Output` had a bug where moving the cursors would mess with the functionality of `clearLine()`. Line length is no longer kept track of, but whether or not the line is clearable is a boolean value. Moving the cursor up/down or placing it disables line clearing, writing anything enables it again. When you clear the line, the line gets cleared using the terminal width.
 - `\Parable\Console\Parameter` had a bug where providing an argument after an option with an `=` sign in it (so `script.php command option=value arg`) would see the argument as the option value and overwrite the actual value. Fixed by @dmvdbrugge in PR #31. Thanks!
 - `\Parable\Console\Parameter` had a bug, where false-equivalent values passed to an option would be seen as the option being provided without a value, making the returned value `true`. Fixed by @dmvdbrugge in PR #37. Thanks!
+- `\Parable\Http\Response` had a bug in `appendContent()` and `prependResponse()` where when working with arrays, empty values ended up as an empty array key, messing with json output.
 - `\Parable\Filesystem\Path::getDir()` had a bug where if the filename you were trying to get a proper base-dirred path for already existed in the directory the code was run from, it would think it didn't need to and return just the provided path again.
 - `\Parable\Framework\Config` had a bug where a class was referenced that doesn't exist until you've run `parable init-structure`. This has been replaced with a string value instead. Found by @dmvdbrugge. Thanks!
 - `\Parable\Routing\Router` now sanitizes the Url before trying to match it, stripping html and special characters.

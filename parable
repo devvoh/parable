@@ -3,11 +3,8 @@
 // We're going to want to display all errors.
 ini_set('display_errors', '1');
 
-// Require defines.php so we've got DS and BASEDIR
-require_once __DIR__ . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "defines.php";
-
-// Require the autoloader
-require_once realpath(BASEDIR . DS . "vendor" . DS . "autoload.php");
+// Require the Composer autoloader
+require_once realpath(__DIR__ . "/../../autoload.php");
 
 /** @var \Parable\Console\App $app */
 $app = \Parable\DI\Container::create(\Parable\Console\App::class);

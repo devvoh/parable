@@ -12,6 +12,7 @@ namespace Parable\Framework;
  * @property \Parable\Framework\Authentication         $authentication
  * @property \Parable\Framework\Config                 $config
  * @property \Parable\Framework\Dispatcher             $dispatcher
+ * @property \Parable\Framework\SessionMessage         $sessionMessage
  * @property \Parable\Framework\Toolkit                $toolkit
  * @property \Parable\Framework\View                   $view
  * @property \Parable\Framework\Mail\Mailer            $mailer
@@ -27,7 +28,6 @@ namespace Parable\Framework;
  * @property \Parable\GetSet\Post                      $post
  * @property \Parable\GetSet\Server                    $server
  * @property \Parable\GetSet\Session                   $session
- * @property \Parable\GetSet\SessionMessage            $sessionMessage
  * @property \Parable\Log\Logger                       $logger
  * @property \Parable\ORM\Query                        $query
  * @property \Parable\ORM\Database                     $database
