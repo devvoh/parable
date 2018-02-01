@@ -16,6 +16,8 @@ class App implements
                     "title" => "Parable",
                     "homedir" => "public",
                 ],
+                "debug" => true,
+                "timezone" => "Europe/Amsterdam",
                 "session" => [
                     "auto-enable" => true,
                 ],
