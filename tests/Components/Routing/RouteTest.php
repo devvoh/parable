@@ -17,7 +17,9 @@ class RouteTest extends \Parable\Tests\Base
         $route = new \Parable\Routing\Route();
         $this->assertFalse($route->hasCallable());
 
-        $route->setCallable(function() {});
+        $route->setCallable(function () {
+        });
+
         $this->assertTrue($route->hasCallable());
 
         $this->assertTrue(is_callable($route->getCallable()));
