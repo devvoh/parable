@@ -354,6 +354,7 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
 
         $this->query->where($this->query->buildAndSet([
             ['id', '=', 1],
+            ['name', 'like', "%stuff"],
             ['active', 'is not null'],
             $this->query->buildOrSet([
                 ['id', '!=', 1],
@@ -379,7 +380,7 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
 
         // Understandably, this query is also ridiculously long
         $this->assertSame(
-            "SELECT * FROM `complex` LEFT JOIN `settings` ON `settings`.`user_id` = `complex`.`id` WHERE (`complex`.`id` = '1' AND `complex`.`active` IS NOT NULL AND (`complex`.`id` != '1' OR `complex`.`active` IS NULL OR `complex`.`created_at` IN ('option1','option2'))) GROUP BY `complex`.`name`, `settings`.`id` HAVING (`complex`.`id` != '1' AND `complex`.`active` IS NULL) ORDER BY `complex`.`id` DESC, `settings`.`name` ASC LIMIT 5;",
+            "SELECT * FROM `complex` LEFT JOIN `settings` ON `settings`.`user_id` = `complex`.`id` WHERE (`complex`.`id` = '1' AND `complex`.`name` LIKE '%stuff' AND `complex`.`active` IS NOT NULL AND (`complex`.`id` != '1' OR `complex`.`active` IS NULL OR `complex`.`created_at` IN ('option1','option2'))) GROUP BY `complex`.`name`, `settings`.`id` HAVING (`complex`.`id` != '1' AND `complex`.`active` IS NULL) ORDER BY `complex`.`id` DESC, `settings`.`name` ASC LIMIT 5;",
             (string)$this->query
         );
     }

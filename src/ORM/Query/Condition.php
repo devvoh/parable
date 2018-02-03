@@ -247,9 +247,10 @@ class Condition
     {
         $value = $this->getValue();
 
+        $this->uppercaseComparator();
+
         // Check for IS/IS NOT and set the value to NULL if it is.
         if ($this->isComparatorIsNotNullIsNull()) {
-            $this->uppercaseComparator();
             $value = null;
         }
 
