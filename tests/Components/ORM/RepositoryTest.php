@@ -245,9 +245,9 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
         $this->assertSame(\Parable\ORM\Query\ConditionSet::SET_OR, $set::TYPE);
     }
 
-    public function testCreateInstanceForModelName()
+    public function testCreateForModelName()
     {
-        $repository = \Parable\ORM\Repository::createInstanceForModelName(\Parable\Tests\TestClasses\Model::class);
+        $repository = \Parable\ORM\Repository::createForModelName(\Parable\Tests\TestClasses\Model::class);
 
         $this->assertInstanceOf(
             \Parable\Tests\TestClasses\Model::class,
@@ -255,5 +255,13 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
         );
 
         $this->assertCount(3, $this->repository->getAll());
+    }
+
+    public function testCreateForModelNameThrowsExceptionForUnknownModelName()
+    {
+        $this->expectException(\Parable\ORM\Exception::class);
+        $this->expectExceptionMessage("Model 'bloop' does not exist.");
+
+        \Parable\ORM\Repository::createForModelName("bloop");
     }
 }

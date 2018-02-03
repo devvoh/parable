@@ -326,4 +326,14 @@ class Model
         }
         return $this;
     }
+
+    /**
+     * Create an instance using DI.
+     *
+     * @return static
+     */
+    public static function create()
+    {
+        return \Parable\DI\Container::create(static::class);
+    }
 }

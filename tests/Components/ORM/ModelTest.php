@@ -2,16 +2,29 @@
 
 namespace Parable\Tests\Components\ORM;
 
+use \Parable\Tests\TestClasses\Model;
+
 class ModelTest extends \Parable\Tests\Components\ORM\Base
 {
-    /** @var \Parable\Tests\TestClasses\Model */
+    /** @var Model */
     protected $model;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->model = new \Parable\Tests\TestClasses\Model($this->database);
+        $this->model = new Model($this->database);
+    }
+
+    public function testCreate()
+    {
+        $model = Model::create();
+
+        // Two different instances are not the same.
+        $this->assertNotSame($model, $this->model);
+
+        // But they _are_ equal.
+        $this->assertEquals($model, $this->model);
     }
 
     public function testModelCreateQuery()

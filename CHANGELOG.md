@@ -87,7 +87,7 @@ __Changes__
 - `\Parable\Rights\Rights` has an improved `combine()` method and gained `getRightsFromNames()` and `getNamesFromRights()` methods, so it's easier to work with.
 - `\Parable\Framework\App` has lost its dependency on `\Parable\Filesystem\Path`, since it became obsolete after recent changes.
 - `\Parable\ORM\Query` now has `addValues()`, so you can add an array of values instead of having to do them one-by-one.
-- `\Parable\ORM\Repository` now has `createInstanceForModelName()`, which is now what `Toolkit::getRepository` calls as well. Toolkit's `getRepository` is sticking around, since it's more useful in views.
+- `\Parable\ORM\Repository` now has `createForModelName()`, which is now what `Toolkit::getRepository` calls as well. Toolkit's `getRepository` is sticking around, since it's more useful in views.
 - Small fixes to increase code base quality. 
 
 __Bugfixes__

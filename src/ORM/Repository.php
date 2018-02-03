@@ -309,9 +309,13 @@ class Repository
      *
      * @return \Parable\ORM\Repository
      */
-    public static function createInstanceForModelName($modelName)
+    public static function createForModelName($modelName)
     {
-        $model = \Parable\DI\Container::create($modelName);
+        if (!class_exists($modelName)) {
+            throw new Exception("Model '{$modelName}' does not exist.");
+        }
+
+        $model = $modelName::create();
 
         $repository = \Parable\DI\Container::create(static::class);
 

@@ -4,6 +4,36 @@ namespace Parable\Tests\Components\Routing;
 
 class RouteTest extends \Parable\Tests\Base
 {
+    public function testSetGetUrl()
+    {
+        $route = new \Parable\Routing\Route();
+        $route->setUrl("stuff");
+
+        $this->assertSame("/stuff", $route->getUrl());
+    }
+
+    public function testCallableMethods()
+    {
+        $route = new \Parable\Routing\Route();
+        $this->assertFalse($route->hasCallable());
+
+        $route->setCallable(function() {});
+        $this->assertTrue($route->hasCallable());
+
+        $this->assertTrue(is_callable($route->getCallable()));
+    }
+
+    public function testTemplatePathMethods()
+    {
+        $route = new \Parable\Routing\Route();
+        $this->assertFalse($route->hasTemplatePath());
+
+        $route->setTemplatePath("location/file.phtml");
+        $this->assertTrue($route->hasTemplatePath());
+
+        $this->assertSame("location/file.phtml", $route->getTemplatePath());
+    }
+
     public function testSetDataFromArray()
     {
         $route = new \Parable\Routing\Route();

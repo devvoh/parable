@@ -37,7 +37,7 @@ class Toolkit
      */
     public function getRepository($modelName)
     {
-        return \Parable\ORM\Repository::createInstanceForModelName($modelName);
+        return \Parable\ORM\Repository::createForModelName($modelName);
     }
 
     /**
