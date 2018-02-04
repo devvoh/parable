@@ -37,7 +37,6 @@ class Model
     {
         $query = \Parable\ORM\Query::createInstance();
         $query->setTableName($this->getTableName());
-        $query->setTableKey($this->getTableKey());
         return $query;
     }
 
@@ -56,7 +55,9 @@ class Model
 
         if ($this->{$this->getTableKey()}) {
             $query->setAction('update');
-            $query->addValue($this->getTableKey(), $this->id);
+            $query->where($query->buildAndSet([
+                [$this->getTableKey(), "=", $this->id],
+            ]));
 
             foreach ($array as $key => $value) {
                 $query->addValue($key, $value);

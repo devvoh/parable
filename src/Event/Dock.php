@@ -47,7 +47,7 @@ class Dock
         }
 
         // Check if the event exists and has callables to run
-        if (!isset($this->docks[$event]) || count($this->docks[$event]) == 0) {
+        if (!isset($this->docks[$event]) || count($this->docks[$event]) === 0) {
             // There are no specific docks, but maybe there's global docks?
             if (count($globalDocks) === 0) {
                 // There is nothing to do here

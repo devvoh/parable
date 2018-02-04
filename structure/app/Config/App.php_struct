@@ -23,10 +23,18 @@ class App implements
                 ],
                 "database" => [
                     "type" => \Parable\ORM\Database::TYPE_MYSQL,
-                    "location" => "localhost",
-                    "username" => "username",
-                    "password" => "password",
-                    "database" => "database",
+                    "location"     => "localhost",
+                    "username"     => "username",
+                    "password"     => "password",
+                    "database"     => "database",
+                    "soft-quoting" => true,
+                ],
+                "mail" => [
+                    "sender" => \Parable\Mail\Sender\PhpMail::class,
+                    "from"   => [
+                        "email" => "noreply@localhost",
+                        "name"  => "No Reply",
+                    ],
                 ],
                 "configs" => [
                     \Config\Custom::class

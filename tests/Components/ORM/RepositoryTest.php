@@ -95,13 +95,6 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
         $this->assertSame($username, $userResult[0]->username);
     }
 
-    public function testGetByConditionThrowsExceptionOnInvalidAndOrType()
-    {
-        $this->expectExceptionMessage("Invalid andOr type given.");
-        $this->expectException(\Parable\ORM\Exception::class);
-        $userResult = $this->repository->getByCondition('id', '=', 1, 'maybe');
-    }
-
     /**
      * @dataProvider dpUserIdsAndUsernames
      *
@@ -157,7 +150,7 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
         $this->assertTrue(!$result);
 
         // the repository can be set to only count
-        $result = $this->repository->onlyCount(true)->getByCondition('id', '=', 8);
+        $result = $this->repository->setOnlyCount(true)->getByCondition('id', '=', 8);
         $this->assertEmpty($result);
         $this->assertTrue(!$result);
     }
@@ -215,7 +208,7 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
 
     public function testOnlyCount()
     {
-        $this->repository->onlyCount(true);
+        $this->repository->setOnlyCount(true);
         $this->assertSame(3, $this->repository->returnOne()->getAll());
     }
 
@@ -263,5 +256,41 @@ class RepositoryTest extends \Parable\Tests\Components\ORM\Base
         $this->expectExceptionMessage("Model 'bloop' does not exist.");
 
         \Parable\ORM\Repository::createForModelName("bloop");
+    }
+
+    public function testReset()
+    {
+        $repository = \Parable\ORM\Repository::createForModelName(\Parable\Tests\TestClasses\Model::class);
+
+        $this->assertSame([], $this->liberateProperty($repository, "orderBy"));
+        $this->assertSame([], $this->liberateProperty($repository, "limitOffset"));
+        $this->assertFalse($this->liberateProperty($repository, "onlyCount"));
+        $this->assertFalse($this->liberateProperty($repository, "returnOne"));
+
+        $repository->orderBy("id", \Parable\ORM\Query::ORDER_ASC);
+        $repository->limitOffset(10, 20);
+        $repository->setOnlyCount(true);
+        $repository->returnOne();
+
+        $this->assertSame(
+            ["key" => "id", "direction" => \Parable\ORM\Query::ORDER_ASC],
+            $this->liberateProperty($repository, "orderBy")
+        );
+        $this->assertSame(
+            ["limit" => 10, "offset" => 20],
+            $this->liberateProperty($repository, "limitOffset")
+        );
+        $this->assertTrue($this->liberateProperty($repository, "onlyCount"));
+        $this->assertTrue($this->liberateProperty($repository, "returnOne"));
+
+        $repository->reset();
+
+        $this->assertSame([], $this->liberateProperty($repository, "orderBy"));
+        $this->assertSame([], $this->liberateProperty($repository, "limitOffset"));
+        $this->assertFalse($this->liberateProperty($repository, "onlyCount"));
+        $this->assertFalse($this->liberateProperty($repository, "returnOne"));
+
+        // and the model should still be set
+        $this->assertInstanceOf(\Parable\Tests\TestClasses\Model::class, $repository->getModel());
     }
 }

@@ -33,9 +33,9 @@ class Mailer extends \Parable\Mail\Mailer
     /**
      * Set the following values from config if available:
      *
-     * parable.email.sender     - the Mail sender implementation to use (default: PhpMail)
-     * parable.email.from.email - the email to set the from to by default
-     * parable.email.from.name  - the name to set the from to by default, optional, only used if from.email is present
+     * parable.mail.sender     - the Mail sender implementation to use (default: PhpMail)
+     * parable.mail.from.email - the email to set the from to by default
+     * parable.mail.from.name  - the name to set the from to by default, optional, only used if from.email is present
      *
      * @throws \Parable\Framework\Exception
      */

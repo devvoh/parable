@@ -43,7 +43,7 @@ class Hook
         }
 
         // Check if the event exists and has callables to run
-        if (!isset($this->hooks[$event]) || count($this->hooks[$event]) == 0) {
+        if (!isset($this->hooks[$event]) || count($this->hooks[$event]) === 0) {
             // There are no specific hooks, but maybe there's global hooks?
             if (count($globalHooks) === 0) {
                 // There is nothing to do here

@@ -48,6 +48,11 @@ __Changes__
   - It now has `createFromDataArray()`, which can be used to create a `Route` object from the same type of data set in the `Routing` file in the structure.
 - `\Parable\Routing\Router` now has a `getRoutes()` method that returns all set routes. In case you, err, need that. 
 - `dynamicReturnTypeMeta.json` has been added, removing the need for `/** @var \Class $var */` references in the code. This works with the dynamic return type plugin in PhpStorm. Removed the few existing references that were there.
+- It's now possible to set a new config value - `parable.database.soft-quotes` - to either `true` (default) or `false`. If `true`, Parable will fake quotes for values if there's no database instance available. If set to `false`, it'll refuse to quote instead.
+- It's no longer possible (or necessary) to set the table key on `\Parable\ORM\Query`. This hadn't been necessary for a while, but the last remaining use of it has been removed. This shouldn't impact anyone much.
+- The `$andOr` parameter of `\Parable\ORM\Repository::getByCondition()` has been removed, as it would always be a single condition and neither AND nor OR would ever come into play.
+- `\Parable\ORM\Repository::reset()` has been added, and will reset Order by, Limit & Offset, only count and return one/all to their default values.
+- `\Parable\ORM\Repository::createForModel()` has been added, and will return a Repository instance for an already instantiated model.
 
 __Backwards-incompatible Changes__
 - `Bootstrap.php` has been removed. `\Parable\Framework\App` handles its own setup now. This makes it easier to implement App without much hassle.
@@ -64,7 +69,8 @@ __Backwards-incompatible Changes__
 - `\Parable\GetSet\InputStream::extractAndSetData()` has been made protected. See above for why you should totally be fine.
 - The interface `\Parable\Log\Writer` has been renamed and moved to `\Parable\Log\Writer\WriterInterface` for clarity and consistency.
 - `\Parable\Log\Writer\Terminal` has been renamed to `\Parable\Log\Writer\Console`, because I don't know what was wrong with me when I chose 'terminal'.
-- `\Parable\Orm\Model::guessValueType()` has been removed. Everything's a string now. Parable shouldn't change types for you. Honestly, when I added a method that started with `guess`, I should've doubted whether it was the right choice in the first place. Oh well.
+- `\Parable\ORM\Model::guessValueType()` has been removed. Everything's a string now. Parable shouldn't change types for you. Honestly, when I added a method that started with `guess`, I should've doubted whether it was the right choice in the first place. Oh well.
+- `\Parable\ORM\Repository::onlyCount()` has been renamed to `setOnlyCount(bool)`, as the previous name suggested that calling it would enable only count mode, other than it being a toggle.
 - `\Parable\Routing\Route` has lost the ability to use typed params. Too much code for too little gain. If you need typed parameters, I suggest you figure something out for yourself.
 - `\Parable\Routing\Route` no longer supports `template` for the template path, but the more correctly named `templatePath` instead. Because of this, it now checks more strictly whether valid properties are set through the Routing array. `setDataFromArray()` attempts to call setters named like the properties. Any that are not available with a setter will throw an Exception. All properties are now also `protected`.
 - `\Parable\Routing\Router` now also supports adding a completely set-up `Route` object directly (or in an array), without having to pass them as arrays, through `addRoute()` and `addRoutes()`. These methods already existed, but those are now renamed to `addRouteFromArray()` and `addRoutesFromArray()`.

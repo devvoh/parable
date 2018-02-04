@@ -40,12 +40,6 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
         $this->assertSame('`sometable`', $this->query->getQuotedTableName());
     }
 
-    public function testSetAndGetTableKey()
-    {
-        $this->query->setTableKey('id');
-        $this->assertSame('id', $this->query->getTableKey());
-    }
-
     public function testSetAndGetAction()
     {
         $this->query->setAction('insert');
@@ -233,16 +227,17 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
     public function testUpdate()
     {
         $this->query->setAction('update');
-        // By setting the tableKey, query will know what to use for the where
-        $this->query->setTableKey('id');
 
-        $this->query->addValue('id', '3');
         $this->query->addValue('name', 'test');
         $this->query->addValue('active', 1);
         $this->query->addValue('thing', null);
 
+        $this->query->where($this->query->buildAndSet([
+            ["id", "=", 3],
+        ]));
+
         $this->assertSame(
-            "UPDATE `user` SET `name` = 'test', `active` = '1', `thing` = NULL WHERE `user`.`id`  = '3';",
+            "UPDATE `user` SET `name` = 'test', `active` = '1', `thing` = NULL WHERE (`user`.`id` = '3');",
             (string)$this->query
         );
     }
@@ -350,7 +345,6 @@ class QueryTest extends \Parable\Tests\Components\ORM\Base
     public function testRidiculouslyComplexQuery()
     {
         $this->query->setTableName('complex');
-        $this->query->setTableKey('id');
 
         $this->query->where($this->query->buildAndSet([
             ['id', '=', 1],

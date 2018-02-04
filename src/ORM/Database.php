@@ -38,6 +38,9 @@ class Database
     /** @var int */
     protected $errorMode = \PDO::ERRMODE_SILENT;
 
+    /** @var bool */
+    protected $softQuoting = true;
+
     /**
      * Returns the type, if any.
      *
@@ -202,6 +205,29 @@ class Database
     }
 
     /**
+     * Return whether soft quoting is enabled or not.
+     *
+     * @return bool
+     */
+    public function getSoftQuoting()
+    {
+        return $this->softQuoting;
+    }
+
+    /**
+     * Set whether to allow soft quoting or not.
+     *
+     * @param bool $value
+     *
+     * @return $this
+     */
+    public function setSoftQuoting($value)
+    {
+        $this->softQuoting = (bool)$value;
+        return $this;
+    }
+
+    /**
      * Return the instance, and start one if needed.
      *
      * @return null|\PDO
@@ -299,6 +325,7 @@ class Database
 
     /**
      * If an instance is available, quote/escape the message through PDOs quote function.
+     * If not and soft quoting is enabled, fudge it.
      *
      * @param string $string
      *
@@ -308,7 +335,12 @@ class Database
     public function quote($string)
     {
         if (!$this->getInstance()) {
-            throw new \Parable\ORM\Exception("Can't quote value without a database instance.");
+            if (!$this->softQuoting) {
+                throw new \Parable\ORM\Exception("Can't quote without a database instance.");
+            }
+
+            $string = str_replace("'", "", $string);
+            return "'{$string}'";
         }
         return $this->getInstance()->quote($string);
     }
@@ -354,12 +386,16 @@ class Database
     public function setConfig(array $config)
     {
         foreach ($config as $type => $value) {
-            $method = 'set' . ucfirst($type);
+            $property = ucwords(str_replace("-", " ", $type));
+            $property = lcfirst(str_replace(" ", "", $property));
+
+            $method = "set" . ucfirst($property);
+
             if (method_exists($this, $method)) {
                 $this->$method($value);
             } else {
                 throw new \Parable\ORM\Exception(
-                    "Tried to set non-existing config value '{$type}' on " . get_class($this)
+                    "Tried to set non-existing config value '{$property}' on " . get_class($this)
                 );
             }
         }

@@ -278,7 +278,7 @@ class Mailer
         }
 
         // Check the basics
-        if (count($this->addresses['to']) == 0) {
+        if (count($this->addresses['to']) === 0) {
             throw new \Parable\Mail\Exception('No to addresses provided.');
         }
         if (empty($this->subject)) {

@@ -49,9 +49,6 @@ class Query
     /** @var null|string */
     protected $tableName;
 
-    /** @var null|string */
-    protected $tableKey;
-
     /** @var \Parable\ORM\Database */
     protected $database;
 
@@ -98,29 +95,6 @@ class Query
     public function getQuotedTableName()
     {
         return $this->quoteIdentifier($this->tableName);
-    }
-
-    /**
-     * Set the tableKey to work with (for delete & update).
-     *
-     * @param string $key
-     *
-     * @return $this
-     */
-    public function setTableKey($key)
-    {
-        $this->tableKey = $key;
-        return $this;
-    }
-
-    /**
-     * Return the current tableKey.
-     *
-     * @return null|string
-     */
-    public function getTableKey()
-    {
-        return $this->tableKey;
     }
 
     /**
@@ -422,10 +396,6 @@ class Query
      */
     public function quote($string)
     {
-        if (!$this->database->getInstance()) {
-            $string = str_replace("'", "", $string);
-            return "'{$string}'";
-        }
         return $this->database->quote($string);
     }
 
@@ -438,9 +408,6 @@ class Query
      */
     public function quoteIdentifier($string)
     {
-        if (!$this->database->getInstance()) {
-            return "`{$string}`";
-        }
         return $this->database->quoteIdentifier($string);
     }
 
@@ -618,7 +585,7 @@ class Query
         $query = [];
 
         if ($this->action === 'select') {
-            if (count($this->select) == 0) {
+            if (count($this->select) === 0) {
                 return '';
             }
 
@@ -631,58 +598,41 @@ class Query
             $query[] = $this->buildOrderBy();
             $query[] = $this->buildLimitOffset();
         } elseif ($this->action === 'delete') {
-            if (count($this->where) == 0) {
+            if (count($this->where) === 0) {
                 return '';
             }
 
             $query[] = "DELETE FROM " . $this->getQuotedTableName();
             $query[] = $this->buildWheres();
         } elseif ($this->action === 'update') {
-            if (count($this->values) == 0) {
+            if (count($this->values) === 0 || count($this->where) === 0) {
                 return '';
             }
 
             $query[] = "UPDATE " . $this->getQuotedTableName();
 
-            // Set the table values to defaults
-            $tableKey = 'id';
-            $tableKeyValue = null;
-
             $values = [];
             foreach ($this->values as $key => $value) {
-                // skip id, since we'll use that as a where condition
-                if ($key !== $this->tableKey) {
-                    if ($value === null) {
-                        $correctValue = 'NULL';
-                    } else {
-                        $correctValue = $this->quote($value);
-                    }
-                    // Quote the key
-                    $key =  $this->quoteIdentifier($key);
-
-                    // Add key & value combo to the array
-                    $values[] = $key . " = " . $correctValue;
+                if ($value === null) {
+                    $correctValue = 'NULL';
                 } else {
-                    $tableKey = $key;
-                    $tableKeyValue = $value;
+                    $correctValue = $this->quote($value);
                 }
+                $key = $this->quoteIdentifier($key);
+                $values[] = $key . " = " . $correctValue;
             }
             $query[] = "SET " . implode(', ', $values);
-            $query[] = "WHERE " . $this->getQuotedTableName() . '.' . $this->quoteIdentifier($tableKey);
-            $query[] = " = " . $this->quote($tableKeyValue);
+            $query[] = $this->buildWheres();
         } elseif ($this->action === 'insert') {
-            if (count($this->values) == 0) {
+            if (count($this->values) === 0) {
                 return '';
             }
 
-            // set insert to the proper table
             $query[] = "INSERT INTO " . $this->getQuotedTableName();
 
-            // now get the values
             $keys = [];
             $values = [];
             foreach ($this->values as $key => $value) {
-                // Quote the key
                 $keys[] = $this->quoteIdentifier($key);
 
                 if ($value === null) {
