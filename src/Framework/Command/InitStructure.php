@@ -8,7 +8,7 @@ class InitStructure extends \Parable\Console\Command
     protected $name = 'init-structure';
 
     /** @var string */
-    protected $description = 'This command initializes a parable structure.';
+    protected $description = 'This command initializes a default parable structure.';
 
     /** @var \Parable\Filesystem\Path */
     protected $path;
@@ -19,29 +19,40 @@ class InitStructure extends \Parable\Console\Command
     public function __construct(
         \Parable\Filesystem\Path $path
     ) {
-        $this->addOption("homeDir", false, true, "public");
-        $this->path = $path;
+        $this->addOption(
+            "homedir",
+            \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
+            "public"
+        );
 
-        $this->vendor_path = __DIR__ . "/../../..";
+        $this->path = $path;
+        $this->path->setBaseDir(BASEDIR);
+
+        // Since we can't rely on the package name 100%, we set the vendor_path backwards from here.
+        $this->vendor_path = realpath(__DIR__ . DS . ".." . DS . ".." . DS . "..");
     }
 
     /**
+     * Run the init structure command.
+     *
      * @return $this
      */
     public function run()
     {
-        $homeDir = $this->parameter->getOption("homeDir");
-        $homeDir = ltrim($homeDir, DIRECTORY_SEPARATOR);
+        $homedir = $this->parameter->getOption("homedir");
+        $homedir = ltrim($homedir, DS);
 
-        $homeDir_actual = $this->path->getDir($homeDir);
+        $homedir_actual = $this->path->getDir($homedir);
 
         $this->output->writeln([
             "Parable initialization script",
             "-----------------------------------",
             "This script will initialize Parable's structure.",
             "",
-            "The 'home directory' will be '<info>{$homeDir_actual}</info>'",
-            "To set a custom homeDir, use the option --homeDir somethingDifferent.",
+            "The full 'home directory' will be '<green>{$homedir_actual}</green>',",
+            "but you can use the --homedir option to change this.",
+            "",
+            "Example: <yellow>parable init-structure --homedir=http_docs</yellow>",
             "",
             "<red>WARNING</red>",
             "This will overwrite existing files without notice!",
@@ -63,21 +74,20 @@ class InitStructure extends \Parable\Console\Command
             }
         }
 
-        /** @var \Parable\Filesystem\Path $path */
         $this->output->newline();
         $this->output->write('Creating folder structure: ');
 
         $dirs = [
-            'app',
-            'app/Command',
-            'app/Config',
-            'app/Controller',
-            'app/Init',
-            'app/Model',
-            'app/Routing',
-            'app/View',
-            'app/View/Home',
-            $homeDir,
+            "app",
+            "app/Command",
+            "app/Config",
+            "app/Controller",
+            "app/Init",
+            "app/Model",
+            "app/Routing",
+            "app/View",
+            "app/View/Home",
+            $homedir,
         ];
 
         foreach ($dirs as $dir) {
@@ -101,15 +111,14 @@ class InitStructure extends \Parable\Console\Command
         );
         $this->output->write('.');
         copy(
-            $this->path->getDir("{$this->vendor_path}/structure/public/.htaccess"),
-            $this->path->getDir("{$homeDir}/.htaccess")
+            $this->path->getDir("{$this->vendor_path}/structure/public/index.php_struct"),
+            $this->path->getDir("{$homedir}/index.php")
         );
         $this->output->write('.');
-
-        // For index.php, we do it a bit differently, since we need to alter the content
-        $content = file_get_contents($this->path->getDir("{$this->vendor_path}/structure/public/index.php_struct"));
-        $content = str_replace("###VENDOR_PATH###", $this->vendor_path, $content);
-        file_put_contents($this->path->getDir("{$homeDir}/index.php"), $content);
+        copy(
+            $this->path->getDir("{$this->vendor_path}/structure/public/.htaccess"),
+            $this->path->getDir("{$homedir}/.htaccess")
+        );
         $this->output->write('.');
 
         // And we continue copying files
@@ -159,15 +168,15 @@ class InitStructure extends \Parable\Console\Command
         );
         $this->output->write('.');
 
-        // If the homeDir isn't 'public', change the values in Config\App.php and .htaccess.
-        if ($homeDir !== "public") {
+        // If the homedir isn't 'public', change the values in Config\App.php and .htaccess.
+        if ($homedir !== "public") {
             $config = file_get_contents($this->path->getDir("app/Config/App.php"));
-            $config = str_replace('"homeDir" => "public"', '"homeDir" => "' . $homeDir . '"', $config);
+            $config = str_replace('"homedir" => "public"', '"homedir" => "' . $homedir . '"', $config);
             file_put_contents($this->path->getDir("app/Config/App.php"), $config);
             $this->output->write('.');
 
             $htaccess = file_get_contents($this->path->getDir('.htaccess'));
-            $htaccess = str_replace("public/$1", "{$homeDir}/$1", $htaccess);
+            $htaccess = str_replace("public/$1", "{$homedir}/$1", $htaccess);
             file_put_contents($this->path->getDir('.htaccess'), $htaccess);
         }
         $this->output->write('.');

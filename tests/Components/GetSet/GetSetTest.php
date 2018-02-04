@@ -14,9 +14,13 @@ class GetSetTest extends \Parable\Tests\Base
         $this->getSet = new \Parable\Tests\TestClasses\TestGetSet();
     }
 
-    public function testGetResource()
+    public function testSetAndGetResource()
     {
         $this->assertSame('test', $this->getSet->getResource());
+
+        $this->getSet->setResource("what");
+
+        $this->assertSame('what', $this->getSet->getResource());
     }
 
     public function testSetAllGetAll()
@@ -250,5 +254,21 @@ class GetSetTest extends \Parable\Tests\Base
 
         // But one should be untouched and still an array
         $this->assertTrue(is_array($this->getSet->get("one")));
+    }
+
+    public function testGetNonExistingKeyReturnsDefault()
+    {
+        // Test non-existing should still be null
+        $this->assertNull($this->getSet->get("nope"));
+
+        // But with default it should be default
+        $this->assertEquals("default", $this->getSet->get("nope", "default"));
+
+        // Same for nested
+        $this->getSet->set("this", ["totally" => "exists"]);
+
+        $this->assertNull($this->getSet->get("this.doesn't"));
+
+        $this->assertEquals([], $this->getSet->get("this.doesn't", []));
     }
 }
