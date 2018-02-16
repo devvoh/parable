@@ -242,7 +242,8 @@ class Request
      */
     public function getHttpHost()
     {
-        if (isset($_SERVER["HTTP_HOST"]) && isset($_SERVER["SERVER_NAME"])
+        if (isset($_SERVER["HTTP_HOST"])
+            && isset($_SERVER["SERVER_NAME"])
             && $_SERVER["HTTP_HOST"] === $_SERVER["SERVER_NAME"]
         ) {
             return $_SERVER["HTTP_HOST"];

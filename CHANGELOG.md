@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 1.1.0
+
+__Changes__
+- `\Parable\Framework\Authentication` has gained `resetUser()` and `reset()`, which calls it and `revokeAuthentication()` both. This makes it possible to unset the user as well.
+
 ### 1.0.0
 
 Considering the 0.11.x branch as Release Candidate 1 and the 0.12.x branch as RC2, it's time to ship final Parable. This release brings a major clean-up, documentation, and some useful additions.
