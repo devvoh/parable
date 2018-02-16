@@ -57,7 +57,7 @@ Now, if you want to keep this out of your git (or other vcs) repository, you can
 
 ## More information
 
-Read the [documentation](https://devvoh.com/parable/documentation) for more detailed information on how to use Parable, and [CHANGELOG.md](CHANGELOG.md) for recent changes.
+Read the [documentation](https://devvoh.com/parable/docs/1.0) for more detailed information on how to use Parable, and [CHANGELOG.md](CHANGELOG.md) for recent changes.
 
 ## Contributing
 
