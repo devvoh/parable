@@ -72,8 +72,8 @@ class Response
         511 => "Network Authentication Required",
     ];
 
-    /** @var string|array */
-    protected $content;
+    /** @var array */
+    protected $content = [];
 
     /** @var string */
     protected $contentType;
@@ -176,8 +176,8 @@ class Response
     public function send()
     {
         $buffered_content = $this->returnAllOutputBuffers();
-        if (!empty($buffered_content) && is_string($this->content)) {
-            $this->content = $buffered_content . $this->content;
+        if (!empty($buffered_content)) {
+            $this->prependContent($buffered_content);
         }
 
         $this->output->prepare($this);
@@ -192,7 +192,7 @@ class Response
             // @codeCoverageIgnoreEnd
         }
 
-        echo $this->getContent();
+        echo $this->getContentAsString();
         $this->terminate();
     }
 
@@ -205,6 +205,9 @@ class Response
      */
     public function setContent($content)
     {
+        if (!is_array($content)) {
+            $content = [$content];
+        }
         $this->content = $content;
         return $this;
     }
@@ -212,7 +215,7 @@ class Response
     /**
      * Return the content.
      *
-     * @return string|array
+     * @return array
      */
     public function getContent()
     {
@@ -220,7 +223,24 @@ class Response
     }
 
     /**
-     * Prepend content to the currently set content, whether it's currently array or string data.
+     * Return the content as a string value.
+     *
+     * @return string
+     */
+    public function getContentAsString()
+    {
+        $string = "";
+        foreach ($this->content as $contentPart) {
+            if (is_object($contentPart) || is_array($contentPart) || is_bool($contentPart)) {
+                $contentPart = trim(print_r($contentPart, true));
+            }
+            $string .= $contentPart;
+        }
+        return $string;
+    }
+
+    /**
+     * Prepend content string to the currently set content array.
      *
      * @param string $content
      *
@@ -229,17 +249,13 @@ class Response
     public function prependContent($content)
     {
         if (!empty($content)) {
-            if (is_array($this->content)) {
-                array_unshift($this->content, $content);
-            } else {
-                $this->content = $content . $this->content;
-            }
+            array_unshift($this->content, $content);
         }
         return $this;
     }
 
     /**
-     * Append content to the currently set content, whether it's currently array or string data.
+     * Append content string to the currently set content array.
      *
      * @param string $content
      *
@@ -248,11 +264,7 @@ class Response
     public function appendContent($content)
     {
         if (!empty($content)) {
-            if (is_array($this->content)) {
-                $this->content[] = $content;
-            } else {
-                $this->content .= $content;
-            }
+            $this->content[] = $content;
         }
         return $this;
     }
@@ -264,7 +276,7 @@ class Response
      */
     public function clearContent()
     {
-        $this->content = null;
+        $this->content = [];
         return $this;
     }
 
@@ -311,6 +323,30 @@ class Response
         }
 
         return $content;
+    }
+
+    /**
+     * Take content stored in the current level of output buffering and
+     * append it to the current content.
+     *
+     * @return $this
+     */
+    public function flushOutputBuffer()
+    {
+        $this->appendContent($this->returnOutputBuffer());
+        return $this;
+    }
+
+    /**
+     * Take all content stored in all active output buffers and append
+     * it to the current content.
+     *
+     * @return $this
+     */
+    public function flushAllOutputBuffers()
+    {
+        $this->appendContent($this->returnAllOutputBuffers());
+        return $this;
     }
 
     /**

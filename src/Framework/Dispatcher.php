@@ -93,8 +93,8 @@ class Dispatcher
             $this->view->render();
         }
 
-        // Get the output buffer content and check if $content holds anything. If so, append it to the $bufferContent
-        $content = $this->response->returnOutputBuffer() . $content;
+        // Make sure all buffered content is set on the response object by flushing it
+        $this->response->flushAllOutputBuffers();
 
         // And append the content to the response object
         $this->response->appendContent($content);

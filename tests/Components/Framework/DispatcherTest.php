@@ -76,7 +76,7 @@ class DispatcherTest extends \Parable\Tests\Components\Framework\Base
             "app/View/Parable/Tests/TestClasses/Controller/index.phtml",
             $route->getTemplatePath()
         );
-        $this->assertSame("stuff from the template", $this->response->getContent());
+        $this->assertSame("stuff from the template", $this->response->getContentAsString());
     }
 
     public function testGetRouteReturnsNullIfNothingDispatched()

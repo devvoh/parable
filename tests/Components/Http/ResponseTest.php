@@ -75,18 +75,43 @@ class ResponseTest extends \Parable\Tests\Base
     public function testSetGetContent()
     {
         $this->response->setContent("This is content.");
-        $this->assertSame("This is content.", $this->response->getContent());
+        $this->assertSame(["This is content."], $this->response->getContent());
+    }
+
+    public function testSetGetContentAsString()
+    {
+        $this->response->setContent("This is content.");
+        $this->assertSame("This is content.", $this->response->getContentAsString());
+    }
+
+    public function testAppendStringToContent()
+    {
+        $this->response->setContent("This is a thing ");
+        $this->response->appendContent("and so is this.");
+
+        $this->assertSame("This is a thing and so is this.", $this->response->getContentAsString());
+    }
+
+    public function testAppendArrayToContent()
+    {
+        $this->response->setContent("This is a thing ");
+        $this->response->appendContent(["but" => "this is an array"]);
+
+        $this->assertSame(
+            "This is a thing Array\n(\n    [but] => this is an array\n)",
+            $this->response->getContentAsString()
+        );
     }
 
     public function testClearContent()
     {
         $this->response->setContent("This is content.");
-        $this->assertSame("This is content.", $this->response->getContent());
+        $this->assertSame("This is content.", $this->response->getContentAsString());
 
         $this->response->clearContent();
         $this->response->appendContent("New!");
 
-        $this->assertSame("New!", $this->response->getContent());
+        $this->assertSame("New!", $this->response->getContentAsString());
     }
 
     public function testAppendAndPrependContent()
@@ -95,21 +120,17 @@ class ResponseTest extends \Parable\Tests\Base
         $this->response->appendContent('yo3');
         $this->response->prependContent('yo1');
 
-        $this->assertSame("yo1yo2yo3", $this->response->getContent());
+        $this->assertSame("yo1yo2yo3", $this->response->getContentAsString());
     }
 
-    public function testAppendAndPrependArrayContent()
+    public function testAppendAndPrependContentIsCorrectArray()
     {
-        $this->response->setContent(['array2']);
-        $this->response->appendContent('array3');
-        $this->response->prependContent('array1');
+        $this->response->setContent(['yo2']);
+        $this->response->appendContent('yo3');
+        $this->response->prependContent('yo1');
 
         $this->assertSame(
-            [
-                0 => 'array1',
-                1 => 'array2',
-                2 => 'array3',
-            ],
+            ["yo1", "yo2", "yo3"],
             $this->response->getContent()
         );
     }
@@ -138,6 +159,71 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame('{"test":1}', $content);
     }
 
+    public function testFlushOutputBuffer()
+    {
+        $this->response->startOutputBuffer();
+
+        echo "YO YO YO TESTING THIS THING";
+
+        $this->response->flushOutputBuffer();
+
+        $this->assertSame("YO YO YO TESTING THIS THING", $this->response->getContentAsString());
+    }
+
+    public function testFlushOutputBufferOnlyFlushesLatestBuffer()
+    {
+        $this->response->startOutputBuffer();
+        echo "YO YO YO TESTING THIS THING";
+
+        $this->response->startOutputBuffer();
+        echo "WHAT IS THIS";
+
+        $this->response->flushOutputBuffer();
+
+        $this->assertSame("WHAT IS THIS", $this->response->getContentAsString());
+
+        $this->response->flushOutputBuffer();
+
+        $this->assertSame("WHAT IS THISYO YO YO TESTING THIS THING", $this->response->getContentAsString());
+    }
+
+    public function testFlushAllOutputBuffersFlushesAll()
+    {
+        $this->response->startOutputBuffer();
+        echo "YO YO YO TESTING THIS THING";
+
+        $this->response->startOutputBuffer();
+        echo "WHAT IS THIS";
+
+        $this->response->flushAllOutputBuffers();
+
+        $this->assertSame("WHAT IS THISYO YO YO TESTING THIS THING", $this->response->getContentAsString());
+    }
+
+    public function testIsOutputBufferingEnabled()
+    {
+        $this->assertFalse($this->response->isOutputBufferingEnabled());
+
+        $this->response->startOutputBuffer();
+        $this->response->startOutputBuffer();
+        $this->response->startOutputBuffer();
+
+        $this->assertTrue($this->response->isOutputBufferingEnabled());
+
+        $this->response->flushOutputBuffer();
+        $this->response->flushOutputBuffer();
+
+        // There's still one level left
+        $this->assertTrue($this->response->isOutputBufferingEnabled());
+
+        $this->response->flushOutputBuffer();
+
+        // And now there's no levels left
+        $this->assertFalse($this->response->isOutputBufferingEnabled());
+
+        $this->response->returnAllOutputBuffers();
+    }
+
     public function testSendClosesOutputbuffer()
     {
         $this->response->startOutputBuffer();
@@ -160,7 +246,8 @@ class ResponseTest extends \Parable\Tests\Base
         echo "This should not show!";
         $this->response->returnOutputBuffer();
 
-        $this->assertSame(null, $this->response->getContent());
+        $this->assertSame([], $this->response->getContent());
+        $this->assertSame("", $this->response->getContentAsString());
     }
 
     public function testReturnOutputBufferReturnsEmptyStringIfNotStarted()
@@ -264,5 +351,25 @@ class ResponseTest extends \Parable\Tests\Base
         // The only way to test this is to see if terminate is called
         $this->responseMock->expects($this->once())->method('terminate');
         $this->responseMock->redirect('http://www.test.dev/redirected');
+    }
+
+    /**
+     * @dataProvider dpDataTypes
+     */
+    public function testGetContentAsStringHandlesDataTypes($data, $expectedStringValue)
+    {
+        $this->response->appendContent($data);
+        $this->assertSame($expectedStringValue, $this->response->getContentAsString());
+    }
+
+    public function dpDataTypes()
+    {
+        return [
+            ["string", "string"],
+            [1337, "1337"],
+            [true, "1"],
+            [new \stdClass(), "stdClass Object\n(\n)"],
+            [["an" => "array value"], "Array\n(\n    [an] => array value\n)"],
+        ];
     }
 }

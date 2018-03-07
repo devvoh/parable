@@ -4,6 +4,12 @@
 
 __Changes__
 - `\Parable\Framework\Authentication` has gained `resetUser()` and `reset()`, which calls it and `revokeAuthentication()` both. This makes it possible to unset the user as well.
+- `\Parable\Http\Response` received the following fixes:
+  - Gained `flushOutputBuffer()` and `flushAllOutputBuffers()`. These don't return the content in the buffers, but append it to the content.
+  - Content is now always stored as an array. This makes working with it much easier, and also simplifies `\Parable\Http\Output\Json` and `\Parable\Http\Output\Html`.
+
+__Bugfixes__
+- `\Parable\Framework\Dispatcher` appended the output buffer as a string value _always_. This now uses the appropriate `Response::appendContent()` instead, as well as the new `Response::flushAllOutputBuffers()`.
 
 ### 1.0.0
 
