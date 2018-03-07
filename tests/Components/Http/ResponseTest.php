@@ -275,6 +275,5 @@ class ResponseTest extends \Parable\Tests\Base
 
         $this->response->setOutput(new \Parable\Tests\TestClasses\Http\FaultyOutput());
         $this->response->send();
-
     }
 }
