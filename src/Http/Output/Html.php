@@ -2,7 +2,7 @@
 
 namespace Parable\Http\Output;
 
-class Html implements \Parable\Http\Output\OutputInterface
+class Html extends \Parable\Http\Output\AbstractOutput
 {
     /** @var string */
     protected $contentType = 'text/html';
@@ -21,8 +21,21 @@ class Html implements \Parable\Http\Output\OutputInterface
      */
     public function prepare(\Parable\Http\Response $response)
     {
-        if (!is_string($response->getContent()) && !is_null($response->getContent())) {
+        if (!$this->acceptsContent($response->getContent())) {
             throw new \Parable\Http\Exception('Can only work with string or null content');
         }
+
+        // Since we're forced to return a string value, null is not a valid return type
+        return $response->getContent() ?: "";
+    }
+
+    /**
+     * This output class only accepts string or null values.
+     *
+     * @inheritdoc
+     */
+    public function acceptsContent($content)
+    {
+        return is_string($content) || $content === null;
     }
 }

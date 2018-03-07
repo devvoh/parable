@@ -50,8 +50,8 @@ class Dispatcher
         $this->hook->trigger(self::HOOK_DISPATCH_BEFORE, $route);
         $controller = null;
 
-        // Start output buffering and set $content to null
-        $content = null;
+        // Start output buffering and set $returnContent to null
+        $returnContent = null;
         $this->response->startOutputBuffer();
 
         // Build the parameters array
@@ -63,10 +63,10 @@ class Dispatcher
         // Call the relevant code
         if ($route->hasControllerAndAction()) {
             $controller = \Parable\DI\Container::get($route->getController());
-            $content = $controller->{$route->getAction()}(...$parameters);
+            $returnContent = $controller->{$route->getAction()}(...$parameters);
         } elseif ($route->hasCallable()) {
             $callable = $route->getCallable();
-            $content = $callable(...$parameters);
+            $returnContent = $callable(...$parameters);
         }
 
         $this->hook->trigger(self::HOOK_DISPATCH_TEMPLATE_BEFORE, $route);
@@ -87,17 +87,31 @@ class Dispatcher
         }
 
         // And check again, now that we might have a magic template path
+        $renderedContent = null;
         if ($route->hasTemplatePath()) {
             $templatePath = $this->path->getDir($route->getTemplatePath());
             $this->view->setTemplatePath($templatePath);
             $this->view->render();
         }
 
-        // Get the output buffer content and check if $content holds anything. If so, append it to the $bufferContent
-        $content = $this->response->returnOutputBuffer() . $content;
+        // If the callback or controller/action returned content, we need to handle it
+        if ($returnContent) {
+            if ($this->response->getOutput()->acceptsContent($returnContent)) {
+                $this->response->setContent($returnContent);
+            } else {
+                $type   = gettype($returnContent);
+                $output = get_class($this->response->getOutput());
+                throw new \Parable\Framework\Exception(
+                    "Route returned value of type '{$type}', which output class '{$output}' cannot handle."
+                );
+            }
+        }
 
-        // And append the content to the response object
-        $this->response->appendContent($content);
+        // Any rendered content was from before the returnContent was set, so we prepend it if there's any
+        $renderedContent = $this->response->returnOutputBuffer();
+        if ($renderedContent) {
+            $this->response->prependContent($renderedContent);
+        }
 
         $this->hook->trigger(self::HOOK_DISPATCH_TEMPLATE_AFTER, $route);
         $this->hook->trigger(self::HOOK_DISPATCH_AFTER, $route);

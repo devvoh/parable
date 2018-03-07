@@ -4,6 +4,13 @@
 
 __Changes__
 - `\Parable\Framework\Authentication` has gained `resetUser()` and `reset()`, which calls it and `revokeAuthentication()` both. This makes it possible to unset the user as well.
+- `\Parable\Http\Output\OutputInterface` has gained `acceptsContent($content)`, which will return a boolean for whether it accepts a type of content or not.
+- `\Parable\Http\Output\OutputInterface::prepare()` now has to return a string value. Always. Exception thrown if not. This makes Output behavior expected.D 
+- `\Parable\Http\Output\AbstractOutput` was added, which implements `acceptsContent()` to return default `true`.
+- `\Parable\Http\Output\Html` overrides `acceptsContent()` to only accept `string` or `null` types. `Json` accepts all types.
+
+__Bugfixes__
+- `\Parable\Framework\Dispatcher` didn't check route return values and blindly attempted to string-concatenate them.  With the help of the `Output` changes, it now does and attempts to 
 
 ### 1.0.0
 

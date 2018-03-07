@@ -171,6 +171,16 @@ class Response
     }
 
     /**
+     * Return the output class.
+     *
+     * @return Output\OutputInterface
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
      * Send the response.
      */
     public function send()
@@ -180,7 +190,12 @@ class Response
             $this->content = $buffered_content . $this->content;
         }
 
-        $this->output->prepare($this);
+        $this->content = $this->output->prepare($this);
+
+        if (!is_string($this->content)) {
+            $output = get_class($this->output);
+            throw new \Parable\Http\Exception("Output class '{$output}' did not result in string content.");
+        }
 
         if (!headers_sent()) {
             // @codeCoverageIgnoreStart

@@ -265,4 +265,16 @@ class ResponseTest extends \Parable\Tests\Base
         $this->responseMock->expects($this->once())->method('terminate');
         $this->responseMock->redirect('http://www.test.dev/redirected');
     }
+
+    public function testOutputPrepareReturningNonStringValueThrowsException()
+    {
+        $this->expectException(\Parable\Http\Exception::class);
+        $this->expectExceptionMessage(
+            "Output class 'Parable\Tests\TestClasses\Http\FaultyOutput' did not result in string content."
+        );
+
+        $this->response->setOutput(new \Parable\Tests\TestClasses\Http\FaultyOutput());
+        $this->response->send();
+
+    }
 }
