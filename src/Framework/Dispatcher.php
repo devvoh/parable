@@ -87,7 +87,6 @@ class Dispatcher
         }
 
         // And check again, now that we might have a magic template path
-        $renderedContent = null;
         if ($route->hasTemplatePath()) {
             $templatePath = $this->path->getDir($route->getTemplatePath());
             $this->view->setTemplatePath($templatePath);
