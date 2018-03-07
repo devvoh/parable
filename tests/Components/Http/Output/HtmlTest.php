@@ -49,6 +49,33 @@ class HtmlTest extends \Parable\Tests\Base
 
         $this->html->prepare($response);
 
-        $this->assertSame("this is content", $response->getContentAsString());
+        $this->assertSame("this is content", $response->getContent());
+    }
+
+    /**
+     * @dataProvider dpInvalidContentTypes
+     * @param $data
+     */
+    public function testPrepareThrowsExceptionOnInvalidDataType($data)
+    {
+        $this->expectException(\Parable\Http\Exception::class);
+        $this->expectExceptionMessage("Can only work with string or null content");
+
+        $response = \Parable\DI\Container::createAll(\Parable\Http\Response::class);
+        $response->setOutput($this->html);
+
+        $response->setContent($data);
+
+        $this->html->prepare($response);
+    }
+
+    public function dpInvalidContentTypes()
+    {
+        return [
+            [[]],
+            [new \stdClass()],
+            [700],
+            [true],
+        ];
     }
 }
