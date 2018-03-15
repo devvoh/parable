@@ -47,6 +47,7 @@ class Container
 
     /**
      * Instantiate a class and fulfill its dependency requirements, getting dependencies rather than creating.
+     * This does not store the created instance in the cache. It would have to be manually stored.
      *
      * @param string $className
      * @param string $parentClassName

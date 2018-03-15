@@ -100,6 +100,9 @@ class Dispatcher
             } else {
                 $type   = gettype($returnContent);
                 $output = get_class($this->response->getOutput());
+
+                // Stop the outputbuffer we've started above and throw
+                $this->response->stopOutputBuffer();
                 throw new \Parable\Framework\Exception(
                     "Route returned value of type '{$type}', which output class '{$output}' cannot handle."
                 );

@@ -296,6 +296,28 @@ class Response
     }
 
     /**
+     * Stop the current output buffer but do not return the output.
+     *
+     * @return $this
+     */
+    public function stopOutputBuffer()
+    {
+        $this->returnOutputBuffer();
+        return $this;
+    }
+
+    /**
+     * Stop all output buffers but do not return the output.
+     *
+     * @return $this
+     */
+    public function stopAllOutputBuffers()
+    {
+        $this->returnAllOutputBuffers();
+        return $this;
+    }
+
+    /**
      * Return and end the current output buffer if output buffering was started with startOutputBuffer().
      *
      * @return string

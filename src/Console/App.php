@@ -109,12 +109,13 @@ class App
      */
     public function setDefaultCommandByName($commandName)
     {
-        $this->defaultCommand     = $commandName;
+        $this->defaultCommand = $commandName;
         return $this;
     }
 
     /**
-     * Set the default command to use if no command is given.
+     * Set the default command to use if no command is given. Also
+     * adds the command.
      *
      * @param \Parable\Console\Command $command
      *
@@ -122,6 +123,7 @@ class App
      */
     public function setDefaultCommand(\Parable\Console\Command $command)
     {
+        $this->addCommand($command);
         $this->setDefaultCommandByName($command->getName());
         return $this;
     }
@@ -172,6 +174,21 @@ class App
     public function getCommands()
     {
         return $this->commands;
+    }
+
+    /**
+     * Remove a command by name.
+     *
+     * @param string $commandName
+     *
+     * @return $this
+     */
+    public function removeCommandByName($commandName)
+    {
+        if ($this->getCommand($commandName)) {
+            unset($this->commands[$commandName]);
+        }
+        return $this;
     }
 
     /**

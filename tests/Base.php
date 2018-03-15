@@ -12,7 +12,8 @@ abstract class Base extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         // This key might be handy to have
-        $GLOBALS['_SESSION'] = [];
+        $GLOBALS["_SESSION"] = [];
+        $GLOBALS["_SERVER"]["argv"] = [];
         $this->testPath = \Parable\DI\Container::create(\Parable\Filesystem\Path::class);
         $this->testPath->setBaseDir(__DIR__ . DS . "..");
     }

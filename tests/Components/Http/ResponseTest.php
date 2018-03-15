@@ -163,6 +163,38 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame(null, $this->response->getContent());
     }
 
+    public function testStopOutputBuffering()
+    {
+        $this->response->startOutputBuffer();
+
+        $this->assertTrue($this->response->isOutputBufferingEnabled());
+
+        $this->response->stopOutputBuffer();
+
+        $this->assertFalse($this->response->isOutputBufferingEnabled());
+    }
+
+    public function testStopAllOutputBuffering()
+    {
+        $this->response->startOutputBuffer();
+        $this->response->startOutputBuffer();
+        $this->response->startOutputBuffer();
+        $this->response->startOutputBuffer();
+        $this->response->startOutputBuffer();
+
+        $this->assertTrue($this->response->isOutputBufferingEnabled());
+
+        $this->response->stopOutputBuffer();
+
+        // One output buffer stop isn't enough
+        $this->assertTrue($this->response->isOutputBufferingEnabled());
+
+        // But this one is.
+        $this->response->stopAllOutputBuffers();
+
+        $this->assertFalse($this->response->isOutputBufferingEnabled());
+    }
+
     public function testReturnOutputBufferReturnsEmptyStringIfNotStarted()
     {
         $this->assertSame("", $this->response->returnOutputBuffer());

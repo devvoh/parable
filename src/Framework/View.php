@@ -150,7 +150,7 @@ class View
     {
         $templatePath = $this->path->getDir($templatePath);
         if (file_exists($templatePath)) {
-            require($templatePath);
+            require $templatePath;
         }
         return $this;
     }

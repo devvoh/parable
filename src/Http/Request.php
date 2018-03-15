@@ -37,7 +37,7 @@ class Request
      */
     public function __construct()
     {
-        if (PHP_SAPI !== "cli") {
+        if (APP_CONTEXT === "web") {
             $this->headers = getallheaders() ?: []; // @codeCoverageIgnore
         }
     }

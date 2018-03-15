@@ -2,9 +2,10 @@
 
 namespace Parable\Tests\TestClasses\Init;
 
-class Test
+class TestEcho
 {
     public function __construct()
     {
+        echo "This init was loaded.";
     }
 }

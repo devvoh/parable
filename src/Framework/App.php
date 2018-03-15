@@ -8,9 +8,12 @@ class App
 
     const HOOK_HTTP_404                    = "parable_http_404";
     const HOOK_HTTP_200                    = "parable_http_200";
+    const HOOK_LOAD_CONFIG_BEFORE          = "parable_load_config_before";
+    const HOOK_LOAD_CONFIG_AFTER           = "parable_load_config_after";
+    const HOOK_LOAD_INITS_BEFORE           = "parable_load_inits_before";
+    const HOOK_LOAD_INITS_AFTER            = "parable_load_inits_after";
     const HOOK_INIT_DATABASE_BEFORE        = "parable_init_database_before";
     const HOOK_INIT_DATABASE_AFTER         = "parable_init_database_after";
-    const HOOK_LOAD_INITS_AFTER            = "parable_load_inits_after";
     const HOOK_LOAD_ROUTES_BEFORE          = "parable_load_routes_before";
     const HOOK_LOAD_ROUTES_NO_ROUTES_FOUND = "parable_load_routes_no_routes_found";
     const HOOK_LOAD_ROUTES_AFTER           = "parable_load_routes_after";
@@ -28,6 +31,9 @@ class App
 
     /** @var \Parable\Framework\Toolkit */
     protected $toolkit;
+
+    /** @var \Parable\Framework\Package\PackageManager */
+    protected $packageManager;
 
     /** @var \Parable\Event\Hook */
     protected $hook;
@@ -58,6 +64,7 @@ class App
         \Parable\Framework\Config $config,
         \Parable\Framework\Dispatcher $dispatcher,
         \Parable\Framework\Toolkit $toolkit,
+        \Parable\Framework\Package\PackageManager $packageManager,
         \Parable\Event\Hook $hook,
         \Parable\Filesystem\Path $path,
         \Parable\Routing\Router $router,
@@ -66,16 +73,17 @@ class App
         \Parable\GetSet\Session $session,
         \Parable\ORM\Database $database
     ) {
-        $this->config     = $config;
-        $this->dispatcher = $dispatcher;
-        $this->toolkit    = $toolkit;
-        $this->hook       = $hook;
-        $this->path       = $path;
-        $this->router     = $router;
-        $this->response   = $response;
-        $this->url        = $url;
-        $this->session    = $session;
-        $this->database   = $database;
+        $this->config         = $config;
+        $this->dispatcher     = $dispatcher;
+        $this->toolkit        = $toolkit;
+        $this->packageManager = $packageManager;
+        $this->hook           = $hook;
+        $this->path           = $path;
+        $this->router         = $router;
+        $this->response       = $response;
+        $this->url            = $url;
+        $this->session        = $session;
+        $this->database       = $database;
 
         // Add the default location to the autoloader and register it
         $autoloader->addLocation(BASEDIR . DS . 'app');
@@ -87,46 +95,16 @@ class App
     }
 
     /**
-     * Enable error reporting, setting display_errors to on and reporting to E_ALL
-     *
-     * @return $this
-     */
-    public function setErrorReportingEnabled($enabled)
-    {
-        ini_set("log_errors", 1);
-
-        if ($enabled) {
-            ini_set("display_errors", 1);
-            error_reporting(E_ALL);
-        } else {
-            ini_set("display_errors", 0);
-            error_reporting(E_ALL | ~E_DEPRECATED);
-        }
-
-        $this->errorReportingEnabled = $enabled;
-
-        return $this;
-    }
-
-    /**
-     * Return whether error reporting is currently enabled or not
-     *
-     * @return bool
-     */
-    public function isErrorReportingEnabled()
-    {
-        return $this->errorReportingEnabled;
-    }
-
-    /**
      * Do all the setup and then attempt to match and dispatch the current url.
      *
      * @return $this
      */
     public function run()
     {
-        // Load the config
-        $this->config->load();
+        // And now possible packages get their turn.
+        $this->packageManager->registerPackages();
+
+        $this->loadConfig();
 
         // Enable error reporting if debug is set to true
         if ($this->config->get('parable.debug') === true) {
@@ -168,7 +146,7 @@ class App
 
         // Init the database if it's configured
         if ($this->config->get('parable.database.type')) {
-            $this->initDatabase();
+            $this->loadDatabase();
         }
 
         // And try to match the route
@@ -186,6 +164,48 @@ class App
         $this->hook->trigger(self::HOOK_RESPONSE_SEND);
         $this->response->send();
         return $this;
+    }
+
+    /**
+     * Return Parable's current version number.
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return self::PARABLE_VERSION;
+    }
+
+    /**
+     * Enable error reporting, setting display_errors to on and reporting to E_ALL
+     *
+     * @return $this
+     */
+    public function setErrorReportingEnabled($enabled)
+    {
+        ini_set("log_errors", 1);
+
+        if ($enabled) {
+            ini_set("display_errors", 1);
+            error_reporting(E_ALL);
+        } else {
+            ini_set("display_errors", 0);
+            error_reporting(E_ALL | ~E_DEPRECATED);
+        }
+
+        $this->errorReportingEnabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Return whether error reporting is currently enabled or not
+     *
+     * @return bool
+     */
+    public function isErrorReportingEnabled()
+    {
+        return $this->errorReportingEnabled;
     }
 
     /**
@@ -232,6 +252,18 @@ class App
     }
 
     /**
+     * Load the config and trigger hooks.
+     */
+    protected function loadConfig()
+    {
+        $this->hook->trigger(self::HOOK_LOAD_CONFIG_BEFORE);
+
+        $this->config->load();
+
+        $this->hook->trigger(self::HOOK_LOAD_CONFIG_AFTER);
+    }
+
+    /**
      * Create instances of given init classes.
      *
      * @return $this
@@ -240,11 +272,13 @@ class App
      */
     protected function loadInits()
     {
+        $this->hook->trigger(self::HOOK_LOAD_INITS_BEFORE);
+
         if ($this->config->get("parable.inits")) {
-            foreach ($this->config->get("parable.inits") as $initClass) {
-                \Parable\DI\Container::create($initClass);
-            }
+            $initLoader = \Parable\DI\Container::create(\Parable\Framework\Loader\InitLoader::class);
+            $initLoader->load($this->config->get("parable.inits"));
         }
+
         $this->hook->trigger(self::HOOK_LOAD_INITS_AFTER);
         return $this;
     }
@@ -254,10 +288,12 @@ class App
      *
      * @return $this
      */
-    protected function initDatabase()
+    protected function loadDatabase()
     {
         $this->hook->trigger(self::HOOK_INIT_DATABASE_BEFORE);
+
         $this->database->setConfig($this->config->get('parable.database'));
+
         $this->hook->trigger(self::HOOK_INIT_DATABASE_AFTER);
         return $this;
     }
@@ -277,16 +313,6 @@ class App
         $this->dispatcher->dispatch($route);
 
         return $this;
-    }
-
-    /**
-     * Return Parable's current version number.
-     *
-     * @return string
-     */
-    public function getVersion()
-    {
-        return self::PARABLE_VERSION;
     }
 
     /**
