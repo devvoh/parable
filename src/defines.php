@@ -27,8 +27,7 @@ if (!defined("APP_CONTEXT")) {
 /**
  * We want to allow packages to register themselves
  */
-if (!function_exists("register_parable_package"))
-{
+if (!function_exists("register_parable_package")) {
     function register_parable_package($packageName)
     {
         \Parable\DI\Container::get(\Parable\Framework\Package\PackageManager::class)->addPackage($packageName);
