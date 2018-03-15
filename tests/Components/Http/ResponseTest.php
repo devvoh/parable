@@ -302,7 +302,7 @@ class ResponseTest extends \Parable\Tests\Base
     {
         $this->expectException(\Parable\Http\Exception::class);
         $this->expectExceptionMessage(
-            "Output class 'Parable\Tests\TestClasses\Http\FaultyOutput' did not result in string content."
+            "Output class 'Parable\Tests\TestClasses\Http\FaultyOutput' did not result in string or null content."
         );
 
         $this->response->setOutput(new \Parable\Tests\TestClasses\Http\FaultyOutput());

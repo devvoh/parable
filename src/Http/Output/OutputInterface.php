@@ -18,7 +18,7 @@ interface OutputInterface
      *
      * @param \Parable\Http\Response $response
      *
-     * @return string
+     * @return string|null
      */
     public function prepare(\Parable\Http\Response $response);
 

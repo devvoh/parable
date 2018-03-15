@@ -24,9 +24,7 @@ class Html extends \Parable\Http\Output\AbstractOutput
         if (!$this->acceptsContent($response->getContent())) {
             throw new \Parable\Http\Exception('Can only work with string or null content');
         }
-
-        // Since we're forced to return a string value, null is not a valid return type
-        return $response->getContent() ?: "";
+        return $response->getContent() ?: null;
     }
 
     /**

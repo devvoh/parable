@@ -26,9 +26,6 @@ class App
     /** @var \Parable\Framework\Config */
     protected $config;
 
-    /** @var \Parable\Framework\Dispatcher */
-    protected $dispatcher;
-
     /** @var \Parable\Framework\Toolkit */
     protected $toolkit;
 
@@ -50,31 +47,21 @@ class App
     /** @var \Parable\Http\Url */
     protected $url;
 
-    /** @var \Parable\GetSet\Session */
-    protected $session;
-
-    /** @var \Parable\ORM\Database */
-    protected $database;
-
     /** @var bool */
     protected $errorReportingEnabled = false;
 
     public function __construct(
         \Parable\Framework\Autoloader $autoloader,
         \Parable\Framework\Config $config,
-        \Parable\Framework\Dispatcher $dispatcher,
         \Parable\Framework\Toolkit $toolkit,
         \Parable\Framework\Package\PackageManager $packageManager,
         \Parable\Event\Hook $hook,
         \Parable\Filesystem\Path $path,
         \Parable\Routing\Router $router,
         \Parable\Http\Response $response,
-        \Parable\Http\Url $url,
-        \Parable\GetSet\Session $session,
-        \Parable\ORM\Database $database
+        \Parable\Http\Url $url
     ) {
         $this->config         = $config;
-        $this->dispatcher     = $dispatcher;
         $this->toolkit        = $toolkit;
         $this->packageManager = $packageManager;
         $this->hook           = $hook;
@@ -82,8 +69,6 @@ class App
         $this->router         = $router;
         $this->response       = $response;
         $this->url            = $url;
-        $this->session        = $session;
-        $this->database       = $database;
 
         // Add the default location to the autoloader and register it
         $autoloader->addLocation(BASEDIR . DS . 'app');
@@ -216,8 +201,11 @@ class App
     protected function startSession()
     {
         $this->hook->trigger(self::HOOK_SESSION_START_BEFORE);
-        $this->session->start();
-        $this->hook->trigger(self::HOOK_SESSION_START_AFTER, $this->session);
+
+        $session = \Parable\DI\Container::get(\Parable\GetSet\Session::class);
+        $session->start();
+
+        $this->hook->trigger(self::HOOK_SESSION_START_AFTER, $session);
         return $this;
     }
 
@@ -257,9 +245,7 @@ class App
     protected function loadConfig()
     {
         $this->hook->trigger(self::HOOK_LOAD_CONFIG_BEFORE);
-
         $this->config->load();
-
         $this->hook->trigger(self::HOOK_LOAD_CONFIG_AFTER);
     }
 
@@ -292,7 +278,8 @@ class App
     {
         $this->hook->trigger(self::HOOK_INIT_DATABASE_BEFORE);
 
-        $this->database->setConfig($this->config->get('parable.database'));
+        $database = \Parable\DI\Container::get(\Parable\ORM\Database::class);
+        $database->setConfig($this->config->get('parable.database'));
 
         $this->hook->trigger(self::HOOK_INIT_DATABASE_AFTER);
         return $this;
@@ -310,7 +297,8 @@ class App
         $this->response->setHttpCode(200);
         $this->hook->trigger(self::HOOK_HTTP_200, $route);
 
-        $this->dispatcher->dispatch($route);
+        $dispatcher = \Parable\DI\Container::get(\Parable\Framework\Dispatcher::class);
+        $dispatcher->dispatch($route);
 
         return $this;
     }

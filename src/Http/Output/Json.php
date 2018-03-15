@@ -33,7 +33,7 @@ class Json extends \Parable\Http\Output\AbstractOutput
             throw new \Parable\Http\Exception("Json encode error: '" . json_last_error_msg() . "'"); // @codeCoverageIgnore
         }
 
-        return $content;
+        return $content ?: null;
     }
 
     /**

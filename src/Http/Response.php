@@ -192,9 +192,9 @@ class Response
 
         $this->content = $this->output->prepare($this);
 
-        if (!is_string($this->content)) {
+        if (!is_string($this->content) && $this->content !== null) {
             $output = get_class($this->output);
-            throw new \Parable\Http\Exception("Output class '{$output}' did not result in string content.");
+            throw new \Parable\Http\Exception("Output class '{$output}' did not result in string or null content.");
         }
 
         if (!headers_sent()) {

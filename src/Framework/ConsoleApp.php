@@ -16,7 +16,7 @@ class ConsoleApp
         \Parable\Framework\Package\PackageManager $packageManager
     ) {
         // We're going to want to display all errors.
-        ini_set('display_errors', '1');
+        $this->setErrorReportingEnabled(true);
 
         $this->consoleApp = $consoleApp;
         $this->path       = $path;
