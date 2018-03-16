@@ -14,6 +14,8 @@ class App
     const HOOK_LOAD_INITS_AFTER            = "parable_load_inits_after";
     const HOOK_INIT_DATABASE_BEFORE        = "parable_init_database_before";
     const HOOK_INIT_DATABASE_AFTER         = "parable_init_database_after";
+    const HOOK_LOAD_LAYOUT_BEFORE          = "parable_load_layout_before";
+    const HOOK_LOAD_LAYOUT_AFTER           = "parable_load_layout_after";
     const HOOK_LOAD_ROUTES_BEFORE          = "parable_load_routes_before";
     const HOOK_LOAD_ROUTES_NO_ROUTES_FOUND = "parable_load_routes_no_routes_found";
     const HOOK_LOAD_ROUTES_AFTER           = "parable_load_routes_after";
@@ -31,6 +33,9 @@ class App
 
     /** @var \Parable\Framework\Package\PackageManager */
     protected $packageManager;
+
+    /** @var \Parable\Framework\View */
+    protected $view;
 
     /** @var \Parable\Event\Hook */
     protected $hook;
@@ -55,6 +60,7 @@ class App
         \Parable\Framework\Config $config,
         \Parable\Framework\Toolkit $toolkit,
         \Parable\Framework\Package\PackageManager $packageManager,
+        \Parable\Framework\View $view,
         \Parable\Event\Hook $hook,
         \Parable\Filesystem\Path $path,
         \Parable\Routing\Router $router,
@@ -64,6 +70,7 @@ class App
         $this->config         = $config;
         $this->toolkit        = $toolkit;
         $this->packageManager = $packageManager;
+        $this->view           = $view;
         $this->hook           = $hook;
         $this->path           = $path;
         $this->router         = $router;
@@ -145,6 +152,8 @@ class App
             $this->response->setHttpCode(404);
             $this->hook->trigger(self::HOOK_HTTP_404, $currentFullUrl);
         }
+
+        $this->loadLayout();
 
         $this->hook->trigger(self::HOOK_RESPONSE_SEND);
         $this->response->send();
@@ -282,6 +291,30 @@ class App
         $database->setConfig($this->config->get('parable.database'));
 
         $this->hook->trigger(self::HOOK_INIT_DATABASE_AFTER);
+        return $this;
+    }
+
+    /**
+     * Load the layout header/footer if configured.
+     *
+     * @return $this
+     */
+    protected function loadLayout()
+    {
+        $this->hook->trigger(self::HOOK_LOAD_LAYOUT_BEFORE);
+
+        if ($this->config->get("parable.layout.header")) {
+            $this->response->setHeaderContent(
+                $this->view->partial($this->config->get("parable.layout.header"))
+            );
+        }
+        if ($this->config->get("parable.layout.footer")) {
+            $this->response->setFooterContent(
+                $this->view->partial($this->config->get("parable.layout.footer"))
+            );
+        }
+
+        $this->hook->trigger(self::HOOK_LOAD_LAYOUT_AFTER);
         return $this;
     }
 

@@ -87,6 +87,12 @@ class Response
     /** @var bool */
     protected $shouldTerminate = true;
 
+    /** @var string */
+    protected $headerContent;
+
+    /** @var string */
+    protected $footerContent;
+
     public function __construct(
         \Parable\Http\Request $request
     ) {
@@ -181,37 +187,6 @@ class Response
     }
 
     /**
-     * Send the response.
-     */
-    public function send()
-    {
-        $buffered_content = $this->returnAllOutputBuffers();
-        if (!empty($buffered_content) && is_string($this->content)) {
-            $this->content = $buffered_content . $this->content;
-        }
-
-        $this->content = $this->output->prepare($this);
-
-        if (!is_string($this->content) && $this->content !== null) {
-            $output = get_class($this->output);
-            throw new \Parable\Http\Exception("Output class '{$output}' did not result in string or null content.");
-        }
-
-        if (!headers_sent()) {
-            // @codeCoverageIgnoreStart
-            header("{$this->request->getProtocol()} {$this->getHttpCode()} {$this->getHttpCodeText()}");
-            header("Content-type: {$this->getContentType()}");
-            foreach ($this->getHeaders() as $key => $value) {
-                header("{$key}: {$value}");
-            }
-            // @codeCoverageIgnoreEnd
-        }
-
-        echo $this->getContent();
-        $this->terminate();
-    }
-
-    /**
      * Set the content.
      *
      * @param string|array $content
@@ -281,6 +256,52 @@ class Response
     {
         $this->content = null;
         return $this;
+    }
+
+    /**
+     * Set content to use as header.
+     *
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setHeaderContent($content)
+    {
+        $this->headerContent = $content;
+        return $this;
+    }
+
+    /**
+     * Return header content.
+     *
+     * @return string
+     */
+    public function getHeaderContent()
+    {
+        return $this->headerContent ?: "";
+    }
+
+    /**
+     * Set content to use as header.
+     *
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setFooterContent($content)
+    {
+        $this->footerContent = $content;
+        return $this;
+    }
+
+    /**
+     * Return header content.
+     *
+     * @return string
+     */
+    public function getFooterContent()
+    {
+        return $this->footerContent ?: "";
     }
 
     /**
@@ -452,6 +473,40 @@ class Response
         if (!headers_sent()) {
             header("location: {$url}"); // @codeCoverageIgnore
         }
+        $this->terminate();
+    }
+
+    /**
+     * Build and send the response.
+     */
+    public function send()
+    {
+        $buffered_content = $this->returnAllOutputBuffers();
+        if (!empty($buffered_content) && is_string($this->content)) {
+            $this->content = $buffered_content . $this->content;
+        }
+
+        $this->content = $this->output->prepare($this);
+
+        if (!is_string($this->content) && $this->content !== null) {
+            $output = get_class($this->output);
+            throw new \Parable\Http\Exception("Output class '{$output}' did not result in string or null content.");
+        }
+
+        if (!headers_sent()) {
+            // @codeCoverageIgnoreStart
+            header("{$this->request->getProtocol()} {$this->getHttpCode()} {$this->getHttpCodeText()}");
+            header("Content-type: {$this->getContentType()}");
+            foreach ($this->getHeaders() as $key => $value) {
+                header("{$key}: {$value}");
+            }
+            // @codeCoverageIgnoreEnd
+        }
+
+        echo $this->getHeaderContent();
+        echo $this->getContent();
+        echo $this->getFooterContent();
+
         $this->terminate();
     }
 
