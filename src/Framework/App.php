@@ -98,6 +98,11 @@ class App
 
         $this->loadConfig();
 
+        // Init the database if it's configured
+        if ($this->config->get('parable.database.type')) {
+            $this->loadDatabase();
+        }
+
         // Enable error reporting if debug is set to true
         if ($this->config->get('parable.debug') === true) {
             $this->setErrorReportingEnabled(true);
@@ -135,11 +140,6 @@ class App
         // Get the current url
         $currentUrl     = $this->toolkit->getCurrentUrl();
         $currentFullUrl = $this->toolkit->getCurrentUrlFull();
-
-        // Init the database if it's configured
-        if ($this->config->get('parable.database.type')) {
-            $this->loadDatabase();
-        }
 
         // And try to match the route
         $this->hook->trigger(self::HOOK_ROUTE_MATCH_BEFORE, $currentUrl);

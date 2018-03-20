@@ -277,6 +277,11 @@ class Model
     public function exportToArray()
     {
         $data = $this->toArray();
+
+        if (!$this->exportable) {
+            return $data;
+        }
+
         $exportData = [];
         foreach ($data as $key => $value) {
             if (in_array($key, $this->exportable)) {
