@@ -175,10 +175,10 @@ class Query
      *
      * @return $this
      */
-    public function whereCondition($key, $comparator, $value = null)
+    public function whereCondition($key, $comparator, $value = null, $tableName = null)
     {
         $this->where($this->buildAndSet([
-            [$key, $comparator, $value]
+            [$key, $comparator, $value, $tableName]
         ]));
         return $this;
     }
@@ -254,15 +254,20 @@ class Query
         $shouldCompareFields = true,
         $tableName = null
     ) {
+        if (!$tableName) {
+            $tableName = $this->getTableName();
+        }
+        echo $tableName . "\n";
         $condition = new \Parable\ORM\Query\Condition();
         $condition
-            ->setTableName($tableName ?: $this->getTableName())
+            ->setQuery($this)
+            ->setTableName($tableName)
             ->setJoinTableName($joinTableName)
             ->setKey($key)
             ->setComparator($comparator)
             ->setValue($value)
-            ->setQuery($this)
             ->setShouldCompareFields($shouldCompareFields);
+        echo $condition->build() . "\n\n";
 
         $this->joins[$type][] = $condition;
         return $this;
