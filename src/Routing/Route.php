@@ -58,7 +58,7 @@ class Route
     /**
      * Set the methods accepted by this Route (POST, GET, PUT, etc.) and make sure they're uppercase.
      *
-     * @param stringp[ $methods
+     * @param string[] $methods
      *
      * @return $this
      */
