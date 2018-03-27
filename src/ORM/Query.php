@@ -258,7 +258,7 @@ class Query
         if (!$tableName) {
             $tableName = $this->getTableName();
         }
-        echo $tableName . "\n";
+
         $condition = new \Parable\ORM\Query\Condition();
         $condition
             ->setQuery($this)
@@ -268,7 +268,6 @@ class Query
             ->setComparator($comparator)
             ->setValue($value)
             ->setShouldCompareFields($shouldCompareFields);
-        echo $condition->build() . "\n\n";
 
         $this->joins[$type][] = $condition;
         return $this;
