@@ -167,11 +167,12 @@ class Query
     }
 
     /**
-     * Add a condition based on key/comparator/value.
+     * Add a condition based on key/comparator/value, with an optional $tableName.
      *
      * @param string      $key
      * @param string      $comparator
      * @param string|null $value
+     * @param string|null $tableName
      *
      * @return $this
      */
