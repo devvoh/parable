@@ -89,6 +89,22 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame("New!", $this->response->getContent());
     }
 
+    public function testHeaderAndFooterContent()
+    {
+        $this->assertEmpty($this->response->getHeaderContent());
+
+        $this->response->setHeaderContent("<html>");
+        $this->response->setFooterContent("</html>");
+
+        $this->response->setContent("Stuff goes here.");
+
+        $this->assertSame("Stuff goes here.", $this->response->getContent());
+
+        $this->response->send();
+
+        $this->assertSame("<html>Stuff goes here.</html>", $this->getActualOutputAndClean());
+    }
+
     public function testAppendAndPrependContent()
     {
         $this->response->setContent('yo2');

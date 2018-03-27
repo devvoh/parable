@@ -142,6 +142,7 @@ class Query
      * Add a where condition set.
      *
      * @param \Parable\ORM\Query\ConditionSet $set
+     *
      * @return $this
      */
     public function where(\Parable\ORM\Query\ConditionSet $set)
@@ -154,12 +155,32 @@ class Query
      * Add an array of where condition sets.
      *
      * @param \Parable\ORM\Query\ConditionSet[] $sets
+     *
+     * @return $this
      */
     public function whereMany(array $sets)
     {
         foreach ($sets as $set) {
             $this->where($set);
         }
+        return $this;
+    }
+
+    /**
+     * Add a condition based on key/comparator/value.
+     *
+     * @param string      $key
+     * @param string      $comparator
+     * @param string|null $value
+     *
+     * @return $this
+     */
+    public function whereCondition($key, $comparator, $value = null)
+    {
+        $this->where($this->buildAndSet([
+            [$key, $comparator, $value]
+        ]));
+        return $this;
     }
 
     /**
@@ -214,27 +235,29 @@ class Query
     /**
      * Add a join to the query.
      *
-     * @param int    $type
-     * @param string $tableName
-     * @param string $key
-     * @param string $comparator
-     * @param mixed  $value
-     * @param bool   $shouldCompareFields
+     * @param int         $type
+     * @param string      $joinTableName
+     * @param string      $key
+     * @param string      $comparator
+     * @param mixed       $value
+     * @param bool        $shouldCompareFields
+     * @param string|null $tableName
      *
      * @return $this
      */
     protected function join(
         $type,
-        $tableName,
+        $joinTableName,
         $key,
         $comparator,
         $value = null,
-        $shouldCompareFields = true
+        $shouldCompareFields = true,
+        $tableName = null
     ) {
         $condition = new \Parable\ORM\Query\Condition();
         $condition
-            ->setTableName($this->getTableName())
-            ->setJoinTableName($tableName)
+            ->setTableName($tableName ?: $this->getTableName())
+            ->setJoinTableName($joinTableName)
             ->setKey($key)
             ->setComparator($comparator)
             ->setValue($value)
@@ -248,65 +271,101 @@ class Query
     /**
      * Add an inner join to the query.
      *
-     * @param string $tableName
-     * @param string $key
-     * @param string $comparator
-     * @param mixed  $value
-     * @param bool   $shouldCompareFields
+     * @param string      $joinTableName
+     * @param string      $key
+     * @param string      $comparator
+     * @param mixed       $value
+     * @param bool        $shouldCompareFields
+     * @param string|null $tableName
      *
      * @return $this
      */
-    public function innerJoin($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
-    {
-        return $this->join(self::JOIN_INNER, $tableName, $key, $comparator, $value, $shouldCompareFields);
+    public function innerJoin(
+        $joinTableName,
+        $key,
+        $comparator,
+        $value = null,
+        $shouldCompareFields = true,
+        $tableName = null
+    ) {
+        return $this->join(
+            self::JOIN_INNER, $joinTableName, $key, $comparator, $value, $shouldCompareFields, $tableName
+        );
     }
 
     /**
      * Add a left join to the query.
      *
-     * @param string $tableName
-     * @param string $key
-     * @param string $comparator
-     * @param mixed  $value
-     * @param bool   $shouldCompareFields
+     * @param string      $joinTableName
+     * @param string      $key
+     * @param string      $comparator
+     * @param mixed       $value
+     * @param bool        $shouldCompareFields
+     * @param string|null $tableName
      *
      * @return $this
      */
-    public function leftJoin($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
-    {
-        return $this->join(self::JOIN_LEFT, $tableName, $key, $comparator, $value, $shouldCompareFields);
+    public function leftJoin(
+        $joinTableName,
+        $key,
+        $comparator,
+        $value = null,
+        $shouldCompareFields = true,
+        $tableName = null
+    ) {
+        return $this->join(
+            self::JOIN_LEFT, $joinTableName, $key, $comparator, $value, $shouldCompareFields, $tableName
+        );
     }
 
     /**
      * Add a right join to the query.
      *
-     * @param string $tableName
-     * @param string $key
-     * @param string $comparator
-     * @param mixed  $value
-     * @param bool   $shouldCompareFields
+     * @param string      $joinTableName
+     * @param string      $key
+     * @param string      $comparator
+     * @param mixed       $value
+     * @param bool        $shouldCompareFields
+     * @param string|null $tableName
      *
      * @return $this
      */
-    public function rightJoin($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
-    {
-        return $this->join(self::JOIN_RIGHT, $tableName, $key, $comparator, $value, $shouldCompareFields);
+    public function rightJoin(
+        $joinTableName,
+        $key,
+        $comparator,
+        $value = null,
+        $shouldCompareFields = true,
+        $tableName = null
+    ) {
+        return $this->join(
+            self::JOIN_RIGHT, $joinTableName, $key, $comparator, $value, $shouldCompareFields, $tableName
+        );
     }
 
     /**
      * Add a full join to the query.
      *
-     * @param string $tableName
-     * @param string $key
-     * @param string $comparator
-     * @param mixed  $value
-     * @param bool   $shouldCompareFields
+     * @param string      $joinTableName
+     * @param string      $key
+     * @param string      $comparator
+     * @param mixed       $value
+     * @param bool        $shouldCompareFields
+     * @param string|null $tableName
      *
      * @return $this
      */
-    public function fullJoin($tableName, $key, $comparator, $value = null, $shouldCompareFields = true)
-    {
-        return $this->join(self::JOIN_FULL, $tableName, $key, $comparator, $value, $shouldCompareFields);
+    public function fullJoin(
+        $joinTableName,
+        $key,
+        $comparator,
+        $value = null,
+        $shouldCompareFields = true,
+        $tableName = null
+    ) {
+        return $this->join(
+            self::JOIN_FULL, $joinTableName, $key, $comparator, $value, $shouldCompareFields, $tableName
+        );
     }
 
     /**

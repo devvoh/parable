@@ -9,31 +9,49 @@ class Output
 
     /** @var array */
     protected $tags = [
-        /* foreground colors */
-        'default'      => "\e[0m",
-        'black'        => "\e[0;30m",
-        'red'          => "\e[0;31m",
-        'green'        => "\e[0;32m",
-        'yellow'       => "\e[0;33m",
-        'blue'         => "\e[0;34m",
-        'purple'       => "\e[0;35m",
-        'cyan'         => "\e[0;36m",
-        'white'        => "\e[0;37m",
+        // Default everything
+        'default'          => "\e[0m",
 
-        /* background colors */
-        'black_bg'     => "\e[40m",
-        'red_bg'       => "\e[41m",
-        'green_bg'     => "\e[42m",
-        'yellow_bg'    => "\e[43m",
-        'blue_bg'      => "\e[44m",
-        'magenta_bg'   => "\e[45m",
-        'cyan_bg'      => "\e[46m",
-        'lightgray_bg' => "\e[47m",
+        // Foreground colors
+        'black'            => "\e[;30m",
+        'red'              => "\e[;31m",
+        'green'            => "\e[;32m",
+        'yellow'           => "\e[;33m",
+        'blue'             => "\e[;34m",
+        'magenta'          => "\e[;35m",
+        'cyan'             => "\e[;36m",
+        'light_gray'       => "\e[;37m",
+        'dark_gray'        => "\e[;90m",
+        'light_red'        => "\e[;91m",
+        'light_green'      => "\e[;92m",
+        'light_yellow'     => "\e[;93m",
+        'light_blue'       => "\e[;94m",
+        'light_magenta'    => "\e[;95m",
+        'light_cyan'       => "\e[;96m",
+        'white'            => "\e[;97m",
 
-        /* styles */
-        'error'        => "\e[0;37m\e[41m",
-        'success'      => "\e[0;30m\e[42m",
-        'info'         => "\e[0;30m\e[43m",
+        // Background colors
+        'bg_black'         => "\e[40m",
+        'bg_red'           => "\e[41m",
+        'bg_green'         => "\e[42m",
+        'bg_yellow'        => "\e[43m",
+        'bg_blue'          => "\e[44m",
+        'bg_magenta'       => "\e[45m",
+        'bg_cyan'          => "\e[46m",
+        'bg_light_gray'    => "\e[47m",
+        'bg_dark_gray'     => "\e[100m",
+        'bg_light_red'     => "\e[101m",
+        'bg_light_green'   => "\e[102m",
+        'bg_light_yellow'  => "\e[103m",
+        'bg_light_blue'    => "\e[104m",
+        'bg_light_magenta' => "\e[105m",
+        'bg_light_cyan'    => "\e[106m",
+        'bg_white'         => "\e[107m",
+
+        // Combined styles
+        'error'            => "\e[41;37m",
+        'success'          => "\e[42;30m",
+        'info'             => "\e[43;30m",
     ];
 
     /** @var bool */

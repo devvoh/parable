@@ -16,6 +16,9 @@ abstract class Base extends \PHPUnit\Framework\TestCase
         $GLOBALS["_SERVER"]["argv"] = [];
         $this->testPath = \Parable\DI\Container::create(\Parable\Filesystem\Path::class);
         $this->testPath->setBaseDir(__DIR__ . DS . "..");
+
+        // Disable display errors
+        ini_set("display_errors", 0);
     }
 
     /**
