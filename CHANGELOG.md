@@ -29,6 +29,7 @@ __Bugfixes__
 - `\Parable\Framework\App` has lost some classes from its constructor. They're now loaded on an as-needed basis. So if you don't need the session, it won't be loaded, for example.
 - `\Parable\Framework\App` now loads the database immediately after loading the Config, instead of much later.
 - `\Parable\Framework\Dispatcher` didn't check route return values and blindly attempted to string-concatenate them.  With the help of the `Output` changes, it now does and attempts to
+- `\Parable\GetSet\Base` now throws an exception when `getAll()` is called for a global resource type, but the resource doesn't exist. Example case: attempting to use session data before the session is started.
 - `\Parable\Http\Response` now checks far better whether to append output buffers to content, and uses `acceptsContent` to make sure only valid content is set using the available output method.
 - `\Parable\ORM\Model` now returns all fields when `exportToArray()` is called and no `$model->exportable` values are actually available. Remember, Parable's not here to hold your hand. You're responsible for only exporting the right data!
 

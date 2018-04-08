@@ -49,6 +49,14 @@ abstract class Base
         if ($this->useLocalResource) {
             return $this->localResource;
         }
+
+        // If we're attempting to use a global resource but it doesn't exist, we've got a problem.
+        if (!isset($GLOBALS[$this->getResource()])) {
+            throw new \Parable\GetSet\Exception(
+                "Attempting to use global resource '{$this->getResource()}' but resource not available."
+            );
+        }
+
         return $GLOBALS[$this->getResource()];
     }
 
