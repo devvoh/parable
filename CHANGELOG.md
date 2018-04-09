@@ -22,7 +22,8 @@ __Changes__
 - `\Parable\Http\Response` also gained `stopOutputBuffer()`, which does the same as `returnOutputBuffer()` but doesn't return anything. `stopAllOutputBuffers()` pretty much does what it says.
 - `\Parable\ORM\Query`'s join methods now all accept a new optional parameter, `$tableName`. Normally, the table name is set to the table already set on the query. But now you can override it. This makes it possible to join tables with other tables, neither of which are forced to be the main table.
 - `\Parable\ORM\Query` has gained `whereCondition()`, taking the standard `$key`, `$comparator` and optional `$value` (default `null`)  and `$tableName`. This was added to ease adding simple wheres, without having to _always_ build a condition set.
-- `\Parable\ORM\Query\ConditionSet` now accepts a 4th parameter, which is `$tableName`, in case you want to change that. 
+- `\Parable\ORM\Query\ConditionSet` now accepts a 4th parameter, which is `$tableName`, in case you want to change that.
+- `\Parable\Rights\Rights` has gained `getRightsNames()`, which will return the names of all rights configured. 
 
 __Bugfixes__
 - `\Parable\Console\Output` has had its tags fixed up. It's now possible to combine fore- and background colors, as was always intended. Some small typo fixes in the tag names, but they're easy to fix.

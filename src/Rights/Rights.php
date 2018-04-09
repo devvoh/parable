@@ -48,6 +48,16 @@ class Rights
     }
 
     /**
+     * Return all rights' names.
+     *
+     * @return string[]
+     */
+    public function getRightsNames()
+    {
+        return array_keys($this->rights);
+    }
+
+    /**
      * Return a specific right by name.
      *
      * @param string $name
