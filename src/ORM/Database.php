@@ -392,10 +392,10 @@ class Database
             $method = "set" . ucfirst($property);
 
             if (method_exists($this, $method)) {
-                $this->$method($value);
+                $this->{$method}($value);
             } else {
                 throw new \Parable\ORM\Exception(
-                    "Tried to set non-existing config value '{$property}' on " . get_class($this)
+                    "Tried to set non-existing property '{$property}' with value '{$value}' on " . get_class($this)
                 );
             }
         }

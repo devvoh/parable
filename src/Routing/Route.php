@@ -43,10 +43,10 @@ class Route
         foreach ($data as $property => $value) {
             $method = 'set' . ucfirst($property);
             if (method_exists($this, $method)) {
-                $this->$method($value);
+                $this->{$method}($value);
             } else {
                 throw new \Parable\Routing\Exception(
-                    "Tried to set non-existing property '{$property}' with value '{$value}' on Route."
+                    "Tried to set non-existing property '{$property}' with value '{$value}' on " . get_class($this)
                 );
             }
         }
