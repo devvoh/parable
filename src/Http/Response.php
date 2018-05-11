@@ -346,7 +346,7 @@ class Response
     public function returnOutputBuffer()
     {
         if (!$this->isOutputBufferingEnabled()) {
-            return "";
+            return '';
         }
 
         $this->outputBufferLevel--;
@@ -360,7 +360,7 @@ class Response
      */
     public function returnAllOutputBuffers()
     {
-        $content = "";
+        $content = '';
 
         if ($this->isOutputBufferingEnabled()) {
             while ($this->isOutputBufferingEnabled()) {

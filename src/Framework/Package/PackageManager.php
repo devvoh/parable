@@ -30,7 +30,7 @@ class PackageManager
      */
     protected function loadCommands(PackageInterface $package)
     {
-        if (!$package->getCommands() || APP_CONTEXT !== "console") {
+        if (!$package->getCommands() || APP_CONTEXT !== 'console') {
             return $this;
         }
 

@@ -4,10 +4,10 @@ namespace Parable\Framework;
 
 class Dispatcher
 {
-    const HOOK_DISPATCH_BEFORE          = "parable_dispatch_before";
-    const HOOK_DISPATCH_AFTER           = "parable_dispatch_after";
-    const HOOK_DISPATCH_TEMPLATE_BEFORE = "parable_dispatch_template_before";
-    const HOOK_DISPATCH_TEMPLATE_AFTER  = "parable_dispatch_template_after";
+    const HOOK_DISPATCH_BEFORE          = 'parable_dispatch_before';
+    const HOOK_DISPATCH_AFTER           = 'parable_dispatch_after';
+    const HOOK_DISPATCH_TEMPLATE_BEFORE = 'parable_dispatch_template_before';
+    const HOOK_DISPATCH_TEMPLATE_AFTER  = 'parable_dispatch_template_after';
 
     /** @var \Parable\Event\Hook */
     protected $hook;

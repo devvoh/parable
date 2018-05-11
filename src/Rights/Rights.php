@@ -113,9 +113,9 @@ class Rights
      */
     public function getRightsFromNames(array $names)
     {
-        $rights_string = "";
+        $rights_string = '';
         foreach ($this->getRights() as $right => $value) {
-            $rights_string .= in_array($right, $names) ? "1" : "0";
+            $rights_string .= in_array($right, $names) ? '1' : '0';
         }
         return strrev($rights_string);
     }

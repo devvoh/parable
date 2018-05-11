@@ -93,8 +93,8 @@ class Route
      */
     public function setUrl($url)
     {
-        if (strpos($url, "/") !== 0) {
-            $url = "/" . $url;
+        if (strpos($url, '/') !== 0) {
+            $url = '/' . $url;
         }
         $this->url = $url;
         return $this;

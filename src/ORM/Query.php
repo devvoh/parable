@@ -526,7 +526,7 @@ class Query
                 $selects[] = $select;
             }
         }
-        return implode(', ', $selects);
+        return 'SELECT ' . implode(', ', $selects);
     }
 
     /**
@@ -541,16 +541,16 @@ class Query
             if (count($joins) > 0) {
                 foreach ($joins as $join) {
                     if ($type === self::JOIN_INNER) {
-                        $builtJoins[] = "INNER JOIN";
+                        $builtJoins[] = 'INNER JOIN';
                     } elseif ($type === self::JOIN_LEFT) {
-                        $builtJoins[] = "LEFT JOIN";
+                        $builtJoins[] = 'LEFT JOIN';
                     } elseif ($type === self::JOIN_RIGHT) {
-                        $builtJoins[] = "RIGHT JOIN";
+                        $builtJoins[] = 'RIGHT JOIN';
                     } elseif ($type === self::JOIN_FULL) {
-                        $builtJoins[] = "FULL JOIN";
+                        $builtJoins[] = 'FULL JOIN';
                     }
 
-                    $builtJoins[] = $this->quoteIdentifier($join->getJoinTableName()) . " ON";
+                    $builtJoins[] = $this->quoteIdentifier($join->getJoinTableName()) . ' ON';
 
                     // Use a ConditionSet to build the joins
                     $conditionSet = new Query\Condition\AndSet($this, [$join]);
@@ -559,7 +559,7 @@ class Query
             }
         }
 
-        return implode(" ", $builtJoins);
+        return implode(' ', $builtJoins);
     }
 
     /**
@@ -607,10 +607,10 @@ class Query
 
         $orders = [];
         foreach ($this->orderBy as $orderBy) {
-            $key = $this->quoteIdentifier($orderBy["tableName"]) . "." . $this->quoteIdentifier($orderBy["key"]);
+            $key = $this->quoteIdentifier($orderBy['tableName']) . '.' . $this->quoteIdentifier($orderBy['key']);
             $orders[] = $key . ' ' . $orderBy['direction'];
         }
-        return "ORDER BY " . implode(', ', $orders);
+        return 'ORDER BY ' . implode(', ', $orders);
     }
 
     /**
@@ -626,10 +626,10 @@ class Query
 
         $groups = [];
         foreach ($this->groupBy as $groupBy) {
-            $groupBy = $this->quoteIdentifier($groupBy["tableName"]) . "." . $this->quoteIdentifier($groupBy["key"]);
+            $groupBy = $this->quoteIdentifier($groupBy['tableName']) . '.' . $this->quoteIdentifier($groupBy['key']);
             $groups[] = $groupBy;
         }
-        return "GROUP BY " . implode(', ', $groups);
+        return 'GROUP BY ' . implode(', ', $groups);
     }
 
     /**
@@ -643,16 +643,16 @@ class Query
             return '';
         }
 
-        $limitOffset = "";
-        if ($this->limitOffset["limit"] && $this->limitOffset["offset"]) {
+        $limitOffset = '';
+        if ($this->limitOffset['limit'] && $this->limitOffset['offset']) {
             $limitOffset = $this->limitOffset['offset'] . ',' . $this->limitOffset['limit'];
-        } elseif ($this->limitOffset["limit"]) {
-            $limitOffset = $this->limitOffset["limit"];
-        } elseif ($this->limitOffset["offset"]) {
-            $limitOffset = $this->limitOffset["offset"];
+        } elseif ($this->limitOffset['limit']) {
+            $limitOffset = $this->limitOffset['limit'];
+        } elseif ($this->limitOffset['offset']) {
+            $limitOffset = $this->limitOffset['offset'];
         }
 
-        return "LIMIT " . $limitOffset;
+        return 'LIMIT ' . $limitOffset;
     }
 
     /**
@@ -679,8 +679,8 @@ class Query
                 return '';
             }
 
-            $query[] = "SELECT " . $this->buildSelect();
-            $query[] = "FROM " . $this->getQuotedTableName();
+            $query[] = $this->buildSelect();
+            $query[] = 'FROM ' . $this->getQuotedTableName();
             $query[] = $this->buildJoins();
             $query[] = $this->buildWheres();
             $query[] = $this->buildGroupBy();
@@ -692,14 +692,14 @@ class Query
                 return '';
             }
 
-            $query[] = "DELETE FROM " . $this->getQuotedTableName();
+            $query[] = 'DELETE FROM ' . $this->getQuotedTableName();
             $query[] = $this->buildWheres();
         } elseif ($this->action === 'update') {
             if (count($this->values) === 0 || count($this->where) === 0) {
                 return '';
             }
 
-            $query[] = "UPDATE " . $this->getQuotedTableName();
+            $query[] = 'UPDATE ' . $this->getQuotedTableName();
 
             $values = [];
             foreach ($this->values as $key => $value) {
@@ -709,16 +709,16 @@ class Query
                     $correctValue = $this->quote($value);
                 }
                 $key = $this->quoteIdentifier($key);
-                $values[] = $key . " = " . $correctValue;
+                $values[] = $key . ' = ' . $correctValue;
             }
-            $query[] = "SET " . implode(', ', $values);
+            $query[] = 'SET ' . implode(', ', $values);
             $query[] = $this->buildWheres();
         } elseif ($this->action === 'insert') {
             if (count($this->values) === 0) {
                 return '';
             }
 
-            $query[] = "INSERT INTO " . $this->getQuotedTableName();
+            $query[] = 'INSERT INTO ' . $this->getQuotedTableName();
 
             $keys = [];
             $values = [];
@@ -733,9 +733,9 @@ class Query
                 $values[] = $correctValue;
             }
 
-            $query[] = "(" . implode(', ', $keys) . ")";
-            $query[] = "VALUES";
-            $query[] = "(" . implode(', ', $values) . ")";
+            $query[] = '(' . implode(', ', $keys) . ')';
+            $query[] = 'VALUES';
+            $query[] = '(' . implode(', ', $values) . ')';
         }
 
 
@@ -747,7 +747,7 @@ class Query
         }
 
         // Now make it nice.
-        $queryString = implode(" ", $query);
+        $queryString = implode(' ', $query);
         $queryString = trim($queryString) . ';';
 
         // Since we got here, we've got a query to output
