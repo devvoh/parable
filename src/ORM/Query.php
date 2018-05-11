@@ -178,10 +178,9 @@ class Query
      */
     public function whereCondition($key, $comparator, $value = null, $tableName = null)
     {
-        $this->where($this->buildAndSet([
+        return $this->where($this->buildAndSet([
             [$key, $comparator, $value, $tableName]
         ]));
-        return $this;
     }
 
     /**
@@ -201,12 +200,15 @@ class Query
      * Add an array of having condition sets.
      *
      * @param \Parable\ORM\Query\ConditionSet[] $sets
+     *
+     * @return $this
      */
     public function havingMany(array $sets)
     {
         foreach ($sets as $set) {
             $this->having($set);
         }
+        return $this;
     }
 
     /**

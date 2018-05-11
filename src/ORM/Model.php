@@ -278,7 +278,7 @@ class Model
     {
         $data = $this->toArray();
 
-        if (!$this->exportable) {
+        if (count($this->exportable) === 0) {
             return $data;
         }
 

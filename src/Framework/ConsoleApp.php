@@ -9,6 +9,7 @@ class ConsoleApp
 
     public function __construct(
         \Parable\Framework\Autoloader $autoloader,
+        \Parable\Framework\Config $config,
         \Parable\Console\App $consoleApp,
         \Parable\Filesystem\Path $path,
         \Parable\Console\Command\Help $commandHelp,
@@ -41,7 +42,6 @@ class ConsoleApp
         // Attempt to work with the config, if it exists.
         try {
             // Attempt to load additional commands from the config
-            $config = \Parable\DI\Container::get(\Parable\Framework\Config::class);
             $config->load();
 
             if ($config->get('parable.commands')) {
@@ -54,7 +54,7 @@ class ConsoleApp
             } else {
                 $this->setErrorReportingEnabled(false);
             }
-        } catch (\Parable\DI\Exception $exception) {
+        } catch (\Parable\DI\Exception $exception) { // @codeCoverageIgnore
             // It's fine, we don't need these.
         }
 

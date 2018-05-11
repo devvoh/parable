@@ -92,6 +92,12 @@ class AppTest extends \Parable\Tests\Base
         $this->assertSame('OK2', $commandGot->run());
     }
 
+    public function testHasCommand()
+    {
+        $this->assertTrue($this->app->hasCommand('test1'));
+        $this->assertFalse($this->app->hasCommand('nope not this one'));
+    }
+
     public function testAppGetCommandsReturnsAll()
     {
         $commands = $this->app->getCommands();

@@ -7,6 +7,7 @@ __Changes__
 - `defines.php` now sets a global constant `APP_CONTEXT` to either `web` or `cli`. This can help you figure out what context you're running in.
 - `defines.php` now also defines a new function: `register_parable_package()`. This can be used by external Parable Packages to register themselves with Parable at the soonest possible moment. See below for details.
 - `\Parable\Console\App` now also adds the command you set through `setDefaultCommand()`. It's now also possible to `removeCommandByName()`.
+- `\Parable\DI\Container` gained `getDependenciesFor()` so it's possible to get just an array of instantiated dependencies.
 - `\Parable\Framework\App` gained multiple hooks: `HOOK_LOAD_CONFIG_BEFORE`/`AFTER`, `HOOK_LOAD_INITS_BEFORE`/`AFTER`, `HOOK_LOAD_LAYOUT_BEFORE`/`AFTER`.
 - `\Parable\Framework\App` now supports layouts, which are loaded just before the response is sent. See the `Response` changes below for details. The config values used to load the templates are `parable.layout.header` and `parable.layout.footer`. They're expected to be `.phtml` files.
 - `\Parable\Framework\Loader` has been added, containing `InitLoader` and `CommandLoader`, easing the use of either and separating that logic away nicely.

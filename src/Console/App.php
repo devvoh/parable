@@ -152,6 +152,18 @@ class App
     }
 
     /**
+     * Returns whether the $commandName is registered.
+     *
+     * @param string $commandName
+     *
+     * @return bool
+     */
+    public function hasCommand($commandName)
+    {
+        return isset($this->commands[$commandName]);
+    }
+
+    /**
      * Return the command by name if it's set on the application.
      *
      * @param string $commandName
@@ -160,7 +172,7 @@ class App
      */
     public function getCommand($commandName)
     {
-        if (isset($this->commands[$commandName])) {
+        if ($this->hasCommand($commandName)) {
             return $this->commands[$commandName];
         }
         return null;
@@ -185,7 +197,7 @@ class App
      */
     public function removeCommandByName($commandName)
     {
-        if ($this->getCommand($commandName)) {
+        if ($this->hasCommand($commandName)) {
             unset($this->commands[$commandName]);
         }
         return $this;

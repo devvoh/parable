@@ -171,6 +171,16 @@ class GetSetTest extends \Parable\Tests\Base
         $this->assertSame([], $getset->getAll());
     }
 
+    public function testGetAllThrowsExcpetionIfNoLocalResourceSetAndResourceIsNotValidGlobal()
+    {
+        $this->expectException(\Parable\GetSet\Exception::class);
+        $this->expectExceptionMessage("Attempting to use global resource 'test' but resource not available.");
+
+        $getset = new \Parable\Tests\TestClasses\TestGetSetNoResource();
+        $getset->setResource("test");
+        $getset->getAll();
+    }
+
     public function testGetSetAndRemoveWithHierarchalKeys()
     {
         $this->getSet->set("one", ["this" => "should stay"]);
