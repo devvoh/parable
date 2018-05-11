@@ -296,7 +296,13 @@ class Query
         $tableName = null
     ) {
         return $this->join(
-            self::JOIN_INNER, $joinTableName, $key, $comparator, $value, $shouldCompareFields, $tableName
+            self::JOIN_INNER,
+            $joinTableName,
+            $key,
+            $comparator,
+            $value,
+            $shouldCompareFields,
+            $tableName
         );
     }
 
@@ -321,7 +327,13 @@ class Query
         $tableName = null
     ) {
         return $this->join(
-            self::JOIN_LEFT, $joinTableName, $key, $comparator, $value, $shouldCompareFields, $tableName
+            self::JOIN_LEFT,
+            $joinTableName,
+            $key,
+            $comparator,
+            $value,
+            $shouldCompareFields,
+            $tableName
         );
     }
 
@@ -346,7 +358,13 @@ class Query
         $tableName = null
     ) {
         return $this->join(
-            self::JOIN_RIGHT, $joinTableName, $key, $comparator, $value, $shouldCompareFields, $tableName
+            self::JOIN_RIGHT,
+            $joinTableName,
+            $key,
+            $comparator,
+            $value,
+            $shouldCompareFields,
+            $tableName
         );
     }
 
@@ -371,7 +389,13 @@ class Query
         $tableName = null
     ) {
         return $this->join(
-            self::JOIN_FULL, $joinTableName, $key, $comparator, $value, $shouldCompareFields, $tableName
+            self::JOIN_FULL,
+            $joinTableName,
+            $key,
+            $comparator,
+            $value,
+            $shouldCompareFields,
+            $tableName
         );
     }
 
@@ -516,13 +540,13 @@ class Query
         foreach ($this->joins as $type => $joins) {
             if (count($joins) > 0) {
                 foreach ($joins as $join) {
-                    if ($type == self::JOIN_INNER) {
+                    if ($type === self::JOIN_INNER) {
                         $builtJoins[] = "INNER JOIN";
-                    } elseif ($type == self::JOIN_LEFT) {
+                    } elseif ($type === self::JOIN_LEFT) {
                         $builtJoins[] = "LEFT JOIN";
-                    } elseif ($type == self::JOIN_RIGHT) {
+                    } elseif ($type === self::JOIN_RIGHT) {
                         $builtJoins[] = "RIGHT JOIN";
-                    } elseif ($type == self::JOIN_FULL) {
+                    } elseif ($type === self::JOIN_FULL) {
                         $builtJoins[] = "FULL JOIN";
                     }
 

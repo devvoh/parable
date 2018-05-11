@@ -18,13 +18,15 @@ class CommandLoader
      *
      * @param string[] $commandClasses
      *
+     * @return $this
      * @throws \Parable\DI\Exception
      */
     public function load(array $commandClasses)
     {
         foreach ($commandClasses as $commandClass) {
-            $command = \Parable\DI\Container::get($commandClass);
+            $command = \Parable\DI\Container::create($commandClass);
             $this->consoleApp->addCommand($command);
         }
+        return $this;
     }
 }

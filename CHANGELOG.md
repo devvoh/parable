@@ -24,7 +24,7 @@ __Changes__
 - `\Parable\Http\Response` also gained `stopOutputBuffer()`, which does the same as `returnOutputBuffer()` but doesn't return anything. `stopAllOutputBuffers()` pretty much does what it says.
 - `\Parable\ORM\Query`'s join methods now all accept a new optional parameter, `$tableName`. Normally, the table name is set to the table already set on the query. But now you can override it. This makes it possible to join tables with other tables, neither of which are forced to be the main table.
 - `\Parable\ORM\Query` has gained `whereCondition()`, taking the standard `$key`, `$comparator` and optional `$value` (default `null`)  and `$tableName`. This was added to ease adding simple wheres, without having to _always_ build a condition set.
-- `\Parable\ORM\Query\ConditionSet` now accepts a 4th parameter, which is `$tableName`, in case you want to change that.
+- `\Parable\ORM\Query\ConditionSet` now accepts a 4th parameter, which is `$tableName`, in case you want to check against a different table's values.
 - `\Parable\Rights\Rights` has gained `getRightsNames()`, which will return the names of all rights configured. 
 
 __Bugfixes__
@@ -32,9 +32,9 @@ __Bugfixes__
 - `\Parable\Console\Output` has had its tags fixed up. It's now possible to combine fore- and background colors, as was always intended. Some small typo fixes in the tag names, but they're easy to fix.
 - `\Parable\Framework\App` has lost some classes from its constructor. They're now loaded on an as-needed basis. So if you don't need the session, it won't be loaded, for example.
 - `\Parable\Framework\App` now loads the database immediately after loading the Config, instead of much later.
-- `\Parable\Framework\Dispatcher` didn't check route return values and blindly attempted to string-concatenate them.  With the help of the `Output` changes, it now does and attempts to
+- `\Parable\Framework\Dispatcher` didn't check route return values and blindly attempted to string-concatenate them.  With the help of the `Output` changes, it now checks what kind of data it is and handles it accordingly.
 - `\Parable\GetSet\Base` now throws an exception when `getAll()` is called for a global resource type, but the resource doesn't exist. Example case: attempting to use session data before the session is started.
-- `\Parable\Http\Response` now checks far better whether to append output buffers to content, and uses `acceptsContent` to make sure only valid content is set using the available output method.
+- `\Parable\Http\Response` now checks whether it's possible to append output buffers to content, and uses `acceptsContent` to make sure only valid content is set using the available output method.
 - `\Parable\ORM\Model` now returns all fields when `exportToArray()` is called and no `$model->exportable` values are actually available. Remember, Parable's not here to hold your hand. You're responsible for only exporting the right data!
 
 __Parable Packages Information__

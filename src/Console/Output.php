@@ -84,9 +84,9 @@ class Output
     public function getTerminalWidth()
     {
         if ($this->isInteractiveShell()
-            || (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && getenv("shell"))
+            || (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && getenv('shell'))
         ) {
-            return (int)shell_exec("tput cols");
+            return (int)shell_exec('tput cols');
         }
 
         return self::TERMINAL_DEFAULT_WIDTH;
@@ -102,9 +102,9 @@ class Output
     public function getTerminalHeight()
     {
         if ($this->isInteractiveShell()
-            || (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && getenv("shell"))
+            || (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && getenv('shell'))
         ) {
-            return (int)shell_exec("tput lines");
+            return (int)shell_exec('tput lines');
         }
 
         return self::TERMINAL_DEFAULT_HEIGHT;
@@ -119,7 +119,7 @@ class Output
      */
     public function isInteractiveShell()
     {
-        return function_exists("posix_isatty") && posix_isatty(0);
+        return function_exists('posix_isatty') && posix_isatty(0);
     }
 
     /**
@@ -294,7 +294,7 @@ class Output
         }
 
         $this->cursorReset();
-        $this->write(str_repeat(" ", $this->getTerminalWidth()));
+        $this->write(str_repeat(' ', $this->getTerminalWidth()));
         $this->cursorReset();
 
         $this->disableClearLine();
@@ -367,8 +367,8 @@ class Output
     {
         $strlen = mb_strlen($string);
 
-        $tagsOpen  = "";
-        $tagsClose = "";
+        $tagsOpen  = '';
+        $tagsClose = '';
         if (count($tags) > 0) {
             foreach ($tags as $tag) {
                 $tagsOpen  .= "<{$tag}>";

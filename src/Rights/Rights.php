@@ -28,7 +28,7 @@ class Rights
     public function addRight($name)
     {
         $rights = $this->getRights();
-        if (count($rights) == 0) {
+        if (count($rights) === 0) {
             $value = 1;
         } else {
             $value = 2 * end($rights);

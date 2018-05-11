@@ -5,10 +5,10 @@ namespace Parable\Framework;
 class Authentication
 {
     /** @var string */
-    protected $userClassName = "\Model\User";
+    protected $userClassName = '\Model\User';
 
     /** @var string */
-    protected $userIdProperty = "id";
+    protected $userIdProperty = 'id';
 
     /** @var object|null */
     protected $user;
@@ -42,11 +42,11 @@ class Authentication
     {
         if ($this->checkAuthentication()) {
             $data = $this->getAuthenticationData();
-            if (!isset($data["user_id"])) {
+            if (!isset($data['user_id'])) {
                 return false;
             }
 
-            $user = $this->toolkit->getRepository($this->userClassName)->getById($data["user_id"]);
+            $user = $this->toolkit->getRepository($this->userClassName)->getById($data['user_id']);
             if (!$user) {
                 $this->setAuthenticated(false);
                 $this->setAuthenticationData([]);
@@ -79,14 +79,14 @@ class Authentication
     {
         $authSession = $this->readFromSession();
         if ($authSession) {
-            if (isset($authSession["authenticated"])) {
-                $this->setAuthenticated($authSession["authenticated"]);
+            if (isset($authSession['authenticated'])) {
+                $this->setAuthenticated($authSession['authenticated']);
             } else {
                 $this->setAuthenticated(false);
             }
 
-            if (isset($authSession["data"])) {
-                $this->setAuthenticationData($authSession["data"]);
+            if (isset($authSession['data'])) {
+                $this->setAuthenticationData($authSession['data']);
             } else {
                 $this->setAuthenticationData([]);
             }
@@ -237,11 +237,11 @@ class Authentication
 
             if ($this->getUser() && property_exists($this->getUser(), $this->getUserIdProperty())) {
                 $userId = $this->getUser()->{$this->getUserIdProperty()};
-                $this->setAuthenticationData(["user_id" => $userId]);
+                $this->setAuthenticationData(['user_id' => $userId]);
             }
             $this->writeToSession([
-                "authenticated" => true,
-                "data"          => $this->getAuthenticationData(),
+                'authenticated' => true,
+                'data'          => $this->getAuthenticationData(),
             ]);
         } else {
             $this->revokeAuthentication();
@@ -258,18 +258,7 @@ class Authentication
      */
     protected function writeToSession(array $data)
     {
-        $this->session->set("auth", $data);
-        return $this;
-    }
-
-    /**
-     * Clear the session data.
-     *
-     * @return $this
-     */
-    protected function clearSession()
-    {
-        $this->session->remove("auth");
+        $this->session->set('auth', $data);
         return $this;
     }
 
@@ -280,7 +269,18 @@ class Authentication
      */
     protected function readFromSession()
     {
-        return $this->session->get("auth");
+        return $this->session->get('auth');
+    }
+
+    /**
+     * Clear the session data.
+     *
+     * @return $this
+     */
+    protected function clearSession()
+    {
+        $this->session->remove('auth');
+        return $this;
     }
 
     /**

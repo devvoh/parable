@@ -36,6 +36,7 @@ class Route
      *
      * @param array $data
      *
+     * @return $this
      * @throws \Parable\Routing\Exception
      */
     public function setDataFromArray(array $data)
@@ -53,6 +54,8 @@ class Route
 
         $this->checkValidProperties();
         $this->parseUrlParameters();
+
+        return $this;
     }
 
     /**
@@ -225,6 +228,7 @@ class Route
     /**
      * Check whether a valid set of properties is set.
      *
+     * @return $this
      * @throws \Parable\Routing\Exception
      */
     public function checkValidProperties()
@@ -235,6 +239,7 @@ class Route
         if (empty($this->methods)) {
             throw new \Parable\Routing\Exception('Methods are required and must be passed as an array.');
         }
+        return $this;
     }
 
     /**

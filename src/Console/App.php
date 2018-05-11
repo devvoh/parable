@@ -39,10 +39,12 @@ class App
 
         set_exception_handler(function ($e) {
             // @codeCoverageIgnoreStart
+
+            /** @var \Exception $e */
             $this->output->writeErrorBlock($e->getMessage());
 
             if ($this->activeCommand) {
-                $this->output->writeln("<yellow>Usage</yellow>: " . $this->activeCommand->getUsage());
+                $this->output->writeln('<yellow>Usage</yellow>: ' . $this->activeCommand->getUsage());
             }
             // @codeCoverageIgnoreEnd
         });

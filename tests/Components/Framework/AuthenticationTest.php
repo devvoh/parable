@@ -142,14 +142,14 @@ class AuthenticationTest extends \Parable\Tests\Components\Framework\Base
         $this->authenticateUser();
 
         $this->assertNotNull($this->authentication->getUser());
-        $this->assertNotNull($this->session->get("auth"));
+        $this->assertNotNull($this->session->get('auth'));
         $this->assertTrue($this->authentication->initialize());
         $this->assertNotEmpty($this->authentication->getAuthenticationData());
 
         $this->authentication->reset();
 
         $this->assertNull($this->authentication->getUser());
-        $this->assertNull($this->session->get("auth"));
+        $this->assertNull($this->session->get('auth'));
         $this->assertFalse($this->authentication->initialize());
         $this->assertEmpty($this->authentication->getAuthenticationData());
     }

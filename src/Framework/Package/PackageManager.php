@@ -21,22 +21,6 @@ class PackageManager
     }
 
     /**
-     * Register all packages with Parable.
-     *
-     * @return $this
-     * @throws \Parable\DI\Exception
-     */
-    public function registerPackages()
-    {
-        foreach ($this->packages as $packageName) {
-            $package = \Parable\DI\Container::create($packageName);
-            $this->loadCommands($package);
-            $this->loadInits($package);
-        }
-        return $this;
-    }
-
-    /**
      * Load all Commands from package.
      *
      * @param PackageInterface $package
@@ -52,6 +36,22 @@ class PackageManager
 
         $commandLoader = \Parable\DI\Container::create(\Parable\Framework\Loader\CommandLoader::class);
         $commandLoader->load($package->getCommands());
+        return $this;
+    }
+
+    /**
+     * Register all packages with Parable.
+     *
+     * @return $this
+     * @throws \Parable\DI\Exception
+     */
+    public function registerPackages()
+    {
+        foreach ($this->packages as $packageName) {
+            $package = \Parable\DI\Container::create($packageName);
+            $this->loadCommands($package);
+            $this->loadInits($package);
+        }
         return $this;
     }
 

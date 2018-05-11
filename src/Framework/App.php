@@ -117,7 +117,7 @@ class App
         }
 
         // See if there's any inits defined in the config
-        if ($this->config->get("parable.inits")) {
+        if ($this->config->get('parable.inits')) {
             $this->loadInits();
         }
 
@@ -173,17 +173,19 @@ class App
     /**
      * Enable error reporting, setting display_errors to on and reporting to E_ALL
      *
+     * @param bool $enabled
+     *
      * @return $this
      */
     public function setErrorReportingEnabled($enabled)
     {
-        ini_set("log_errors", 1);
+        ini_set('log_errors', 1);
 
         if ($enabled) {
-            ini_set("display_errors", 1);
+            ini_set('display_errors', 1);
             error_reporting(E_ALL);
         } else {
-            ini_set("display_errors", 0);
+            ini_set('display_errors', 0);
             error_reporting(E_ALL | ~E_DEPRECATED);
         }
 
@@ -222,14 +224,13 @@ class App
      * Load all the routes, if possible.
      *
      * @return $this
-     *
      * @throws \Parable\Framework\Exception
      */
     protected function loadRoutes()
     {
         $this->hook->trigger(self::HOOK_LOAD_ROUTES_BEFORE);
-        if ($this->config->get("parable.routes")) {
-            foreach ($this->config->get("parable.routes") as $routesClass) {
+        if ($this->config->get('parable.routes')) {
+            foreach ($this->config->get('parable.routes') as $routesClass) {
                 $routes = \Parable\DI\Container::create($routesClass);
 
                 if (!($routes instanceof \Parable\Framework\Routing\AbstractRouting)) {
@@ -262,16 +263,14 @@ class App
      * Create instances of given init classes.
      *
      * @return $this
-     *
-     * @throws \Parable\Framework\Exception
      */
     protected function loadInits()
     {
         $this->hook->trigger(self::HOOK_LOAD_INITS_BEFORE);
 
-        if ($this->config->get("parable.inits")) {
+        if ($this->config->get('parable.inits')) {
             $initLoader = \Parable\DI\Container::create(\Parable\Framework\Loader\InitLoader::class);
-            $initLoader->load($this->config->get("parable.inits"));
+            $initLoader->load($this->config->get('parable.inits'));
         }
 
         $this->hook->trigger(self::HOOK_LOAD_INITS_AFTER);
@@ -303,14 +302,14 @@ class App
     {
         $this->hook->trigger(self::HOOK_LOAD_LAYOUT_BEFORE);
 
-        if ($this->config->get("parable.layout.header")) {
+        if ($this->config->get('parable.layout.header')) {
             $this->response->setHeaderContent(
-                $this->view->partial($this->config->get("parable.layout.header"))
+                $this->view->partial($this->config->get('parable.layout.header'))
             );
         }
-        if ($this->config->get("parable.layout.footer")) {
+        if ($this->config->get('parable.layout.footer')) {
             $this->response->setFooterContent(
-                $this->view->partial($this->config->get("parable.layout.footer"))
+                $this->view->partial($this->config->get('parable.layout.footer'))
             );
         }
 
@@ -358,9 +357,9 @@ class App
     public function multiple(array $methods, $url, $callable, $name = null, $templatePath = null)
     {
         $routeData = [
-            "methods"      => $methods,
-            "url"          => $url,
-            "templatePath" => $templatePath,
+            'methods'      => $methods,
+            'url'          => $url,
+            'templatePath' => $templatePath,
         ];
 
         if (is_array($callable)
@@ -368,14 +367,14 @@ class App
             && class_exists($callable[0])
             && !(new \ReflectionMethod($callable[0], $callable[1]))->isStatic()
         ) {
-            $routeData["controller"] = $callable[0];
-            $routeData["action"]     = $callable[1];
+            $routeData['controller'] = $callable[0];
+            $routeData['action']     = $callable[1];
         } else {
-            $routeData["callable"]   = $callable;
+            $routeData['callable']   = $callable;
         }
 
         $this->router->addRouteFromArray(
-            $name ?: uniqid("", true),
+            $name ?: uniqid('', true),
             $routeData
         );
 

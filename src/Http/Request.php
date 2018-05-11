@@ -187,7 +187,7 @@ class Request
     public function getHeader($key)
     {
         foreach ($this->headers as $header => $content) {
-            if (strtolower($key) == strtolower($header)) {
+            if (strtolower($key) === strtolower($header)) {
                 return $content;
             }
         }

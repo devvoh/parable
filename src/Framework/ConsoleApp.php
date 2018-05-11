@@ -4,6 +4,9 @@ namespace Parable\Framework;
 
 class ConsoleApp
 {
+    /** @var \Parable\Console\App */
+    protected $consoleApp;
+
     /** @var bool */
     protected $errorReportingEnabled = false;
 
@@ -20,18 +23,16 @@ class ConsoleApp
         $this->setErrorReportingEnabled(true);
 
         $this->consoleApp = $consoleApp;
-        $this->path       = $path;
 
         // Add the default location to the autoloader and register it
         $autoloader->addLocation(BASEDIR . DS . 'app');
         $autoloader->register();
 
         // And make sure $path has the proper BASEDIR
-        $this->path = $path;
-        $this->path->setBaseDir(BASEDIR);
+        $path->setBaseDir(BASEDIR);
 
         // Set the appropriate name
-        $this->consoleApp->setName("Parable " . \Parable\Framework\App::PARABLE_VERSION);
+        $this->consoleApp->setName('Parable ' . \Parable\Framework\App::PARABLE_VERSION);
 
         // Add the init structure command
         $this->consoleApp->addCommand($commandInitStructure);
@@ -65,17 +66,19 @@ class ConsoleApp
     /**
      * Enable error reporting, setting display_errors to on and reporting to E_ALL
      *
+     * @param bool $enabled
+     *
      * @return $this
      */
     public function setErrorReportingEnabled($enabled)
     {
-        ini_set("log_errors", 1);
+        ini_set('log_errors', 1);
 
         if ($enabled) {
-            ini_set("display_errors", 1);
+            ini_set('display_errors', 1);
             error_reporting(E_ALL);
         } else {
-            ini_set("display_errors", 0);
+            ini_set('display_errors', 0);
             error_reporting(E_ALL | ~E_DEPRECATED);
         }
 
@@ -98,7 +101,6 @@ class ConsoleApp
      * Run the console application.
      *
      * @return mixed
-     *
      * @throws \Parable\Console\Exception
      */
     public function run()

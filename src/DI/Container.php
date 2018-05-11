@@ -104,6 +104,7 @@ class Container
      * Retrieve and instantiate all dependencies for the provided $className
      *
      * @param string $className
+     * @param bool   $createAll
      *
      * @return array
      * @throws \Parable\DI\Exception
@@ -182,8 +183,8 @@ class Container
      */
     protected static function cleanName($name)
     {
-        if (substr($name, 0, 1) == "\\") {
-            $name = ltrim($name, "\\");
+        if (substr($name, 0, 1) === '\\') {
+            $name = ltrim($name, '\\');
         }
         return $name;
     }

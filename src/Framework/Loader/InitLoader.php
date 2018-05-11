@@ -9,6 +9,7 @@ class InitLoader
      *
      * @param string[] $initClasses
      *
+     * @return $this
      * @throws \Parable\DI\Exception
      */
     public function load(array $initClasses)
@@ -16,5 +17,6 @@ class InitLoader
         foreach ($initClasses as $initClass) {
             \Parable\DI\Container::create($initClass);
         }
+        return $this;
     }
 }

@@ -465,8 +465,6 @@ class Response
      * Redirect to given url and stop processing.
      *
      * @param string $url
-     *
-     * @throws \Parable\Http\Exception
      */
     public function redirect($url)
     {

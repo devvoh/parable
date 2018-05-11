@@ -207,6 +207,7 @@ class Model
      * @param bool $keepNullValue
      *
      * @return array
+     * @throws \ReflectionException
      */
     public function toArray($keepNullValue = false)
     {
@@ -321,6 +322,7 @@ class Model
      * Reset all public properties to null.
      *
      * @return $this
+     * @throws \ReflectionException
      */
     public function reset()
     {
