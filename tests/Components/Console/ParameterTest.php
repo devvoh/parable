@@ -17,7 +17,7 @@ class ParameterTest extends \Parable\Tests\Base
     public function testParseParametersWorkedCorrectly()
     {
         $this->parameter->setCommandOptions([
-            "option" => new \Parable\Console\Parameter\Option("option", \Parable\Console\Parameter::OPTION_FLAG),
+            "option" => new \Parable\Console\Parameter\Option("option", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
             "key"    => new \Parable\Console\Parameter\Option("key"),
         ]);
         $this->parameter->setCommandArguments([
@@ -361,15 +361,15 @@ class ParameterTest extends \Parable\Tests\Base
         $this->expectException(\Parable\Console\Exception::class);
         $this->expectExceptionMessage("Required must be one of the PARAMETER_* constants.");
 
-        $option = new \Parable\Console\Parameter\Argument("test", 418);
+        new \Parable\Console\Parameter\Argument("test", 418);
     }
 
     public function testParameterValueRequiredOnlyAcceptConstantValues()
     {
         $this->expectException(\Parable\Console\Exception::class);
-        $this->expectExceptionMessage("Value required must be one of the OPTION_* constants.");
+        $this->expectExceptionMessage("Value type must be one of the OPTION_* constants.");
 
-        $option = new \Parable\Console\Parameter\Option(
+        new \Parable\Console\Parameter\Option(
             "test",
             \Parable\Console\Parameter::PARAMETER_REQUIRED,
             418
@@ -433,8 +433,8 @@ class ParameterTest extends \Parable\Tests\Base
     public function testSingleOptionFlag()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_FLAG),
-            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
         ]);
 
         $this->parameter->setParameters([
@@ -455,8 +455,8 @@ class ParameterTest extends \Parable\Tests\Base
     public function testSeparateOptionFlags()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_FLAG),
-            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
         ]);
 
         $this->parameter->setParameters([
@@ -478,9 +478,9 @@ class ParameterTest extends \Parable\Tests\Base
     public function testCombinedOptionFlags()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
             new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
-            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
         ]);
 
         $this->parameter->setParameters([
@@ -503,9 +503,9 @@ class ParameterTest extends \Parable\Tests\Base
     public function testOptionFlagsAndOptionValuesSetWithEqualSign()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
             new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
-            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
         ]);
 
         $this->parameter->setParameters([
@@ -527,9 +527,9 @@ class ParameterTest extends \Parable\Tests\Base
     public function testCombinedOptionFlagsAndValuesSetWithoutEqualSign()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
             new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
-            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
         ]);
 
         $this->parameter->setParameters([
@@ -576,14 +576,19 @@ class ParameterTest extends \Parable\Tests\Base
             new \Parable\Console\Parameter\Option("aa", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
             new \Parable\Console\Parameter\Option("bb", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
         ]);
+        $this->parameter->setCommandArguments([
+            new \Parable\Console\Parameter\Argument("argument")
+        ]);
 
         $this->parameter->setParameters([
             './test.php',
             'command-to-run',
             '--aa',
             'test',
+            'argument-now',
         ]);
         $this->parameter->checkCommandOptions();
+        $this->parameter->checkCommandArguments();
         $this->assertSame(
             [
                 'aa' => 'test',
@@ -591,13 +596,17 @@ class ParameterTest extends \Parable\Tests\Base
             ],
             $this->parameter->getOptions()
         );
+        $this->assertSame(
+            'argument-now',
+            $this->parameter->getArgument('argument')
+        );
     }
 
     public function testSkippingUndefinedOptions()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_FLAG),
-            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_FLAG),
+            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
         ]);
 
         $this->parameter->setParameters([

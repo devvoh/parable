@@ -5,45 +5,59 @@ namespace Parable\Console\Parameter;
 class Option extends Base
 {
     /** @var int|null */
-    protected $valueRequired;
+    protected $valueType;
 
+    /**
+     * @param string     $name
+     * @param int        $valueType
+     * @param mixed|null $defaultValue
+     */
     public function __construct(
         $name,
-        $valueRequired = \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
+        $valueType = \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
         $defaultValue = null
     ) {
         $this->setName($name);
-        $this->setValueRequired($valueRequired);
+        $this->setValueType($valueType);
         $this->setDefaultValue($defaultValue);
+    }
+
+    /**
+     * @param int $valueType
+     *
+     * @return $this
+     * @throws \Parable\Console\Exception
+     *
+     * @deprecated Use setValueType instead
+     *
+     * @codeCoverageIgnore
+     */
+    public function setValueRequired($valueType)
+    {
+        return $this->setValueType($valueType);
     }
 
     /**
      * Set whether the option's value is required.
      *
-     * @param int $valueRequired
+     * @param int $valueType
      *
      * @return $this
      * @throws \Parable\Console\Exception
      */
-    public function setValueRequired($valueRequired)
+    public function setValueType($valueType)
     {
         if (!in_array(
-            $valueRequired,
+            $valueType,
             [
                 \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
                 \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
-                \Parable\Console\Parameter::OPTION_FLAG,
+                \Parable\Console\Parameter::OPTION_VALUE_FLAG,
             ]
         )) {
-            throw new \Parable\Console\Exception('Value required must be one of the OPTION_* constants.');
+            throw new \Parable\Console\Exception('Value type must be one of the OPTION_* constants.');
         }
-        $this->valueRequired = $valueRequired;
-        return $this;
-    }
-
-    public function setIsFlag()
-    {
-        $this->valueRequired = \Parable\Console\Parameter::OPTION_FLAG;
+        $this->valueType = $valueType;
         return $this;
     }
 
@@ -54,7 +68,7 @@ class Option extends Base
      */
     public function isFlag()
     {
-        return $this->valueRequired === \Parable\Console\Parameter::OPTION_FLAG;
+        return $this->valueType === \Parable\Console\Parameter::OPTION_VALUE_FLAG;
     }
 
     /**
@@ -64,7 +78,7 @@ class Option extends Base
      */
     public function isValueRequired()
     {
-        return $this->valueRequired === \Parable\Console\Parameter::OPTION_VALUE_REQUIRED;
+        return $this->valueType === \Parable\Console\Parameter::OPTION_VALUE_REQUIRED;
     }
 
     /**

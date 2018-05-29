@@ -7,8 +7,9 @@ abstract class AbstractRouting
     /** @var \Parable\Framework\App */
     protected $app;
 
-    public function __construct(\Parable\Framework\App $app)
-    {
+    public function __construct(
+        \Parable\Framework\App $app
+    ) {
         $this->app = $app;
     }
 

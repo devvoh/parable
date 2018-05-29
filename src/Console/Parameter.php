@@ -7,7 +7,7 @@ class Parameter
     const PARAMETER_REQUIRED    = 1;
     const PARAMETER_OPTIONAL    = 2;
 
-    const OPTION_FLAG = 10;
+    const OPTION_VALUE_FLAG = 10;
     const OPTION_VALUE_REQUIRED = 11;
     const OPTION_VALUE_OPTIONAL = 12;
 
@@ -95,13 +95,6 @@ class Parameter
         $endOfOptions = false;
 
         foreach ($this->parameters as $parameter) {
-            // No more options after the '--' parameter
-            if ($parameter === '--') {
-                $endOfOptions = true;
-                $previousOptionValueName = '';
-                continue;
-            }
-
             // Long options: --abc, --abc def, or --abc=def
             if (!$endOfOptions && substr($parameter, 0, 2) === "--") {
                 $parameter = ltrim($parameter, '-');
