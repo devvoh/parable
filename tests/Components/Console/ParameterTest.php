@@ -615,5 +615,4 @@ class ParameterTest extends \Parable\Tests\Base
             $this->parameter->getOptions()
         );
     }
-
 }
