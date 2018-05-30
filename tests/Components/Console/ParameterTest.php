@@ -553,15 +553,18 @@ class ParameterTest extends \Parable\Tests\Base
         $this->parameter->setParameters([
             './test.php',
             'command-to-run',
+            '--a',
+            '-b',
+            '--c',
             '--abc',
             'test',
         ]);
         $this->parameter->checkCommandOptions();
         $this->assertSame(
             [
-                'a' => null,
-                'b' => null,
-                'c' => null,
+                'a' => true,
+                'b' => true,
+                'c' => true,
                 'abc' => true,
             ],
             $this->parameter->getOptions()
