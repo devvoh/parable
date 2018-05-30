@@ -55,6 +55,9 @@ class App
     /** @var bool */
     protected $errorReportingEnabled = false;
 
+    /** @var bool */
+    protected $initialized = false;
+
     public function __construct(
         \Parable\Framework\Autoloader $autoloader,
         \Parable\Framework\Config $config,
@@ -93,21 +96,61 @@ class App
      */
     public function run()
     {
+        if (!$this->initialized) {
+            $this->initialize();
+        }
+
+        // Get the current url
+        $currentUrl     = $this->toolkit->getCurrentUrl();
+        $currentFullUrl = $this->toolkit->getCurrentUrlFull();
+
+        // And try to match the route
+        $this->hook->trigger(self::HOOK_ROUTE_MATCH_BEFORE, $currentUrl);
+        $route = $this->router->matchUrl($currentUrl);
+        $this->hook->trigger(self::HOOK_ROUTE_MATCH_AFTER, $route);
+
+        if ($route) {
+            $this->dispatchRoute($route);
+        } else {
+            $this->response->setHttpCode(404);
+            $this->hook->trigger(self::HOOK_HTTP_404, $currentFullUrl);
+        }
+
+        $this->loadLayout();
+
+        $this->hook->trigger(self::HOOK_RESPONSE_SEND);
+        $this->response->send();
+        return $this;
+    }
+
+    /**
+     * Initialize the App to prepare it for being run.
+     *
+     * @return $this
+     * @throws \Parable\Framework\Exception
+     * @throws \Parable\DI\Exception
+     */
+    public function initialize()
+    {
+        if ($this->initialized) {
+            throw new \Parable\Framework\Exception("App has already been initialized.");
+        }
+
         // And now possible packages get their turn.
         $this->packageManager->registerPackages();
 
         $this->loadConfig();
-
-        // Init the database if it's configured
-        if ($this->config->get('parable.database.type')) {
-            $this->loadDatabase();
-        }
 
         // Enable error reporting if debug is set to true
         if ($this->config->get('parable.debug') === true) {
             $this->setErrorReportingEnabled(true);
         } else {
             $this->setErrorReportingEnabled(false);
+        }
+
+        // Init the database if it's configured
+        if ($this->config->get('parable.database.type')) {
+            $this->loadDatabase();
         }
 
         // Set the basePath on the url based on the config
@@ -137,26 +180,9 @@ class App
         // Load the routes
         $this->loadRoutes();
 
-        // Get the current url
-        $currentUrl     = $this->toolkit->getCurrentUrl();
-        $currentFullUrl = $this->toolkit->getCurrentUrlFull();
+        // And set the class to initialized
+        $this->initialized = true;
 
-        // And try to match the route
-        $this->hook->trigger(self::HOOK_ROUTE_MATCH_BEFORE, $currentUrl);
-        $route = $this->router->matchUrl($currentUrl);
-        $this->hook->trigger(self::HOOK_ROUTE_MATCH_AFTER, $route);
-
-        if ($route) {
-            $this->dispatchRoute($route);
-        } else {
-            $this->response->setHttpCode(404);
-            $this->hook->trigger(self::HOOK_HTTP_404, $currentFullUrl);
-        }
-
-        $this->loadLayout();
-
-        $this->hook->trigger(self::HOOK_RESPONSE_SEND);
-        $this->response->send();
         return $this;
     }
 

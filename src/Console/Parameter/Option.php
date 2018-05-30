@@ -52,23 +52,13 @@ class Option extends Base
             [
                 \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
                 \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
-                \Parable\Console\Parameter::OPTION_VALUE_FLAG,
             ]
         )) {
             throw new \Parable\Console\Exception('Value type must be one of the OPTION_* constants.');
         }
+
         $this->valueType = $valueType;
         return $this;
-    }
-
-    /**
-     * Return whether the option is a flag.
-     *
-     * @return bool
-     */
-    public function isFlag()
-    {
-        return $this->valueType === \Parable\Console\Parameter::OPTION_VALUE_FLAG;
     }
 
     /**

@@ -28,11 +28,13 @@ class Help extends \Parable\Console\Command
         }
 
         $commandName = $this->parameter->getArgument('command_name');
-        if ($commandName) {
+
+        if ($this->parameter->getCommandName() === $this->name && $commandName) {
             $this->showCommandHelp($this->parameter->getArgument('command_name'));
         } else {
             $this->showGeneralHelp();
         }
+
         return $this;
     }
 

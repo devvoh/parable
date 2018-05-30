@@ -17,7 +17,7 @@ class ParameterTest extends \Parable\Tests\Base
     public function testParseParametersWorkedCorrectly()
     {
         $this->parameter->setCommandOptions([
-            "option" => new \Parable\Console\Parameter\Option("option", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            "option" => new \Parable\Console\Parameter\Option("option"),
             "key"    => new \Parable\Console\Parameter\Option("key"),
         ]);
         $this->parameter->setCommandArguments([
@@ -45,53 +45,6 @@ class ParameterTest extends \Parable\Tests\Base
             [
                 "command-to-run",
                 "--option",
-                "argument",
-                "--key=value2",
-            ],
-            $this->parameter->getParameters()
-        );
-    }
-
-    public function testParseParametersWorkedCorrectlyAfterEndOfOptions()
-    {
-        $this->parameter->setCommandOptions([
-            "option" => new \Parable\Console\Parameter\Option(
-                "option",
-                \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
-                '123'
-            ),
-            "key"    => new \Parable\Console\Parameter\Option("key"),
-        ]);
-        $this->parameter->setCommandArguments([
-            new \Parable\Console\Parameter\Argument("arg1"),
-            new \Parable\Console\Parameter\Argument("arg2"),
-        ]);
-
-        $this->parameter->setParameters([
-            './test.php',
-            'command-to-run',
-            '--option',
-            '--',
-            'argument',
-            '--key=value2',
-        ]);
-
-        $this->parameter->checkCommandOptions();
-        $this->parameter->checkCommandArguments();
-
-        $this->assertSame('./test.php', $this->parameter->getScriptName());
-        $this->assertSame('command-to-run', $this->parameter->getCommandName());
-
-        $this->assertSame('123', $this->parameter->getOption('option'));
-        $this->assertSame("argument", $this->parameter->getArgument('arg1'));
-        // No more options after '--' so the last parameter is interpreted as an argument
-        $this->assertSame("--key=value2", $this->parameter->getArgument('arg2'));
-
-        $this->assertSame(
-            [
-                "command-to-run",
-                "--option",
-                '--',
                 "argument",
                 "--key=value2",
             ],
@@ -430,11 +383,11 @@ class ParameterTest extends \Parable\Tests\Base
         ];
     }
 
-    public function testSingleOptionFlag()
+    public function testSingleShortOption()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
-            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            new \Parable\Console\Parameter\Option("a"),
+            new \Parable\Console\Parameter\Option("b"),
         ]);
 
         $this->parameter->setParameters([
@@ -452,11 +405,11 @@ class ParameterTest extends \Parable\Tests\Base
         );
     }
 
-    public function testSeparateOptionFlags()
+    public function testSeparateShortOptions()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
-            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            new \Parable\Console\Parameter\Option("a"),
+            new \Parable\Console\Parameter\Option("b"),
         ]);
 
         $this->parameter->setParameters([
@@ -475,12 +428,12 @@ class ParameterTest extends \Parable\Tests\Base
         );
     }
 
-    public function testCombinedOptionFlags()
+    public function testCombinedShortOptions()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
-            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
-            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            new \Parable\Console\Parameter\Option("a"),
+            new \Parable\Console\Parameter\Option("b"),
+            new \Parable\Console\Parameter\Option("c"),
         ]);
 
         $this->parameter->setParameters([
@@ -500,42 +453,18 @@ class ParameterTest extends \Parable\Tests\Base
         );
     }
 
-    public function testOptionFlagsAndOptionValuesSetWithEqualSign()
+    public function testShortOptionAndOptionValuesSetWithEqualSign()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
-            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
-            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            new \Parable\Console\Parameter\Option("a"),
+            new \Parable\Console\Parameter\Option("b"),
+            new \Parable\Console\Parameter\Option("c"),
         ]);
 
         $this->parameter->setParameters([
             './test.php',
             'command-to-run',
             '-ab=c',
-        ]);
-        $this->parameter->checkCommandOptions();
-        $this->assertSame(
-            [
-                'a' => true,
-                'b' => 'c',
-                'c' => null,
-            ],
-            $this->parameter->getOptions()
-        );
-    }
-
-    public function testCombinedOptionFlagsAndValuesSetWithoutEqualSign()
-    {
-        $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
-            new \Parable\Console\Parameter\Option("b", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
-            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
-        ]);
-
-        $this->parameter->setParameters([
-            './test.php',
-            'command-to-run',
-            '-abc',
         ]);
         $this->parameter->checkCommandOptions();
         $this->assertSame(
@@ -570,43 +499,11 @@ class ParameterTest extends \Parable\Tests\Base
         );
     }
 
-    public function testValueOptionsWithoutEqualSigns()
-    {
-        $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("aa", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
-            new \Parable\Console\Parameter\Option("bb", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL),
-        ]);
-        $this->parameter->setCommandArguments([
-            new \Parable\Console\Parameter\Argument("argument")
-        ]);
-
-        $this->parameter->setParameters([
-            './test.php',
-            'command-to-run',
-            '--aa',
-            'test',
-            'argument-now',
-        ]);
-        $this->parameter->checkCommandOptions();
-        $this->parameter->checkCommandArguments();
-        $this->assertSame(
-            [
-                'aa' => 'test',
-                'bb' => null,
-            ],
-            $this->parameter->getOptions()
-        );
-        $this->assertSame(
-            'argument-now',
-            $this->parameter->getArgument('argument')
-        );
-    }
-
     public function testSkippingUndefinedOptions()
     {
         $this->parameter->setCommandOptions([
-            new \Parable\Console\Parameter\Option("a", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
-            new \Parable\Console\Parameter\Option("c", \Parable\Console\Parameter::OPTION_VALUE_FLAG),
+            new \Parable\Console\Parameter\Option("a"),
+            new \Parable\Console\Parameter\Option("c"),
         ]);
 
         $this->parameter->setParameters([
@@ -623,5 +520,52 @@ class ParameterTest extends \Parable\Tests\Base
             ],
             $this->parameter->getOptions()
         );
+    }
+
+    public function testWellIThinkIveFoundAProblem()
+    {
+        // Well this here's a doozy
+        $this->parameter->setCommandOptions([
+            new \Parable\Console\Parameter\Option("a"),
+            new \Parable\Console\Parameter\Option("b"),
+            new \Parable\Console\Parameter\Option("c"),
+            new \Parable\Console\Parameter\Option("abc"),
+        ]);
+
+        $this->parameter->setParameters([
+            './test.php',
+            'command-to-run',
+            '-abc',
+            'test',
+        ]);
+        $this->parameter->checkCommandOptions();
+        $this->assertSame(
+            [
+                'a' => true,
+                'b' => true,
+                'c' => true,
+                'abc' => null,
+            ],
+            $this->parameter->getOptions()
+        );
+        // That one works, yay!
+
+        $this->parameter->setParameters([
+            './test.php',
+            'command-to-run',
+            '--abc',
+            'test',
+        ]);
+        $this->parameter->checkCommandOptions();
+        $this->assertSame(
+            [
+                'a' => null,
+                'b' => null,
+                'c' => null,
+                'abc' => true,
+            ],
+            $this->parameter->getOptions()
+        );
+        // ... Well that's somewhat unwanted behavior ...
     }
 }
