@@ -32,12 +32,29 @@ class Option extends Base
             [
                 \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
                 \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
+                \Parable\Console\Parameter::OPTION_FLAG,
             ]
         )) {
-            throw new \Parable\Console\Exception('Value required must be one of the OPTION_VALUE_* constants.');
+            throw new \Parable\Console\Exception('Value required must be one of the OPTION_* constants.');
         }
         $this->valueRequired = $valueRequired;
         return $this;
+    }
+
+    public function setIsFlag()
+    {
+        $this->valueRequired = \Parable\Console\Parameter::OPTION_FLAG;
+        return $this;
+    }
+
+    /**
+     * Return whether the option is a flag.
+     *
+     * @return bool
+     */
+    public function isFlag()
+    {
+        return $this->valueRequired === \Parable\Console\Parameter::OPTION_FLAG;
     }
 
     /**
