@@ -6,7 +6,7 @@ __Changes__
 - `\Parable\Console\Options` has been upgraded thanks to @jerry1970, through PR #44:
   - Short options/flags (value-less with a single dash) are now supported. Examples: `parable command -xyf` or `parable command -x -y -f`.
   - Option values can be passed with either a `=` as before or with a space, but only if the Option has been added to the command. To prevent arguments being picked up as option values, use ` -- ` (spaces included) to signify that from this point on, there's only arguments.
-  - 
+- `\Parable\Console\Output` has been upgraded to support newlines in the different `writeBlock` methods. You can also directly pass them a `string[]`. 
 
 ### 1.1.0
 
