@@ -141,6 +141,11 @@ class App
 
         $this->loadConfig();
 
+        // Start the session if session.auto-enable is true
+        if ($this->config->get('parable.session.auto-enable') !== false) {
+            $this->startSession();
+        }
+
         // Enable error reporting if debug is set to true
         if ($this->config->get('parable.debug') === true) {
             $this->setErrorReportingEnabled(true);
@@ -162,11 +167,6 @@ class App
         // See if there's any inits defined in the config
         if ($this->config->get('parable.inits')) {
             $this->loadInits();
-        }
-
-        // Start the session if session.auto-enable is true
-        if ($this->config->get('parable.session.auto-enable') !== false) {
-            $this->startSession();
         }
 
         // Set the default timezone if it's set
