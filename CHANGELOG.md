@@ -4,9 +4,10 @@
 
 __Changes__
 - `\Parable\Console\Options` has been upgraded thanks to @jerry1970, through PR #44:
-  - Short options/flags (value-less with a single dash) are now supported. Examples: `parable command -xyf` or `parable command -x -y -f`.
-  - Option values can be passed with either a `=` as before or with a space, but only if the Option has been added to the command. To prevent arguments being picked up as option values, use ` -- ` (spaces included) to signify that from this point on, there's only arguments.
-- `\Parable\Console\Output` has been upgraded to support newlines in the different `writeBlock` methods. You can also directly pass them a `string[]`. 
+  - Short options/flags (value-less with a single dash) are now supported. Examples: `parable command -xyf` or `parable command -x -y -f`. You can designate an option as a flag by passing `true` as the fourth parameter when instantiating an Option or simiarly by calling `addOption()` on a command.
+  - Short options are only picked up when passed with a single dash `-`, whereas regular options only get picked up with a double dash `--`.
+- `\Parable\Console\Output` has been upgraded to support newlines in the different `writeBlock()` methods. You can also directly pass them a `string[]`, just like with `writeln()`.
+- `\Parable\Http\Response` has gained `enableHeaderAndFooterContent()`, so you can disable it for certain output (like json) if you've otherwise set header/footer content globally. 
 
 ### 1.1.0
 

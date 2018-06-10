@@ -187,6 +187,16 @@ class App
     }
 
     /**
+     * Return whether the app has been initialized already or not.
+     *
+     * @return bool
+     */
+    public function isInitialized()
+    {
+        return $this->initialized;
+    }
+
+    /**
      * Return Parable's current version number.
      *
      * @return string

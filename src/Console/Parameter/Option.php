@@ -7,19 +7,25 @@ class Option extends Base
     /** @var int|null */
     protected $valueType;
 
+    /** @var bool */
+    protected $flagOption = false;
+
     /**
      * @param string     $name
      * @param int        $valueType
      * @param mixed|null $defaultValue
+     * @param bool       $defaultValue
      */
     public function __construct(
         $name,
         $valueType = \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
-        $defaultValue = null
+        $defaultValue = null,
+        $flagOption = false
     ) {
         $this->setName($name);
         $this->setValueType($valueType);
         $this->setDefaultValue($defaultValue);
+        $this->setFlagOption($flagOption);
     }
 
     /**
@@ -69,6 +75,29 @@ class Option extends Base
     public function isValueRequired()
     {
         return $this->valueType === \Parable\Console\Parameter::OPTION_VALUE_REQUIRED;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     * @throws \Parable\Console\Exception
+     */
+    public function setFlagOption($enabled)
+    {
+        if ($enabled && mb_strlen($this->getName()) > 1) {
+            throw new \Parable\Console\Exception("Flag options can only have a single-letter name.");
+        }
+        $this->flagOption = (bool)$enabled;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFlagOption()
+    {
+        return $this->flagOption;
     }
 
     /**

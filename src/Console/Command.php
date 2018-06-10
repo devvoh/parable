@@ -127,18 +127,25 @@ class Command
     /**
      * Add an option for this command.
      *
-     * @param string $name
-     * @param int    $valueRequired
-     * @param mixed  $defaultValue
+     * @param string     $name
+     * @param int        $valueRequired
+     * @param mixed|null $defaultValue
+     * @param bool       $flagOption
      *
      * @return $this
      */
     public function addOption(
         $name,
         $valueRequired = Parameter::OPTION_VALUE_OPTIONAL,
-        $defaultValue = null
+        $defaultValue = null,
+        $flagOption = false
     ) {
-        $this->options[$name] = new \Parable\Console\Parameter\Option($name, $valueRequired, $defaultValue);
+        $this->options[$name] = new \Parable\Console\Parameter\Option(
+            $name,
+            $valueRequired,
+            $defaultValue,
+            $flagOption
+        );
         return $this;
     }
 
@@ -201,12 +208,16 @@ class Command
         }
 
         foreach ($this->getOptions() as $option) {
+            $dashes = '-';
+            if (!$option->isFlagOption()) {
+                $dashes .= '-';
+            }
             if ($option->isValueRequired()) {
                 $optionString = "{$option->getName()}=value";
             } else {
                 $optionString = "{$option->getName()}[=value]";
             }
-            $string[] = "[--{$optionString}]";
+            $string[] = "[{$dashes}{$optionString}]";
         }
 
         return implode(' ', $string);

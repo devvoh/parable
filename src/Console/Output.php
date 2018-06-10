@@ -125,7 +125,7 @@ class Output
     /**
      * Write a line or array of lines to the console. This will always end in a newline.
      *
-     * @param array|string $lines
+     * @param string[]|string $lines
      *
      * @return $this
      */

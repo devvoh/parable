@@ -105,6 +105,23 @@ class ResponseTest extends \Parable\Tests\Base
         $this->assertSame("<html>Stuff goes here.</html>", $this->getActualOutputAndClean());
     }
 
+    public function testHeaderAndFooterContentDoesNothingIfDisabled()
+    {
+        $this->assertEmpty($this->response->getHeaderContent());
+
+        $this->response->setHeaderContent("<html>");
+        $this->response->setFooterContent("</html>");
+
+        $this->response->setContent("Stuff goes here.");
+
+        $this->assertSame("Stuff goes here.", $this->response->getContent());
+
+        $this->response->enableHeaderAndFooterContent(false);
+        $this->response->send();
+
+        $this->assertSame("Stuff goes here.", $this->getActualOutputAndClean());
+    }
+
     public function testAppendAndPrependContent()
     {
         $this->response->setContent('yo2');

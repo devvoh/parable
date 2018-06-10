@@ -23,6 +23,9 @@ class Parameter
     protected $options = [];
 
     /** @var array */
+    protected $flagOptions = [];
+
+    /** @var array */
     protected $arguments = [];
 
     /** @var \Parable\Console\Parameter\Option[] */
@@ -90,9 +93,9 @@ class Parameter
             $optionString = ltrim($parameter, '-');
 
             if (substr($parameter, 0, 2) === "--") {
-                $this->parseLongOption($optionString);
+                $this->parseOption($optionString);
             } elseif (substr($parameter, 0, 1) === "-") {
-                $this->parseShortOption($optionString);
+                $this->parseFlagOption($optionString);
             } else {
                 $this->parseArgument($parameter);
             }
@@ -104,39 +107,49 @@ class Parameter
      * Parse a long option (--option) string.
      *
      * @param string $optionString
+     *
+     * @return $this
      */
-    protected function parseLongOption($optionString)
+    protected function parseOption($optionString)
     {
         $optionParts = explode('=', $optionString);
 
         if (count($optionParts) > 1) {
             list($key, $value) = $optionParts;
-            $this->options[$key] = $value;
         } else {
-            $this->options[$optionString] = true;
+            $key   = $optionString;
+            $value = true;
         }
+
+        $this->options[$key] = $value;
+        return $this;
     }
 
     /**
-     * Parse a short option string (-a or -abc, though this is parsed
+     * Parse a flag option string (-a or -abc, though this is parsed
      * as a concatenated string of one char per option).
      *
      * @param string $optionString
+     *
+     * @return $this
      */
-    protected function parseShortOption($optionString)
+    protected function parseFlagOption($optionString)
     {
         for ($i = 0; $i < strlen($optionString); $i++) {
             $optionChar = substr($optionString, $i, 1);
             $optionParts = explode('=', substr($optionString, $i + 1));
 
             if (count($optionParts) > 1 && empty($optionParts[0])) {
-                $this->options[$optionChar] = $optionParts[1];
+                $value = $optionParts[1];
             } elseif ($optionChar !== "=") {
-                $this->options[$optionChar] = true;
+                $value = true;
             } else {
                 break;
             }
+
+            $this->flagOptions[$optionChar] = $value;
         }
+        return $this;
     }
 
     /**
@@ -144,6 +157,8 @@ class Parameter
      * interpret as command name. Otherwise, add to argument list.
      *
      * @param string $parameter
+     *
+     * @return $this
      */
     protected function parseArgument($parameter)
     {
@@ -152,6 +167,7 @@ class Parameter
         } else {
             $this->arguments[] = $parameter;
         }
+        return $this;
     }
 
     /**
@@ -204,12 +220,20 @@ class Parameter
     public function checkCommandOptions()
     {
         foreach ($this->commandOptions as $option) {
-            $option->addParameters($this->options);
+            if ($option->isFlagOption()) {
+                $parameters = $this->flagOptions;
+            } else {
+                $parameters = $this->options;
+            }
+            $option->addParameters($parameters);
 
             if ($option->isValueRequired() && $option->hasBeenProvided() && !$option->getValue()) {
-                throw new \Parable\Console\Exception(
-                    "Option '--{$option->getName()}' requires a value, which is not provided."
-                );
+                if ($option->isFlagOption()) {
+                    $message = "Option '-{$option->getName()}' requires a value, which is not provided.";
+                } else {
+                    $message = "Option '--{$option->getName()}' requires a value, which is not provided.";
+                }
+                throw new \Parable\Console\Exception($message);
             }
         }
     }
