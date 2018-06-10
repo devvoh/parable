@@ -90,6 +90,16 @@ class App
     }
 
     /**
+     * Return Parable's current version number.
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return self::PARABLE_VERSION;
+    }
+
+    /**
      * Do all the setup and then attempt to match and dispatch the current url.
      *
      * @return $this
@@ -141,16 +151,16 @@ class App
 
         $this->loadConfig();
 
-        // Start the session if session.auto-enable is true
-        if ($this->config->get('parable.session.auto-enable') !== false) {
-            $this->startSession();
-        }
-
         // Enable error reporting if debug is set to true
         if ($this->config->get('parable.debug') === true) {
             $this->setErrorReportingEnabled(true);
         } else {
             $this->setErrorReportingEnabled(false);
+        }
+
+        // Start the session if session.auto-enable is true
+        if ($this->config->get('parable.session.auto-enable') !== false) {
+            $this->startSession();
         }
 
         // Init the database if it's configured
@@ -194,16 +204,6 @@ class App
     public function isInitialized()
     {
         return $this->initialized;
-    }
-
-    /**
-     * Return Parable's current version number.
-     *
-     * @return string
-     */
-    public function getVersion()
-    {
-        return self::PARABLE_VERSION;
     }
 
     /**

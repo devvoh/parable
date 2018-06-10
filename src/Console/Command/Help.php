@@ -12,8 +12,6 @@ class Help extends \Parable\Console\Command
 
     public function __construct()
     {
-        $this->addOption("regular");
-        $this->addOption("s", \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL, false, true);
         $this->addArgument('command_name');
     }
 

@@ -69,13 +69,12 @@ class Parameter
     /**
      * Split the parameters into script name, command name, options and arguments.
      *
-     * Short options can be passed in a single set preceded by a dash:
+     * Flag options can be passed in a single set preceded by a dash:
      *   -a -b -c
      * or concatenated together, which looks like this:
      *   -abc
      *
-     * When an option is encountered with a value set, everything after = is seen
-     * as that value:
+     * When an option is encountered with a value set, everything after = is seen as that value:
      *   -a -b -c=def
      * or:
      *   -abc=def
@@ -126,8 +125,8 @@ class Parameter
     }
 
     /**
-     * Parse a flag option string (-a or -abc, though this is parsed
-     * as a concatenated string of one char per option).
+     * Parse a flag option string (-a or -abc, this last version
+     * is parsed as a concatenated string of one char per option).
      *
      * @param string $optionString
      *
