@@ -10,6 +10,11 @@ class Argument extends Base
     /** @var int|null */
     protected $order;
 
+    /**
+     * @param string     $name
+     * @param int        $valueType
+     * @param mixed|null $defaultValue
+     */
     public function __construct(
         $name,
         $required = \Parable\Console\Parameter::PARAMETER_OPTIONAL,

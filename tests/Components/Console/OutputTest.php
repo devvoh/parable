@@ -294,6 +294,55 @@ class OutputTest extends \Parable\Tests\Base
         );
     }
 
+    public function testWriteBlockWithTagsHandlesLineBreaksCorrectly()
+    {
+        $this->output->writeBlockWithTags("\nGive Me\n\nLots of newlines!\nThis should be the longest line.\n", ['tag']);
+
+        $output = [
+            $this->addTag(""),
+            $this->addTag(" <tag>┌──────────────────────────────────┐</tag>"),
+            $this->addTag(" <tag>│                                  │</tag>"),
+            $this->addTag(" <tag>│ Give Me                          │</tag>"),
+            $this->addTag(" <tag>│                                  │</tag>"),
+            $this->addTag(" <tag>│ Lots of newlines!                │</tag>"),
+            $this->addTag(" <tag>│ This should be the longest line. │</tag>"),
+            $this->addTag(" <tag>│                                  │</tag>"),
+            $this->addTag(" <tag>└──────────────────────────────────┘</tag>"),
+            $this->addTag(""),
+            "",
+        ];
+
+        $this->assertSame(
+            implode("\n", $output),
+            $this->getActualOutputAndClean()
+        );
+    }
+
+    public function testWriteBlockWithTagsHandlesStringArrayCorrectly()
+    {
+        $this->output->writeBlockWithTags(
+            ['One could also try,', 'giving this a string array,', '', 'so it looks like this.'],
+            ['haiku']
+        );
+
+        $output = [
+            $this->addTag(""),
+            $this->addTag(" <haiku>┌─────────────────────────────┐</haiku>"),
+            $this->addTag(" <haiku>│ One could also try,         │</haiku>"),
+            $this->addTag(" <haiku>│ giving this a string array, │</haiku>"),
+            $this->addTag(" <haiku>│                             │</haiku>"),
+            $this->addTag(" <haiku>│ so it looks like this.      │</haiku>"),
+            $this->addTag(" <haiku>└─────────────────────────────┘</haiku>"),
+            $this->addTag(""),
+            "",
+        ];
+
+        $this->assertSame(
+            implode("\n", $output),
+            $this->getActualOutputAndClean()
+        );
+    }
+
     public function testParseTagsForRealThisTime()
     {
         $output = new \Parable\Console\Output();

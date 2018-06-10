@@ -1,5 +1,15 @@
 # Parable PHP Framework Changelog
 
+### 1.2.0
+
+__Changes__
+- `\Parable\Console\Options` has been upgraded thanks to @jerry1970, through PR #44:
+  - Flag options (single-character, using a single dash) are now supported. Examples: `parable command -xyf` or `parable command -x -y -f`. You can designate an option as a flag by passing `true` as the fourth parameter when instantiating an Option or simiarly by calling `addOption()` on a command.
+  - Flag options are only picked up when passed with a single dash `-`, whereas regular options only get picked up with a double dash `--`.
+  - Flag options by default don't require a value and are `null` if not passed and `true` if passed. They can, however, take values like regular options.
+- `\Parable\Console\Output` has been upgraded to support newlines in the different `writeBlock()` methods. You can also directly pass them a `string[]`, just like with `writeln()`.
+- `\Parable\Http\Response` has gained `enableHeaderAndFooterContent()`, so you can disable it for certain output (like json) if you've otherwise set header/footer content globally. 
+
 ### 1.1.0
 
 __Changes__
