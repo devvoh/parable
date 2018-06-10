@@ -527,9 +527,15 @@ class Response
             // @codeCoverageIgnoreEnd
         }
 
-        echo $this->getHeaderContent();
+        if ($this->isHeaderAndFooterContentEnabled()) {
+            echo $this->getHeaderContent();
+        }
+
         echo $this->getContent();
-        echo $this->getFooterContent();
+
+        if ($this->isHeaderAndFooterContentEnabled()) {
+            echo $this->getFooterContent();
+        }
 
         $this->terminate();
     }
