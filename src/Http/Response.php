@@ -93,6 +93,9 @@ class Response
     /** @var string */
     protected $footerContent;
 
+    /** @var bool */
+    protected $headerFooterContent = true;
+
     public function __construct(
         \Parable\Http\Request $request
     ) {
@@ -302,6 +305,29 @@ class Response
     public function getFooterContent()
     {
         return $this->footerContent ?: "";
+    }
+
+    /**
+     * Enable or disable header and footer content.
+     *
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function enableHeaderAndFooterContent($enabled)
+    {
+        $this->headerFooterContent = (bool)$enabled;
+        return $this;
+    }
+
+    /**
+     * Return whether header and footer content is enabled.
+     *
+     * @return bool
+     */
+    public function isHeaderAndFooterContentEnabled()
+    {
+        return $this->headerFooterContent;
     }
 
     /**

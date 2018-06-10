@@ -13,6 +13,7 @@ class Json extends \Parable\Http\Output\AbstractOutput
     public function init(\Parable\Http\Response $response)
     {
         $response->setContentType($this->contentType);
+        $response->enableHeaderAndFooterContent(false);
         return $this;
     }
 
