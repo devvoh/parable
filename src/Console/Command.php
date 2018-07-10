@@ -2,6 +2,9 @@
 
 namespace Parable\Console;
 
+use Parable\Console\Parameter\Argument;
+use Parable\Console\Parameter\Option;
+
 class Command
 {
     /** @var string|null */
@@ -13,39 +16,39 @@ class Command
     /** @var callable|null */
     protected $callable;
 
-    /** @var \Parable\Console\Parameter\Option[] */
+    /** @var Option[] */
     protected $options = [];
 
-    /** @var \Parable\Console\Parameter\Argument[] */
+    /** @var Argument[] */
     protected $arguments = [];
 
-    /** @var \Parable\Console\App|null */
+    /** @var App|null */
     protected $app;
 
-    /** @var \Parable\Console\Output|null */
+    /** @var Output|null */
     protected $output;
 
-    /** @var \Parable\Console\Input|null */
+    /** @var Input|null */
     protected $input;
 
-    /** @var \Parable\Console\Parameter|null */
+    /** @var Parameter|null */
     protected $parameter;
 
     /**
      * Prepare the command, setting all classes the command is dependant on.
      *
-     * @param \Parable\Console\App       $app
-     * @param \Parable\Console\Output    $output
-     * @param \Parable\Console\Input     $input
-     * @param \Parable\Console\Parameter $parameter
+     * @param App       $app
+     * @param Output    $output
+     * @param Input     $input
+     * @param Parameter $parameter
      *
      * @return $this
      */
     public function prepare(
-        \Parable\Console\App $app,
-        \Parable\Console\Output $output,
-        \Parable\Console\Input $input,
-        \Parable\Console\Parameter $parameter
+        App $app,
+        Output $output,
+        Input $input,
+        Parameter $parameter
     ) {
         $this->app       = $app;
         $this->output    = $output;
@@ -140,7 +143,7 @@ class Command
         $defaultValue = null,
         $flagOption = false
     ) {
-        $this->options[$name] = new \Parable\Console\Parameter\Option(
+        $this->options[$name] = new Option(
             $name,
             $valueRequired,
             $defaultValue,
@@ -152,7 +155,7 @@ class Command
     /**
      * Return all options for this command.
      *
-     * @return \Parable\Console\Parameter\Option[]
+     * @return Option[]
      */
     public function getOptions()
     {
@@ -173,14 +176,14 @@ class Command
         $required = Parameter::PARAMETER_OPTIONAL,
         $defaultValue = null
     ) {
-        $this->arguments[] = new \Parable\Console\Parameter\Argument($name, $required, $defaultValue);
+        $this->arguments[] = new Argument($name, $required, $defaultValue);
         return $this;
     }
 
     /**
      * Return all arguments for this command.
      *
-     * @return \Parable\Console\Parameter\Argument[]
+     * @return Argument[]
      */
     public function getArguments()
     {
@@ -240,13 +243,14 @@ class Command
     /**
      * Run another command from the current command, passing parameters as an array.
      *
-     * @param \Parable\Console\Command $command
-     * @param array                    $parameters
+     * @param Command $command
+     * @param array   $parameters
+     *
      * @return mixed
      */
-    protected function runCommand(\Parable\Console\Command $command, array $parameters = [])
+    protected function runCommand(Command $command, array $parameters = [])
     {
-        $parameter = new \Parable\Console\Parameter();
+        $parameter = new Parameter();
         $parameter->setParameters($parameters);
 
         $command->prepare($this->app, $this->output, $this->input, $parameter);

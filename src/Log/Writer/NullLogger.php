@@ -2,7 +2,7 @@
 
 namespace Parable\Log\Writer;
 
-class NullLogger implements \Parable\Log\Writer\WriterInterface
+class NullLogger implements WriterInterface
 {
     /**
      * Log it nowhere at all.

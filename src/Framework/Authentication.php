@@ -4,6 +4,12 @@ namespace Parable\Framework;
 
 class Authentication
 {
+    /** @var \Parable\Framework\Toolkit */
+    protected $toolkit;
+
+    /** @var \Parable\GetSet\Session */
+    protected $session;
+
     /** @var string */
     protected $userClassName = '\Model\User';
 
@@ -12,12 +18,6 @@ class Authentication
 
     /** @var object|null */
     protected $user;
-
-    /** @var \Parable\Framework\Toolkit */
-    protected $toolkit;
-
-    /** @var \Parable\GetSet\Session */
-    protected $session;
 
     /** @var bool */
     protected $authenticated = false;

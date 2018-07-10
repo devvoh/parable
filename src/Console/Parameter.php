@@ -2,6 +2,9 @@
 
 namespace Parable\Console;
 
+use Parable\Console\Parameter\Argument;
+use Parable\Console\Parameter\Option;
+
 class Parameter
 {
     const PARAMETER_REQUIRED    = 1;
@@ -28,10 +31,10 @@ class Parameter
     /** @var array */
     protected $arguments = [];
 
-    /** @var \Parable\Console\Parameter\Option[] */
+    /** @var Option[] */
     protected $commandOptions = [];
 
-    /** @var \Parable\Console\Parameter\Argument[] */
+    /** @var Argument[] */
     protected $commandArguments = [];
 
     /** @var bool */
@@ -192,16 +195,16 @@ class Parameter
     /**
      * Set the options from a command.
      *
-     * @param \Parable\Console\Parameter\Option[] $options
+     * @param Option[] $options
      *
      * @return $this
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      */
     public function setCommandOptions(array $options)
     {
         foreach ($options as $name => $option) {
-            if ((!$option instanceof Parameter\Option)) {
-                throw new \Parable\Console\Exception(
+            if ((!$option instanceof Option)) {
+                throw new Exception(
                     "Options must be instances of Parameter\\Option. {$name} is not."
                 );
             }
@@ -214,7 +217,7 @@ class Parameter
      * Checks the options set against the parameters set. Takes into account whether an option is required
      * to be passed or not, or a value is required if it's passed, or sets the defaultValue if given and necessary.
      *
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      */
     public function checkCommandOptions()
     {
@@ -232,7 +235,7 @@ class Parameter
                 } else {
                     $message = "Option '--{$option->getName()}' requires a value, which is not provided.";
                 }
-                throw new \Parable\Console\Exception($message);
+                throw new Exception($message);
             }
         }
     }
@@ -277,17 +280,17 @@ class Parameter
     /**
      * Set the arguments from a command.
      *
-     * @param \Parable\Console\Parameter\Argument[] $arguments
+     * @param Argument[] $arguments
      *
      * @return $this
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      */
     public function setCommandArguments(array $arguments)
     {
         $orderedArguments = [];
         foreach ($arguments as $index => $argument) {
-            if (!($argument instanceof Parameter\Argument)) {
-                throw new \Parable\Console\Exception(
+            if (!($argument instanceof Argument)) {
+                throw new Exception(
                     "Arguments must be instances of Parameter\\Argument. The item at index {$index} is not."
                 );
             }
@@ -304,7 +307,7 @@ class Parameter
      * Checks the arguments set against the parameters set. Takes into account whether an argument is required
      * to be passed or not.
      *
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      */
     public function checkCommandArguments()
     {
@@ -312,7 +315,7 @@ class Parameter
             $argument->addParameters($this->arguments);
 
             if ($argument->isRequired() && !$argument->hasBeenProvided()) {
-                throw new \Parable\Console\Exception(
+                throw new Exception(
                     "Required argument with index #{$index} '{$argument->getName()}' not provided."
                 );
             }

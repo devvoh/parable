@@ -2,7 +2,7 @@
 
 namespace Parable\Mail\Sender;
 
-class NullMailer implements \Parable\Mail\Sender\SenderInterface
+class NullMailer implements SenderInterface
 {
     /**
      * Send it nowhere at all.

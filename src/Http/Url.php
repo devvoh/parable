@@ -4,7 +4,7 @@ namespace Parable\Http;
 
 class Url
 {
-    /** @var \Parable\Http\Request */
+    /** @var Request */
     protected $request;
 
     /** @var string */
@@ -17,7 +17,7 @@ class Url
     protected $scriptName = '/index.php';
 
     public function __construct(
-        \Parable\Http\Request $request
+        Request $request
     ) {
         $this->request = $request;
     }

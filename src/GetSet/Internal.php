@@ -2,7 +2,7 @@
 
 namespace Parable\GetSet;
 
-class Internal extends \Parable\GetSet\Base
+class Internal extends Base
 {
     /** @var string */
     protected $resource = 'parable_internal';

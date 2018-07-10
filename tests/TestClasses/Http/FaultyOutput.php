@@ -2,10 +2,20 @@
 
 namespace Parable\Tests\TestClasses\Http;
 
-class FaultyOutput extends \Parable\Http\Output\AbstractOutput
+use Parable\Http\Output\OutputInterface;
+
+class FaultyOutput implements OutputInterface
 {
     /** @var string */
     protected $contentType = 'application/json';
+
+    /**
+     * @inheritdoc
+     */
+    public function acceptsContent($content)
+    {
+        return true;
+    }
 
     /**
      * @inheritdoc

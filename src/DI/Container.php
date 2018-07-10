@@ -17,7 +17,7 @@ class Container
      * @param string $parentClassName
      *
      * @return mixed
-     * @throws \Parable\DI\Exception
+     * @throws Exception
      */
     public static function get($className, $parentClassName = '')
     {
@@ -35,7 +35,7 @@ class Container
         ) {
             $message  = "Cyclical dependency found: {$className} depends on {$parentClassName}";
             $message .= " but is itself a dependency of {$parentClassName}.";
-            throw new \Parable\DI\Exception($message);
+            throw new Exception($message);
         }
 
         if (!self::isStored($className)) {
@@ -53,7 +53,7 @@ class Container
      * @param string $parentClassName
      *
      * @return mixed
-     * @throws \Parable\DI\Exception
+     * @throws Exception
      */
     public static function create($className, $parentClassName = '')
     {
@@ -67,7 +67,7 @@ class Container
      * @param string $parentClassName
      *
      * @return mixed
-     * @throws \Parable\DI\Exception
+     * @throws Exception
      */
     public static function createAll($className, $parentClassName = '')
     {
@@ -82,7 +82,7 @@ class Container
      * @param bool   $createAll
      *
      * @return mixed
-     * @throws \Parable\DI\Exception
+     * @throws Exception
      */
     protected static function createInstance($className, $parentClassName = '', $createAll = false)
     {
@@ -90,12 +90,12 @@ class Container
 
         try {
             $dependencies = self::getDependenciesFor($className, $createAll);
-        } catch (\Parable\DI\Exception $e) {
+        } catch (Exception $e) {
             $message = $e->getMessage();
             if ($parentClassName) {
                 $message .= ", required by '{$parentClassName}'";
             }
-            throw new \Parable\DI\Exception($message);
+            throw new Exception($message);
         }
         return new $className(...$dependencies);
     }
@@ -107,7 +107,7 @@ class Container
      * @param bool   $createAll
      *
      * @return array
-     * @throws \Parable\DI\Exception
+     * @throws Exception
      */
     public static function getDependenciesFor($className, $createAll = false)
     {
@@ -115,7 +115,7 @@ class Container
             $reflection = new \ReflectionClass($className);
         } catch (\Exception $e) {
             $message = "Could not create instance of '{$className}'";
-            throw new \Parable\DI\Exception($message);
+            throw new Exception($message);
         }
 
         $construct = $reflection->getConstructor();
@@ -135,7 +135,7 @@ class Container
                 if (is_object($class)) {
                     $subClassName = $class->name;
                 }
-            } catch (\ReflectionException $e) {
+            } catch (\Exception $e) {
             }
 
             if ($createAll) {

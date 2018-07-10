@@ -2,7 +2,7 @@
 
 namespace Parable\GetSet;
 
-class Cookie extends \Parable\GetSet\Base
+class Cookie extends Base
 {
     /** @var string */
     protected $resource = '_COOKIE';

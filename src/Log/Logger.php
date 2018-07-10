@@ -2,19 +2,21 @@
 
 namespace Parable\Log;
 
+use Parable\Log\Writer\WriterInterface;
+
 class Logger
 {
-    /** @var \Parable\Log\Writer\WriterInterface */
+    /** @var WriterInterface */
     protected $writer;
 
     /**
      * Set a writer class to use.
      *
-     * @param \Parable\Log\Writer\WriterInterface $writer
+     * @param WriterInterface $writer
      *
      * @return $this
      */
-    public function setWriter(\Parable\Log\Writer\WriterInterface $writer)
+    public function setWriter(WriterInterface $writer)
     {
         $this->writer = $writer;
         return $this;
@@ -26,12 +28,12 @@ class Logger
      * @param mixed $message
      *
      * @return $this
-     * @throws \Parable\Log\Exception
+     * @throws Exception
      */
     public function write($message)
     {
         if (!$this->writer) {
-            throw new \Parable\Log\Exception("Can't write without a valid \Log\Writer instance set.");
+            throw new Exception("Can't write without a valid \Log\Writer instance set.");
         }
         $message = $this->stringifyMessage($message);
 
@@ -45,12 +47,12 @@ class Logger
      * @param array $messages
      *
      * @return $this
-     * @throws \Parable\Log\Exception
+     * @throws Exception
      */
     public function writeLines(array $messages)
     {
         if (!$this->writer) {
-            throw new \Parable\Log\Exception("Can't writeLines without a valid \Log\Writer instance set.");
+            throw new Exception("Can't writeLines without a valid \Log\Writer instance set.");
         }
         foreach ($messages as $message) {
             $this->write($message);

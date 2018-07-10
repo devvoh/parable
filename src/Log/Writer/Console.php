@@ -2,7 +2,7 @@
 
 namespace Parable\Log\Writer;
 
-class Console implements \Parable\Log\Writer\WriterInterface
+class Console implements WriterInterface
 {
     /** @var  */
     protected $file;

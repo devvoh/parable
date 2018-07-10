@@ -135,12 +135,12 @@ class Input
      * Request input from the user, while hiding the actual input. Use this to request passwords, for example.
      *
      * @return string
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      */
     public function getHidden()
     {
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            throw new \Parable\Console\Exception(
+            throw new Exception(
                 "Hidden input is not supported on windows."
             );
         }

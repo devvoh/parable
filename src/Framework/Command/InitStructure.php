@@ -4,14 +4,14 @@ namespace Parable\Framework\Command;
 
 class InitStructure extends \Parable\Console\Command
 {
+    /** @var \Parable\Filesystem\Path */
+    protected $path;
+
     /** @var string */
     protected $name = 'init-structure';
 
     /** @var string */
     protected $description = 'This command initializes a default parable structure.';
-
-    /** @var \Parable\Filesystem\Path */
-    protected $path;
 
     /** @var string */
     protected $vendor_path;

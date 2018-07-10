@@ -2,6 +2,8 @@
 
 namespace Parable\ORM\Query;
 
+use Parable\ORM\Query;
+
 class Condition
 {
     /** @var \Parable\ORM\Query */
@@ -31,11 +33,11 @@ class Condition
     /**
      * Set the query.
      *
-     * @param \Parable\ORM\Query $query
+     * @param Query $query
      *
      * @return $this
      */
-    public function setQuery(\Parable\ORM\Query $query)
+    public function setQuery(Query $query)
     {
         $this->query = $query;
 

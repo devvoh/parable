@@ -2,6 +2,12 @@
 
 namespace Parable\ORM;
 
+use Parable\DI\Container;
+use Parable\ORM\Query\Condition;
+use Parable\ORM\Query\Condition\AndSet;
+use Parable\ORM\Query\Condition\OrSet;
+use Parable\ORM\Query\ConditionSet;
+
 class Query
 {
     /** Join types */
@@ -14,10 +20,13 @@ class Query
     const ORDER_ASC  = 'ASC';
     const ORDER_DESC = 'DESC';
 
-    /** @var \Parable\ORM\Query\Condition[] */
+    /** @var Database */
+    protected $database;
+
+    /** @var Condition[] */
     protected $where = [];
 
-    /** @var \Parable\ORM\Query\Condition[] */
+    /** @var Condition[] */
     protected $having = [];
 
     /** @var array */
@@ -35,7 +44,7 @@ class Query
     /** @var string */
     protected $action = 'select';
 
-    /** @var \Parable\ORM\Query\Condition[][] */
+    /** @var Condition[][] */
     protected $joins = [
         self::JOIN_INNER => [],
         self::JOIN_LEFT  => [],
@@ -49,9 +58,6 @@ class Query
     /** @var null|string */
     protected $tableName;
 
-    /** @var \Parable\ORM\Database */
-    protected $database;
-
     /** @var array */
     protected $acceptedValues = ['select', 'insert', 'update', 'delete'];
 
@@ -59,7 +65,7 @@ class Query
     protected $nonQuoteStrings = ['*', 'sum', 'max', 'min', 'count', 'avg'];
 
     public function __construct(
-        \Parable\ORM\Database $database
+        Database $database
     ) {
         $this->database = $database;
     }
@@ -103,13 +109,13 @@ class Query
      * @param string $action
      *
      * @return $this
-     * @throws \Parable\ORM\Exception
+     * @throws Exception
      */
     public function setAction($action)
     {
         if (!in_array($action, $this->acceptedValues)) {
             $acceptedValuesString = implode(', ', $this->acceptedValues);
-            throw new \Parable\ORM\Exception("Invalid action set, only {$acceptedValuesString} are allowed.");
+            throw new Exception("Invalid action set, only {$acceptedValuesString} are allowed.");
         }
         $this->action = $action;
         return $this;
@@ -141,11 +147,11 @@ class Query
     /**
      * Add a where condition set.
      *
-     * @param \Parable\ORM\Query\ConditionSet $set
+     * @param ConditionSet $set
      *
      * @return $this
      */
-    public function where(\Parable\ORM\Query\ConditionSet $set)
+    public function where(ConditionSet $set)
     {
         $this->where[] = $set;
         return $this;
@@ -154,7 +160,7 @@ class Query
     /**
      * Add an array of where condition sets.
      *
-     * @param \Parable\ORM\Query\ConditionSet[] $sets
+     * @param ConditionSet[] $sets
      *
      * @return $this
      */
@@ -186,11 +192,11 @@ class Query
     /**
      * Add a having condition set.
      *
-     * @param \Parable\ORM\Query\ConditionSet $set
+     * @param ConditionSet $set
      *
      * @return $this
      */
-    public function having(\Parable\ORM\Query\ConditionSet $set)
+    public function having(ConditionSet $set)
     {
         $this->having[] = $set;
         return $this;
@@ -199,7 +205,7 @@ class Query
     /**
      * Add an array of having condition sets.
      *
-     * @param \Parable\ORM\Query\ConditionSet[] $sets
+     * @param ConditionSet[] $sets
      *
      * @return $this
      */
@@ -214,25 +220,25 @@ class Query
     /**
      * Return a new AND condition set.
      *
-     * @param \Parable\ORM\Query\Condition[] $conditions
+     * @param Condition[] $conditions
      *
-     * @return \Parable\ORM\Query\Condition\AndSet
+     * @return AndSet
      */
     public function buildAndSet(array $conditions)
     {
-        return new Query\Condition\AndSet($this, $conditions);
+        return new AndSet($this, $conditions);
     }
 
     /**
      * Return a new OR condition set.
      *
-     * @param \Parable\ORM\Query\Condition[] $conditions
+     * @param Condition[] $conditions
      *
-     * @return \Parable\ORM\Query\Condition\OrSet
+     * @return OrSet
      */
     public function buildOrSet(array $conditions)
     {
-        return new Query\Condition\OrSet($this, $conditions);
+        return new OrSet($this, $conditions);
     }
 
     /**
@@ -261,7 +267,7 @@ class Query
             $tableName = $this->getTableName();
         }
 
-        $condition = new \Parable\ORM\Query\Condition();
+        $condition = new Condition();
         $condition
             ->setQuery($this)
             ->setTableName($tableName)
@@ -553,7 +559,7 @@ class Query
                     $builtJoins[] = $this->quoteIdentifier($join->getJoinTableName()) . ' ON';
 
                     // Use a ConditionSet to build the joins
-                    $conditionSet = new Query\Condition\AndSet($this, [$join]);
+                    $conditionSet = new AndSet($this, [$join]);
                     $builtJoins[] = $conditionSet->buildWithoutParentheses();
                 }
             }
@@ -574,7 +580,7 @@ class Query
         }
 
         // Use a ConditionSet to build the wheres
-        $conditionSet = new Query\Condition\AndSet($this, $this->where);
+        $conditionSet = new AndSet($this, $this->where);
         return "WHERE {$conditionSet->buildWithoutParentheses()}";
     }
 
@@ -590,7 +596,7 @@ class Query
         }
 
         // Use a ConditionSet to build the having clause
-        $conditionSet = new Query\Condition\AndSet($this, $this->having);
+        $conditionSet = new AndSet($this, $this->having);
         return "HAVING {$conditionSet->buildWithoutParentheses()}";
     }
 
@@ -662,7 +668,7 @@ class Query
      */
     public static function createInstance()
     {
-        return \Parable\DI\Container::create(static::class);
+        return Container::create(static::class);
     }
 
     /**

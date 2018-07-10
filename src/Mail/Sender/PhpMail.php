@@ -2,10 +2,10 @@
 
 namespace Parable\Mail\Sender;
 
-class PhpMail implements \Parable\Mail\Sender\SenderInterface
+class PhpMail implements SenderInterface
 {
     /**
-     * Send using php's built-in Mail interface
+     * Send using PHP's built-in Mail interface
      *
      * @inheritdoc
      *

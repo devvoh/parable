@@ -2,9 +2,11 @@
 
 namespace Parable\Mail;
 
+use Parable\Mail\Sender\SenderInterface;
+
 class Mailer
 {
-    /** @var \Parable\Mail\Sender\SenderInterface */
+    /** @var SenderInterface */
     protected $mailSender;
 
     /** @var array */
@@ -33,11 +35,11 @@ class Mailer
     /**
      * Set the mail sender implementation to use.
      *
-     * @param Sender\SenderInterface $mailSender
+     * @param SenderInterface $mailSender
      *
      * @return $this
      */
-    public function setMailSender(\Parable\Mail\Sender\SenderInterface $mailSender)
+    public function setMailSender(SenderInterface $mailSender)
     {
         $this->mailSender = $mailSender;
         return $this;
@@ -46,7 +48,7 @@ class Mailer
     /**
      * Return the mail sender implementation currently set.
      *
-     * @return Sender\SenderInterface
+     * @return SenderInterface
      */
     public function getMailSender()
     {
@@ -60,12 +62,12 @@ class Mailer
      * @param null|string $name
      *
      * @return $this
-     * @throws \Parable\Mail\Exception
+     * @throws Exception
      */
     public function setFrom($email, $name = null)
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new \Parable\Mail\Exception("Email provided is invalid: {$email}");
+            throw new Exception("Email provided is invalid: {$email}");
         }
         $this->addresses['from'] = [
             [
@@ -123,12 +125,12 @@ class Mailer
      * @param null|string $name
      *
      * @return $this
-     * @throws \Parable\Mail\Exception
+     * @throws Exception
      */
     protected function addAddress($type, $email, $name = null)
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new \Parable\Mail\Exception("Email provided is invalid: {$email}");
+            throw new Exception("Email provided is invalid: {$email}");
         }
         $this->addresses[$type][] = [
             'email' => $email,
@@ -153,12 +155,12 @@ class Mailer
      * @param string $type
      *
      * @return string
-     * @throws \Parable\Mail\Exception
+     * @throws Exception
      */
     public function getAddressesForType($type)
     {
         if (!isset($this->addresses[$type])) {
-            throw new \Parable\Mail\Exception('Only to, cc, bcc addresses are allowed.');
+            throw new Exception('Only to, cc, bcc addresses are allowed.');
         }
 
         $addresses = [];
@@ -268,23 +270,23 @@ class Mailer
      * Send the email.
      *
      * @return bool
-     * @throws \Parable\Mail\Exception
+     * @throws Exception
      */
     public function send()
     {
         if (!$this->mailSender) {
-            throw new \Parable\Mail\Exception('No mail sender implementation set.');
+            throw new Exception('No mail sender implementation set.');
         }
 
         // Check the basics
         if (count($this->addresses['to']) === 0) {
-            throw new \Parable\Mail\Exception('No to addresses provided.');
+            throw new Exception('No to addresses provided.');
         }
         if (empty($this->subject)) {
-            throw new \Parable\Mail\Exception('No subject provided.');
+            throw new Exception('No subject provided.');
         }
         if (empty($this->body)) {
-            throw new \Parable\Mail\Exception('No body provided.');
+            throw new Exception('No body provided.');
         }
 
         // Handle the to, cc and bcc addresses

@@ -2,12 +2,15 @@
 
 namespace Parable\ORM;
 
+use Parable\DI\Container;
+use Parable\ORM\Query\ConditionSet;
+
 class Repository
 {
-    /** @var \Parable\ORM\Database */
+    /** @var Database */
     protected $database;
 
-    /** @var \Parable\ORM\Model */
+    /** @var Model */
     protected $model;
 
     /** @var array */
@@ -23,7 +26,7 @@ class Repository
     protected $returnOne = false;
 
     public function __construct(
-        \Parable\ORM\Database $database
+        Database $database
     ) {
         $this->database = $database;
     }
@@ -31,11 +34,11 @@ class Repository
     /**
      * Generate a query set to use the current Model's table name & key.
      *
-     * @return \Parable\ORM\Query
+     * @return Query
      */
     public function createQuery()
     {
-        $query = \Parable\ORM\Query::createInstance();
+        $query = Query::createInstance();
         $query->setTableName($this->getModel()->getTableName());
 
         if ($this->onlyCount) {
@@ -57,7 +60,7 @@ class Repository
     /**
      * Returns all rows for this model type.
      *
-     * @return \Parable\ORM\Model[]|\Parable\ORM\Model
+     * @return Model[]|Model
      */
     public function getAll()
     {
@@ -80,7 +83,7 @@ class Repository
      *
      * @param int $id
      *
-     * @return null|\Parable\ORM\Model
+     * @return null|Model
      */
     public function getById($id)
     {
@@ -106,7 +109,7 @@ class Repository
      * @param string     $comparator
      * @param mixed|null $value
      *
-     * @return \Parable\ORM\Model[]|\Parable\ORM\Model
+     * @return Model[]|Model
      */
     public function getByCondition($key, $comparator, $value = null)
     {
@@ -118,11 +121,11 @@ class Repository
     /**
      * Returns all rows matching specific conditionSet passed.
      *
-     * @param \Parable\ORM\Query\ConditionSet $conditionSet
+     * @param ConditionSet $conditionSet
      *
-     * @return \Parable\ORM\Model[]|\Parable\ORM\Model
+     * @return Model[]|Model
      */
-    public function getByConditionSet(\Parable\ORM\Query\ConditionSet $conditionSet)
+    public function getByConditionSet(ConditionSet $conditionSet)
     {
         return $this->getByConditionSets([$conditionSet]);
     }
@@ -132,7 +135,7 @@ class Repository
      *
      * @param array $conditionSets
      *
-     * @return \Parable\ORM\Model[]|\Parable\ORM\Model
+     * @return Model[]|Model
      */
     public function getByConditionSets(array $conditionSets)
     {
@@ -159,7 +162,7 @@ class Repository
      *
      * @return $this
      */
-    public function orderBy($key, $direction = \Parable\ORM\Query::ORDER_ASC)
+    public function orderBy($key, $direction = Query::ORDER_ASC)
     {
         $this->orderBy = ['key' => $key, 'direction' => $direction];
         return $this;
@@ -217,7 +220,7 @@ class Repository
     /**
      * Returns a fresh clone of the stored Model, with no values set.
      *
-     * @return null|\Parable\ORM\Model
+     * @return null|Model
      */
     public function createModel()
     {
@@ -228,11 +231,11 @@ class Repository
     /**
      * Set a model on the repository. Reset it so there's no unwanted values stored on it.
      *
-     * @param \Parable\ORM\Model $model
+     * @param Model $model
      *
      * @return $this
      */
-    public function setModel(\Parable\ORM\Model $model)
+    public function setModel(Model $model)
     {
         $this->model = $model->reset();
         return $this;
@@ -241,7 +244,7 @@ class Repository
     /**
      * Return the model instance.
      *
-     * @return null|\Parable\ORM\Model
+     * @return null|Model
      */
     public function getModel()
     {
@@ -251,9 +254,9 @@ class Repository
     /**
      * Build and return an AND condition set.
      *
-     * @param \Parable\ORM\Query\Condition[] $conditions
+     * @param Query\Condition[] $conditions
      *
-     * @return \Parable\ORM\Query\Condition\AndSet
+     * @return Query\Condition\AndSet
      */
     public function buildAndSet(array $conditions)
     {
@@ -263,9 +266,9 @@ class Repository
     /**
      * Build and return an OR condition set.
      *
-     * @param \Parable\ORM\Query\Condition[] $conditions
+     * @param Query\Condition[] $conditions
      *
-     * @return \Parable\ORM\Query\Condition\OrSet
+     * @return Query\Condition\OrSet
      */
     public function buildOrSet(array $conditions)
     {
@@ -278,7 +281,7 @@ class Repository
      *
      * @param array $result
      *
-     * @return \Parable\ORM\Model[]|int
+     * @return Model[]|int
      */
     protected function handleResult(array $result)
     {
@@ -311,13 +314,13 @@ class Repository
      *
      * @param string $modelName
      *
-     * @return \Parable\ORM\Repository
-     * @throws \Parable\ORM\Exception
+     * @return Repository
+     * @throws Exception
      */
     public static function createForModelName($modelName)
     {
         if (!class_exists($modelName)) {
-            throw new \Parable\ORM\Exception("Model '{$modelName}' does not exist.");
+            throw new Exception("Model '{$modelName}' does not exist.");
         }
         return self::createForModel($modelName::create());
     }
@@ -325,13 +328,13 @@ class Repository
     /**
      * Create an instance of the repository class for given $model.
      *
-     * @param \Parable\ORM\Model $model
+     * @param Model $model
      *
-     * @return \Parable\ORM\Repository
+     * @return Repository
      */
-    public static function createForModel(\Parable\ORM\Model $model)
+    public static function createForModel(Model $model)
     {
-        $repository = \Parable\DI\Container::create(static::class);
+        $repository = Container::create(static::class);
         $repository->setModel($model);
         return $repository;
     }

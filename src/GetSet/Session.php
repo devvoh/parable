@@ -2,7 +2,7 @@
 
 namespace Parable\GetSet;
 
-class Session extends \Parable\GetSet\Base
+class Session extends Base
 {
     /** @var string */
     protected $resource = '_SESSION';
@@ -11,12 +11,12 @@ class Session extends \Parable\GetSet\Base
      * Start the session.
      *
      * @return $this
-     * @throws \Parable\GetSet\Exception
+     * @throws Exception
      */
     public function start()
     {
         if (headers_sent()) {
-            throw new \Parable\GetSet\Exception("Headers already sent, can't start the session.");
+            throw new Exception("Headers already sent, can't start the session.");
         }
 
         session_start();

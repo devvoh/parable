@@ -2,7 +2,9 @@
 
 namespace Parable\ORM\Query\Condition;
 
-class AndSet extends \Parable\ORM\Query\ConditionSet
+use Parable\ORM\Query\ConditionSet;
+
+class AndSet extends ConditionSet
 {
     const TYPE = self::SET_AND;
 }

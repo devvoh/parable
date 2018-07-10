@@ -2,23 +2,25 @@
 
 namespace Parable\ORM\Query;
 
+use Parable\ORM\Query;
+
 abstract class ConditionSet
 {
-    /** Default condition set is AND */
-    const TYPE    = self::SET_AND;
-
-    /** Types of sets */
+    /** Types of condition sets */
     const SET_AND = 'AND';
     const SET_OR  = 'OR';
 
-    /** @var \Parable\ORM\Query */
+    /** Default condition set is AND */
+    const TYPE    = self::SET_AND;
+
+    /** @var Query */
     protected $query;
 
-    /** @var \Parable\ORM\Query\Condition[] */
+    /** @var Condition[] */
     protected $conditions = [];
 
     public function __construct(
-        \Parable\ORM\Query $query,
+        Query $query,
         array $conditions
     ) {
         $this->query = $query;
@@ -33,7 +35,7 @@ abstract class ConditionSet
                 continue;
             }
             // Build a new condition
-            $conditionObject = new \Parable\ORM\Query\Condition();
+            $conditionObject = new Condition();
             $conditionObject->setQuery($this->query);
 
             if (isset($condition[0])) {

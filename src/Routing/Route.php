@@ -37,7 +37,7 @@ class Route
      * @param array $data
      *
      * @return $this
-     * @throws \Parable\Routing\Exception
+     * @throws Exception
      */
     public function setDataFromArray(array $data)
     {
@@ -46,7 +46,7 @@ class Route
             if (method_exists($this, $method)) {
                 $this->{$method}($value);
             } else {
-                throw new \Parable\Routing\Exception(
+                throw new Exception(
                     "Tried to set non-existing property '{$property}' with value '{$value}' on " . get_class($this)
                 );
             }
@@ -229,15 +229,15 @@ class Route
      * Check whether a valid set of properties is set.
      *
      * @return $this
-     * @throws \Parable\Routing\Exception
+     * @throws Exception
      */
     public function checkValidProperties()
     {
         if (!$this->controller && !$this->action && !$this->callable) {
-            throw new \Parable\Routing\Exception('Either a controller/action combination or callable is required.');
+            throw new Exception('Either a controller/action combination or callable is required.');
         }
         if (empty($this->methods)) {
-            throw new \Parable\Routing\Exception('Methods are required and must be passed as an array.');
+            throw new Exception('Methods are required and must be passed as an array.');
         }
         return $this;
     }

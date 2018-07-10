@@ -2,6 +2,9 @@
 
 namespace Parable\Console\Parameter;
 
+use Parable\Console\Exception;
+use Parable\Console\Parameter;
+
 class Option extends Base
 {
     /** @var int|null */
@@ -14,11 +17,11 @@ class Option extends Base
      * @param string     $name
      * @param int        $valueType
      * @param mixed|null $defaultValue
-     * @param bool       $defaultValue
+     * @param bool       $flagOption
      */
     public function __construct(
         $name,
-        $valueType = \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
+        $valueType = Parameter::OPTION_VALUE_OPTIONAL,
         $defaultValue = null,
         $flagOption = false
     ) {
@@ -32,7 +35,7 @@ class Option extends Base
      * @param int $valueType
      *
      * @return $this
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      *
      * @deprecated Use setValueType instead
      *
@@ -49,18 +52,18 @@ class Option extends Base
      * @param int $valueType
      *
      * @return $this
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      */
     public function setValueType($valueType)
     {
         if (!in_array(
             $valueType,
             [
-                \Parable\Console\Parameter::OPTION_VALUE_REQUIRED,
-                \Parable\Console\Parameter::OPTION_VALUE_OPTIONAL,
+                Parameter::OPTION_VALUE_REQUIRED,
+                Parameter::OPTION_VALUE_OPTIONAL,
             ]
         )) {
-            throw new \Parable\Console\Exception('Value type must be one of the OPTION_* constants.');
+            throw new Exception('Value type must be one of the OPTION_* constants.');
         }
 
         $this->valueType = $valueType;
@@ -74,19 +77,19 @@ class Option extends Base
      */
     public function isValueRequired()
     {
-        return $this->valueType === \Parable\Console\Parameter::OPTION_VALUE_REQUIRED;
+        return $this->valueType === Parameter::OPTION_VALUE_REQUIRED;
     }
 
     /**
      * @param bool $enabled
      *
      * @return $this
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      */
     public function setFlagOption($enabled)
     {
         if ($enabled && mb_strlen($this->getName()) > 1) {
-            throw new \Parable\Console\Exception("Flag options can only have a single-letter name.");
+            throw new Exception("Flag options can only have a single-letter name.");
         }
         $this->flagOption = (bool)$enabled;
         return $this;

@@ -4,22 +4,22 @@ namespace Parable\Console;
 
 class App
 {
-    /** @var \Parable\Console\Output */
+    /** @var Output */
     protected $output;
 
-    /** @var \Parable\Console\Input */
+    /** @var Input */
     protected $input;
 
-    /** @var \Parable\Console\Parameter */
+    /** @var Parameter */
     protected $parameter;
 
     /** @var string|null */
     protected $name;
 
-    /** @var \Parable\Console\Command[] */
+    /** @var Command[] */
     protected $commands = [];
 
-    /** @var \Parable\Console\Command|null */
+    /** @var Command|null */
     protected $activeCommand;
 
     /** @var string|null */
@@ -29,9 +29,9 @@ class App
     protected $onlyUseDefaultCommand = false;
 
     public function __construct(
-        \Parable\Console\Output $output,
-        \Parable\Console\Input $input,
-        \Parable\Console\Parameter $parameter
+        Output $output,
+        Input $input,
+        Parameter $parameter
     ) {
         $this->output    = $output;
         $this->input     = $input;
@@ -51,7 +51,7 @@ class App
     }
 
     /**
-     * Set the application name..
+     * Set the application name.
      *
      * @param string $name
      *
@@ -76,11 +76,11 @@ class App
     /**
      * Add a command to the application.
      *
-     * @param \Parable\Console\Command $command
+     * @param Command $command
      *
      * @return $this
      */
-    public function addCommand(\Parable\Console\Command $command)
+    public function addCommand(Command $command)
     {
         $command->prepare($this, $this->output, $this->input, $this->parameter);
         $this->commands[$command->getName()] = $command;
@@ -90,7 +90,7 @@ class App
     /**
      * Add an array of commands to the application.
      *
-     * @param \Parable\Console\Command[] $commands
+     * @param Command[] $commands
      *
      * @return $this
      */
@@ -119,11 +119,11 @@ class App
      * Set the default command to use if no command is given. Also
      * adds the command.
      *
-     * @param \Parable\Console\Command $command
+     * @param Command $command
      *
      * @return $this
      */
-    public function setDefaultCommand(\Parable\Console\Command $command)
+    public function setDefaultCommand(Command $command)
     {
         $this->addCommand($command);
         $this->setDefaultCommandByName($command->getName());
@@ -170,7 +170,7 @@ class App
      *
      * @param string $commandName
      *
-     * @return \Parable\Console\Command|null
+     * @return Command|null
      */
     public function getCommand($commandName)
     {
@@ -183,7 +183,7 @@ class App
     /**
      * Return all commands set on the application.
      *
-     * @return \Parable\Console\Command[]
+     * @return Command[]
      */
     public function getCommands()
     {
@@ -209,7 +209,7 @@ class App
      * Run the application.
      *
      * @return mixed
-     * @throws \Parable\Console\Exception
+     * @throws Exception
      */
     public function run()
     {
@@ -233,7 +233,7 @@ class App
         $command = $command ?: $defaultCommand;
 
         if (!$command) {
-            throw new \Parable\Console\Exception('No valid commands found.');
+            throw new Exception('No valid commands found.');
         }
 
         $this->activeCommand = $command;

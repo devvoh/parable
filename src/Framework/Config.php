@@ -4,6 +4,9 @@ namespace Parable\Framework;
 
 class Config extends \Parable\GetSet\Base
 {
+    /** @var \Parable\Filesystem\Path */
+    protected $path;
+
     /** @var string */
     protected $resource = 'parable_config';
 
@@ -12,9 +15,6 @@ class Config extends \Parable\GetSet\Base
 
     /** @var string */
     protected $mainConfigClass = '\Config\App';
-
-    /** @var \Parable\Filesystem\Path */
-    protected $path;
 
     public function __construct(
         \Parable\Filesystem\Path $path

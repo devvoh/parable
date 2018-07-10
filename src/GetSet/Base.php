@@ -40,7 +40,7 @@ abstract class Base
      * Return all from resource if resource is set.
      *
      * @return array
-     * @throws \Parable\GetSet\Exception
+     * @throws Exception
      */
     public function getAll()
     {
@@ -53,7 +53,7 @@ abstract class Base
 
         // If we're attempting to use a global resource but it doesn't exist, we've got a problem.
         if (!isset($GLOBALS[$this->getResource()])) {
-            throw new \Parable\GetSet\Exception(
+            throw new Exception(
                 "Attempting to use global resource '{$this->getResource()}' but resource not available."
             );
         }

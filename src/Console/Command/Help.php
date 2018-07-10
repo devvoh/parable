@@ -2,7 +2,9 @@
 
 namespace Parable\Console\Command;
 
-class Help extends \Parable\Console\Command
+use Parable\Console\Command;
+
+class Help extends Command
 {
     /** @var string */
     protected $name = 'help';

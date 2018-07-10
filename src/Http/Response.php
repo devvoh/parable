@@ -2,9 +2,12 @@
 
 namespace Parable\Http;
 
+use Parable\Http\Output\Html;
+use Parable\Http\Output\OutputInterface;
+
 class Response
 {
-    /** @var \Parable\Http\Request */
+    /** @var Request */
     protected $request;
 
     /** @var int */
@@ -78,7 +81,7 @@ class Response
     /** @var string */
     protected $contentType;
 
-    /** @var \Parable\Http\Output\OutputInterface */
+    /** @var OutputInterface */
     protected $output;
 
     /** @var array */
@@ -97,12 +100,12 @@ class Response
     protected $headerFooterContent = true;
 
     public function __construct(
-        \Parable\Http\Request $request
+        Request $request
     ) {
         $this->request = $request;
 
         // By default we're going to set the Html Output, but this can be switched at any time before sending..
-        $this->setOutput(new \Parable\Http\Output\Html);
+        $this->setOutput(new Html());
     }
 
     /**
@@ -111,12 +114,12 @@ class Response
      * @param int $httpCode
      *
      * @return $this
-     * @throws \Parable\Http\Exception
+     * @throws Exception
      */
     public function setHttpCode($httpCode)
     {
         if (!array_key_exists($httpCode, $this->httpCodes)) {
-            throw new \Parable\Http\Exception("Invalid HTTP code set: '{$httpCode}'");
+            throw new Exception("Invalid HTTP code set: '{$httpCode}'");
         }
         $this->httpCode = $httpCode;
         return $this;
@@ -168,11 +171,11 @@ class Response
     /**
      * Set the output class to use and initialize it with the current response state.
      *
-     * @param \Parable\Http\Output\OutputInterface $output
+     * @param OutputInterface $output
      *
      * @return $this
      */
-    public function setOutput(\Parable\Http\Output\OutputInterface $output)
+    public function setOutput(OutputInterface $output)
     {
         $this->output = $output;
         $this->output->init($this);
@@ -182,7 +185,7 @@ class Response
     /**
      * Return the output class.
      *
-     * @return Output\OutputInterface
+     * @return OutputInterface
      */
     public function getOutput()
     {
@@ -514,7 +517,7 @@ class Response
 
         if (!is_string($this->content) && $this->content !== null) {
             $output = get_class($this->output);
-            throw new \Parable\Http\Exception("Output class '{$output}' did not result in string or null content.");
+            throw new Exception("Output class '{$output}' did not result in string or null content.");
         }
 
         if (!headers_sent()) {

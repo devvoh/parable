@@ -2,7 +2,9 @@
 
 namespace Parable\Log\Writer;
 
-class File implements \Parable\Log\Writer\WriterInterface
+use Parable\Log\Exception;
+
+class File implements WriterInterface
 {
     /** @var  */
     protected $logFile;
@@ -13,12 +15,12 @@ class File implements \Parable\Log\Writer\WriterInterface
      * @param string $message
      *
      * @return $this
-     * @throws \Parable\Log\Exception
+     * @throws Exception
      */
     public function write($message)
     {
         if (!$this->logFile) {
-            throw new \Parable\Log\Exception("No log file set. \Log\Writer\File requires a valid target file.");
+            throw new Exception("No log file set. \Log\Writer\File requires a valid target file.");
         }
         $this->writeToFile($message);
         return $this;
@@ -30,12 +32,12 @@ class File implements \Parable\Log\Writer\WriterInterface
      * @param string $logFile
      *
      * @return $this
-     * @throws \Parable\Log\Exception
+     * @throws Exception
      */
     public function setLogFile($logFile)
     {
         if (!$this->createfile($logFile)) {
-            throw new \Parable\Log\Exception("Log file is not writable.");
+            throw new Exception("Log file is not writable.");
         }
 
         $this->logFile = $logFile;

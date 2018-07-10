@@ -4,7 +4,7 @@ namespace Parable\Framework;
 
 class App
 {
-    const PARABLE_VERSION                  = '1.2.0';
+    const PARABLE_VERSION                  = '1.3.0';
 
     const HOOK_HTTP_404                    = 'parable_http_404';
     const HOOK_HTTP_200                    = 'parable_http_200';

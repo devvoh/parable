@@ -4,7 +4,7 @@ namespace Parable\ORM;
 
 class Model
 {
-    /** @var \Parable\ORM\Database */
+    /** @var Database */
     protected $database;
 
     /** @var array */
@@ -23,7 +23,7 @@ class Model
     protected $tableKey;
 
     public function __construct(
-        \Parable\ORM\Database $database
+        Database $database
     ) {
         $this->database = $database;
     }
@@ -31,11 +31,11 @@ class Model
     /**
      * Generate a query set to use the current Model's table name & key.
      *
-     * @return \Parable\ORM\Query
+     * @return Query
      */
     public function createQuery()
     {
-        $query = \Parable\ORM\Query::createInstance();
+        $query = Query::createInstance();
         $query->setTableName($this->getTableName());
         return $query;
     }
@@ -223,7 +223,7 @@ class Model
             }
 
             // If it's specifically decreed that it's a null value, we leave it in, which will set it to NULL in the db
-            if (!$keepNullValue && $value === \Parable\ORM\Database::NULL_VALUE) {
+            if (!$keepNullValue && $value === Database::NULL_VALUE) {
                 $value = null;
             }
 
@@ -246,7 +246,7 @@ class Model
     {
         $array = $this->removeEmptyValues($this->toArray(true));
         foreach ($array as $key => $value) {
-            if ($value === \Parable\ORM\Database::NULL_VALUE) {
+            if ($value === Database::NULL_VALUE) {
                 $array[$key] = null;
             }
         }

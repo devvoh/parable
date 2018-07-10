@@ -2,7 +2,7 @@
 
 namespace Parable\GetSet;
 
-class Files extends \Parable\GetSet\Base
+class Files extends Base
 {
     /** @var string */
     protected $resource = '_FILES';

@@ -4,18 +4,18 @@ namespace Parable\Routing;
 
 class Router
 {
-    /** @var \Parable\Routing\Route[] */
+    /** @var Route[] */
     protected $routes = [];
 
     /**
      * Add a Route object to the routes list as $name.
      *
-     * @param string                 $name
-     * @param \Parable\Routing\Route $route
+     * @param string $name
+     * @param Route  $route
      *
      * @return $this
      */
-    public function addRoute($name, \Parable\Routing\Route $route)
+    public function addRoute($name, Route $route)
     {
         $route->checkValidProperties();
 
@@ -26,7 +26,7 @@ class Router
     /**
      * Add an array of routes to the routes list, where key is the route name.
      *
-     * @param \Parable\Routing\Route[] $routes
+     * @param Route[] $routes
      *
      * @return $this
      */
@@ -48,7 +48,7 @@ class Router
      */
     public function addRouteFromArray($name, array $routeArray)
     {
-        $route = \Parable\Routing\Route::createFromDataArray($routeArray);
+        $route = Route::createFromDataArray($routeArray);
         $route->setName($name);
 
         $this->addRoute($name, $route);
@@ -74,7 +74,7 @@ class Router
     /**
      * Return all routes currently set.
      *
-     * @return \Parable\Routing\Route[]
+     * @return Route[]
      */
     public function getRoutes()
     {
@@ -86,7 +86,7 @@ class Router
      *
      * @param string $name
      *
-     * @return \Parable\Routing\Route|null
+     * @return Route|null
      */
     public function getRouteByName($name)
     {
@@ -101,7 +101,7 @@ class Router
      *
      * @param string $url
      *
-     * @return \Parable\Routing\Route|null
+     * @return Route|null
      */
     public function matchUrl($url)
     {
@@ -122,7 +122,7 @@ class Router
      *
      * @param string $url
      *
-     * @return \Parable\Routing\Route|null
+     * @return Route|null
      */
     protected function matchUrlDirectly($url)
     {
@@ -139,7 +139,7 @@ class Router
      *
      * @param string $url
      *
-     * @return \Parable\Routing\Route|null
+     * @return Route|null
      */
     protected function matchUrlWithParameters($url)
     {

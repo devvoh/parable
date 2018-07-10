@@ -74,7 +74,6 @@ class HtmlTest extends \Parable\Tests\Base
         return [
             [[]],
             [new \stdClass()],
-            [700],
             [true],
         ];
     }
@@ -82,7 +81,7 @@ class HtmlTest extends \Parable\Tests\Base
     /**
      * @dataProvider dpDataTypes
      */
-    public function testAcceptsContentSaysYesStringAndNullOnly($type, $expectedBoolValue)
+    public function testAcceptsContentSaysYesStringIntFloatAndNullOnly($type, $expectedBoolValue)
     {
         $this->assertSame($expectedBoolValue, $this->html->acceptsContent($type));
     }
@@ -92,7 +91,8 @@ class HtmlTest extends \Parable\Tests\Base
         return [
             [null, true],
             ["string", true],
-            [1337, false],
+            [1337, true],
+            [13.37, true],
             [true, false],
             [new \stdClass(), false],
             [["array"], false],

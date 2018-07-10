@@ -1,4 +1,8 @@
 <?php
+
+use Parable\DI\Container;
+use Parable\Framework\Package\PackageManager;
+
 /**
  * DIRECTORY_SEPARATOR is just too long -- shorten it!
  */
@@ -24,8 +28,12 @@ if (!defined('APP_CONTEXT')) {
  * We want to allow packages to register themselves with Parable.
  */
 if (!function_exists('register_parable_package')) {
+    /**
+     * @param string $packageName
+     * @throws \Parable\DI\Exception
+     */
     function register_parable_package($packageName)
     {
-        \Parable\DI\Container::get(\Parable\Framework\Package\PackageManager::class)->addPackage($packageName);
+        Container::get(PackageManager::class)->addPackage($packageName);
     }
 }

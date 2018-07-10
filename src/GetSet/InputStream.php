@@ -2,7 +2,7 @@
 
 namespace Parable\GetSet;
 
-class InputStream extends \Parable\GetSet\Base
+class InputStream extends Base
 {
     /** @var string */
     protected $resource = 'parable_input_stream';

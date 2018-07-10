@@ -2,6 +2,9 @@
 
 namespace Parable\ORM;
 
+use Parable\ORM\Database\PDOMySQL;
+use Parable\ORM\Database\PDOSQLite;
+
 class Database
 {
     /** Use this to set a value to SQL NULL */
@@ -231,7 +234,7 @@ class Database
      * Return the instance, and start one if needed.
      *
      * @return null|\PDO
-     * @throws \Parable\ORM\Exception
+     * @throws Exception
      */
     public function getInstance()
     {
@@ -259,7 +262,7 @@ class Database
                     $this->setInstance($instance);
                     break;
                 default:
-                    throw new \Parable\ORM\Exception("Database type was invalid: {$this->getType()}");
+                    throw new Exception("Database type was invalid: {$this->getType()}");
             }
         }
         return $this->instance;
@@ -271,13 +274,13 @@ class Database
      * @param string $location
      * @param int    $errorMode
      *
-     * @return \Parable\ORM\Database\PDOSQLite
+     * @return PDOSQLite
      */
     protected function createPDOSQLite($location, $errorMode)
     {
         $dsn = 'sqlite:' . $location;
 
-        $db  = new \Parable\ORM\Database\PDOSQLite($dsn);
+        $db  = new PDOSQLite($dsn);
         $db->setAttribute(\PDO::ATTR_ERRMODE, $errorMode);
 
         return $db;
@@ -293,7 +296,7 @@ class Database
      * @param int    $errorMode
      * @param string $charset
      *
-     * @return \Parable\ORM\Database\PDOMySQL
+     * @return PDOMySQL
      *
      * @codeCoverageIgnore
      */
@@ -304,7 +307,7 @@ class Database
             $dsn .= ';charset=' . $charset;
         }
 
-        $db  = new \Parable\ORM\Database\PDOMySQL($dsn, $username, $password);
+        $db  = new PDOMySQL($dsn, $username, $password);
         $db->setAttribute(\PDO::ATTR_ERRMODE, $errorMode);
 
         return $db;
@@ -330,13 +333,13 @@ class Database
      * @param string $string
      *
      * @return null|string
-     * @throws \Parable\ORM\Exception
+     * @throws Exception
      */
     public function quote($string)
     {
         if (!$this->getInstance()) {
             if (!$this->softQuoting) {
-                throw new \Parable\ORM\Exception("Can't quote without a database instance.");
+                throw new Exception("Can't quote without a database instance.");
             }
 
             $string = str_replace("'", "", $string);
@@ -364,12 +367,12 @@ class Database
      * @param string $query
      *
      * @return \PDOStatement
-     * @throws \Parable\ORM\Exception
+     * @throws Exception
      */
     public function query($query)
     {
         if (!$this->getInstance()) {
-            throw new \Parable\ORM\Exception("Can't run query without a database instance.");
+            throw new Exception("Can't run query without a database instance.");
         }
         return $this->getInstance()->query($query, \PDO::FETCH_ASSOC);
     }
@@ -381,7 +384,7 @@ class Database
      * @param array $config
      *
      * @return $this
-     * @throws \Parable\ORM\Exception
+     * @throws Exception
      */
     public function setConfig(array $config)
     {
@@ -394,7 +397,7 @@ class Database
             if (method_exists($this, $method)) {
                 $this->{$method}($value);
             } else {
-                throw new \Parable\ORM\Exception(
+                throw new Exception(
                     "Tried to set non-existing property '{$property}' with value '{$value}' on " . get_class($this)
                 );
             }
