@@ -17,17 +17,22 @@ class ViewTest extends \Parable\Tests\Components\Framework\Base
     public function testGettingNonExistingMagicPropertyThrowsException()
     {
         $this->expectException(\Parable\Framework\Exception::class);
-        $this->expectExceptionMessage("Could not find property 'stuff'. Make sure it was registered with the View.");
+        $this->expectExceptionMessage(
+            "Could not find property 'stuff'. Make sure it was registered with the View."
+        );
 
         $this->assertNull($this->view->stuff);
     }
 
-    public function testLoadingNonExistingTemplatePathIsSilent()
+    public function testLoadingNonExistingTemplatePathThrowsException()
     {
+        self::expectException(\Parable\Framework\Exception::class);
+        self::expectExceptionMessage(
+            "Template file could not be loaded: /var/www/html/pardev/vendor/devvoh/parable/stuff"
+        );
+
         $this->view->setTemplatePath("stuff");
         $this->view->render();
-
-        $this->assertEmpty($this->getActualOutput());
     }
 
     public function testAccessingExistingMagicPropertyWorks()
