@@ -151,9 +151,13 @@ class View
     protected function loadTemplatePath($templatePath)
     {
         $templatePath = $this->path->getDir($templatePath);
-        if (file_exists($templatePath)) {
-            require $templatePath;
+
+        if (!file_exists($templatePath)) {
+            throw new Exception("Template file could not be loaded: {$templatePath}");
         }
+
+        require $templatePath;
+
         return $this;
     }
 
