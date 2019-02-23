@@ -310,7 +310,7 @@ class Mailer
     }
 
     /**
-     * Actually send the email, using php's built-in mail() command.
+     * Actually send the email, using PHPs built-in mail() command.
      *
      * @param string $to
      * @param string $subject

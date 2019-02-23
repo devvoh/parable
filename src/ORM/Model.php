@@ -311,7 +311,7 @@ class Model
     public function removeEmptyValues(array $array)
     {
         foreach ($array as $key => $value) {
-            if ($value !== 0 && empty($value)) {
+            if ($value !== 0 && $value !== '0' && empty($value)) {
                 unset($array[$key]);
             }
         }

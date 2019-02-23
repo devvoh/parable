@@ -37,7 +37,7 @@ class Request
      */
     public function __construct()
     {
-        if (APP_CONTEXT === 'web') {
+        if (APP_CONTEXT === 'web' && function_exists('getallheaders')) {
             $this->headers = getallheaders() ?: []; // @codeCoverageIgnore
         }
     }

@@ -1,5 +1,11 @@
 # Parable PHP Framework Changelog
 
+### 1.2.1
+
+__Bugfixes__
+- `Route::extractParameterValues()` now only filters out values that are exactly an empty string. Anything else will be passed along as the provided value.
+- `Model::removeEmptyValues()` has a similar issue, where now only `null` values are filtered out.
+
 ### 1.2.0
 
 __Changes__
