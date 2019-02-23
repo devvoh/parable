@@ -4,7 +4,7 @@ namespace Parable\Framework;
 
 class App
 {
-    const PARABLE_VERSION                  = '1.1.0';
+    const PARABLE_VERSION                  = '1.2.0';
 
     const HOOK_HTTP_404                    = 'parable_http_404';
     const HOOK_HTTP_200                    = 'parable_http_200';
@@ -55,6 +55,9 @@ class App
     /** @var bool */
     protected $errorReportingEnabled = false;
 
+    /** @var bool */
+    protected $initialized = false;
+
     public function __construct(
         \Parable\Framework\Autoloader $autoloader,
         \Parable\Framework\Config $config,
@@ -87,55 +90,25 @@ class App
     }
 
     /**
+     * Return Parable's current version number.
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return self::PARABLE_VERSION;
+    }
+
+    /**
      * Do all the setup and then attempt to match and dispatch the current url.
      *
      * @return $this
      */
     public function run()
     {
-        // And now possible packages get their turn.
-        $this->packageManager->registerPackages();
-
-        $this->loadConfig();
-
-        // Init the database if it's configured
-        if ($this->config->get('parable.database.type')) {
-            $this->loadDatabase();
+        if (!$this->initialized) {
+            $this->initialize();
         }
-
-        // Enable error reporting if debug is set to true
-        if ($this->config->get('parable.debug') === true) {
-            $this->setErrorReportingEnabled(true);
-        } else {
-            $this->setErrorReportingEnabled(false);
-        }
-
-        // Set the basePath on the url based on the config
-        if ($this->config->get('parable.app.homedir')) {
-            $homedir = trim($this->config->get('parable.app.homedir'), DS);
-            $this->url->setBasePath($homedir);
-        }
-
-        // See if there's any inits defined in the config
-        if ($this->config->get('parable.inits')) {
-            $this->loadInits();
-        }
-
-        // Start the session if session.auto-enable is true
-        if ($this->config->get('parable.session.auto-enable') !== false) {
-            $this->startSession();
-        }
-
-        // Set the default timezone if it's set
-        if ($this->config->get('parable.timezone')) {
-            date_default_timezone_set($this->config->get('parable.timezone'));
-        }
-
-        // Build the base Url
-        $this->url->buildBaseurl();
-
-        // Load the routes
-        $this->loadRoutes();
 
         // Get the current url
         $currentUrl     = $this->toolkit->getCurrentUrl();
@@ -161,13 +134,76 @@ class App
     }
 
     /**
-     * Return Parable's current version number.
+     * Initialize the App to prepare it for being run.
      *
-     * @return string
+     * @return $this
+     * @throws \Parable\Framework\Exception
+     * @throws \Parable\DI\Exception
      */
-    public function getVersion()
+    public function initialize()
     {
-        return self::PARABLE_VERSION;
+        if ($this->initialized) {
+            throw new \Parable\Framework\Exception("App has already been initialized.");
+        }
+
+        // And now possible packages get their turn.
+        $this->packageManager->registerPackages();
+
+        $this->loadConfig();
+
+        // Enable error reporting if debug is set to true
+        if ($this->config->get('parable.debug') === true) {
+            $this->setErrorReportingEnabled(true);
+        } else {
+            $this->setErrorReportingEnabled(false);
+        }
+
+        // Start the session if session.auto-enable is true
+        if ($this->config->get('parable.session.auto-enable') !== false) {
+            $this->startSession();
+        }
+
+        // Init the database if it's configured
+        if ($this->config->get('parable.database.type')) {
+            $this->loadDatabase();
+        }
+
+        // Set the basePath on the url based on the config
+        if ($this->config->get('parable.app.homedir')) {
+            $homedir = trim($this->config->get('parable.app.homedir'), DS);
+            $this->url->setBasePath($homedir);
+        }
+
+        // See if there's any inits defined in the config
+        if ($this->config->get('parable.inits')) {
+            $this->loadInits();
+        }
+
+        // Set the default timezone if it's set
+        if ($this->config->get('parable.timezone')) {
+            date_default_timezone_set($this->config->get('parable.timezone'));
+        }
+
+        // Build the base Url
+        $this->url->buildBaseurl();
+
+        // Load the routes
+        $this->loadRoutes();
+
+        // And set the class to initialized
+        $this->initialized = true;
+
+        return $this;
+    }
+
+    /**
+     * Return whether the app has been initialized already or not.
+     *
+     * @return bool
+     */
+    public function isInitialized()
+    {
+        return $this->initialized;
     }
 
     /**

@@ -125,7 +125,7 @@ class Output
     /**
      * Write a line or array of lines to the console. This will always end in a newline.
      *
-     * @param array|string $lines
+     * @param string|string[] $lines
      *
      * @return $this
      */
@@ -305,7 +305,7 @@ class Output
     /**
      * Write an error block to the console.
      *
-     * @param string $string
+     * @param string|string[] $string
      *
      * @return $this
      */
@@ -318,7 +318,7 @@ class Output
     /**
      * Write an info block to the console.
      *
-     * @param string $string
+     * @param string|string[] $string
      *
      * @return $this
      */
@@ -331,7 +331,7 @@ class Output
     /**
      * Write a success block to the console.
      *
-     * @param string $string
+     * @param string|string[] $string
      *
      * @return $this
      */
@@ -344,8 +344,8 @@ class Output
     /**
      * Write a block of text to the console, using a tag (info by default).
      *
-     * @param string $string
-     * @param string $tag
+     * @param string|string[] $string
+     * @param string          $tag
      *
      * @return $this
      */
@@ -358,14 +358,21 @@ class Output
     /**
      * Write a block of text to the console, applying all tags appropriately.
      *
-     * @param string   $string
-     * @param string[] $tags
+     * @param string|string[] $string
+     * @param string[]        $tags
      *
      * @return $this
      */
     public function writeBlockWithTags($string, array $tags = [])
     {
-        $strlen = mb_strlen($string);
+        if (!is_array($string)) {
+            $string = explode(PHP_EOL, $string);
+        }
+
+        $strlen = 0;
+        foreach ($string as $line) {
+            $strlen = max($strlen, mb_strlen($line));
+        }
 
         $tagsOpen  = '';
         $tagsClose = '';
@@ -376,13 +383,20 @@ class Output
             }
         }
 
-        $this->writeln([
+        $lines = [
             "",
             " {$tagsOpen}┌" . str_repeat("─", $strlen + 2) . "┐{$tagsClose}",
-            " {$tagsOpen}│ {$string} │{$tagsClose}",
-            " {$tagsOpen}└" . str_repeat("─", $strlen + 2) . "┘{$tagsClose}",
-            "",
-        ]);
+        ];
+
+        foreach ($string as $line) {
+            $padding = str_repeat(" ", $strlen - mb_strlen($line));
+            $lines[] = " {$tagsOpen}│ {$line}{$padding} │{$tagsClose}";
+        }
+
+        $lines[] = " {$tagsOpen}└" . str_repeat("─", $strlen + 2) . "┘{$tagsClose}";
+        $lines[] = "";
+
+        $this->writeln($lines);
         return $this;
     }
 

@@ -64,6 +64,24 @@ class AppTest extends \Parable\Tests\Components\Framework\Base
         $this->assertSame('OK', $this->mockResponse->getHttpCodeText());
     }
 
+    public function testAppInitializeCannotBeCalledTwice()
+    {
+        $this->expectException(\Parable\Framework\Exception::class);
+        $this->expectExceptionMessage('App has already been initialized.');
+
+        $this->app->initialize();
+        $this->app->initialize();
+    }
+
+    public function testInitializeIsCalledByRun()
+    {
+        $this->assertFalse($this->app->isInitialized());
+
+        $this->app->run();
+
+        $this->assertTrue($this->app->isInitialized());
+    }
+
     public function testAppRunWithoutRoutesTriggersHookNoRoutesFound()
     {
         $this->assertFalse($this->noRoutesFoundTriggered);

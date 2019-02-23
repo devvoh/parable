@@ -12,8 +12,9 @@ class SessionMessage
     /** @var array */
     protected $messages = [];
 
-    public function __construct(\Parable\GetSet\Session $session)
-    {
+    public function __construct(
+        \Parable\GetSet\Session $session
+    ) {
         $this->session = $session;
 
         $this->readFromSession();
