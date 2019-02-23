@@ -302,8 +302,8 @@ class Route
         $urlParts = explode('/', $url);
         $this->values = [];
         foreach ($this->parameters as $index => $name) {
-            $value = trim($urlParts[$index]);
-            if (!empty($value)) {
+            $value = $urlParts[$index];
+            if ($value !== '') {
                 $this->setValue($name, $value);
             }
         }
