@@ -133,14 +133,14 @@ class RouterTest extends \Parable\Tests\Base
         $this->assertSame("it did!", $callable());
     }
 
-    public function testmatchUrlComplex()
+    private function assertComplexUrl($url, $routeUrl, $parameters)
     {
-        $route = $this->router->matchUrl('/complex/id-value/name-value');
+        $route = $this->router->matchUrl($url);
 
         $this->assertNotNull($route);
 
         $this->assertSame(['GET'], $route->getMethods());
-        $this->assertSame('/complex/{id}/{name}', $route->getUrl());
+        $this->assertSame($routeUrl, $route->getUrl());
         $this->assertSame(\Parable\Tests\TestClasses\Controller::class, $route->getController());
         $this->assertSame('complex', $route->getAction());
 
@@ -149,12 +149,69 @@ class RouterTest extends \Parable\Tests\Base
 
         $this->assertTrue($route->hasParameters());
 
-        $this->assertSame(
-            [
-                'id'   => 'id-value',
-                'name' => 'name-value',
-            ],
-            $route->getValues()
+        $this->assertSame($parameters, $route->getValues());
+    }
+
+    public function testmatchUrlComplexMain()
+    {
+        $this->assertComplexUrl(
+            '/complex/id-value/name-value',
+            '/complex/{id}/{name}',
+            ['id' => 'id-value', 'name' => 'name-value']
+        );
+    }
+
+    public function testmatchUrlComplexZero1()
+    {
+        $this->assertComplexUrl(
+            '/complex/id-value/0',
+            '/complex/{id}/{name}',
+            ['id' => 'id-value', 'name' => '0']
+        );
+    }
+
+    public function testmatchUrlComplexZero2()
+    {
+        $this->assertComplexUrl(
+            '/complex/0/something',
+            '/complex/{id}/{name}',
+            ['id' => '0', 'name' => 'something']
+        );
+    }
+
+    public function testmatchUrlComplexZero3()
+    {
+        $this->assertComplexUrl(
+            '/complex/123/00',
+            '/complex/{id}/{name}',
+            ['id' => '123', 'name' => '00']
+        );
+    }
+
+    public function testmatchUrlComplexZero4()
+    {
+        $this->assertComplexUrl(
+            '/complex/123/0.0',
+            '/complex/{id}/{name}',
+            ['id' => '123', 'name' => '0.0']
+        );
+    }
+
+    public function testmatchUrlComplexZero5()
+    {
+        $this->assertComplexUrl(
+            '/complex/123/0.00',
+            '/complex/{id}/{name}',
+            ['id' => '123', 'name' => '0.00']
+        );
+    }
+
+    public function testmatchUrlComplexSpace()
+    {
+        $this->assertComplexUrl(
+            '/complex/ /a',
+            '/complex/{id}/{name}',
+            ['id' => ' ', 'name' => 'a']
         );
     }
 
