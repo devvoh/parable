@@ -1,5 +1,10 @@
 # Parable PHP Framework Changelog
 
+### 1.2.2
+
+__Changes__
+- `Route::parseUrlParameters()` is now public, allowing as-needed dynamic route creation to be done easier.
+
 ### 1.2.1
 
 __Bugfixes__
