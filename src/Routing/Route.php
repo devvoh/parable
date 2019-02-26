@@ -278,7 +278,7 @@ class Route
      *
      * @return $this
      */
-    protected function parseUrlParameters()
+    public function parseUrlParameters()
     {
         $urlParts = explode('/', $this->url);
         $this->parameters = [];
