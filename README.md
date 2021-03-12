@@ -1,3 +1,11 @@
+## DEPRECATION NOTICE
+
+NOTE: `devvoh/parable:1.2.2` is now no longer being developed. For the next chapter in Parable's future, go to [`parable-php/framework`](https://github.com/parable-php/framework) for the 2.0.0 version.
+
+Parable 2.0.0 is a full rewrite, but it is possible to move over an application built on the 1.0 family to 2.0 in a reasonable time. If you need any assistance, please open an issue [here](https://github.com/parable-php/framework/issues).
+
+Thank you for supporting Parable!
+
 ## Parable PHP Framework
 
 [![Build Status](https://travis-ci.org/devvoh/parable.svg?branch=master)](https://travis-ci.org/devvoh/parable)

@@ -1,4 +1,5 @@
 {
+  "abandoned": "parable-php/framework",
   "name": "devvoh/parable",
   "type": "framework",
   "description": "Parable is a PHP micro framework",
